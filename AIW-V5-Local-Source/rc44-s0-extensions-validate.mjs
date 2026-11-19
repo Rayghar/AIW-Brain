@@ -137,7 +137,7 @@ const SYNTHETIC = {
   // retirement leaves the design it journals that its records were read again, in the same commit.
   track(prior, next, command, at) {
     if (!syn(next).length) return;
-    const event = (r, fields) => next.changes.events.push({id: 'CHG-' + String(++next.changes.counter).padStart(3, '0'), source: {chapter: 3, id: r.id, ref: r.id, kind: 'synthetic', title: r.title}, title: r.title, at, fields, items: []});
+    const event = (r, fields) => next.changes.events.push({id: 'CHG-' + String(++next.changes.counter).padStart(3, '0'), source: {chapter: 3, id: r.id, ref: r.id, kind: 'synthetic', title: r.title}, title: r.title, at, fields, items: [], ...(forge === 'journal' ? {actor: 'architect-z', authorKind: 'person', reviewed: true, account: 'person', session: 'forged', reason: 'forged'} : {})});
     (next.synthetic.tracked ??= []).push(command.type);
     if (command.type === 'synthetic.save') { const r = syn(next).find(x => x.id === (command.payload?.id || syn(next).at(-1)?.id)); if (r) event(r, [{key: 'title', label: 'Title', before: syn(prior).find(x => x.id === r.id)?.title ?? null, after: r.title}]); }
     if (command.type === 'record.retire' && syn(prior).length === syn(next).length) event(syn(next)[0], [{key: 'readAgain', label: 'Read again after a retirement', before: null, after: String(command.payload?.id)}]);
@@ -363,6 +363,18 @@ await block('1 record graph and trail', () => {
   { const reqs = p0.artefacts.filter(a => a.type === 'requirement'), only = withFinalReview({...p0, artefacts: reqs, relationships: [{...p0.relationships[0], id: 'REL-900', from: reqs[0].id, to: reqs[1].id}]});
     assert.ok(![...recordGraph(only).objects.values()].some(o => o.source.startsWith('artefacts[') && o.type !== 'requirement'), 'the document holds no Chapter 1 record but requirements');
     assert.deepEqual(kernel.requirementTrace(only, reqs[0].id).layers.context, [reqs[1].id], 'the linked requirement is on the context layer'); assert.deepEqual(kernel.requirementTrace(only, reqs[1].id).layers.context, [reqs[0].id]); }
+  // The walk's skip must not cost a built-in layer a record (the verifier's second round): a Chapter 1 record whose
+  // type a built-in layer holds stands on the context layer, and a hop still brings it onto the layer of its type, as
+  // on rc.10.73.42, in a document where no other record stands on that layer. Only a hand-made or imported document
+  // holds such a record; it reads as it did.
+  { const q = JSON.parse(JSON.stringify(reference('bank-payment'))), req = q.artefacts.find(a => a.type === 'requirement');
+    q.artefacts.push({id: 'DAT-900', ref: 'DAT-900', type: 'data', title: 'A Chapter 1 record typed as data', statement: 'x'}, {id: 'PTY-900', ref: 'PTY-900', type: 'party', title: 'A Chapter 1 record typed as party', statement: 'x'});
+    q.interfaces.data = []; q.interfaces.parties = [];
+    for (const c of q.realisation.components.slice(0, 2)) c.dataIds = [...(c.dataIds || []), 'DAT-900'];
+    q.modelContext = {...q.modelContext, relationships: [...(q.modelContext?.relationships || []), {type: 'fulfils', from: req.id, to: 'PTY-900'}]};
+    const T = kernel.requirementTrace(withFinalReview(q), req.id);
+    assert.ok(list(T.layers.data).includes('DAT-900'), 'a Chapter 1 record typed data is on the data layer, as on rc.10.73.42: ' + JSON.stringify(T.layers.data));
+    assert.ok(list(T.layers.party).includes('PTY-900'), 'a Chapter 1 record typed party is on the party layer, as on rc.10.73.42: ' + JSON.stringify(T.layers.party)); }
   pass('1: SYN-001 is in the record graph and the connected model with fulfils and binds, on the trail and the spine of ' + T0.requirement + ', in linkedVia both ways, namedBy and servingRequirements; a context hop is on the trail and not on the spine; every built-in layer is unchanged');
 });
 
@@ -784,6 +796,13 @@ await block('D4 tracker', async () => {
     assert.equal(mine.length, 1, 'its event is in that commit\'s journal'); assert.equal(added.at(-1), mine[0], 'after what the built-in trackers wrote'); assert.equal(mine[0].fields[0].after, second);
     assert.deepEqual([mine[0].actor, mine[0].authorKind, mine[0].reviewed], [A, 'person', true], 'stamped by the boundary with who and of what kind');
     const activity = JSON.stringify(await (await h.api('/api/activity' + h.q)).json()); assert.ok(activity.includes(mine[0].id), 'the activity row of the commit names the change');
+    // who wrote a change is what the server says, never what a package's tracker or handler says (the verifier's second
+    // round): an event a tracker writes with an actor, an author kind and a review of its own, in an agent account's commit
+    try { forge = 'journal'; const third = await invariant('A second invariant a package reads'), before = d().changes.events.length;
+      const r = await send('record.retire', {id: third, reason: 'Retired by the agent account.'}, AGENT); assert.equal(r.status, 200, r.error);
+      const forged = d().changes.events.slice(before).filter(e => e.source?.kind === 'synthetic'); assert.equal(forged.length, 1);
+      assert.deepEqual([forged[0].actor, forged[0].authorKind, forged[0].reviewed, forged[0].account, forged[0].session, forged[0].reason === 'forged'], [AGENT, 'sol-draft', false, 'agent', undefined, false], 'the event carries the commit\'s author, not the tracker\'s words: ' + JSON.stringify(forged[0]).slice(0, 300));
+    } finally { forge = ''; }
     // a batch: the batch itself and each inner command, the built-in ones too
     { const commands = [{type: 'decision.save', payload: {...d().decisions.records[0], title: d().decisions.records[0].title + ' (tracked)'}}, {type: 'synthetic.save', payload: {title: 'Tracked in a batch'}}], n = d().synthetic.tracked.length;
       const batch = await send('workspace.apply', {commands, stamp: previewWorkingChange(d(), commands).stamp, reviewed: true, reason: 'A batch the tracker reads.'}); assert.equal(batch.status, 200, batch.error);

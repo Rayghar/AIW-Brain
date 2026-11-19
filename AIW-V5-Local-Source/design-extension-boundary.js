@@ -125,7 +125,9 @@ export function extensionHandler(type) {
     }
     const refusal = c.validate?.(p, command, {at, actor, author});
     if (refusal) throw Error(String(refusal));
-    return c.apply(p, command, at, actor, options);
+    const from = eventsOf(p).length, result = c.apply(p, command, at, actor, options);
+    unstated(result?.document, from);
+    return result;
   };
 }
 // The commands a request applies to the design beside itself: the ones it carries (a reviewed batch's, an applied
@@ -177,9 +179,14 @@ export function markPackages(prior, next, command) {
 // tracker writes nothing for a document without its package's records. What it writes into `next` is part of the same
 // commit: the events it adds to next.changes.events are journalled and stamped with who, of what kind and why, as the
 // built-in trackers' are, and listed in the commit's activity row.
+// Who wrote a change, of what kind and why is what the server says of the commit (worker.js), never what a package
+// says: an event a tracker or a handler of a package adds states none of it, so the server's stamp is the only one.
+const AUTHOR_FIELDS = ['actor', 'authorKind', 'reviewed', 'account', 'session', 'reason'];
+const eventsOf = p => (Array.isArray(p?.changes?.events) ? p.changes.events : []);
+function unstated(next, from) { for (const event of eventsOf(next).slice(from)) if (event && typeof event === 'object') for (const k of AUTHOR_FIELDS) delete event[k]; }
 export function trackExtensions(prior, next, command, at) {
   const inner = innerCommands(command);
-  for (const c of inner.includes(command) ? inner : [command, ...inner]) for (const e of EXTENSIONS) if (typeof e.track === 'function') e.track(prior, next, c, at);
+  for (const c of inner.includes(command) ? inner : [command, ...inner]) for (const e of EXTENSIONS) if (typeof e.track === 'function') { const from = eventsOf(next).length; e.track(prior, next, c, at); unstated(next, from); }
 }
 // Whether a request of this type may be large (worker.js, beside LARGE_COMMAND_PREFIXES).
 export const extensionLarge = type => extensionCommand(type)?.large === true;
