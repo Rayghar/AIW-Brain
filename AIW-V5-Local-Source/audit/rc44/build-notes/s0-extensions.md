@@ -202,30 +202,30 @@ line numbers of `rc44-s0-extensions-validate.mjs` at this head):
    review list byte for byte as the golden file.
 2. l.316, block "registration": ids equal the three synthetic ones -> the sorted union of the build's ids and the
    three.
-3. l.760 and l.764, block "D2": `p40-adoption` as the package a build lacks -> `p98-absent`, an id no build
+3. l.771 and l.775, block "D2": `p40-adoption` as the package a build lacks -> `p98-absent`, an id no build
    registers; added: a package this build registers is not missing; the unreadable forms are tried with both ids.
-4. l.843, block "D3": the prefix scan read every module -> it reads the workbench's own modules, **and** every prefix
+4. l.854, block "D3": the prefix scan read every module -> it reads the workbench's own modules, **and** every prefix
    literal in a package's own modules must be the workbench's or one the package states; a module of the workbench
    is never counted as a package's.
-5. l.863, block "D3": the allowed rows used the key `adoptions` -> a key no package states (`journals`), **and** each
+5. l.874, block "D3": the allowed rows used the key `adoptions` -> a key no package states (`journals`), **and** each
    collection a package of the build states is refused to another package.
-6. l.944, block "D5": the packages' collections equal the three synthetic ones -> those and the ones the build's
+6. l.955, block "D5": the packages' collections equal the three synthetic ones -> those and the ones the build's
    packages state, and none is the workbench's own.
-7. l.1039, block "SF start check": `XY, ADP, WL, FD, DN, SLO` are each free -> `XY, WL, FD, DN, SLO` are free, and
-   `ADP` is held as taken by the clash check (l.1334: stated by another package it is a clash that names both).
-8. l.1061, block "SF start check": a layer over `pattern` is allowed -> a layer over a built-in type that stands on no
+7. l.1050, block "SF start check": `XY, ADP, WL, FD, DN, SLO` are each free -> `XY, WL, FD, DN, SLO` are free, and
+   `ADP` is held as taken by the clash check (l.1345: stated by another package it is a clash that names both).
+8. l.1072, block "SF start check": a layer over `pattern` is allowed -> a layer over a built-in type that stands on no
    layer (`risk`) is allowed, the package that holds `pattern` conforms, and a second layer over `pattern` is refused
    in words.
-9. l.1289, block "needs and load": neither list holds an import or a `registerExtension` line -> every code line of
+9. l.1300, block "needs and load": neither list holds an import or a `registerExtension` line -> every code line of
    the browser's list is the registry's import or one stub `{id: <id>-route, needs, load}`, the server's list holds
    one import for each stub and names the same packages, each stub states only `id`, `needs` and `load` and asks for
    nothing for a document without records.
-10. l.1310, block 7: `out.extensions` equals the three synthetic ids -> the sorted union with the build's ids.
-11. l.1326, block 7: at least 7 clashes, each naming `zzz-duplicate` and `zz-synthetic` or `mm-other` -> at least 7
+10. l.1321, block 7: `out.extensions` equals the three synthetic ids -> the sorted union with the build's ids.
+11. l.1337, block 7: at least 7 clashes, each naming `zzz-duplicate` and `zz-synthetic` or `mm-other` -> at least 7
     plus one for each new row (a minted prefix of `zx-minter`, one of the build's package, a design statement of
     `zw-stated`), each naming `zzz-duplicate` and the package that keeps the row; the seven of the synthetic packages
     are still each counted.
-12. l.1371, block 8: the registry module in the client build is at most 420 B -> the registry as the route held it at
+12. l.1382, block 8: the registry module in the client build is at most 420 B -> the registry as the route held it at
     S0 (bundled apart with the build's options: its readers) is at most 420 B, `registerExtension` itself is under
     120 B, and the module in the client build less `registerExtension` is at most 420 B. The bound is the same on the
     same code; the first route stub keeps `registerExtension` on the route, which is wp2's route bytes (ruling F5: the

@@ -746,6 +746,31 @@ export default async function ({block, pass, load}) {
     pass('J9 and J12: the SDD counts the records an upgrade wrote on a line of their own, not as written by a person (' + r0.by.person + ' by a person before and after; 3 by an upgrade), under Chapter 3; a document without such records prints as before; a confirmation is counted as a confirmation, a person\'s change as that person\'s');
   });
 
+  // ------------------------------------------------------------ the browser's side (rulings D7.6, D10, J12)
+  // A process that holds what the browser holds: the registry, the list of route stubs and the readers; not worker.js, so not the server's package
+  // list and not the upgrade. The stub alone asks for the lazy entry for a document that holds adoptions; once the entry has arrived the package is
+  // registered without an upgrade step, and the document reads there as the server reads it.
+  await block('browser load', async () => {
+    pkg(); const doc = structuredClone(upgraded()); doc.workspace = {...doc.workspace, packages: [PACKAGE]};
+    mkdirSync('.aiw-local/rc44-wp2', {recursive: true}); writeFileSync('.aiw-local/rc44-wp2/upgraded.json', JSON.stringify(doc));
+    const script = 'import {readFileSync} from "node:fs"; import {EXTENSIONS, ensureExtensions} from "./public/design-extensions.js"; import "./public/design-package-routes.js"; import * as R from "./rc44-s0-readings.mjs"; import {withFinalReview} from "./public/review-domain.js"; import {recordGraph} from "./public/record-graph.js";'
+      + 'const doc = JSON.parse(readFileSync(".aiw-local/rc44-wp2/upgraded.json", "utf8")), read = () => withFinalReview(structuredClone(doc), {upgrade: false});'
+      + 'const before = EXTENSIONS.map(e => e.id), stub = EXTENSIONS.find(e => e.id === "p40-adoption-route"), needs = !!stub.needs(doc), plain = !!stub.needs(R.reference("bank-payment")), early = recordGraph(read()).objects.has("ADP-001");'
+      + 'await ensureExtensions({document: doc}); const e = EXTENSIONS.find(x => x.id === "p40-adoption");'
+      + 'console.log(JSON.stringify({before, needs, plain, early, after: EXTENSIONS.map(x => x.id), parts: e ? Object.keys(e).sort() : null, digests: R.digests(read()), old: R.digests(R.reference("bank-payment"))}));';
+    const r = spawnSync(process.execPath, ['--input-type=module', '-e', script], {encoding: 'utf8', maxBuffer: 1 << 26}); assert.equal(r.status, 0, 'the browser-like process: ' + r.stderr.slice(0, 500));
+    const out = JSON.parse(r.stdout.trim().split('\n').at(-1));
+    assert.deepEqual(out.before, [PACKAGE + '-route'], 'before any document is read the route holds the stub and no package');
+    assert.equal(out.needs, true, 'the stub asks for the lazy entry for a document that holds adoptions'); assert.equal(out.plain, false, 'and for none without');
+    assert.equal(out.early, false, 'until the entry has arrived no reader knows the adoption (the built-in emitter skips its task): the store loads it before the first draw');
+    assert.deepEqual(out.after, [PACKAGE, PACKAGE + '-route'], 'ensureExtensions loads the entry, and the package registers when it arrives');
+    assert.deepEqual(out.parts, ['checks', 'commands', 'design', 'hops', 'id', 'layers', 'prefixes', 'provenance', 'records', 'track'], 'the browser\'s package has no upgrade step (ruling J12): the browser reads no old document with it');
+    assert.deepEqual(Object.keys(pkg()).sort(), [...out.parts, 'upgrade', 'upgradeNote'].sort(), 'the server\'s is the same package with its upgrade');
+    assert.deepEqual(out.digests, digests(asWritten(structuredClone(doc))), 'and the document reads there as the server reads it: graph, model, trails, findings, stamps, readiness, provenance, registers, SDD, ARS');
+    assert.deepEqual(out.old, BASE.readings['bank-payment'], 'a document without adoptions reads as at the base with the entry loaded');
+    pass('browser load: in a process that holds what the browser holds (the registry, the route stubs, the readers; no server package list), the stub asks for the lazy entry for a document with adoptions, the package registers when the entry arrives, without an upgrade step, and the ten readings of the upgraded document equal the server\'s');
+  });
+
   // ------------------------------------------------------------ size (rulings A3, A4, D7.6, D10)
   await block('size', async () => {
     pkg();

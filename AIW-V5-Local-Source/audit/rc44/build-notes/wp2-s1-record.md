@@ -11,11 +11,13 @@ anything for a person.
 ## Fix-up (after the adversarial review; rulings of 2026-11-19, section J)
 
 Review: `/home/user/hb-review/rc44-build/wp2-s1-record.review.json` (five must-fix, thirteen should-fix, ten design
-concerns). Every case below was written first and seen to fail on the head it was written on.
+concerns). Every case for a change of behaviour was written first and seen to fail on the head it was written on.
+Two hold behaviour that was already there and passed when written: block "browser load", and in block "J3 design
+statement" the checks that stay current after a deviation.
 
 ### State
 
-- **Done:** items 0 to 5 of the fix-up, each line below. The slice's suite has 19 blocks, S0's suite 24.
+- **Done:** items 0 to 5 of the fix-up, each line below. The slice's suite has 20 blocks, S0's suite 24.
 - **In progress:** nothing.
 - **Next (for the lead):** the points under "Where I went further than a ruling, or read it narrowly" and "Open
   questions"; then the merge.
@@ -35,7 +37,7 @@ concerns). Every case below was written first and seen to fail on the head it wa
 | 3. J6, no second truth | done. `adoption.obligation` and `adoption.withdraw` are no commands of this build; `adoption.accept` is refused while `design-source:<task>` stands as an error and is taken after `architecture.refresh`. The reader holds it too (my addition, below). The retirement list is below. | blocks "registration", "accept", "deviation", "held back", "J6 basis after acceptance" |
 | 3. J7, no finding before the step can be taken | done. No `adoption-acceptance` finding; the reading states the standing and what must happen next in a reader's words. An upgraded old document gains no finding. | blocks "e3 rules", "accept", "template copy" |
 | 3. J8, an upgrade is stored by a read | done for commands, as ruled: 409 with a reload, nothing stored; the read stores the upgrade with its recovery point. | block "storage upgrade"; S0 block "2 command boundary" (a synthetic upgrade) |
-| 3. J9, the SDD's count | done: a line and a column of their own, only in a document that holds such a record; 62 by a person before and after, 3 by an upgrade. | block "J9 SDD provenance"; S0 "D5 SDD provenance" |
+| 3. J9, the SDD's count | done: a line and a column of their own, only in a document that holds such a record; in the suite's fixture 61 by a person before and after, 3 by an upgrade. | block "J9 SDD provenance"; S0 "D5 SDD provenance" |
 | 4. Should-fix 1, the owner | done: the projection carries `owner`; the one rule refuses the owner. | "J1 applier" |
 | 4. Should-fix 2, two re-read steps | done as J6 rules: the reading carries the earlier path's basis state, accept is refused while it stands. | "accept", "tracker", "J6 basis after acceptance" |
 | 4. Should-fix 3, `adoption.obligation` | done: held back to S2. | "registration", "deviation" |
@@ -47,7 +49,7 @@ concerns). Every case below was written first and seen to fail on the head it wa
 | 4. Should-fix 9, a mechanism that no longer stands | done: a reversed adoption stays one object of the graph with what it addressed and scoped, on no trail, as a task set aside before the upgrade is. | "held back", "J5 journal" |
 | 4. Should-fix 10, a lost pointer | done: a task whose `adoptionId` names no adoption of its own is linked again or upgraded again. | "upgrade" |
 | 4. Should-fix 11, a reader's words | done: no finding, reading or refusal of the package names a command type. | "tracker", "e3 rules", "accept" |
-| 4. Should-fix 12, the upgrade and the browser | done: see "Which code the browser holds" below. | "registration", "size" |
+| 4. Should-fix 12, the upgrade and the browser | done: see "Which code the browser holds" below. In a process that holds what the browser holds, the package registers without an upgrade step and the upgraded document reads as the server reads it. | "registration", "size", "browser load" |
 | 4. Should-fix 13, notes | done: "Corrections to the first build's notes" below. | — |
 | J12, the chapter | done: an adoption is counted under Chapter 3, the chapter of its object type (provenance, the SDD's table, the journal event's source). | "registration", "trace", "J9" |
 | 5. Notes | done: this section; S0's contract text. | — |
@@ -100,32 +102,32 @@ concerns). Every case below was written first and seen to fail on the head it wa
 Each is recorded in the code beside the assertion ("was: …"). No assertion of a suite that exists on `94dbd4f` was
 changed.
 
-1. l.70, "registration": five steps stated -> exactly three, and `adoption.obligation` and `adoption.withdraw` are
+1. l.74, "registration": five steps stated -> exactly three, and `adoption.obligation` and `adoption.withdraw` are
    unknown commands of this build (J6).
-2. l.74, "registration", and l.240, "trace": the provenance reader counts adoptions under Chapter 5 -> Chapter 3 (J12).
-3. l.79, "registration": no module of the package names a knowledge store in its source -> the package reads released
+2. l.78, "registration", and l.251, "trace": the provenance reader counts adoptions under Chapter 5 -> Chapter 3 (J12).
+3. l.83, "registration": no module of the package names a knowledge store in its source -> the package reads released
    knowledge through the one existing rule and no store of its own, and the behaviour is held in "J4 knowledge" (J4).
-4. l.194, "e3 rules": each upgraded adoption raises `adoption-acceptance` (warning) and nothing else -> an upgraded old
+4. l.205, "e3 rules": each upgraded adoption raises `adoption-acceptance` (warning) and nothing else -> an upgraded old
    document gains no finding of the package and no other finding, and the reading states the standing (J7).
-5. l.214, "e3 rules": the upgrade moves graph, model, trails, findings, readiness, provenance, registers, sdd -> graph,
+5. l.225, "e3 rules": the upgrade moves graph, model, trails, findings, readiness, provenance, registers, sdd -> graph,
    model, trails, provenance, sdd (stricter: fewer readings move).
-6. l.296, "accept": B's first accept is refused with "names no author" -> refused with "A second person's step needs
+6. l.307, "accept": B's first accept is refused with "names no author" -> refused with "A second person's step needs
    two persons" (the applier is named, so the one rule passes B and the two-persons rule asks for a person behind the
    record).
-7. l.299, "accept": the next step matched `adoption.reassess` -> it names no command type and says the earlier design
+7. l.310, "accept": the next step matched `adoption.reassess` -> it names no command type and says the earlier design
    is reviewed first (should-fix 11, J6).
-8. l.310 and l.401, "accept" and "template copy": the projection without `owner` -> with `owner` (should-fix 1).
-9. l.361 and l.420, "deviation" and "tracker": `adoption-acceptance` beside the other warning -> the other warning
+8. l.321 and l.412, "accept" and "template copy": the projection without `owner` -> with `owner` (should-fix 1).
+9. l.372 and l.431, "deviation" and "tracker": `adoption-acceptance` beside the other warning -> the other warning
    alone (J7).
-10. l.370, "deviation": the save left out is `adoption.obligation` -> the save left out is a confirmation of a record
+10. l.381, "deviation": the save left out is `adoption.obligation` -> the save left out is a confirmation of a record
     whose applier is named (J6 holds the obligation step back).
-11. l.399, "template copy": the finding `adoption-acceptance` is back in the copy -> the reading says who must act, and
+11. l.410, "template copy": the finding `adoption-acceptance` is back in the copy -> the reading says who must act, and
     no finding of the package is raised (J7).
-12. l.442, "tracker": the marker alone -> the marker and a journal event that names the adoption with who sent the
+12. l.453, "tracker": the marker alone -> the marker and a journal event that names the adoption with who sent the
     commit (J5; stricter).
-13. l.478, "held back" (was block "withdraw"): `adoption.withdraw` marks the adoption withdrawn and its task dismissed
+13. l.489, "held back" (was block "withdraw"): `adoption.withdraw` marks the adoption withdrawn and its task dismissed
     -> the step is no command of this build, and the obligations stand where the earlier path keeps them (J6).
-14. "J4 knowledge": the hand-written acceptance was dated before the fixture's apply -> dated after it, and the
+14. l.631, "J4 knowledge": the hand-written acceptance was dated before the fixture's apply -> dated after it, and the
     earlier date is held as not standing.
 15. "size": the evidence was counted against S0's own figure -> against the integrated base, with the bytes of J2, J3
     and J10 on the route included.
@@ -183,7 +185,12 @@ The lazy entry rooted at `public/architecture-task-ui.js` holds `adoption-domain
 the tracker) and `adoption-package.js` (the registration). It does not hold `adoption-upgrade.js`,
 `adoption-builtins.js` or `adoption-definitions.js`: **the browser reads no old document with the upgrade.** Every
 document it draws was read by the server, which stores the upgrade at that read. `adoption-server.js` adds the
-`upgrade` to the registered package on the server.
+`upgrade` to the registered package on the server. Block "browser load" holds the browser's side in a process without
+`worker.js`: the route stub alone asks for the lazy entry for a document with adoptions; until the entry has arrived
+no reader knows the adoption (which is why the project store loads it before the first draw); once it has, the
+package is registered with every row but `upgrade` and `upgradeNote`, and the ten readings of the upgraded document
+equal the server's. No browser suite was run for the slice: the browser suites of the comparison tools are red on
+this machine at the baseline.
 
 ### Measurements (`audit/rc44/evidence/wp2-s1-size.json`; `node build.mjs`, `dist/client-size-report.json`)
 
@@ -204,10 +211,16 @@ measured 304 B against S0 before its second round. No gate was changed.
 
 ### Suites run on the fix-up's head
 
-See the result file of the fix-up for the list with each outcome. In short: `rc44-wp2-adoption` 19 blocks,
-`rc44-s0-extensions` 24, `rc44-wp1-knowledge` 34 cases; the related suites of the first build and of the review;
-`node check-syntax.mjs`; `node scripts/lint.mjs --summary` (0 new); `node build.mjs` (every gate). Not run: the full
-regression (the lead's) and the browser suites that are red on this machine at the baseline.
+- `test:rc44-wp2-adoption`: 20 blocks, green. `test:rc44-s0-extensions`: 24 blocks, green. `test:rc44-wp1-knowledge`:
+  34 cases passed, 4 pending for slices not built yet.
+- 69 related suites (those of the first build, of the review, and every suite that combines object storage with
+  applied design tasks): 63 passed. Six are red, each with the same assertion at the same line when run on an archive
+  of the baseline commit `94dbd4f` on this machine, and each on the baseline-red list
+  (`audit/rc42/regression-2026-11-16.json`): `design-concern` (l.119), `command-equivalence` (l.60), `intelligence`
+  (l.242), `architecture-ui` (l.36), `composition-ui` (l.37), `security-task-ui` (l.52).
+- `node check-syntax.mjs`: passes. `node scripts/lint.mjs --summary`: 162 problems, the baseline's 162, 0 new.
+  `node build.mjs`: every gate passes.
+- Not run: the full regression (the lead's) and the browser suites.
 
 ### Corrections to the first build's notes (should-fix 13)
 
