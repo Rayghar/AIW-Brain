@@ -11,7 +11,7 @@ here is approved, accepted, released or promoted.
 ## State
 
 - **Done:** the package (one part of five filled), its registration lines, the route stub, hook H1, the suite
-  (12 blocks, green), the fixture, the size evidence, these notes.
+  (12 blocks, green), the fixture, a browser case for the route stub, the size evidence, these notes.
 - **In progress:** nothing.
 - **Next:** see "Next, by slice" and "Open questions (for the lead)".
 
@@ -27,6 +27,7 @@ here is approved, accepted, released or promoted.
 | `public/deploy-view.js` | lazy entry | One line: the import of `topology.js`. |
 | `public/runtime-model.js` | route | H1: `failureDomainKey` answers a zone's first typed domain, else its name as before (21 B). |
 | `rc44-wp9a-deployment-validate.mjs`, `rc44-wp9a-deployment-fixtures.mjs` | suite | Registered as `test:rc44-wp9a-deployment`. One section per slice; slices 2 to 6 have a placeholder comment. |
+| `rc44-wp9a-deployment-browser-validate.mjs` | browser suite | Registered as `test:rc44-wp9a-deployment-browser`. One case for slice 1 (the route stub); slice 6 adds the surface's. Needs the built client. |
 | `audit/rc44/evidence/wp9a-s1-size.json` | evidence | The route measurement, itemised, with "opens with records". |
 
 How each design hook is carried:
@@ -68,6 +69,7 @@ the step there. The slice has no second-person step, so it names no confirming s
 3. **The marker is bookkeeping; choosing it is a change of Chapter 10.** `evidenceKeys: ['runtime.topology']` (an
    object, which neither fingerprint reads); the first choice moves `runtime.version`, so the design stamp moves; a
    step taken again in a copy moves no stamp and no version (ruling J3, on this base, without a row of S0). Case S1.0.
+   No command takes the marker back, as a document's list of packages only grows (ruling F5).
 4. **AIW's proposals move no version of Chapter 6**, so the check of Chapter 10 stays current (design case 4). The
    records are design all the same: the design fingerprint reads `technology.domains`. Case S1.4.
 5. **The journal.** The built-in trackers journal four record kinds; a zone's save is not journalled at the baseline.
@@ -114,7 +116,9 @@ the step there. The slice has no second-person step, so it names no confirming s
 9. **The mending of a restored zone or placement** (decision 6) is an addition.
 10. **A name longer than 160 characters is not proposed** as a failure domain: a capability's failure-domain text may
     hold 4,000 characters, and a domain's name 160.
-11. **The route:** 249 B measured against the base alone, where the task asks for well under half of 500 B. 139 B are
+11. **The browser suite exists from slice 1** (design g creates it with slice 6): the route stub is in front of
+    every project from this slice on, so its one case is held now. Slice 6 adds its cases to the same file.
+12. **The route:** 249 B measured against the base alone, where the task asks for well under half of 500 B. 139 B are
     the package's own; 110 B are the registry's `registerExtension` joining the route with the first package that
     registers a stub (see "Measurements").
 
@@ -139,9 +143,14 @@ Until slice 6 no surface offers the topology commands, so a document is typed on
 Between this slice and slices 2 and 6 such a document reads a typed zone as its typed domain in the checks and at
 the desk, and by its name in the three readers above. See open question 2.
 
-Nothing is printed of the typed topology yet: the records are in the document, the record graph, the journal, the
-provenance counts and the review plan's lists by author, and in no register, SDD or ARS section until slice 6 (H12, a
-`sections` row).
+Nothing is printed of the typed topology yet: the records are in the document, the record graph, the journal and the
+SDD's counts of who wrote the records, and in no register, SDD or ARS section until slice 6 (H12, a `sections` row).
+
+What asks a person to act on a proposal today: the review plan plans "Keep or dismiss N proposals Sol's draft made in
+Chapter 6 / 10" for the nodes and failure domains a draft sent (it reads every record collection; case S1.8). It does
+not plan AIW's own proposals of the package: its step for those reads the built-in seeds only
+(`runtime-domain.js` `seededRecords`). They are counted by the SDD ("proposed by AIW") and raise no finding until
+slice 6 brings the surface that offers Keep and Retire (ruling J7). See open question 8.
 
 ## Next, by slice
 
@@ -194,6 +203,10 @@ import of `topology.js` in `deploy-view.js` the route is the same 3,230,089 B (t
   with that file and is identical, so the slice uses S0's goldens and keeps no file of its own.
 - `rc44-s0-extensions-validate.mjs`: 15 blocks pass, 7 fail with a real package registered. Not edited (ruling J11);
   the seven assertions are listed under open question 1.
+- `rc44-wp9a-deployment-browser-validate.mjs`: 1 case, green against the built client (88 scripts without the
+  marker and no lazy entry; with the marker the entry of the Chapter 10 Model view is asked for once and Chapters 1 and
+  10 draw without an error). With the stub's line taken out of `design-package-routes.js` and the client rebuilt, the
+  case fails on "a project that holds the marker loads the lazy entry that holds the package" (checked once, restored).
 - `node check-syntax.mjs`: 929 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, 0 new.
   `node build.mjs`: builds with no size violation.
 - Other suites run are listed in the result of the slice.
@@ -221,11 +234,19 @@ import of `topology.js` in `deploy-view.js` the route is the same 3,230,089 B (t
 4. **A lifecycle rule for a package on a built-in collection** (`canRestore` for `runtime.zones`): the registry
    carries none, so decision 6 mends a restored zone instead of refusing the restore. Is the row wanted?
 5. **A defect of the baseline, not fixed here:** `patchLinks` in `public/technology-domain.js` calls `fmt`, which
-   that module does not define (as at `94dbd4f`). A link list past its limit (a zone's 21st trust boundary, a plan's
-   501st control) is refused with "fmt is not defined" in place of its sentence. The fix is one definition on the
-   route (about 50 B) and belongs to no package.
+   that module does not define (as at `94dbd4f`; a direct call past the limit throws "ReferenceError: fmt is not
+   defined"). A link list past its limit (a zone's 21st trust boundary, a plan's 501st control) is still refused, but
+   as a fault ("This action could not be completed…") in place of its sentence. The fix is one definition on the
+   route (a few tens of bytes) and belongs to no package.
 6. **`workspace.merge` stamps no author** (ruling D12, the lead's): a node or a failure domain a merge wrote has no
-   stamp, as a built-in record has none. The slice has no second-person step, so nothing is refused for it yet.
+   stamp, as a built-in record has none (case S1.8 holds it for a merged proposal). The slice has no second-person
+   step, so nothing is refused for it yet.
 7. **A typed key that equals a name.** `failureDomainKey` answers the domain's id (`fd-002`). A zone whose failure
    domain is named "FD-002" in words reads as the same domain as a zone typed into `fd-002`. It errs towards no
    independence. Left as it is.
+8. **AIW's proposals of a package are in no plan.** The review plan's step "Keep or dismiss N proposals AIW made"
+   reads the built-in seeds. Should the registry carry a package's proposals to it (a row), or does each package
+   raise its own finding with its surface (this package: slice 6)?
+9. **Ruling J3 on this base.** S0 has no row yet for what a package's record says to the fingerprint. The marker's
+   step is kept out of both fingerprints as an evidence key (decision 3). A node's and a failure domain's `history`
+   is read by the design fingerprint as a built-in record's is; neither carries a person's step.

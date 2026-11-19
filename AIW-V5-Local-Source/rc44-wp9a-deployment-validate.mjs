@@ -17,14 +17,16 @@
 //         of Chapter 10 and raises no finding;
 //   S1.5  the lifecycle: a domain a zone names is not retired, record.keep makes a proposal authored, retire and restore;
 //   S1.6  through the server: a save is journalled with who sent it and stamped as the commit's; a save that changes
-//         nothing writes neither;
+//         nothing writes neither; a restored zone or placement names nothing that left the design meanwhile;
 //   S1.7  the trace: from a component to its zone's node and failure domain, and back from a failure domain to the
 //         requirement; the built-in layers of every trail and spine are unchanged; no finding id is shared;
 //   S1.8  a draft by Sol arrives as its proposal, unreviewed, alone and in a governed batch; an agent account claims
 //         no review; a draft names no jurisdiction; a proposal binds nothing until a person keeps it;
 //   S1.9  staging, and candidate knowledge reaches no topology reading;
-//   S1.10 the client build: every gate with its cap unchanged, the route delta, 148 script files, "opens with
-//         records" (the lead's rulings A4 and D10).
+//   S1.11 the package is one registration assembled from its parts, of which slice 1 fills one;
+//   S1.10 the client build: every gate with its cap unchanged, the route delta itemised, 148 script files, "opens
+//         with records" (the lead's rulings A4 and D10).
+// What the route stub does in a browser is held in rc44-wp9a-deployment-browser-validate.mjs.
 import assert from 'node:assert/strict';
 import {readFileSync, existsSync, writeFileSync, mkdirSync} from 'node:fs';
 import * as R from './rc44-s0-readings.mjs';
@@ -46,7 +48,8 @@ import * as canonical from './public/canonical-command.js';
 import {COLLECTIONS} from './public/record-lifecycle.js';
 import {authorship, RECORD_NOUNS, findRecord} from './public/provenance.js';
 import {provenanceReading} from './public/sdd-architecture.js';
-import {previewWorkingChange} from './public/workbench-domain.js';
+import {previewWorkingChange, previewScenarioAlternative, rebaseWorkingAlternative} from './public/workbench-domain.js';
+import {reviewPlan} from './public/review-plan.js';
 import {instantiateTemplate} from './project-lifecycle.js';
 
 const {A, B, AGENT} = F, PACKAGE = 'p30-deployment', AT = '2026-11-19T10:00:00.000Z';
@@ -338,6 +341,7 @@ await block('S1.5 the lifecycle', () => {
   refuses(p, 'record.retire', {id: az1.id, chapter: 6, reason: 'No longer a failure domain.'}, new RegExp(az1.ref + ' is still named by Chapter 6 · ' + rack.ref));
   p = doc(doc(p, 'runtime.node', {title: 'Norway East', kind: 'region', domainId: az1.id}), 'runtime.node', {title: 'Bergen AZ 1', kind: 'availability-zone', parentId: 'dn-001'});
   refuses(p, 'record.retire', {id: 'dn-001', chapter: 10, reason: 'No longer a node.'}, /DN-001 is still named by Chapter 10 · DN-002/);
+  refuses(p, 'record.retire', {id: az1.id, chapter: 6, reason: 'No longer a failure domain.'}, new RegExp(az1.ref + ' is still named by Chapter 6 · ' + rack.ref + ', Chapter 10 · DN-001'), 'nor a domain a node is');
   refuses(p, 'record.retire', {id: rack.id, chapter: 6, reason: 'x'}, /Say why/, 'a retirement states its reason, as for any record');
   p = doc(p, 'runtime.locate', {zoneId: I.zone2, nodeId: 'dn-002'});
   refuses(p, 'record.retire', {id: 'dn-002', chapter: 10, reason: 'No longer a node.'}, /DN-002 is still named by Chapter 10 · ZON-002/);
@@ -476,6 +480,8 @@ await block('S1.8 a draft by Sol and an agent account', async () => {
     assert.deepEqual([node.state, node.origin, authorship(node).kind, node.provenance?.author], ['proposed', 'sol-draft', 'sol-draft', undefined], 'it arrives as Sol\'s proposal');
     assert.deepEqual([event.source.id, event.authorKind, event.reviewed, event.reason], ['dn-001', 'sol-draft', false, 'Drafted from the brief.'], 'and unreviewed, with the reason the request gave');
     assert.equal(d().runtime.review, null);
+    // the review plan asks a person to keep or dismiss it, as it asks for every proposal Sol's draft made
+    assert.deepEqual(reviewPlan(withFinalReview(d())).steps.filter(x => x.id === 'proposals:sol:10:1').map(x => [x.commandType, x.target]), [['record.keep', {ids: ['dn-001'], chapter: 10}]]);
     // it says so, or it is refused: a draft never arrives as a person's record
     r = await h.send('runtime.node', {title: 'Finland Central', kind: 'region'}, A, SOL); assert.equal(r.status, 400); assert.match(r.error, /A draft by Sol or an agent account sends a deployment node or a failure domain as its proposal \(origin: sol-draft\); a person keeps it/);
     r = await h.send('technology.domain', {title: 'Carrier'}, AGENT); assert.equal(r.status, 400); assert.match(r.error, /as its proposal \(origin: sol-draft\)/);
@@ -495,6 +501,16 @@ await block('S1.8 a draft by Sol and an agent account', async () => {
     assert.deepEqual(events().slice(-2).map(e => [e.source.id, e.authorKind, e.reviewed]), [['dn-002', 'sol-draft', false], ['fd-002', 'sol-draft', false]], 'journalled once a record, as the draft it is');
     { const n = d().runtime.nodes.length; r = await batch([{type: 'runtime.node', payload: {title: 'Iceland', kind: 'region'}}], AGENT, {reviewed: false}); assert.equal(r.status, 400); assert.match(r.error, /as its proposal \(origin: sol-draft\)/); assert.equal((await h.read()).document.runtime.nodes.length, n, 'nothing of the refused batch is kept'); }
     r = await batch([{type: 'runtime.node', payload: {title: 'Norway West', kind: 'region', origin: 'sol-draft', jurisdiction: 'NO'}}], A, {reviewed: false, authorKind: 'sol-draft'}); assert.equal(r.status, 400); assert.match(r.error, /A jurisdiction is stated by a signed-in person/);
+    // kept as an alternative by an agent account: saved only with its records as proposals; a person merges it, and the
+    // record arrives as Sol's proposal, journalled once with who merged (a merge stamps no author: the lead's ruling D12)
+    { const alternative = commands => h.send('workspace.alternative', {commands, stamp: previewScenarioAlternative(d(), commands, undefined).stamp, title: 'A drafted region', reason: 'Drafted by the agent account.'}, AGENT);
+      r = await alternative([{type: 'runtime.node', payload: {title: 'Iceland', kind: 'region'}}]); assert.equal(r.status, 400); assert.match(r.error, /as its proposal \(origin: sol-draft\)/);
+      r = await alternative([{type: 'runtime.node', payload: {title: 'Iceland', kind: 'region', origin: 'sol-draft'}}]); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300));
+      const a = d().workbench.alternatives.at(-1), last = events().at(-1).id;
+      r = await h.send('workspace.merge', {id: a.id, stamp: rebaseWorkingAlternative(d(), a).stamp, reviewed: true, reason: 'Merged to look at it.'}, B); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300));
+      const merged = d().runtime.nodes.at(-1), added = events().slice(events().findIndex(e => e.id === last) + 1);
+      assert.deepEqual([merged.title, merged.state, merged.origin, authorship(merged).kind, merged.provenance?.author], ['Iceland', 'proposed', 'sol-draft', 'sol-draft', undefined]);
+      assert.deepEqual(added.map(e => [e.source.id, e.source.kind, e.actor, e.before]), [[merged.id, 'node', B, null]], 'one change for the merged record'); }
     // a proposal binds nothing
     r = await h.send('runtime.locate', {zoneId: I.zone3, nodeId: 'dn-001'}); assert.equal(r.status, 400); assert.match(r.error, /DN-001 is still a proposal: keep it first/);
     // a person keeps it: authored, the person's from Sol's draft, stamped as kept by them; then it binds
