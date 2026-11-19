@@ -580,7 +580,14 @@ export default async function ({block, pass, load}) {
       u = step(u, 'adoption.accept', {id: 'ADP-003', revision: 1, deviationIds: [], note: ''}, B); assert.equal(D.adoptionAccepted(u, byId(u, 'ADP-003')), true);
       assert.deepEqual(baselineChanges(u, frozen), [], 'a confirmation and an acceptance read as no change since the baseline'); assert.equal(baselineCurrent(u, frozen), true); assert.equal(finalChecksCurrent(u), true);
       u = step(u, 'adoption.deviation', {id: 'ADP-003', revision: 1, target: {kind: 'role', id: 'store'}, statement: 'The store is a managed service.', reason: 'One operating team.'}, C);
-      assert.equal(baselineCurrent(u, frozen), false, 'a deviation is a change since the baseline'); assert.equal(finalChecksCurrent(u), false); }
+      assert.equal(baselineCurrent(u, frozen), false, 'a deviation is a change since the baseline'); assert.equal(finalChecksCurrent(u), false);
+      // must-fix 3, as the review states its case: after a deviation and fresh checks, a confirmation and a second person's acceptance leave the
+      // design stamp and the checks where they were (at revision 2 they moved both, before the fix-up)
+      u = withFinalReview(reviewCommand(u, 'checks', {})); assert.equal(finalChecksCurrent(u), true, 'fresh checks after the deviation'); const fresh = stamps(u);
+      u = step(u, 'adoption.reassess', {id: 'ADP-003', revision: 2, reviewed: true, reason: 'Read.'}, A); byId(u, 'ADP-003').provenance = {reviewed: {by: A, at: AT, how: 'confirmed'}, author: {kind: 'person', by: C, at: AT}};
+      assert.deepEqual(stamps(u), fresh); assert.equal(finalChecksCurrent(u), true, 'a confirmation after a deviation leaves the checks current');
+      u = step(u, 'adoption.accept', {id: 'ADP-003', revision: 2, deviationIds: ['ADP-003:DEV-01'], note: ''}, B); assert.equal(D.adoptionAccepted(u, byId(u, 'ADP-003')), true);
+      assert.deepEqual(stamps(u), fresh); assert.equal(finalChecksCurrent(u), true, 'and so does the second person\'s acceptance'); }
     // an adoption with no task beside it (a project copied from a template; slice S2's own) says all but its bookkeeping
     { const copy = instantiateTemplate(withFinalReview({...up, workspace: {...up.workspace, reusableTemplate: true}}), 'template-copy', 'A copy', LATER), said = D.adoptionDesign(copy);
       assert.equal(said.length, 3); for (const x of said) { for (const k of ['history', 'review', 'confirmed', 'provenance']) assert.ok(!(k in x), k + ' is bookkeeping to the fingerprint'); assert.ok(x.definition && x.bindings && x.scope, 'what the adoption says is read'); }

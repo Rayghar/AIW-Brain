@@ -604,9 +604,10 @@ records a step writes carry no author stamp.
   the activity. It is asked only where a read can store an upgrade (object storage is bound); without it a command
   goes on as before. **Known limits, as on rc.10.73.42:** the built-in read upgrades are still written by whichever
   request first stores the row; and a writing route that is not a command (intake, a draft by Sol, a baseline, an
-  attachment, an operation, an organisation pin, a rename) still stores a due package upgrade with its own write. One
-  place for those would be the one writer (`project-storage.js`), told by the reader that an upgrade was due; that is
-  a change of the storage layer and is left to the lead.
+  attachment, an operation, an organisation pin, a rename) still stores a due package upgrade with its own write
+  (probed for a rename: 200, the upgrade stored, no recovery point). One place for those would be the one writer
+  (`project-storage.js`), told by the reader that an upgrade was due; a blanket rule there also refuses writes that
+  store no upgrade, so it needs a decision per route and is left to the lead (wp2 S1's notes, point 2).
 - **A command that makes an upgrade due is not refused.** A design applied through the earlier path
   (`alternative.apply`) is written as an adoption by the step in that same commit: the row was up to date when the
   command arrived, and the commit is a design change with its journal.

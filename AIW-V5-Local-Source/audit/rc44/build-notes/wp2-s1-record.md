@@ -62,13 +62,16 @@ concerns). Every case below was written first and seen to fail on the head it wa
    accepts the design as re-read. This is stricter than ruled. Case: "J6 basis after acceptance", seen to fail
    (`true !== false`).
 2. **J8, as ruled and no further: commands.** A writing route that is not a command still stores a due package
-   upgrade with its own write and without a recovery point, exactly as it stores the built-in read upgrades:
-   `intake-service.js`, `drafting-service.js`, `baseline-service.js`, `collaboration-service.js`,
-   `operation-service.js`, `organization-service.js` and `project-lifecycle.js` each read with `withFinalReview` and
-   save. Read from the code, not probed. One place for all of them would be the one writer
-   (`project-storage.js` `saveStoredProject`), told by `readStoredProject` that an upgrade was due. That changes the
-   storage layer for every route, and I could not run the full regression against it, so it is not done. **I think the
-   ruling's headline ("stored by a read") asks for it; the lead should decide.**
+   upgrade with its own write, as it stores the built-in read upgrades. Probed on `/api/lifecycle`: a rename sent at
+   the stored revision of a row whose upgrade is due answers 200 and stores the three adoptions, with no recovery
+   point and no storage-upgrade row in the activity. By the code the same holds wherever a route reads with
+   `withFinalReview` and saves: `intake-service.js`, `drafting-service.js`, `baseline-service.js`,
+   `collaboration-service.js`, `operation-service.js` and `organization-service.js`. I did not close it: the one place
+   for all routes is the one writer (`project-storage.js` `saveStoredProject`, told by `readStoredProject` that an
+   upgrade was due), and a blanket rule there also refuses writes that store no upgrade and come before the read
+   (the browser applies repository notices with a POST just before it reads a project; a project that names a missing
+   package is renamed as stored). It needs a decision per route and the browser suites, which I cannot run here.
+   **I think the ruling's headline ("stored by a read") asks for it; the lead should decide.**
 3. **J8, read narrowly: a command that makes an upgrade due is not refused.** `alternative.apply` on this build
    writes the adoption in its own commit (the step runs where the commit's document is read). The row was up to date
    when the command arrived, and the commit is a design change with its journal. Refusing it would put a storage
@@ -185,7 +188,7 @@ document it draws was read by the server, which stores the upgrade at that read.
 | Script files | 148 | 148 |
 | Files under 10 KB | 53 | 53 |
 | Stylesheet | 901,873 B | 901,873 B |
-| **Opens with records** (ruling D10) | 3,308,964 B at S0 (79,189 B beside the route, 2 scripts) | see the evidence file: the route and the lazy entry, 2 scripts |
+| **Opens with records** (ruling D10) | 3,308,964 B as S0 measured it (79,189 B beside the route, 2 scripts) | **3,324,977 B** (94,821 B beside the route, 2 scripts); the first build measured 3,327,437 B (97,372 B), with the upgrade in the browser's entry |
 
 The base figure is the lead's (`audit/rc44/evidence/merge-s0-wp1-2026-11-19.json`: 3,229,840 B). The 316 B hold the
 route stub and the first use of `registerExtension` on the route, the emitter's skip of a task that has an adoption,
