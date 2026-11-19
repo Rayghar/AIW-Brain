@@ -205,8 +205,9 @@ export function recordRelations(p,{add,rel,objects,root,issues=[],upto=null}){
  for(const e of list(p.modelContext?.relationships))rel(e.type,e.from,e.to,e);
  // The records and typed relations each design package states from the document, in the packages' id order (rc44, slice
  // S0). A package's record is registered only under an id nothing holds yet, and `rel` never replaces a relation, so a
- // package only adds.
- for(const e of EXTENSIONS)e.records?.(p,(r,type,source)=>objects.has(r.id)||add(r,type,source),rel);
+ // package only adds. It is handed has(id), whether the graph holds an object under an id (the lead's ruling J2 of
+ // 2026-11-19): a relation is stated only between objects, and many records the lifecycle keeps are relations here.
+ for(const e of EXTENSIONS)e.records?.(p,(r,type,source)=>objects.has(r.id)||add(r,type,source),rel,id=>objects.has(id));
 }
 
 // The records in registration order, as the connected model (architecture-model.js) and the record graph register them

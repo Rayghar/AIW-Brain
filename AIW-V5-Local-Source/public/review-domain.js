@@ -48,11 +48,14 @@ import {EXTENSIONS} from './design-extensions.js';
 const text=(v,max=4000)=>typeof v==='string'?v.trim().slice(0,max):'',unique=xs=>[...new Set(xs)],pad=n=>String(n).padStart(3,'0');
 // A compact change detector, not a security signature or a verification claim.
 export function reviewFingerprint(value){let a=2166136261,b=5381;const s=JSON.stringify(value);for(let i=0;i<s.length;i++){a=Math.imul(a^s.charCodeAt(i),16777619);b=Math.imul(b,33)^s.charCodeAt(i);}return (a>>>0).toString(16).padStart(8,'0')+(b>>>0).toString(16).padStart(8,'0');}
-export const reviewSource=p=>({...(acceptedNarratives(p).length?{coauthoredNarratives:acceptedNarratives(p)}:{}),...(designTasks(p).some(t=>t.status==='applied'||t.measurements?.length)?{guidedDesign:designTasks(p).filter(t=>t.status==='applied'||t.measurements?.length).map(({adoptionId,...t})=>t)} : {}),...((p.coauthoring?.sources?.length)?{evidence:evidenceDesignSource(p)}:{}),...Object.fromEntries(Object.entries(p).filter(([k])=>!['finalReview','workspace','changes','coauthoring','roadmap','readingsDefinition','dataOwnership','adoptions'].includes(k))),...(p.workspace?.template?{workspace:{template:p.workspace.template}}:{}),...(x=>x[0]&&{adoptions:x})((p.adoptions?.records||[]).filter(a=>a.revision>1))});
-// (rc44, wp2 slice S1) An adoption upgraded from an applied guided task says what that task says, which guidedDesign
-// above reads already (without the task's pointer to it, adoptionId): it joins the design source when a step first
-// changes what it says (its revision), so the upgrade of an old document moves no stamp. With no such record the source
-// holds no key.
+export const reviewSource=p=>{const s={...(acceptedNarratives(p).length?{coauthoredNarratives:acceptedNarratives(p)}:{}),...(designTasks(p).some(t=>t.status==='applied'||t.measurements?.length)?{guidedDesign:designTasks(p).filter(t=>t.status==='applied'||t.measurements?.length).map(({adoptionId,...t})=>t)} : {}),...((p.coauthoring?.sources?.length)?{evidence:evidenceDesignSource(p)}:{}),...Object.fromEntries(Object.entries(p).filter(([k])=>!['finalReview','workspace','changes','coauthoring','roadmap','readingsDefinition','dataOwnership'].includes(k))),...(p.workspace?.template?{workspace:{template:p.workspace.template}}:{})};for(const e of EXTENSIONS)for(const k in e.design||{})(s[k]=e.design[k](p))??delete s[k];return s;};
+// (rc44, slice S0; the lead's ruling J3 of 2026-11-19) A design package may state what its records say, as the design
+// fingerprint reads it, in place of the raw key: design {key: p => what the key says}. What it answers stands under
+// the key; when it answers nothing the source holds no key. So the history, review, confirmed and provenance of a
+// package's record are bookkeeping to the fingerprint (no person's step moves a design stamp), and a package whose
+// records restate what an earlier record still holds leaves that out until the earlier one is retired.
+// (rc44, wp2) A guided task is read without its pointer to the adoption written for it (adoptionId), which the read
+// upgrade adds: the upgrade of an old document moves no stamp. It goes with the task readers (wp2 slice S6).
 // The design fingerprint (rc42, D14) reads the design, not the evidence overlay recorded about it (designOf below), as
 // the domains classify that overlay: the assurance records journey-context.js holds as Chapter 11 nodes (test results,
 // observations, defects, promises, change requests, assessments, typed or imported; a capability, a Chapter 4 node, and a

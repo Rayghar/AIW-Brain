@@ -111,3 +111,18 @@ export function assertTemplateCopyClearsSteps(p, records) {
   for (const r of records(instantiateTemplate(source, 'template-copy', 'A copy', AT))) for (const [key, value] of Object.entries(r || {}))
     if (step(value)) throw Error('A step taken in a template is carried into a project copied from it: ' + (r.id || '(record)') + '.' + key + ' (keep a person\'s step under the record\'s key review, which the copy clears)');
 }
+
+// No person's and no second person's step moves a design stamp (the lead's ruling J3 of 2026-11-19): the design
+// fingerprint never reads the history, review, confirmed or provenance of a package's record. A package whose records
+// keep any of them states what its records say to the fingerprint (design {key: p => …}), and its suite calls this with
+// a document that holds its records and `records`, which reads them from a document: each of the four keys is written
+// on every record, as a step, a confirmation and the boundary's stamps write them, and the design fingerprint and the
+// design version stamp must stay where they were. It throws with the key and the record named; it answers how many
+// records it read.
+export function assertStepsMoveNoStamp(p, records) {
+  const stamp = d => { const q = withFinalReview(d, {upgrade: false}); return reviewSourceStamp(q) + ' ' + reviewDesignStamp(q); }, was = stamp(structuredClone(p)), rows = records(p);
+  if (!rows.length) throw Error('assertStepsMoveNoStamp: the document holds no record of the package');
+  const STEPS = {history: r => [...(Array.isArray(r.history) ? r.history : []), {revision: r.revision ?? 1, actor: 'a-second-person', at: AT, event: 'step'}], review: () => ({actor: 'a-second-person', at: AT, account: 'person', note: 'A step taken.'}), confirmed: r => !r.confirmed, provenance: () => ({author: {kind: 'person', by: 'a-person', at: AT}, reviewed: {by: 'a-second-person', at: AT, how: 'confirmed'}})};
+  for (const [key, value] of Object.entries(STEPS)) { const q = structuredClone(p); for (const r of records(q)) r[key] = value(r); if (stamp(q) !== was) throw Error('A person\'s step moves the design stamp: the design fingerprint reads “' + key + '” of ' + (rows[0].id || 'a record') + '. State what the package\'s records say to the fingerprint (design {key: p => …}): all but their history, review, confirmed and provenance.'); }
+  return rows.length;
+}

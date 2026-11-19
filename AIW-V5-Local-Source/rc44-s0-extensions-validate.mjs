@@ -30,7 +30,7 @@ import worker, {commandHandler, commandShape} from './worker.js';
 import {localDatabase} from './local-db.js';
 import {readStoredProject} from './project-storage.js';
 import {storageUpgradeNeeded, storeStorageUpgrade} from './storage-upgrade.js';
-import {withFinalReview, CHAPTERS, inheritedFindings, chapterInheritedFindings, reviewBlockers, reviewBlockerCount, treatmentsFor, DISPOSITIONS, applyFinalReviewCommand, reviewSourceStamp, evidenceStamp, assembleSDD, reviewRequirements, nonWaivable, NON_WAIVABLE, WAIVERS, findingTreatment, findingCause, causeFindings, causeFindingStamp} from './public/review-domain.js';
+import {withFinalReview, CHAPTERS, inheritedFindings, chapterInheritedFindings, reviewBlockers, reviewBlockerCount, treatmentsFor, DISPOSITIONS, applyFinalReviewCommand, reviewSourceStamp, reviewDesignStamp, reviewSource, evidenceStamp, assembleSDD, reviewRequirements, nonWaivable, NON_WAIVABLE, WAIVERS, findingTreatment, findingCause, causeFindings, causeFindingStamp} from './public/review-domain.js';
 import {applyQualityCommand} from './public/quality-domain.js';
 import {applyDecisionCommand} from './public/decisions-domain.js';
 import {recordGraph, OBJECT_TYPES} from './public/record-graph.js';
@@ -72,9 +72,20 @@ const need = () => assert.ok(X && boundary, 'the registration point exists (publ
 // what the registry must hold of the build, and "nothing registered" is proven in a process that loads the registry
 // and the readers without the server's package list (case 6a).
 const codeLines = file => readFileSync(file, 'utf8').split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('//'));
-const STUB_LINE = /^registerExtension\(\{id:'([a-z][a-z0-9-]{1,60})-route',needs:[^;]+,load:\(\)=>import\('\.\/[a-z0-9-]+\.js'\)\}\);$/, SERVER_LINE = /^import '\.\/public\/[a-z0-9-]+\.js';(?: \/\/ ([a-z][a-z0-9-]{1,60}):.*)?$/;
+const STUB_LINE = /^registerExtension\(\{id:'([a-z][a-z0-9-]{1,60})-route',needs:[^;]+,load:\(\)=>import\('\.\/[a-z0-9-]+\.js'\)\}\);$/, SERVER_LINE = /^import '\.\/(?:public\/)?[a-z0-9-]+\.js';(?: \/\/ ([a-z][a-z0-9-]{1,60}):.*)?$/;
 const BUILD_PACKAGES = codeLines('public/design-package-routes.js').map(l => STUB_LINE.exec(l)?.[1]).filter(Boolean), BUILD_IDS = [...BUILD_PACKAGES, ...BUILD_PACKAGES.map(id => id + '-route')].sort();
 const withBuild = ids => [...BUILD_IDS, ...ids].sort();
+// The modules that are a package's own (ruling J10): from the module each line of the server's list imports, every
+// module it imports, directly or through its own, that no module of the workbench imports — but for the server's list,
+// and for the lazy entry that holds the package, which imports the package's module for its registration alone (an
+// import that takes no name from it).
+function packageModules(files) {
+  const imports = new Map(files.map(f => [f, [...readFileSync(f, 'utf8').matchAll(/^\s*(?:import|export)\b[^'"`;]*?['"]((?:\.\.?\/)[^'"]+\.js)['"]/gm)].map(m => ({bare: /^\s*import\s*['"]/.test(m[0]), to: new URL(m[1], 'file:///' + f).pathname.slice(1)}))]));
+  const roots = codeLines('design-packages.js').map(l => /^import '\.\/([^']+)'/.exec(l)?.[1]).filter(Boolean), own = new Set();
+  const walk = f => { if (own.has(f) || !imports.has(f)) return; own.add(f); for (const i of imports.get(f)) walk(i.to); }; roots.forEach(walk);
+  for (let moved = true; moved;) { moved = false; for (const f of [...own]) for (const [from, list] of imports) if (!own.has(from) && from !== 'design-packages.js' && list.some(i => i.to === f && !i.bare)) { own.delete(f); moved = true; break; } }
+  return own;
+}
 // The collections the build's packages state as their own (their lifecycle rows and the rows for the provenance reader).
 const buildCollections = () => X.EXTENSIONS.filter(e => BUILD_PACKAGES.includes(e.id)).flatMap(e => [...Object.keys(e.lifecycle || {}), ...Object.keys(e.provenance?.records || {})]);
 
@@ -211,6 +222,26 @@ const HOSTILE = {
 const NUMERIC = {id: 'aa-numeric', objectTypes: {numeric: {label: 'Numeric', chapter: 2, level: 'intent', prefix: 'NUM'}}, layers: {7: 'numeric'}, hops: [{layer: '7', types: ['fulfils'], from: ['requirement'], dir: 'out', ctx: false}]};
 const withSynthetic = (p, payload, actor = A) => applySynthetic(documentCopy(p), {type: 'synthetic.save', payload}, AT, actor).document;
 const firstTrail = p => { const reqs = reviewRequirements(p); for (const r of reqs) { const T = kernel.requirementTrace(p, r.id); if (T.layers.component?.length) return {requirement: r.id, component: T.layers.component[0], T}; } throw Error('no requirement with a component on its trail'); };
+
+// ---------------------------------------------------------------- emitter mode (ruling J2): what has(id) answers, in a process of its own
+// Two probe packages. The first asks has(id) before it states a relation; the second states the same relations
+// without asking. A Chapter 4 allocation is a record the graph keeps as a relation, not as an object.
+if (process.argv.includes('--emitter')) {
+  const seen = {};
+  X.registerExtension({id: 'zy-asks', objectTypes: {asked: {label: 'Asked', chapter: 3, level: 'intent', prefix: 'ASK'}}, records(p, add, rel, has) {
+    if (!p.asks) return; const ids = [p.logical.mappings[0].id, 'no-such-record', p.realisation.components[0].id];
+    Object.assign(seen, {type: typeof has, requirement: has?.(reviewRequirements(p)[0].id), component: has?.(ids[2]), relation: has?.(ids[0]), absent: has?.(ids[1]), before: has?.('ASK-001')});
+    add({id: 'ASK-001', ref: 'ASK-001', title: 'Asked'}, 'asked', 'asks.records.ASK-001'); seen.after = has?.('ASK-001'); seen.later = has?.('BLD-001');
+    for (const id of ids) if (has?.(id)) rel('probes', 'ASK-001', id, {source: 'asks.records.probes'});
+  }});
+  X.registerExtension({id: 'zz-blind', objectTypes: {blind: {label: 'Blind', chapter: 3, level: 'intent', prefix: 'BLD'}}, records(p, add, rel) {
+    if (!p.blind) return; add({id: 'BLD-001', ref: 'BLD-001', title: 'Blind'}, 'blind', 'blind.records.BLD-001');
+    for (const id of [p.logical.mappings[0].id, p.realisation.components[0].id]) rel('probes', 'BLD-001', id, {source: 'blind.records.probes'});
+  }});
+  const base = reference('bank-payment'), asked = withFinalReview({...base, asks: {records: []}}), blind = withFinalReview({...base, blind: {records: []}}), model = p => { const M = architectureModel(p); return {issues: M.issues, probes: M.relationships.filter(e => e.type === 'probes').map(e => [e.from, e.to])}; };
+  const out = {base: model(base).issues, asked: model(asked), seen: {...seen}, graph: recordGraph(asked).relationships.filter(e => e.type === 'probes').map(e => [e.from, e.to]), blind: model(blind), allocation: base.logical.mappings[0].id, component: base.realisation.components[0].id, plain: digests(reference('clinic-appointments'))};
+  console.log(JSON.stringify(out)); process.exit(0);
+}
 
 // ---------------------------------------------------------------- probe mode (case 7): one registration order per process
 if (PROBE >= 0) {
@@ -404,6 +435,20 @@ await block('1 record graph and trail', () => {
     assert.ok(list(T.layers.data).includes('DAT-900'), 'a Chapter 1 record typed data is on the data layer, as on rc.10.73.42: ' + JSON.stringify(T.layers.data));
     assert.ok(list(T.layers.party).includes('PTY-900'), 'a Chapter 1 record typed party is on the party layer, as on rc.10.73.42: ' + JSON.stringify(T.layers.party)); }
   pass('1: SYN-001 is in the record graph and the connected model with fulfils and binds, on the trail and the spine of ' + T0.requirement + ', in linkedVia both ways, namedBy and servingRequirements; a context hop is on the trail and not on the spine; every built-in layer is unchanged');
+});
+
+// ---------------------------------------------------------------- ruling J2: the emitter is handed has(id)
+await block('J2 emitter has', () => {
+  need();
+  const r = spawnSync(process.execPath, [process.argv[1], '--emitter'], {encoding: 'utf8', maxBuffer: 1 << 26}); assert.equal(r.status, 0, 'emitter probe: ' + r.stderr.slice(0, 400));
+  const out = JSON.parse(r.stdout.trim().split('\n').at(-1));
+  assert.deepEqual(out.seen, {type: 'function', requirement: true, component: true, relation: false, absent: false, before: false, after: true, later: false}, 'has(id) says whether the graph holds an object under the id: a built-in object, and the package\'s own once added; not a record the graph keeps as a relation, an id nobody holds, or an object of a package later by id');
+  assert.deepEqual(out.base, [], 'the reference has no issue in its connected model');
+  assert.deepEqual(out.asked.issues, [], 'a package that asks has(id) before it states a relation leaves the connected model without an issue');
+  assert.deepEqual(out.asked.probes, [['ASK-001', out.component]], 'and its relation to an object stands'); assert.deepEqual(out.graph, [['ASK-001', out.component]]);
+  assert.deepEqual(out.blind.issues.map(i => [i.kind, i.from, i.to]), [['unresolved', 'BLD-001', out.allocation]], 'what the guard is for: a relation stated to a record the graph keeps as a relation is listed as unresolved, and the model package of such a document is refused');
+  for (const k of Object.keys(golden.readings['clinic-appointments'])) assert.equal(out.plain[k], golden.readings['clinic-appointments'][k], 'with both probes registered a document without their records reads as the baseline: ' + k);
+  pass('J2: the one emitter hands a package has(id) — whether the graph holds an object under that id; a package that asks states a relation only between objects, and the connected model has the issues it had');
 });
 
 // ---------------------------------------------------------------- 2. the command boundary
@@ -795,8 +840,14 @@ await block('D3 workbench keys', async () => {
   // review treatment, a Chapter 4 connection's code): every id prefix the source writes as a quoted literal ('ADR-',
   // `CHG-${…}`), and the prefix of every Chapter 1 artefact type. A literal that is no id prefix would only keep a
   // package from a prefix it does not need.
-  { const named = new Map(), sources = [...readdirSync('public').map(f => 'public/' + f), ...readdirSync('.'), ...readdirSync('shared').map(f => 'shared/' + f)].filter(f => f.endsWith('.js'));
-    for (const f of sources) for (const m of readFileSync(f, 'utf8').matchAll(/['"`]([A-Z]{2,5})-(?:['"`]|\$\{)/g)) named.set(m[1], f);
+  // (ruling J10; was: every module of public/, the root and shared/ is read. The scan reads the workbench's own modules only: a package's
+  // modules are those only its own modules import, from the module the server's list names (packageModules). What a package's modules write
+  // as an id prefix is the journal's or another workbench prefix, or a prefix the package states: its kind's, or one it mints.)
+  { const named = new Map(), all = [...readdirSync('public').map(f => 'public/' + f), ...readdirSync('.'), ...readdirSync('shared').map(f => 'shared/' + f)].filter(f => f.endsWith('.js')), owned = packageModules(all), sources = all.filter(f => !owned.has(f));
+    const LITERAL = /['"`]([A-Z]{2,5})-(?:['"`]|\$\{)/g, stated = new Set(X.EXTENSIONS.filter(e => BUILD_PACKAGES.includes(e.id)).flatMap(e => [...Object.values(e.objectTypes || {}).map(t => t.prefix), ...Object.values(e.prefixes || {})]));
+    assert.equal(owned.size > 0, BUILD_PACKAGES.length > 0, 'the packages\' own modules are told from the workbench\'s: ' + [...owned].join(', ')); for (const f of owned) assert.ok(!/^(?:worker|design-packages)\.js$/.test(f) && !['public/design-extensions.js', 'public/record-graph.js', 'public/review-domain.js', 'public/architecture-task-ui.js'].includes(f), f + ' is the workbench\'s');
+    for (const f of owned) for (const m of readFileSync(f, 'utf8').matchAll(LITERAL)) assert.ok(PREFIXES.has(m[1]) || stated.has(m[1]), 'a package states every id prefix its modules mint: “' + m[1] + '” (' + f + ')');
+    for (const f of sources) for (const m of readFileSync(f, 'utf8').matchAll(LITERAL)) named.set(m[1], f);
     for (const t of ARTEFACT_TYPES) if (/^[A-Z]{2,5}$/.test(t.prefix)) named.set(t.prefix, 'public/requirements-domain.js TYPES');
     assert.ok(sources.length > 400 && named.size >= 80, 'the product source is read: ' + sources.length + ' modules, ' + named.size + ' prefixes');
     for (const [prefix, where] of named) assert.ok(PREFIXES.has(prefix), 'the statement of prefixes names “' + prefix + '” (' + where + ')');
@@ -974,7 +1025,16 @@ await block('SF start check', () => {
   assert.deepEqual(issues({id: 'xy', objectTypes: kind(), layers: {xy: 'xy'}, hops: [{layer: 'xy', types: ['a'], from: ['requirement'], dir: 'out', ctx: true}]}), [], 'a hop onto a layer of the package\'s own type needs none');
   // 6. an id prefix a built-in kind uses; the retired command names
   for (const prefix of ['ADR', 'REQ', 'IF', 'CHG', 'LR', 'THR', 'ENV', 'WA']) assert.ok(has({id: 'xy', objectTypes: kind(prefix)}, new RegExp('id prefix “' + prefix + '” is the workbench.s own')), prefix + ' is a built-in kind\'s');
-  for (const prefix of ['XY', 'ADP', 'WL', 'FD', 'DN', 'SLO']) assert.deepEqual(issues({id: 'xy', objectTypes: kind(prefix)}), [], prefix + ' is free');
+  // (ruling J10; was: XY, ADP, WL, FD, DN and SLO are each free. ADP is a prefix a package of the build mints for a built-in type; it is
+  // held by the clash check in case 7, with a synthetic minted prefix beside it. The others stay free.)
+  for (const prefix of ['XY', 'WL', 'FD', 'DN', 'SLO']) assert.deepEqual(issues({id: 'xy', objectTypes: kind(prefix)}), [], prefix + ' is free');
+  // J10. the row for the id prefixes a package mints for a built-in type (the records it adds under that type from its own collection, ruling D7.2)
+  assert.deepEqual(issues({id: 'xy', prefixes: {risk: 'XRK', environment: 'XEN'}}), [], 'a package states the prefix of the records it adds under a built-in type that stands on no built-in layer');
+  assert.ok(has({id: 'xy', prefixes: ['XRK']}, /prefixes is \{built-in object type: id prefix\}/)); assert.ok(has({id: 'xy', prefixes: {risk: 'xrk'}}, /the id prefix of “risk” is 2 to 5 capitals/)); assert.ok(has({id: 'xy', prefixes: {risk: 'TOOLONG'}}, /2 to 5 capitals/));
+  for (const prefix of ['ADR', 'REQ', 'CHG', 'DES']) assert.ok(has({id: 'xy', prefixes: {risk: prefix}}, new RegExp('id prefix “' + prefix + '” is the workbench.s own')), 'a minted prefix is never the workbench\'s: ' + prefix);
+  assert.ok(has({id: 'xy', prefixes: {component: 'XCO'}}, /prefixes: “component” stands on the built-in layer “component”: a package adds no record of that type/), 'only a type that stands on no built-in layer (ruling D7.2)');
+  assert.ok(has({id: 'xy', prefixes: {actor: 'XAC'}}, /prefixes: “actor” is a type of Chapter 1 records/)); assert.ok(has({id: 'xy', prefixes: {nosuch: 'XNS'}}, /prefixes: “nosuch” is no built-in object type/));
+  assert.ok(has({id: 'xy', objectTypes: kind('XY'), prefixes: {xy: 'XYZ'}}, /prefixes: “xy” is the package.s own type: its prefix is stated with the type/));
   const retired = ['technology.keep-seed', 'technology.dismiss-seed', 'technology.restore-seed', 'interfaces.keep-seed', 'interfaces.dismiss-seed', 'interfaces.restore-seed', 'interfaces.remove-contract', 'runtime.keep-seed', 'runtime.dismiss-seed', 'runtime.restore-seed', 'runtime.remove-plan', 'runtime.remove-path'];
   for (const type of retired) { assert.ok(canonical.isRetiredCommand(type)); assert.equal(boundary.builtInType(type), true, type + ' is a retired name the workbench still reads'); assert.ok(has({id: 'xy', commands: {[type]: {apply() {}}}}, /is built in/)); }
   // before the server has said which types are built in, none is free (a package's command is then unknown, never applied)
@@ -1131,6 +1191,38 @@ await block('5 design fingerprint', () => {
   pass('5: synthetic (design) moves reviewSourceStamp; synthetic.observations and syntheticLog (evidence lists) leave it and move evidenceStamp; syntheticMigration (an object left out) moves neither');
 });
 
+// ---------------------------------------------------------------- ruling J3: what of a package's record is design
+await block('J3 design statement', () => {
+  need();
+  const things = p => p.statedThings?.records || [], BOOKKEEPING = ['history', 'review', 'confirmed', 'provenance'];
+  // The package states what its records say, as the fingerprint reads it, in place of the raw key: each record without its bookkeeping.
+  const STATED = {id: 'zw-stated', design: {statedThings: p => (things(p).length ? {records: things(p).map(r => Object.fromEntries(Object.entries(r).filter(([k]) => !BOOKKEEPING.includes(k))))} : undefined)}, provenance: {nouns: {'statedThings.records': 'stated thing'}, records: {'statedThings.records': 3}}};
+  assert.deepEqual(boundary.extensionIssues(STATED), [], 'a package states the row: design {key: p => what the key says}');
+  // the start check: a function for each key; a key of the document that is the package's own; never a key the workbench keeps
+  const issues = e => boundary.extensionIssues(e), has = (e, re) => issues(e).some(i => re.test(i));
+  assert.ok(has({id: 'xy', design: p => p}, /design is \{key: p => what the key says to the design fingerprint\}/)); assert.ok(has({id: 'xy', design: {things: 'all'}}, /the design statement of “things” is a function/));
+  for (const key of ['quality', 'decisions', 'finalReview', 'workspace', 'guidedDesign', 'coauthoring', 'changes']) assert.ok(has({id: 'xy', design: {[key]: () => 1}}, new RegExp('the design statement of “' + key + '” is on a key the workbench itself writes')), key + ' is the workbench\'s: a package restates none of it');
+  assert.ok(has({id: 'xy', design: {'runtime.nodes': () => 1}}, /the design statement of “runtime\.nodes” names a key of the document/), 'the row carries a key of the document, not a key inside a chapter\'s container');
+  assert.ok(has({id: 'xy', design: {toString: () => 1}}, /names what every object carries/)); assert.ok(has({id: 'xy', design: {things: () => 1}, evidenceKeys: ['things']}, /“things” is stated as design and as evidence/));
+  assert.deepEqual(issues({id: 'xy', design: {things: () => 1}, designKeys: ['things'], evidenceKeys: ['things.observations']}), [], 'a key with a statement may be listed as a design key too; evidence inside it still leaves the design');
+  X.registerExtension(STATED);
+  const base = reference('bank-payment'), record = more => ({id: 'ST-001', ref: 'ST-001', title: 'A stated thing', revision: 1, ...more}), doc = more => withFinalReview({...base, statedThings: {records: [record(more)]}});
+  const stamp = p => [reviewSourceStamp(p), reviewDesignStamp(p)], p = doc({});
+  assert.notDeepEqual(stamp(p), stamp(base), 'the first record moves the design fingerprint'); assert.notDeepEqual(stamp(doc({title: 'Renamed'})), stamp(p), 'and so does what a record says');
+  // no person's and no second person's step moves the stamp: the four keys are bookkeeping to the fingerprint (the shared helper every package's suite calls)
+  for (const [key, value] of [['history', [{revision: 1, actor: A, at: AT}]], ['review', {actor: B, at: AT, account: 'person'}], ['confirmed', true], ['provenance', {author: {kind: 'person', by: A, at: AT}, reviewed: {by: B, at: AT, how: 'confirmed'}}]]) assert.deepEqual(stamp(doc({[key]: value})), stamp(p), key + ' of a package\'s record moves no design stamp');
+  assert.equal(typeof R.assertStepsMoveNoStamp, 'function', 'rc44-s0-readings.mjs gives the helper'); assert.equal(R.assertStepsMoveNoStamp(p, things), 1);
+  // a package that states the raw key and no statement is caught by the helper: the fingerprint reads its records whole
+  const raw = withFinalReview({...base, runtime: {...base.runtime, otherThings: [{id: 'OTH-001', ref: 'OTH-001', title: 'Other thing', requirementIds: []}]}});
+  assert.throws(() => R.assertStepsMoveNoStamp(raw, d => d.runtime.otherThings), /A person.s step moves the design stamp: the design fingerprint reads “(?:history|review|confirmed|provenance)” of OTH-001/, 'the helper names the key and the record');
+  assert.throws(() => R.assertStepsMoveNoStamp(base, things), /holds no record of the package/, 'a helper that was handed nothing to check says so');
+  // a statement that answers nothing leaves no key: a document without the records reads as it did, and a frozen source holds none
+  assert.ok(!('statedThings' in reviewSource(base))); assert.deepEqual(stamp(withFinalReview({...base, statedThings: {records: []}})), stamp(base), 'a container with no record says nothing');
+  assert.deepEqual(reviewSource(p).statedThings, {records: [{id: 'ST-001', ref: 'ST-001', title: 'A stated thing', revision: 1}]}, 'the design source holds what the package states, in place of the raw key');
+  // (two packages that state one key: case 7 holds the clash, with the other rows two packages both state)
+  pass('J3: a package states what its records say to the design fingerprint, in place of the raw key (design {key: p => …}); history, review, confirmed and provenance of its records move no design stamp, and the shared helper assertStepsMoveNoStamp catches a package whose records the fingerprint reads whole; a statement on a key the workbench writes is refused at start');
+});
+
 // ---------------------------------------------------------------- upgrade, sections
 await block('upgrade and sections', () => {
   need(); assert.ok(P);
@@ -1214,11 +1306,25 @@ await block('7 idempotent and order-free', () => {
   assert.deepEqual(digests(withFinalReview(withSynthetic(reference('bank-payment'), {title: 'Again'}))), d); assert.equal(Object.keys(OBJECT_TYPES).join(), types); assert.equal(kernel.TRACE_LAYERS.join(), layers); assert.equal(JSON.stringify(COLLECTIONS), rows);
   // two packages stating one row: the first by id keeps it, and the server's start check names the clash
   assert.deepEqual(boundary.extensionConflicts(), [], 'the registered packages share no row');
-  X.registerExtension({id: 'zzz-duplicate', objectTypes: {synthetic: {label: 'Duplicate', chapter: 4, level: 'logical', prefix: 'DUP'}, twin: {label: 'Twin', chapter: 4, level: 'logical', prefix: 'SYN'}}, layers: {synthetic: 'duplicate'}, lifecycle: {'synthetic.records': 4}, commands: {'synthetic.save': {apply() { throw Error('duplicate'); }}}, provenance: {nouns: {'synthetic.records': 'duplicate'}, paths: {}, records: {'synthetic.records': 9, 'runtime.otherNotes': 3}}});
+  // (ruling J10) a prefix a package mints for a built-in type is claimed as a kind's prefix is: zx-minter mints SRK; the build's packages mint theirs
+  X.registerExtension({id: 'zx-minter', prefixes: {risk: 'SRK'}}); assert.deepEqual(boundary.extensionConflicts(), [], 'a minted prefix nobody else states is no clash');
+  const MINTED = X.EXTENSIONS.filter(e => BUILD_PACKAGES.includes(e.id)).flatMap(e => Object.entries(e.prefixes || {}).map(([type, prefix]) => [e.id, type, prefix]));
+  X.registerExtension({id: 'zzz-duplicate', prefixes: {environment: 'SRK', ...(MINTED[0] ? {alternative: MINTED[0][2]} : {})}, design: {statedThings: () => 'another reading'}, objectTypes: {synthetic: {label: 'Duplicate', chapter: 4, level: 'logical', prefix: 'DUP'}, twin: {label: 'Twin', chapter: 4, level: 'logical', prefix: 'SYN'}}, layers: {synthetic: 'duplicate'}, lifecycle: {'synthetic.records': 4}, commands: {'synthetic.save': {apply() { throw Error('duplicate'); }}}, provenance: {nouns: {'synthetic.records': 'duplicate'}, paths: {}, records: {'synthetic.records': 9, 'runtime.otherNotes': 3}}});
   assert.equal(OBJECT_TYPES.synthetic.label, 'Synthetic record'); assert.equal(JSON.stringify(COLLECTIONS), rows); assert.equal(kernel.TRACE_LAYERS.join(), layers); assert.equal(RECORD_NOUNS['synthetic.records'], 'synthetic record'); assert.equal(boundary.extensionCommand('synthetic.save').apply, applySynthetic);
   assert.equal(JSON.stringify(RECORD_PATHS), paths, 'the provenance reader reads what it read'); assert.deepEqual([RECORD_PATHS.filter(r => r[0] === 'synthetic.records'), RECORD_PATHS.filter(r => r[0] === 'runtime.otherNotes')], [[['synthetic.records', 3]], [['runtime.otherNotes', 10]]], 'a collection another package states is read once, as its first package states it');
-  const clashes = boundary.extensionConflicts(); assert.ok(clashes.length >= 7 && clashes.every(c => /zzz-duplicate/.test(c) && /zz-synthetic|mm-other/.test(c)), 'each clash names both packages: ' + clashes.join(' | '));
+  // (rulings J3 and J10; was: at least 7 clashes, each naming zzz-duplicate and zz-synthetic or mm-other. The duplicate now also states a minted
+  // prefix of zx-minter, one of the build's package and a design statement of zw-stated: each clash names zzz-duplicate and the package that keeps the row.)
+  const keepers = ['zz-synthetic', 'mm-other', 'zx-minter', 'zw-stated', ...BUILD_PACKAGES], added = 1 + (MINTED[0] ? 1 : 0) + (X.EXTENSIONS.some(e => e.id === 'zw-stated') ? 1 : 0);
+  const clashes = boundary.extensionConflicts(); assert.ok(clashes.length >= 7 + added && clashes.every(c => /zzz-duplicate/.test(c) && keepers.some(id => c.includes(id))), 'each clash names both packages: ' + clashes.join(' | '));
+  assert.equal(clashes.filter(c => /zz-synthetic|mm-other/.test(c)).length >= 7, true, 'the seven rows of the synthetic packages are each named');
+  if (X.EXTENSIONS.some(e => e.id === 'zw-stated')) { assert.ok(clashes.some(c => /the design statement of “statedThings” is stated by zw-stated and by zzz-duplicate: one key has one statement/.test(c)), 'two statements of one key are a clash that names both (the server does not start with one): ' + clashes.filter(c => /statement/.test(c)).join(' | ')); }
   assert.ok(clashes.some(c => /id prefix “SYN” is stated by zz-synthetic and by zzz-duplicate/.test(c)), 'two kinds of record never share an id prefix');
+  assert.ok(clashes.some(c => /id prefix “SRK” is stated by zx-minter and by zzz-duplicate: zx-minter keeps it/.test(c)), 'nor a prefix one package mints for a built-in type: ' + clashes.filter(c => /prefix/.test(c)).join(' | '));
+  // (ruling J10; was, in the start check: ADP is free for a package's kind) the prefix a package of the build mints is taken: stated by another package it is a clash that names both
+  for (const [id, , prefix] of MINTED.slice(0, 1)) assert.ok(clashes.some(c => c.includes('id prefix “' + prefix + '” is stated by ' + id + ' and by zzz-duplicate: ' + id + ' keeps it')), prefix + ' is ' + id + '\'s: ' + clashes.filter(c => /prefix/.test(c)).join(' | '));
+  assert.ok(MINTED.some(([id, type, prefix]) => id === 'p40-adoption' && type === 'pattern' && prefix === 'ADP') || !BUILD_PACKAGES.includes('p40-adoption'), 'the package of applied mechanisms states the prefix it mints for the built-in type pattern: ' + JSON.stringify(MINTED));
+  { const kindWith = prefix => ({id: 'zzzz-kind', objectTypes: {kindThing: {label: 'Kind thing', chapter: 4, level: 'logical', prefix}}}); X.registerExtension(kindWith('SRK'));
+    assert.ok(boundary.extensionConflicts().some(c => /id prefix “SRK” is stated by zx-minter and by zzzz-kind: zx-minter keeps it/.test(c)), 'a kind\'s prefix that another package mints is a clash too'); }
   assert.ok(clashes.some(c => /collection “runtime\.otherNotes” is stated by mm-other and by zzz-duplicate: mm-other keeps it/.test(c)) && clashes.some(c => /collection “synthetic\.records” is stated by zz-synthetic and by zzz-duplicate: zz-synthetic keeps it/.test(c)));
   X.registerExtension({id: 'ab-early', objectTypes: {early: {label: 'Early', chapter: 2, level: 'intent', prefix: 'EAR'}}, layers: {early: 'early'}, hops: [{layer: 'early', types: ['binds'], from: ['synthetic'], dir: 'in', ctx: true}]});
   assert.ok(boundary.extensionConflicts().some(c => /a hop of ab-early onto “early” comes from “synthetic”, which the walk reads later/.test(c)), 'a hop from a layer of a package later by id is named');

@@ -9,7 +9,9 @@
 // A role's `accepts` names record types of the record graph (record-graph.js OBJECT_TYPES), an open list, so that a
 // package that adds a type (a deployable, a bounded context) can be bound without a change here.
 import {OBJECT_TYPES} from './record-graph.js';
-export const DEFINITION_KINDS=Object.freeze(['pattern','style','tactic','profile','method']);
+// 'concern': a released design concern that was compared and applied as a guided design (the lead's ruling J4 of
+// 2026-11-19: its own kind, not the boundary task's); slice S5 moves such a comparison to selection.*.
+export const DEFINITION_KINDS=Object.freeze(['pattern','style','tactic','profile','method','concern']);
 const ID=/^[a-z0-9][a-z0-9:._-]{0,79}$/i,list=v=>Array.isArray(v)?v:[],plain=v=>!!v&&typeof v==='object'&&!Array.isArray(v),words=(v,max=4000)=>typeof v==='string'&&v.trim().length>0&&v.length<=max;
 // What is wrong with a definition, in words; none when it is well formed.
 export function definitionIssues(d){

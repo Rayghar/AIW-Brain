@@ -6,4 +6,4 @@
 // arrives, and its route stub {id, needs, load} says when that must be before a document is drawn.
 //
 // A slice that adds a package adds its line below, and nothing else in the shared machinery.
-import './public/adoption-package.js'; // p40-adoption: applied mechanisms bound to the model (wp2)
+import './adoption-server.js'; // p40-adoption: applied mechanisms bound to the model (wp2)
