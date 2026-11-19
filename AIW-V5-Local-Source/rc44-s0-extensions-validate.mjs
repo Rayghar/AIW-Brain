@@ -1,8 +1,9 @@
 // AIW rc44, slice S0 (audit/rc44/BUILD-PLAN-2026-11-16.md section 4): the shared registration point. An optional design
 // package tells the shared machinery what it adds through public/design-extensions.js (registerExtension), and the record
 // graph, the trace kernel, the chapter checks, the command boundary, the lifecycle, the provenance reader, the design
-// fingerprint, the read upgrade, the SDD and ARS assembly and the project store read it. No package exists yet: the
-// only extensions here are the synthetic ones this file defines. The suite proves the eight cases of the contract:
+// fingerprint, the read upgrade, the SDD and ARS assembly and the project store read it. The build holds real packages
+// (the lead's ruling J11 of 2026-11-19: BUILD_PACKAGES below); the contract is proven with the suite's own: the
+// extensions it registers are the synthetic ones this file defines. The suite proves the eight cases of the contract:
 //   1 the record in the graph with its relations, on the requirement's trail and in linkedVia;
 //   2 the command through the boundary: applied, journalled, stamped, undone, refused for an agent account when
 //     person-only and for the author when second-person;
@@ -64,6 +65,18 @@ const A = 'architect-a', B = 'architect-b', C = 'architect-c', AGENT = 'sol-draf
 let X = null, boundary = null, loadError = '';
 try { X = await import('./public/design-extensions.js'); boundary = await import('./design-extension-boundary.js'); } catch (e) { loadError = e.message; }
 const need = () => assert.ok(X && boundary, 'the registration point exists (public/design-extensions.js, design-extension-boundary.js): ' + loadError);
+// The build's own packages (the lead's ruling J11 of 2026-11-19: this suite holds with real packages registered). A
+// package is one line of design-packages.js, which worker.js imports, and one route stub in
+// public/design-package-routes.js, which project-store.js imports; this file imports both, so this process holds
+// them before the suite registers its own. The ids are read from the two lists, never written here: BUILD_IDS is
+// what the registry must hold of the build, and "nothing registered" is proven in a process that loads the registry
+// and the readers without the server's package list (case 6a).
+const codeLines = file => readFileSync(file, 'utf8').split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('//'));
+const STUB_LINE = /^registerExtension\(\{id:'([a-z][a-z0-9-]{1,60})-route',needs:[^;]+,load:\(\)=>import\('\.\/[a-z0-9-]+\.js'\)\}\);$/, SERVER_LINE = /^import '\.\/public\/[a-z0-9-]+\.js';(?: \/\/ ([a-z][a-z0-9-]{1,60}):.*)?$/;
+const BUILD_PACKAGES = codeLines('public/design-package-routes.js').map(l => STUB_LINE.exec(l)?.[1]).filter(Boolean), BUILD_IDS = [...BUILD_PACKAGES, ...BUILD_PACKAGES.map(id => id + '-route')].sort();
+const withBuild = ids => [...BUILD_IDS, ...ids].sort();
+// The collections the build's packages state as their own (their lifecycle rows and the rows for the provenance reader).
+const buildCollections = () => X.EXTENSIONS.filter(e => BUILD_PACKAGES.includes(e.id)).flatMap(e => [...Object.keys(e.lifecycle || {}), ...Object.keys(e.provenance?.records || {})]);
 
 // ---------------------------------------------------------------- the synthetic package
 // A record kind of its own in a top-level key the document gains only when the first record is written: p.synthetic
@@ -225,9 +238,17 @@ const before = Object.fromEntries(REFERENCES.map(t => [t, readings(reference(t))
 const compareListed = when => { const p = reviewListDocument(), d = digests(p); assert.deepEqual(reviewListFindings(p).map(f => f.id), golden.reviewList.findings, 'the document holds the review\'s own findings (' + when + ')'); assert.ok(golden.reviewList.findings.length >= 2); for (const k of Object.keys(golden.reviewList.readings)) assert.equal(d[k], golden.reviewList.readings[k], `a document with a review list: the ${k} reading is byte for byte the baseline's (${when})`); };
 await block('6a no extension registered', () => {
   assert.equal(golden.capturedFrom, '94dbd4f');
-  compare('no extension registered', before); compareListed('no extension registered');
-  if (X) assert.deepEqual(X.EXTENSIONS, [], 'nothing is registered until a package registers');
-  pass('6a: with nothing registered, the graph, trails, findings, stamps, readiness, provenance, registers, SDD and ARS of ' + REFERENCES.join(', ') + ' are byte for byte those of 94dbd4f');
+  compare('no extension of the suite registered', before); compareListed('no extension of the suite registered');
+  // (ruling J11; was: X.EXTENSIONS deep-equals [], 'nothing is registered until a package registers'. With real
+  // packages in the build that reads two ways, and both are held: this process holds exactly the build's packages and
+  // their route stubs, and a process without the server's package list holds none and reads the same.)
+  if (X) assert.deepEqual(X.EXTENSIONS.map(e => e.id), BUILD_IDS, 'the registry holds exactly the build\'s packages and their route stubs until the suite registers its own');
+  { const r = spawnSync(process.execPath, ['--input-type=module', '-e', 'import {EXTENSIONS} from "./public/design-extensions.js"; import * as R from "./rc44-s0-readings.mjs"; const listed = R.reviewListDocument(); console.log(JSON.stringify({registered: EXTENSIONS.length, readings: R.referenceDigests(), listed: R.digests(listed), findings: R.reviewListFindings(listed).map(f => f.id)}));'], {encoding: 'utf8', maxBuffer: 1 << 26});
+    assert.equal(r.status, 0, 'a process with the registry and the readers and without the server\'s package list: ' + r.stderr.slice(0, 300)); const bare = JSON.parse(r.stdout.trim().split('\n').at(-1));
+    assert.equal(bare.registered, 0, 'nothing is registered until a package registers: the registry and the readers import no package');
+    for (const t of REFERENCES) assert.deepEqual(bare.readings[t], golden.readings[t], t + ': with nothing registered every reading is byte for byte the baseline\'s');
+    assert.deepEqual(bare.findings, golden.reviewList.findings); assert.deepEqual(bare.listed, golden.reviewList.readings, 'and those of the document with a review list'); }
+  pass('6a: with nothing registered (a process without the server\'s package list), and with only the build\'s own packages registered (' + (BUILD_PACKAGES.join(', ') || 'none') + '), the graph, trails, findings, stamps, readiness, provenance, registers, SDD and ARS of ' + REFERENCES.join(', ') + ' are byte for byte those of 94dbd4f');
 });
 
 // ---------------------------------------------------------------- registration
@@ -261,7 +282,8 @@ await block('registration', () => {
   X.registerExtension(SYNTHETIC); X.registerExtension(HOSTILE); X.registerExtension(OTHER);
   assert.deepEqual(boundary.extensionIssues(SYNTHETIC), [], 'registered, with the package its hop comes from');
   assert.deepEqual(boundary.extensionIssues(OTHER), []);
-  assert.deepEqual(X.EXTENSIONS.map(e => e.id), ['aa-hostile', 'mm-other', 'zz-synthetic'], 'readers read the packages sorted by id, whatever order they registered in');
+  // (ruling J11; was: the list equals ['aa-hostile', 'mm-other', 'zz-synthetic']: now the build's ids and the suite's own, sorted)
+  assert.deepEqual(X.EXTENSIONS.map(e => e.id), withBuild(['aa-hostile', 'mm-other', 'zz-synthetic']), 'readers read the packages sorted by id, whatever order they registered in: the build\'s and the suite\'s');
   pass('registration: a package registers by id; the conformance check (design-extension-boundary.js extensionIssues) passes the synthetic packages and names what the hostile one may not state');
 });
 
@@ -603,6 +625,7 @@ await block('D1 two persons', async () => {
 await block('D2 packages a document names', async () => {
   need();
   assert.equal(boundary.PACKAGES_KEY, 'workspace.packages', 'the contract names the key');
+  const ABSENT = 'p98-absent'; // an id no build registers (the lead's table of ids, ruling D8, holds none such)
   const stamps = p => [reviewSourceStamp(p), evidenceStamp(p)], synthetic = (title = 'Written by the package') => [{type: 'synthetic.save', payload: {title}}];
   // the boundary writes the package's id when a command of the package first writes; no other document gains the key
   let h = await harness(), d = () => h.state.document;
@@ -689,9 +712,11 @@ await block('D2 packages a document names', async () => {
     own.synthetic.records[0].acceptance = {actor: B, at: AT, account: 'person'};
     assert.throws(() => R.assertTemplateCopyClearsSteps(own, d => d.synthetic?.records || []), /carried into a project copied from it: SYN-001\.acceptance/);
     assert.throws(() => R.assertTemplateCopyClearsSteps(source, d => d.synthetic?.records || []), /holds no record with a step taken/, 'a helper that was handed nothing to check says so'); }
-  assert.deepEqual(boundary.missingPackages({workspace: {packages: ['zz-synthetic', 'mm-other']}}), []); assert.deepEqual(boundary.missingPackages({workspace: {packages: ['p40-adoption', 'zz-synthetic']}}), ['p40-adoption']); assert.deepEqual(boundary.missingPackages({}), []);
+  assert.deepEqual(boundary.missingPackages({workspace: {packages: ['zz-synthetic', 'mm-other']}}), []); // (ruling J11; was: ['p40-adoption', 'zz-synthetic'] names ['p40-adoption'] as missing, written when no build held that package: an id no build registers stands for it, and a package of this build is not missing)
+  assert.deepEqual(boundary.missingPackages({workspace: {packages: [ABSENT, 'zz-synthetic']}}), [ABSENT]); assert.deepEqual(boundary.missingPackages({}), []);
+  assert.ok(BUILD_PACKAGES.length > 0 && !X.EXTENSIONS.some(e => e.id === ABSENT)); assert.deepEqual(boundary.missingPackages({workspace: {packages: [...BUILD_PACKAGES, 'zz-synthetic']}}), [], 'a package this build registers is not missing'); assert.deepEqual(boundary.missingPackages({workspace: {packages: [...BUILD_PACKAGES, ABSENT]}}), [ABSENT]);
   // a list of packages this build cannot read is no empty list (the verifier's second round): it is refused as a missing package is
-  for (const unreadable of ['p40-adoption', [['p40-adoption']], ['p40-adoption', 7, 'zz-synthetic'], {0: 'p40-adoption'}, [''], null, 7])
+  for (const unreadable of [ABSENT, [[ABSENT]], [ABSENT, 7, 'zz-synthetic'], {0: ABSENT}, BUILD_PACKAGES[0], [BUILD_PACKAGES], [...BUILD_PACKAGES, 7], [''], null, 7])
     assert.deepEqual(boundary.missingPackages({workspace: {packages: unreadable}}), [boundary.UNREADABLE_PACKAGES], JSON.stringify(unreadable) + ' reads as a list this build cannot read');
   assert.match(boundary.missingPackagesRefusal([boundary.UNREADABLE_PACKAGES]), /cannot read/);
   pass('D2 (server): the boundary names a package under workspace.packages when its command (alone, in a batch, by a merge) or its upgrade step first writes, and neither fingerprint reads the key; a document that names a package this build does not register is read with the package named, and every command, every export and a freeze are refused in words');
@@ -854,7 +879,9 @@ await block('D5 SDD provenance', () => {
   // a field a package's record keeps open is an open item under the package's noun
   { const q = documentCopy(p); q.synthetic.records[0] = {...q.synthetic.records[0], state: 'authored', provenance: undefined, open: {window: {state: 'open-question', question: 'Which window applies?'}}}; const t = architectureMarkdown(withFinalReview(q)).markdown; assert.match(t.slice(t.indexOf('## B. Open items'), t.indexOf('## C. ')), /SYN-001/, 'an open field of a package\'s record is listed'); }
   // a row a package states over a built-in collection is not read a second time (the hostile package states decisions.records)
-  assert.deepEqual(boundary.packageCollections().map(x => x[0]).sort(), ['runtime.otherNotes', 'runtime.otherThings', 'synthetic.records']);
+  // (ruling J11; was: the list equals the three synthetic collections: now those and the ones the build's packages state, and no built-in collection among them)
+  assert.deepEqual(boundary.packageCollections().map(x => x[0]).sort(), [...buildCollections(), 'runtime.otherNotes', 'runtime.otherThings', 'synthetic.records'].sort());
+  for (const path of ['decisions.records', 'finalReview.narrative', 'logical.assets']) assert.ok(!boundary.packageCollections().some(x => x[0] === path), path + ' stays the workbench\'s own'); assert.ok(boundary.packageCollections().every(x => !boundary.workbenchKey(x[0])));
   pass('D5: the SDD\'s provenance reading and its open items read the packages\' collections: ' + r.total + ' records with ' + r.by.sol + ' drafted by Sol (' + r0.total + ' and ' + r0.by.sol + ' without them); a built-in collection a package names is not counted twice');
 });
 
@@ -960,7 +987,13 @@ await block('SF start check', () => {
   // built-in layer stays allowed (wp2's `mechanism` over `pattern`).
   { const over = type => ({id: 'xy', layers: {held: type}, hops: [{layer: 'held', types: ['binds'], from: ['component'], dir: 'in', ctx: true, only: rel => rel.source === 'xy.records.bindings'}]});
     for (const type of ['actor', 'outcome', 'journey', 'constraint', 'assumption', 'context', 'system']) assert.ok(has(over(type), new RegExp('layer “held” holds the built-in type “' + type + '”, which Chapter 1 records have: a Chapter 1 record stands on the context layer')), 'a layer over the Chapter 1 type ' + type + ' is refused: ' + issues(over(type)).join(' | '));
-    assert.deepEqual(issues(over('pattern')), [], 'a layer over a built-in type of a later chapter that stands on no built-in layer is allowed'); }
+    // (ruling J11; was: issues(over('pattern')) is [], written when no package held `pattern`. The rule is held on a built-in type of a
+    // later chapter that still stands on no layer; the package of the build that holds `pattern` conforms; and a second layer over it is refused.)
+    assert.ok(OBJECT_TYPES.risk.chapter > 1 && !Object.values(kernel.TRACE_LAYER_TYPES).includes('risk')); assert.deepEqual(issues(over('risk')), [], 'a layer over a built-in type of a later chapter that stands on no built-in layer is allowed');
+    const holder = X.EXTENSIONS.find(e => Object.values(e.layers || {}).includes('pattern') && BUILD_PACKAGES.includes(e.id));
+    if (holder) { assert.deepEqual(issues(holder), [], holder.id + ' holds the built-in type pattern on a layer of its own and conforms'); const layer = Object.keys(holder.layers).find(l => holder.layers[l] === 'pattern');
+      assert.ok(has(over('pattern'), new RegExp('layer “held” holds the type “pattern”, which stands on the layer “' + layer + '”: a type stands on one layer')), 'a second layer over pattern is refused: ' + issues(over('pattern')).join(' | ')); }
+    else assert.deepEqual(issues(over('pattern')), [], 'pattern stands on no layer in this build'); }
   // 11. a lifecycle collection is a list inside a container: the family keeps the container's version, review and handoff
   assert.ok(has({id: 'xy', lifecycle: {things: 3}}, /collection “things” is a list inside a container \(container\.list\)/), 'a single-segment lifecycle path is refused');
   assert.deepEqual(issues({id: 'xy', lifecycle: {'things.records': 3}, provenance: {records: {thingNotes: 3}}}), []);
@@ -1150,7 +1183,18 @@ await block('needs and load', async () => {
   const src = readFileSync('public/project-store.js', 'utf8'); assert.ok((src.match(/await ensureExtensions\((?:saved=)?await /g) || []).length === 2, 'the project store awaits it where it reads a project and where a save answers');
   // the browser's list of packages (the route stubs) is read by the project store, and never by the entry script, whose own dynamic imports are measured as the route
   assert.ok(src.includes("import './design-package-routes.js';")); assert.ok(!readFileSync('public/entry.js', 'utf8').includes('design-package-routes'));
-  assert.ok(!/^\s*(?:import|registerExtension)\b/m.test(readFileSync('public/design-package-routes.js', 'utf8')) && !/^\s*import\b/m.test(readFileSync('design-packages.js', 'utf8')), 'no package exists at this slice: neither list names one');
+  // (ruling J11; was: neither list holds an import or a registerExtension line, 'no package exists at this slice: neither list names one'.
+  // With packages in the build: the browser's list holds the registry's import and one route stub a package and nothing else, so no
+  // package module is imported statically on the route; the server's list holds one import a package; and the two lists name the same packages.)
+  { const routes = codeLines('public/design-package-routes.js'), server = codeLines('design-packages.js'), REGISTRY = "import {registerExtension} from './design-extensions.js';";
+    for (const l of routes) assert.ok(l === REGISTRY || STUB_LINE.test(l), 'every code line of the browser\'s list is the registry\'s import or one route stub {id: <id>-route, needs, load}: ' + l);
+    assert.equal(routes.filter(l => l === REGISTRY).length, BUILD_PACKAGES.length ? 1 : 0, 'the registry is imported once, and only when a stub needs it'); assert.equal(routes.length, BUILD_PACKAGES.length + (BUILD_PACKAGES.length ? 1 : 0)); assert.equal(new Set(BUILD_PACKAGES).size, BUILD_PACKAGES.length);
+    for (const l of server) assert.ok(SERVER_LINE.test(l), 'every code line of the server\'s list is one import of a package\'s module: ' + l);
+    assert.equal(server.length, BUILD_PACKAGES.length, 'one route stub for each line of design-packages.js');
+    assert.deepEqual(server.map(l => SERVER_LINE.exec(l)[1]).sort(), [...BUILD_PACKAGES].sort(), 'each line of the server\'s list says which package it registers, and the browser\'s list has that package\'s stub');
+    for (const id of BUILD_PACKAGES) { const stub = X.EXTENSIONS.find(e => e.id === id + '-route'), held = X.EXTENSIONS.find(e => e.id === id);
+      assert.ok(held && boundary.extensionIssues(held).length === 0, id + ' is registered by the server\'s list and conforms');
+      assert.deepEqual(Object.keys(stub || {}).sort(), ['id', 'load', 'needs'], 'the stub of ' + id + ' states its id, needs and load and no other part'); assert.ok(!stub.needs(reference('bank-payment')), 'and asks for nothing for a document without the package\'s records'); } }
   pass('needs and load: ensureExtensions loads a package only for a document that holds its records; the first registration under an id stands');
 });
 
@@ -1160,7 +1204,8 @@ await block('7 idempotent and order-free', () => {
   const run = order => { const r = spawnSync(process.execPath, [process.argv[1], '--probe', order], {encoding: 'utf8', maxBuffer: 1 << 26}); assert.equal(r.status, 0, 'probe ' + order + ': ' + r.stderr.slice(0, 400)); const out = JSON.parse(r.stdout.trim().split('\n').at(-1)); delete out.order; return JSON.stringify(out); };
   const base = run('hos');
   for (const order of ['soh', 'ohs', 'hhoossoh', 'shosho']) assert.equal(run(order), base, 'registered as ' + order + ': the same types, collections, layers, nouns and readings as h, o, s');
-  const out = JSON.parse(base); assert.deepEqual(out.extensions, ['aa-hostile', 'mm-other', 'zz-synthetic']);
+  // (ruling J11; was: out.extensions equals ['aa-hostile', 'mm-other', 'zz-synthetic'])
+  const out = JSON.parse(base); assert.deepEqual(out.extensions, withBuild(['aa-hostile', 'mm-other', 'zz-synthetic']));
   for (const k of Object.keys(golden.readings['clinic-appointments'])) assert.equal(out.plain[k], golden.readings['clinic-appointments'][k]);
   assert.notEqual(out.readings.graph, golden.readings['bank-payment'].graph, 'the probe\'s document does hold the packages\' records');
   // the same object again, in this process: nothing moves
@@ -1206,7 +1251,14 @@ await block('8 client build', async () => {
   assert.equal(BUDGET.routes.chapters, 3233792, 'the chapters route cap is the one it was'); assert.equal(BUDGET.routes.projects, 1213 * 1024); assert.equal(BUDGET.scripts, 148); assert.equal(BUDGET.tiny, 61); assert.equal(BUDGET.css, 881 * 1024);
   const meta = JSON.parse(readFileSync(built.metafile, 'utf8')), on = Object.values(meta.outputs).flatMap(o => Object.entries(o.inputs || {})).filter(([i]) => i === 'public/design-extensions.js');
   // (was "at most 300 B" before the fix-up: the registry now also holds the check of ruling D2 and the wording of a package that does not load; the gate is the route's)
-  assert.equal(on.length, 1, 'the registry is in one chunk'); assert.ok(on[0][1].bytesInOutput <= 420, 'and small: ' + on[0][1].bytesInOutput + ' B');
+  // (ruling J11; was: on[0][1].bytesInOutput <= 420, measured when no route stub existed and the bundler left registerExtension out of the
+  // client. The first route stub keeps registerExtension on the route (wp2's own route bytes). The same bound is held on the same thing: the
+  // registry as the route held it at S0, bundled apart with the build's options; and the registry in the client is that plus registerExtension.)
+  assert.equal(on.length, 1, 'the registry is in one chunk');
+  const {build: bundle} = await import('esbuild'), apart = async names => Object.values((await bundle({stdin: {contents: 'import {' + names + '} from "./public/design-extensions.js";globalThis.x=[' + names + '];', resolveDir: process.cwd(), loader: 'js'}, bundle: true, format: 'esm', minify: true, target: 'es2022', write: false, metafile: true, logLevel: 'error'})).metafile.outputs)[0].inputs['public/design-extensions.js'].bytesInOutput;
+  const READERS = 'EXTENSIONS,extendTable,ensureExtensions', registry = await apart(READERS), registering = await apart(READERS + ',registerExtension') - registry;
+  assert.ok(registry <= 420, 'and small, as the route held it at S0 (what its readers use): ' + registry + ' B'); assert.ok(registering > 0 && registering < 120, 'registerExtension itself: ' + registering + ' B');
+  assert.ok(on[0][1].bytesInOutput - (BUILD_PACKAGES.length ? registering : 0) <= 420, 'and in the client build it is that and, once a route stub exists, registerExtension: ' + on[0][1].bytesInOutput + ' B');
   for (const o of Object.values(meta.outputs)) for (const i of Object.keys(o.inputs || {})) assert.ok(!/design-extension-boundary|design-extension-parts|design-packages|rc44-s0/.test(i), i + ' is not in the client');
   const measured = {chapters: report.routes.chapters.code, projects: report.routes.projects.code, scripts: report.scripts, under10k: report.buckets.under10k, css: report.css, registry: on[0][1].bytesInOutput};
   // "Opens with records" (ruling D10): the gate measures opening a document that holds no package records; a document
