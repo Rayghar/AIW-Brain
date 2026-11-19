@@ -88,3 +88,48 @@ export async function server(worker) {
   h.close = () => env.DB.close();
   return h;
 }
+
+// ---- appended by the fix-up of slice S1 (the lead's rulings J1 to J12 of 2026-11-19)
+import {createProject} from './shared/projects-domain.js';
+import {applyCommand} from './public/requirements-domain.js';
+import {applyQualityCommand} from './public/quality-domain.js';
+import {applyKnowledgeCommand, knowledgeStamp} from './public/knowledge-governance.js';
+// A released design concern compared and applied the way a project applied one before the adoption record (ruling
+// J4): a synthetic source, one claim that offers a design concern with two options, reviewed, released and activated,
+// then architecture.start on that concern, its answers, a prepared alternative and alternative.apply. Answers the
+// document as it was written (no adoption), the claim receipt its task pins and the id of the release.
+export function governedConcernApplied() {
+  const at = '2026-10-11T12:00:00.000Z', k = (p, type, payload, actor = 'author') => applyKnowledgeCommand(p, {type, payload}, at, actor).document, arc = (p, type, payload) => applyArchitectureCommand(p, {type, payload}, at);
+  let p = applyCommand(createProject({name: 'Synthetic equipment project', template: 'blank'}, 'concern-fixture'), {type: 'artefact', payload: {type: 'requirement', title: 'Reserve equipment', description: 'Report an authoritative reservation outcome.', acceptance: 'The original reference identifies one result.', owner: 'Facilities', source: 'Synthetic workshop', confirmed: true}}, at).document;
+  p = withFinalReview(applyQualityCommand(p, {type: 'quality.driver', payload: {title: 'Reliable reservation', category: 'recoverability', requirementIds: ['REQ-001'], stimulus: 'Processing is unavailable.', conditions: 'Reservation intake remains open.', response: 'Restore accepted reservations.', metric: 'Recovery time', operator: 'At most', targetValue: '30', unit: 'minutes', window: 'For each accepted request', measurement: 'Failure exercise', targetConfirmed: true, confirmed: true, owner: 'Facilities'}}, at).document, {upgrade: false});
+  p = k(p, 'knowledge.source', {title: 'Synthetic architecture note', body: 'Synthetic architecture note\nCompare owning the schedule in one application with a separate service. Evaluate responsibility ownership and the cost of coordination.\n', path: 'synthetic/note.txt', revision: '1', license: 'Synthetic test material'});
+  p = k(p, 'knowledge.claim', {sourceId: p.knowledge.sources.at(-1).id, lineStart: 2, lineEnd: 2, subjectId: 'design-concern:service-ownership', predicate: 'offers a design concern', claimType: 'applicability', polarity: 'neutral', statement: 'Compare local ownership and a separate service boundary.', conditions: ['For an architecture with two responsibilities.'], limitations: ['The source makes no measured reliability claim.'], tags: ['title:Service ownership', 'question:Where should reservation ownership live?', 'criterion:ownership|Ownership|Who owns the schedule and its changes?', 'criterion:recovery|Recovery|What happens during an outage?', 'option:local|One application|The modules share one release boundary.', 'option:separate|Separate service|A network contract and recovery coordination are required.']});
+  p = k(p, 'knowledge.review', {id: p.knowledge.claims[0].id, reviewed: true, reviewer: 'Second reviewer', reason: 'Verified source and limited interpretation.', decision: 'verified', sourceChecked: true, rightsChecked: true, conditionsChecked: true}, 'reviewer');
+  p = k(p, 'knowledge.release', {reviewed: true, reviewer: 'Second reviewer', reason: 'Release this synthetic concern.', title: 'Synthetic concern', claimIds: [p.knowledge.claims[0].id]});
+  p = k(p, 'knowledge.activate', {reviewed: true, reviewer: 'Second reviewer', reason: 'Use the reviewed concern.', id: p.knowledge.releases[0].id, stamp: knowledgeStamp(p)});
+  p = arc(p, 'architecture.start', {requirementId: 'REQ-001', driverId: 'QD-001', topic: 'knowledge:service-ownership'}).document;
+  let t = p.coauthoring.designTasks[0];
+  p = arc(p, 'architecture.answers', {id: t.id, taskRevision: t.revision, answers: {criteriaNotes: JSON.stringify({local: {ownership: 'Facilities owns both modules and the schedule.', recovery: 'Restore one process and reconcile reservations.'}, separate: {ownership: 'A separate team owns the schedule contract.', recovery: 'Coordinate partial failure across services.'}}), owner: 'Facilities architect', reason: 'Local ownership fits the present team; accept shared deployment.'}}).document;
+  t = p.coauthoring.designTasks[0];
+  const prepared = arc(p, 'architecture.prepare', {id: t.id, taskRevision: t.revision, optionId: 'local'}); p = prepared.document;
+  const alternative = p.modelAlternatives.records.find(a => a.id === prepared.selected), preview = previewAlternative(p, alternative);
+  p = applyAlternativeCommand(p, {type: 'alternative.apply', payload: {id: alternative.id, alternativeRevision: alternative.revision, previewStamp: preview.stamp, reviewed: true, reviewer: 'Independent project architect', reason: 'Reviewed both source-grounded options and criterion notes.'}}, at).document;
+  const document = withFinalReview(beforeAdoptions(p), {upgrade: false});
+  assert.equal(document.coauthoring.designTasks[0].status, 'applied');
+  return {document, receipt: document.coauthoring.designTasks[0].governedConcern.receipt, releaseId: document.knowledge.releases[0].id, at};
+}
+// A knowledge command of that fixture, with a typed reviewer and the stamp an activation step asks for.
+export const knowledgeCommand = (p, type, payload, at, actor = 'author') => applyKnowledgeCommand(p, {type, payload: {reviewed: true, reviewer: 'Second reviewer', ...payload, ...(type === 'knowledge.deactivate' || type === 'knowledge.activate' ? {stamp: knowledgeStamp(p)} : {})}}, at, actor).document;
+// The Bank Payment reference with one applied task of another kind (an exchange), as a document written before the
+// adoption record: its applied records name a component, a contract, a data definition and a technology need (records
+// the graph holds as objects), a Chapter 4 allocation (a record the graph keeps as a relation) and a record that has
+// left the document since.
+export function otherKindApplied() {
+  const d = structuredClone(reference('bank-payment'));
+  (d.coauthoring ??= {schemaVersion: 1, counters: {source: 0, task: 0}, sources: [], tasks: []}).designTasks = [{id: 'DES-009', kind: 'exchange', title: 'Exchange instruction status', status: 'applied', requirementId: 'REQ-001', answers: {}, basis: {contextIds: []}, history: [],
+    applied: {at: APPLIED_AT, alternativeId: 'ALT-009', reviewer: 'Synthetic architect', reason: 'Fixture.', changeIds: [], records: [
+      {id: 'api-pod', ref: 'OBJ-001', title: 'Payment service', chapter: 5, slot: 'provider', isNew: false}, {id: 'rest', ref: 'IF-001', title: 'A contract', chapter: 8, slot: 'contract', isNew: true},
+      {id: 'instruction', ref: 'DAT-001', title: 'Payment instruction', chapter: 8, slot: 'payload', isNew: false}, {id: 'TN-001', ref: 'TN-001', title: 'A need', chapter: 6, slot: 'need', isNew: false},
+      {id: 'MAP-001', ref: 'MAP-001', title: 'An allocation', chapter: 4, slot: 'allocation', isNew: true}, {id: 'gone-001', ref: 'OBJ-099', title: 'A component that left', chapter: 5, slot: 'consumer', isNew: true}]}}];
+  return withFinalReview(d, {upgrade: false});
+}

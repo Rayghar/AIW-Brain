@@ -21,7 +21,7 @@ import assert from 'node:assert/strict';
 import {readFileSync, existsSync, writeFileSync, mkdirSync} from 'node:fs';
 import worker, {commandHandler} from '../worker.js';
 import * as R from '../rc44-s0-readings.mjs';
-import {bankPaymentApplied, beforeAdoptions, server, A, B, C, AGENT, APPLIED_AT} from '../rc44-wp2-fixtures.mjs';
+import {bankPaymentApplied, beforeAdoptions, server, A, B, C, AGENT, APPLIED_AT, governedConcernApplied, knowledgeCommand, otherKindApplied} from '../rc44-wp2-fixtures.mjs';
 import {readStoredProject, saveStoredProject} from '../project-storage.js';
 import {storageUpgradeNeeded} from '../storage-upgrade.js';
 import {withFinalReview, CHAPTERS, inheritedFindings, reviewSourceStamp, reviewDesignStamp, evidenceStamp, traceStamp, reviewSource, reviewRequirements} from '../public/review-domain.js';
@@ -407,6 +407,175 @@ export default async function ({block, pass, load}) {
     for (const type of ['adoption.accept', 'adoption.reassess', 'adoption.deviation', 'adoption.withdraw']) { const r = await h.send(type, {id, revision: rev(id), reviewed: true, reason: 'x', deviationIds: [], target: {kind: 'role', id: 'caller'}, statement: 'x'}, B); assert.equal(r.status, 400, type + ' on a withdrawn adoption'); assert.match(r.error, /withdrawn/); }
     h.close(); h = null;
     pass('withdraw: a signed-in person withdraws an adoption with a reason; the record stays with its history, the records it bound stay, the task it was upgraded from no longer stands as applied and its obligations are listed by no reader; a withdrawn adoption takes no further step. The tracker as the server calls it: retiring the store the applied outbox bound names the mechanism; a design the earlier path reverses takes its adoption with it; nothing is written into a document without adoptions');
+  });
+
+  // ============================================================ the fix-up (the lead's rulings J1 to J12 of 2026-11-19)
+  // ------------------------------------------------------------ J1: the applier is named
+  await block('J1 applier', async () => {
+    pkg(); const s = await server(worker);
+    try {
+      // A applies the three designs through the earlier path; each is an adoption from its own commit
+      const doc = await s.apply(), id = 'ADP-001', a0 = byId(doc, id), get = () => byId(s.doc(), id), rev1 = () => get().revision;
+      const acc = (as, extra = {}) => s.send('adoption.accept', {id, revision: rev1(), deviationIds: [], note: 'Read against the model.', ...extra}, as);
+      const confirm = as => s.send('adoption.reassess', {id, revision: rev1(), reviewed: true, reason: 'Read against the model as it stands.'}, as);
+      assert.ok(a0.applied.changeIds.length && doc.changes.events.filter(e => a0.applied.changeIds.includes(e.id)).every(e => e.actor === A && e.authorKind === 'person'), 'the journal events the applied task names say who sent the apply');
+      // the projection names the applier, read from the journal events the task names, and the owner
+      const subject = D.acceptanceSubject(get(), s.doc());
+      assert.deepEqual(subject, {id, actor: A, owner: a0.owner, history: [{revision: 1, actor: A}]}, 'the projection names the signed-in applier and the owner');
+      assert.match(verifierRefusal(subject, A, 'person'), /architect-a wrote ADP-001/); assert.equal(verifierRefusal(subject, B, 'person'), null);
+      // the applier is refused by the one rule before and after another person confirms; the confirmer by the two-persons rule
+      { const r = await acc(A); assert.equal(r.status, 400); assert.match(r.error, /A second signed-in person, who did not write or own the action, verifies it\. architect-a wrote ADP-001\./, 'the applier is not the second person: ' + r.error); }
+      { const r = await acc(B); assert.equal(r.status, 400); assert.match(r.error, /A second person.s step needs two persons: no person other than architect-b stands behind ADP-001/, 'an adoption the upgrade wrote carries no author stamp: a person confirms it first (ruling F4): ' + r.error); }
+      { const r = await confirm(B); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); }
+      // the applier is on the record for good from the next commit on (the tracker reads the journal), as bookkeeping
+      assert.deepEqual(get().history.filter(x => x.event === 'apply').map(x => [x.actor, x.identity, x.revision]), [[A, 'journal', 1]], 'the applier is recorded on the adoption, named by the journal');
+      assert.deepEqual([get().provenance?.reviewed?.by, get().provenance?.author ?? null, get().revision], [B, null, 1], 'naming the applier is bookkeeping: no author stamp, no revision');
+      { const r = await acc(A); assert.equal(r.status, 400, 'A applies, B confirms: A\'s accept is refused (it was taken before the fix-up)'); assert.match(r.error, /architect-a wrote ADP-001/); assert.ok(!get().review); }
+      { const r = await acc(B); assert.equal(r.status, 400); assert.match(r.error, /needs two persons/, 'the confirmer is the only person behind the record as it stands'); }
+      { const r = await acc(C); assert.equal(r.status, 200, 'a person who neither applied nor is the only one behind the record accepts: ' + JSON.stringify(r.body).slice(0, 300)); }
+      assert.equal(D.adoptionAccepted(s.doc(), get()), true); assert.equal(D.adoptionReading(s.doc(), get()).label, 'applied · accepted by ' + C);
+      // the reader holds the same rule on the stored step: an acceptance by the applier does not count
+      { const d = structuredClone(s.doc()), x = byId(d, id); x.review.actor = A; assert.equal(D.adoptionAccepted(d, x), false, 'a stored acceptance by the applier does not stand'); }
+      // the owner is handed to the one rule (should-fix 1)
+      { const x = byId(s.doc(), 'ADP-002'); assert.ok(x.owner, 'ADP-002 has an owner: ' + x.owner); const sub = D.acceptanceSubject(x, s.doc()); assert.equal(sub.owner, x.owner); assert.match(verifierRefusal(sub, x.owner.toUpperCase().replace(/ /g, '-'), 'person'), /owns ADP-002/, 'the owner of an adoption does not accept it'); }
+      // two persons suffice: the applier confirms what the upgrade wrote, a second person accepts
+      { const two = 'ADP-003', r3 = () => byId(s.doc(), two).revision;
+        assert.equal((await s.send('adoption.reassess', {id: two, revision: r3(), reviewed: true, reason: 'Read against the model as it stands.'}, A)).status, 200);
+        const r = await s.send('adoption.accept', {id: two, revision: r3(), deviationIds: [], note: ''}, B); assert.equal(r.status, 200, 'A applied and confirmed, B accepts: ' + JSON.stringify(r.body).slice(0, 300)); }
+    } finally { s.close(); }
+    // where the journal names nobody (a document whose events carry no actor), a person confirms first, as before
+    const old = upgraded(), x = byId(old, 'ADP-001');
+    assert.deepEqual(D.acceptanceSubject(x, old), {id: 'ADP-001', actor: null, owner: x.owner, history: []}); assert.match(verifierRefusal(D.acceptanceSubject(x, old), B, 'person'), /names no author/);
+    const confirmed = commandHandler('adoption.reassess')(structuredClone(old), {type: 'adoption.reassess', payload: {id: 'ADP-001', revision: 1, reviewed: true, reason: 'Read.'}}, AT, A, {author: person(A)}).document, y = byId(confirmed, 'ADP-001');
+    assert.deepEqual(D.acceptanceSubject(y, confirmed), {id: 'ADP-001', actor: A, owner: y.owner, history: [{revision: 1, actor: A}]}, 'the first person who confirms stands in the applier\'s place');
+    // an event that names an actor without saying it was a person's commit names nobody as the applier, and still refuses that actor
+    { const d = structuredClone(old), z = byId(d, 'ADP-001'); z.applied.changeIds = ['CHG-900']; (d.changes ??= {counter: 0, events: []}).events.push({id: 'CHG-900', actor: C, at: APPLIED_AT, fields: [], items: []});
+      const sub = D.acceptanceSubject(z, d); assert.equal(sub.actor, null, 'no person is named as the applier'); assert.deepEqual(sub.history, [{revision: 1, actor: C}], 'and whoever the journal names is still not the second person'); }
+    pass('J1: the applier is named — the projection reads who applied the design from the journal events the task names (and the owner); A applies, B confirms: A\'s accept is refused by the one rule, B\'s by the two-persons rule, C\'s is taken; the applier is recorded on the adoption as bookkeeping; A applied and confirmed, B accepts; where the journal names nobody a person confirms first');
+  });
+
+  // ------------------------------------------------------------ J2: a relation only between objects
+  await block('J2 connected model', async () => {
+    pkg(); const {architectureModel} = await import('../public/architecture-model.js'), {nativePackage, validateNativePackage} = await import('../public/model-exchange.js');
+    const before = bankPaymentApplied(), after = upgraded();
+    assert.deepEqual(architectureModel(before).issues, [], 'the old document has no issue in its connected model');
+    assert.ok(after.interfaces.lineage.length > 0 && records(after).some(a => a.applied.records.some(r => after.interfaces.lineage.some(l => l.id === r.id))), 'an applied design wrote a lineage, which the graph keeps as a relation');
+    assert.deepEqual(architectureModel(after).issues, architectureModel(before).issues, 'the connected model of the upgraded document has the issues it had before (none)');
+    const pack = await nativePackage(after), valid = await validateNativePackage(pack); assert.ok(valid.objects > 200, 'the model package of the upgraded document validates: ' + valid.objects + ' objects');
+    const G = recordGraph(after); for (const e of G.relationships.filter(e => String(e.source).startsWith('adoptions.'))) assert.ok(G.objects.has(e.from) && G.objects.has(e.to), e.type + ' ' + e.from + ' → ' + e.to + ' is between objects');
+    // an applied task of another kind whose records include a record the graph keeps as a relation, and one that left
+    const other = otherKindApplied(), up = asWritten(U.upgradeAdoptions(other)), o = records(up)[0];
+    assert.deepEqual(architectureModel(up).issues, architectureModel(other).issues, 'the same for an upgraded task of another kind');
+    await validateNativePackage(await nativePackage(up));
+    // should-fix 8: a bound record's type is the one the record graph gives it, not a guess from its chapter
+    assert.deepEqual(o.bindings.map(b => [b.roleId, b.recordId, b.recordType]), [['provider', 'api-pod', 'component'], ['contract', 'rest', 'contract'], ['payload', 'instruction', 'data'], ['need', 'TN-001', 'need'], ['consumer', 'gone-001', 'component']], 'the type the graph gives; a record that left keeps the type of its chapter; a record the graph keeps as a relation is no role');
+    assert.deepEqual(o.applied.records.map(r => r.id), other.coauthoring.designTasks[0].applied.records.map(r => r.id), 'what was applied stays verbatim, the allocation with it');
+    assert.deepEqual(DEF.definitionIssues(o.definition.snapshot), [], 'the snapshot is a well-formed definition');
+    assert.deepEqual(D.adoptionReading(up, o).roles.find(r => r.roleId === 'consumer'), {roleId: 'consumer', required: true, state: 'broken', recordIds: ['gone-001'], issues: ['removed']});
+    pass('J2: the emitter states a relation only between objects (has(id) from the registration point): the connected model of the upgraded Bank Payment document has no issue, as before, and its model package validates; the same for an applied task of another kind, whose bound records carry the type the record graph gives them');
+  });
+
+  // ------------------------------------------------------------ J3: what of an adoption is design
+  await block('J3 design statement', async () => {
+    const e = pkg(), stamps = p => [reviewSourceStamp(p), reviewDesignStamp(p)];
+    assert.equal(typeof e.design?.adoptions, 'function', 'the package states what its records say to the design fingerprint (the registration row of ruling J3)');
+    { const src = readFileSync(new URL('../public/review-domain.js', import.meta.url), 'utf8'); assert.ok(!/['"]adoptions['"]|\.adoptions\b/.test(src), 'review-domain.js names the package\'s key nowhere: the hand-edit of reviewSource is gone'); }
+    const old = bankPaymentApplied(), up = upgraded();
+    assert.equal(D.adoptionDesign(up), undefined, 'an adoption upgraded from a task says nothing the task does not say already: the design source keeps no key'); assert.ok(!('adoptions' in reviewSource(up)));
+    assert.deepEqual(stamps(up), stamps(old), 'the upgrade moves no design stamp');
+    // one rule for every revision: no person's or second person's step moves the stamp (the shared helper of S0)
+    assert.equal(typeof R.assertStepsMoveNoStamp, 'function', 'S0\'s shared helper for package suites'); R.assertStepsMoveNoStamp(up, records);
+    const step = (p, type, payload, actor) => withFinalReview(commandHandler(type)(structuredClone(p), {type, payload}, AT, actor, {author: person(actor)}).document);
+    let p = step(up, 'adoption.deviation', {id: 'ADP-001', revision: 1, target: {kind: 'role', id: 'relay'}, statement: 'The relay runs inside the Payment service process.', reason: 'One deployment unit.'}, C);
+    assert.notDeepEqual(stamps(p), stamps(up), 'a deviation is a design change');
+    assert.deepEqual(reviewSource(p).adoptions, [{id: 'ADP-001', deviations: byId(p, 'ADP-001').deviations}], 'the design source reads what the adoption says beyond its task: its deviations, without history, review, confirmed or provenance');
+    R.assertStepsMoveNoStamp(p, records);
+    const s1 = stamps(p); p = step(p, 'adoption.reassess', {id: 'ADP-001', revision: 2, reviewed: true, reason: 'Read.'}, A); assert.deepEqual(stamps(p), s1, 'a confirmation after a deviation moves no design stamp (it moved it before the fix-up)');
+    byId(p, 'ADP-001').provenance = {reviewed: {by: A, at: AT, how: 'confirmed'}, author: {kind: 'person', by: C, at: AT}};
+    p = step(p, 'adoption.accept', {id: 'ADP-001', revision: 2, deviationIds: ['ADP-001:DEV-01'], note: ''}, B); assert.equal(D.adoptionAccepted(p, byId(p, 'ADP-001')), true); assert.deepEqual(stamps(p), s1, 'nor does a second person\'s acceptance');
+    // a frozen baseline: e.3 rule 2 with a baseline actually frozen before the upgrade (should-fix 6)
+    { const {baselineChanges, baselineCurrent, finalChecksCurrent} = await import('../public/review-domain.js');
+      let b = reviewCommand(bankPaymentApplied(), 'checks', {}); b = reviewCommand(b, 'baseline', {stamp: reviewDesignStamp(b), title: 'Frozen before the adoption record', reviewed: true});
+      b = asWritten(beforeAdoptions(b)); const frozen = b.finalReview.baselines.at(-1); assert.ok(frozen && !('adoptions' in b) && !('adoptions' in frozen.source), 'a baseline frozen by a document without adoptions');
+      assert.equal(baselineCurrent(b, frozen), true); assert.equal(finalChecksCurrent(b), true);
+      let u = asWritten(U.upgradeAdoptions(b)); assert.equal(records(u).length, 3);
+      assert.deepEqual(baselineChanges(u, frozen), [], 'the upgrade reads as no change since the baseline'); assert.equal(baselineCurrent(u, frozen), true); assert.equal(finalChecksCurrent(u), true, 'and the checks stay current');
+      u = step(u, 'adoption.reassess', {id: 'ADP-002', revision: 1, reviewed: true, reason: 'Read.'}, A); byId(u, 'ADP-002').provenance = {reviewed: {by: A, at: AT, how: 'confirmed'}};
+      u = step(u, 'adoption.accept', {id: 'ADP-002', revision: 1, deviationIds: [], note: ''}, B);
+      assert.deepEqual(baselineChanges(u, frozen), [], 'a confirmation and an acceptance read as no change since the baseline'); assert.equal(baselineCurrent(u, frozen), true); assert.equal(finalChecksCurrent(u), true);
+      u = step(u, 'adoption.deviation', {id: 'ADP-002', revision: 1, target: {kind: 'role', id: 'caller'}, statement: 'The caller is a batch job.', reason: 'No interactive caller exists.'}, C);
+      assert.equal(baselineCurrent(u, frozen), false, 'a deviation is a change since the baseline'); assert.equal(finalChecksCurrent(u), false); }
+    // an adoption with no task beside it (a project copied from a template; slice S2's own) says all but its bookkeeping
+    { const copy = instantiateTemplate(withFinalReview({...up, workspace: {...up.workspace, reusableTemplate: true}}), 'template-copy', 'A copy', LATER), said = D.adoptionDesign(copy);
+      assert.equal(said.length, 3); for (const x of said) { for (const k of ['history', 'review', 'confirmed', 'provenance']) assert.ok(!(k in x), k + ' is bookkeeping to the fingerprint'); assert.ok(x.definition && x.bindings && x.scope, 'what the adoption says is read'); }
+      R.assertStepsMoveNoStamp(copy, records); }
+    pass('J3: the package states what its records say to the design fingerprint (S0\'s row), in place of the raw key: nothing for an adoption whose task still says it, its deviations once it has any, all but history, review, confirmed and provenance once no task stands beside it; the upgrade, a confirmation and an acceptance move no design stamp at any revision (S0\'s helper), a baseline frozen before reads no change, a deviation is a change; review-domain.js names the key nowhere');
+  });
+
+  // ------------------------------------------------------------ J4: a definition is current only if its knowledge is
+  await block('J4 knowledge', async () => {
+    pkg(); const {document: old, receipt, releaseId, at: KAT} = governedConcernApplied(), {claimReceiptCurrent} = await import('../public/knowledge-governance.js');
+    const up = asWritten(U.upgradeAdoptions(old)), a = byId(up, 'ADP-001'), read = p => D.adoptionReading(p, byId(p, 'ADP-001'));
+    // a governed concern has its own skeleton and kind, not the boundary task's
+    assert.deepEqual([a.kind, a.definition.authority, a.definition.definitionId, a.definition.groupId, a.definition.snapshot.kind, a.definition.snapshot.title], ['concern', 'released', 'knowledge-concern:service-ownership', 'knowledge:service-ownership', 'concern', 'Service ownership · One application'], 'a released design concern is upgraded under its own skeleton');
+    assert.ok(DEF.DEFINITION_KINDS.includes('concern')); assert.deepEqual(DEF.definitionIssues(a.definition.snapshot), []); assert.equal(a.definition.receipt.governedConcern.receipt.claimId, receipt.claimId, 'the receipt pins the released claim');
+    assert.equal(claimReceiptCurrent(up, receipt), true); assert.deepEqual(read(up).definition, {state: 'current', reasons: []}); assert.deepEqual(own(chapter5(up)), [], 'while the pinned knowledge is current nothing is raised');
+    // candidate and unreleased knowledge moves no adoption reading (plan ruling 6): behaviour, not a scan of imports
+    { let q = knowledgeCommand(structuredClone(up), 'knowledge.source', {title: 'A second synthetic note', body: 'A second synthetic note\nA candidate statement about service ownership that nobody has reviewed.\n', path: 'synthetic/second.txt', revision: '1', license: 'Synthetic test material'}, KAT);
+      q = knowledgeCommand(q, 'knowledge.claim', {sourceId: q.knowledge.sources.at(-1).id, lineStart: 2, lineEnd: 2, subjectId: 'design-concern:service-ownership', predicate: 'offers a design concern', claimType: 'applicability', polarity: 'neutral', statement: 'A candidate reading of the same concern.', conditions: [], limitations: [], tags: ['title:Service ownership', 'question:Where should reservation ownership live?', 'option:local|One application|x', 'option:third|A third way|y']}, KAT);
+      q = asWritten(q); assert.equal(q.knowledge.claims.length, 2); assert.notEqual(q.knowledge.claims.at(-1).status, 'released');
+      assert.equal(JSON.stringify(read(q)), JSON.stringify(read(up)), 'a candidate claim on the same subject moves no adoption reading'); assert.deepEqual(own(chapter5(q)), []); }
+    // deactivated: the definition is no longer current, an error says so and acceptance is refused
+    const off = asWritten(knowledgeCommand(structuredClone(up), 'knowledge.deactivate', {reason: 'Withdraw project activation.', id: releaseId}, KAT));
+    assert.equal(claimReceiptCurrent(off, receipt), false, 'the existing rule reads the pinned claim as no longer current');
+    const g = read(off); assert.equal(g.definition.state, 'withdrawn', 'the reading does not say current of knowledge that is not: ' + JSON.stringify(g.definition)); assert.ok(g.definition.reasons.length > 0);
+    const f = own(chapter5(off)).find(x => x.code === 'adoption-definition-withdrawn'); assert.ok(f, 'adoption-definition-withdrawn is raised: ' + JSON.stringify(own(chapter5(off)).map(x => x.id)));
+    assert.deepEqual([f.id, f.level, f.objectId], ['adoption-definition-withdrawn:ADP-001', 'error', 'ADP-001']); assert.ok(f.detail.includes('ADP-001'));
+    { const d = structuredClone(off), x = byId(d, 'ADP-001'); x.confirmed = true; x.history.push({n: 2, at: AT, event: 'reassess', actor: A, revision: 1});
+      assert.throws(() => commandHandler('adoption.accept')(d, {type: 'adoption.accept', payload: {id: 'ADP-001', revision: 1, deviationIds: [], note: ''}}, AT, B, {author: person(B)}), /open error|no longer current|withdrawn/i, 'acceptance is refused while the pinned knowledge is not current'); }
+    // an acceptance given while the knowledge was current does not stand once it is not
+    { const d = structuredClone(up), x = byId(d, 'ADP-001'); x.confirmed = true; x.history.push({n: 2, at: AT, event: 'reassess', actor: A, revision: 1}); x.review = {actor: B, at: AT, account: 'person', revision: 1, seq: 2, note: '', deviationIds: []};
+      assert.equal(D.adoptionAccepted(asWritten(d), byId(d, 'ADP-001')), true);
+      const gone = asWritten(knowledgeCommand(structuredClone(d), 'knowledge.deactivate', {reason: 'Withdraw project activation.', id: releaseId}, KAT)); assert.equal(D.adoptionAccepted(gone, byId(gone, 'ADP-001')), false, 'accepted is read: not while the definition\'s knowledge is not current');
+      // and the tracker flags it in the commit that deactivates (design c.3)
+      const next = structuredClone(gone); pkg().track(asWritten(d), next, {type: 'knowledge.deactivate', payload: {id: releaseId}}, LATER);
+      const change = D.adoptionReading(next, byId(next, 'ADP-001')).changed; assert.ok(change.required && change.causes.some(c => c.kind === 'definition'), 'the commit that deactivates the release flags the adoption: ' + JSON.stringify(change)); }
+    // a built-in definition is read as before; its interpretation as before
+    assert.deepEqual(D.adoptionReading(upgraded(), byId(upgraded(), 'ADP-001')).definition, {state: 'current', reasons: []});
+    pass('J4: an adoption\'s definition is current only if its knowledge is — a released design concern is upgraded under its own skeleton and kind (concern), its receipt is read with the existing rule (claimReceiptCurrent, withdrawn): a candidate claim on the same subject moves no reading; a deactivated release reads withdrawn, raises adoption-definition-withdrawn (error), refuses acceptance, ends a standing acceptance and is flagged by the tracker');
+  });
+
+  // ------------------------------------------------------------ J5: what the tracker changes is journalled
+  await block('J5 journal', async () => {
+    pkg(); const s = await server(worker);
+    try {
+      await s.apply(); const id = 'ADP-003', get = () => byId(s.doc(), id), naming = body => list(body.document.changes?.events).filter(e => e.source?.id === id);
+      const store = get().bindings.find(b => b.roleId === 'store').recordId, component = s.doc().realisation.components.find(c => c.id === store);
+      // a change of a bound record: one event names the adoption, with who sent the commit
+      const had = naming(await s.read()).map(e => e.id);
+      const changed = await s.ok('realisation.component', {...component, purpose: component.purpose + ' Sized for the settlement peak.'}, C), mine = naming(changed).filter(e => !had.includes(e.id));
+      assert.equal(mine.length, 1, 'the commit that changes a bound record holds one event naming the adoption: ' + JSON.stringify(naming(changed).map(e => e.id)));
+      assert.deepEqual([mine[0].actor, mine[0].authorKind, mine[0].source.id, mine[0].source.chapter], [C, 'person', id, 3], 'the server says who sent the commit, of what kind'); assert.match(mine[0].title, /reassess/i); assert.ok(mine[0].fields.some(f => String(f.after).includes(store)), 'and what changed: ' + JSON.stringify(mine[0].fields));
+      assert.equal(get().history.at(-1).event, 'changed'); assert.equal(get().history.at(-1).changeId, mine[0].id, 'the adoption\'s own note points at the journal event');
+      // a second change while the first is open: the cause joins the open change, and the journal names it too
+      const driver = s.doc().quality.drivers.find(d => d.id === get().scope.driverId), again = await s.ok('quality.driver', {...driver, response: driver.response + ' Reviewed for the fix-up.'}, B), second = naming(again).filter(e => !had.includes(e.id) && e.id !== mine[0].id);
+      assert.equal(second.length, 1); assert.equal(second[0].actor, B); assert.ok(D.adoptionReading(s.doc(), get()).changed.causes.some(c => c.kind === 'driver'));
+      // a commit that journals nothing of its own still journals what the tracker changed
+      { await s.ok('adoption.reassess', {id, revision: get().revision, reviewed: true, reason: 'Read against the model as it stands.'}, A);
+        const decision = s.doc().decisions.records.find(d => d.id === get().decisionId); assert.ok(decision, 'the adoption rests on a decision');
+        const seen = naming(await s.read()).map(e => e.id), r = await s.ok('decision.save', {...decision, title: decision.title + ' (reviewed)'}, C), third = naming(r).filter(e => !seen.includes(e.id));
+        assert.equal(third.length, 1, 'the commit that changes the decision the adoption rests on holds one event naming the adoption'); assert.deepEqual([third[0].actor, third[0].authorKind], [C, 'person']); }
+      // the design reversed through the earlier path: one event names the adoption, with who reversed it
+      const other = 'ADP-002', alt = s.doc().modelAlternatives.records.find(x => x.id === byId(s.doc(), other).legacy.alternativeId), {previewReversal} = await import('../public/model-reversal.js');
+      const pre = previewReversal(withFinalReview(structuredClone(s.doc())), alt);
+      if (pre.allowed) {
+        const r = await s.ok('alternative.rollback', {id: alt.id, alternativeRevision: alt.revision, previewStamp: pre.stamp, reviewed: true, reviewer: 'Synthetic architect', reason: 'Fixture: reverse the protected call.'}, C);
+        const ev = list(r.document.changes.events).filter(e => e.source?.id === other); assert.equal(byId(r.document, other).status, 'reversed');
+        assert.equal(ev.length, 1, 'the commit that reverses the design holds one event naming the adoption'); assert.deepEqual([ev[0].actor, ev[0].authorKind], [C, 'person']); assert.match(ev[0].title, /revers/i);
+        assert.deepEqual([byId(r.document, other).provenance?.author?.by, byId(r.document, other).provenance?.reviewed ?? null], [C, null], 'and the record whose status changed is stamped as that commit\'s (ruling H2)');
+      } else assert.fail('the fixture\'s protected call can be reversed: ' + JSON.stringify(pre).slice(0, 300));
+    } finally { s.close(); }
+    pass('J5: what the tracker changes is journalled — the commit that changes a bound record, the one that changes its driver and the one that reverses the design each hold one change event with the adoption as its source, stamped by the server with who sent the commit and of what kind; the adoption\'s note points at the event');
   });
 
   // ------------------------------------------------------------ size (rulings A3, A4, D7.6, D10)
