@@ -176,7 +176,7 @@ Built with `client-bundle.mjs bundleClient`, as `node build.mjs` builds the clie
 | Script files | 148 | 148 | 148 (unchanged) |
 | Files under 10 KB | 53 | 53 | 61 (unchanged) |
 | Stylesheet | 901,873 B | 901,873 B | 902,144 B (unchanged) |
-| Opens with records (ruling D10) | 4,062,884 B (the entry added 833,044 B in 12 scripts before it held the package) | 4,079,360 B (849,271 B in 12 scripts; the package is 16,227 B of it) | — |
+| Opens with records (ruling D10) | 4,062,884 B (the entry added 833,044 B in 12 scripts before it held the package) | 4,079,956 B (849,867 B in 12 scripts; the package is 16,823 B of it) | — |
 
 The 249 B, read from the metafiles of the two builds, output by output:
 
@@ -207,7 +207,7 @@ import of `topology.js` in `deploy-view.js` the route is the same 3,230,089 B (t
   marker and no lazy entry; with the marker the entry of the Chapter 10 Model view is asked for once and Chapters 1 and
   10 draw without an error). With the stub's line taken out of `design-package-routes.js` and the client rebuilt, the
   case fails on "a project that holds the marker loads the lazy entry that holds the package" (checked once, restored).
-- `node check-syntax.mjs`: 929 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, 0 new.
+- `node check-syntax.mjs`: 930 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, 0 new.
   `node build.mjs`: builds with no size violation.
 - Other suites run are listed in the result of the slice.
 

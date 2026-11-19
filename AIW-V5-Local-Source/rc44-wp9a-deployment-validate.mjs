@@ -121,7 +121,7 @@ await block('S1.0 the marker', async () => {
     assert.notEqual(reviewSourceStamp(first), reviewSourceStamp(base)); assert.equal(evidenceStamp(first), evidenceStamp(base), 'the marker is no evidence');
     assert.deepEqual([reviewSourceStamp(retaken), evidenceStamp(retaken), retaken.runtime.version], [reviewSourceStamp(copy), evidenceStamp(copy), copy.runtime.version], 'taken again in the copy it moves no stamp and no version');
     assert.deepEqual([mine().evidenceKeys, mine().designKeys], [['runtime.topology'], ['technology.domains', 'runtime.nodes']]); }
-  pass('S1.0: before the marker runtime.node, technology.domain, technology.domain-proposals and runtime.locate are refused; runtime.topology-start is refused for an agent account, a draft by Sol and an import, and for a person writes the marker, names the package in the document and is journalled; sent again it changes nothing; a template copy stays typed and clears who chose it');
+  pass('S1.0: before the marker runtime.node, technology.domain, technology.domain-proposals and runtime.locate are refused; runtime.topology-start is refused for an agent account, a draft by Sol and an import, and for a person writes the marker, names the package in the document and is journalled; sent again it changes nothing; a template copy stays typed and clears who chose it; choosing it moves the design stamp through Chapter 10\'s version, and who chose it moves no stamp');
 });
 
 await block('S1.1 a deployment node', () => {
@@ -241,7 +241,7 @@ await block('S1.2 one typed failure domain is one hosting failure domain', () =>
   p = doc(p, 'runtime.locate', {placementId: placement.id, nodeId: null}); assert.ok(!('nodeId' in p.runtime.placements.find(x => x.id === placement.id)));
   p = doc(p, 'runtime.locate', {zoneId: I.zone1, nodeId: null, domainIds: null, reason: null});
   assert.ok(!['nodeId', 'domainIds', 'reason'].some(k => k in zoneOf(p, I.zone1)), 'a zone that names nothing typed holds no key for it'); assert.equal(runtimeModel.failureDomainKey(zoneOf(p, I.zone1)), 'az-1');
-  pass('S1.2: zones named "AZ-1" and "az one" read as two hosting failure domains by name and as one (FD-002) once both stand in it: planFacts holds one domain with six copies, Chapter 10 raises single-domain and standby; a shared cause is never the hosting domain; runtime.locate keeps what it is not sent, moves the zone\'s revision and the environment\'s stamp, holds a placement under its zone\'s node and clears back to the earlier shape');
+  pass('S1.2: zones named "AZ-1" and "az one" read as two hosting failure domains by name and as one (FD-002) once both stand in it: planFacts holds one domain with six copies, Chapter 10 raises single-domain and standby; a shared cause is never the hosting domain; runtime.locate keeps what it is not sent, moves the zone\'s revision and the environment\'s stamp, holds a placement under its zone\'s node, bounds a zone to twelve failure domains and clears back to the earlier shape');
 });
 
 await block('S1.3 old documents', async () => {
@@ -309,7 +309,7 @@ await block('S1.4 proposals from the names in use', () => {
     q = doc(q, 'runtime.zone', {id: I.zone3, failureDomain: ' recovery REGION '}); q = doc(q, 'technology.capability', {id: I.storage, failureDomain: 'Recovery region'});
     q = doc(q, 'runtime.zone', {id: I.zone2, failureDomain: 'x'.repeat(170)});
     assert.deepEqual(doc(q, 'technology.domain-proposals').technology.domains.map(d => [d.title, d.legacyKeys]), [['AZ-1', ['az-1']], ['recovery REGION', ['recovery region']], ['Identity issuer', ['identity issuer']], ['Second issuer', ['second issuer']]], 'in the order the zones and then the capabilities state them, each once'); }
-  pass('S1.4: technology.domain-proposals proposes FD-001 to FD-005 from the five names in use, each AIW\'s proposal with no scope or cause guessed; no zone, capability or placement changes; the review stamps of Chapters 6 and 10 and every finding stay as they were; the SDD counts five proposals more; sent again, after a dismissal, or over typed names it proposes nothing twice');
+  pass('S1.4: technology.domain-proposals proposes FD-001 to FD-005 from the five names in use, each AIW\'s proposal with no scope or cause guessed; no zone, capability or placement changes; the review stamps of Chapters 6 and 10 and every finding stay as they were; the SDD counts five proposals more; sent again, after a dismissal, or over typed names it proposes nothing twice; a capability\'s alternate domain is a name in use, a zone people connect from, a text too long to be a name and a second spelling are not; the bound of 500 holds for proposals and by hand');
 });
 
 await block('S1.5 the lifecycle', () => {
@@ -353,7 +353,7 @@ await block('S1.5 the lifecycle', () => {
   assert.deepEqual([domainOf(back, rack.id).title, domainOf(back, rack.id).parentId, domainOf(back, rack.id).state], ['Rack 4', az1.id, undefined]);
   // a new record never takes a retired one's id
   assert.equal(run(gone, 'technology.domain', {title: 'Another domain'}).selected, 'fd-00' + (p.technology.counters.domain + 1));
-  pass('S1.5: failure domains and deployment nodes retire, restore and keep through the one lifecycle family; a proposal binds nothing until record.keep makes it authored; a domain a zone or another domain names, and a node a zone or another node names, is not retired; a retired record\'s id is not taken again');
+  pass('S1.5: failure domains and deployment nodes retire, restore and keep through the one lifecycle family; a proposal binds nothing and is no object of the record graph until record.keep makes it authored; a domain a zone, a node or another domain names, and a node a zone or another node names, is not retired; a retired record\'s id is not taken again');
 });
 
 await block('S1.6 journalled and stamped by the server', async () => {
@@ -425,7 +425,7 @@ await block('S1.6 journalled and stamped by the server', async () => {
     { const r = await h.send('runtime.node', {title: 'No kind'}); assert.equal(r.status, 400); assert.match(r.error, /Name the node and choose its kind/); }
     { const stale = await h.api('/api/commands' + h.q, 'POST', {revision: h.state.revision - 1, command: {type: 'runtime.node', payload: {title: 'Stale', kind: 'site'}}}); assert.equal(stale.status, 409, 'the revision check is the boundary\'s'); }
   } finally { h.close(); }
-  pass('S1.6: through POST /api/commands a node, a failure domain and a located zone are each journalled under their own record with the server\'s actor and author kind, with what changed, and stamped as the commit\'s; a save that changes nothing writes neither; AIW\'s proposals are journalled only when a person keeps or changes one, and a kept one is stamped as kept');
+  pass('S1.6: through POST /api/commands a node, a failure domain and a located zone are each journalled under their own record with the server\'s actor and author kind, with what changed, and stamped as the commit\'s; a located placement likewise; a save that changes nothing writes neither; AIW\'s proposals, a keep, a retirement, a restore and the zone\'s own save are no changes of the journal, and a kept proposal is stamped as kept; a zone or a placement a restore brings back names nothing that left the design meanwhile, and what was dropped is journalled');
 });
 
 await block('S1.7 the trace', () => {
@@ -464,7 +464,7 @@ await block('S1.7 the trace', () => {
     assert.ok(!recordGraph(q).relationships.some(e => /dn-40|fd-40/.test(e.from + e.to)), 'a field that names a record that is not there states no relation'); assert.deepEqual(architectureModel(q).issues, architectureModel(base).issues); }
   // without the marker nothing of the package is read into the graph, whatever a document holds
   { const unmarked = structuredClone(p); delete unmarked.runtime.topology; const q = withFinalReview(unmarked); assert.ok(![...recordGraph(q).objects.values()].some(o => ['node', 'failureDomain'].includes(o.type)) && !recordGraph(q).relationships.some(e => ['sitsIn', 'failsWith'].includes(e.type))); }
-  pass('S1.7: nodes and failure domains are objects of the record graph with sitsIn, partOf and failsWith stated from their fields; forwardTrace from the Reservation API reaches its zones\' nodes and failure domains and the reverse walk from FD-002 reaches ' + I.requirement + '; the built-in layers of every trail and spine are unchanged, no finding id is shared and the connected model has the issues it had');
+  pass('S1.7: nodes and failure domains are objects of the record graph with sitsIn, partOf and failsWith stated from their fields; forwardTrace from the Reservation API reaches its zones\' nodes and failure domains and the reverse walk from FD-002 reaches ' + I.requirement + '; a zone fails with each domain its domain lies in; the built-in layers of every trail and spine are unchanged, no finding id is shared and the connected model has the issues it had');
 });
 
 await block('S1.8 a draft by Sol and an agent account', async () => {
@@ -527,7 +527,7 @@ await block('S1.8 a draft by Sol and an agent account', async () => {
     r = await h.send('runtime.node', {id: 'dn-002', reason: 'Drafted reason.', origin: 'sol-draft'}, AGENT); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); node = nodeOf(d(), 'dn-002');
     assert.deepEqual([node.state, node.jurisdiction, node.provenance.author.kind, authorship(node).kind, events().at(-1).reviewed], [undefined, 'FI', 'sol-draft', 'sol-draft', false]);
   } finally { h.close(); }
-  pass('S1.8: a draft by Sol and an agent account send runtime.node and technology.domain only as their proposal, alone and in a governed batch: the record arrives proposed, origin sol-draft, journalled as unreviewed; without saying so, claiming a review or naming a jurisdiction it is refused; a proposal binds nothing until a person keeps it, and a kept or changed one is the person\'s; Sol\'s change to a person\'s record is stamped as Sol\'s');
+  pass('S1.8: a draft by Sol and an agent account send runtime.node and technology.domain only as their proposal, alone and in a governed batch: the record arrives proposed, origin sol-draft, journalled as unreviewed; without saying so, claiming a review or naming a jurisdiction it is refused; the review plan asks a person to keep or dismiss it; an alternative an agent account saves holds only proposals, and merged by a person its record is still Sol\'s proposal; a proposal binds nothing until a person keeps it, and a kept or changed one is the person\'s; Sol\'s change to a person\'s record, and a zone it locates, are stamped as Sol\'s');
 });
 
 await block('S1.9 staging; candidate knowledge reaches no topology reading', () => {
