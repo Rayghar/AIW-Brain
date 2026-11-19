@@ -24,7 +24,7 @@ import {applyAssuranceCommand} from './public/assurance-domain.js';
 import {acquireRepositorySource} from './knowledge-service.js';
 import {handleRepositoryCorpus} from './knowledge-repository.js';
 import {handleRepositoryTransfer} from './repository-transfer.js';
-import {applyKnowledgeCommand} from './public/knowledge-governance.js';
+import {applyConceptCommand} from './public/knowledge-concept-commands.js';
 import {journeyIndex} from './public/journey-context.js';
 import {applyArchitectureCommand} from './public/architecture-design.js';
 import {applyLensCommand} from './public/domain-lens.js';
@@ -94,7 +94,7 @@ import './public/readings-upgrade.js';
 // shared machinery (public/design-extensions.js); their commands reach their handlers through the boundary below, and a
 // package that does not conform to the registration contract stops the server here, when it starts.
 import './design-packages.js';
-import {installBuiltInCommands,assertExtensions,extensionCommand,extensionHandler,extensionLarge,validateExtensions,trackExtensions,placeSections,markPackages,missingPackages,missingPackagesRefusal} from './design-extension-boundary.js';
+import {installBuiltInCommands,assertExtensions,extensionCommand,extensionHandler,extensionLarge,validateExtensions,trackExtensions,stampExtensions,placeSections,markPackages,missingPackages,missingPackagesRefusal} from './design-extension-boundary.js';
 installCatalogue(BRAIN_CATALOGUE);
 const log=(event,details)=>console.error(JSON.stringify({at:new Date().toISOString(),event,...details}));
 // Command types reach their domain module by prefix (round 2, B2-05): one registry instead of a ternary chain, and
@@ -112,7 +112,7 @@ const LARGE_COMMAND_PREFIXES=['evidence.model-reconcile','alternative.','design.
 function builtInHandler(type){for(const [key,handler] of COMMAND_HANDLERS)if(key.endsWith('.')?type.startsWith(key):type===key)return handler;return applyCommand;}
 // A type a design package states (rc44, slice S0) reaches the package's handler through its boundary, unless a built-in
 // handler takes the type: the built-in handlers are asked first, the ones this route calls itself among them.
-installBuiltInCommands(type=>type==='knowledge.fetch'||type==='workspace.view'||type.startsWith('intelligence.')?true:type.startsWith('knowledge.')?applyKnowledgeCommand:builtInHandler(type));
+installBuiltInCommands(type=>type==='knowledge.fetch'||type==='workspace.view'||type.startsWith('intelligence.')?true:type.startsWith('knowledge.')?applyConceptCommand:builtInHandler(type));
 assertExtensions();
 export function commandHandler(type){return extensionHandler(type)||builtInHandler(type);}
 export function commandShape(command){
@@ -672,12 +672,12 @@ async function route(request,env,ctx){
       // read carries a baseline's metadata, not its parts: project-storage.js openBaseline).
       const frozenSources=new Map(),viewed=type==='workspace.view'?input.command.payload?.exploration?.baselineId:null,viewedEntry=typeof viewed==='string'?prior.finalReview?.baselines?.find(b=>b.id===viewed):null;
       if(viewedEntry?.frozen)frozenSources.set(viewed,(await openBaseline(env,owner,projectId,viewedEntry,['source'])).source);
-      try{if(type==='knowledge.link'&&!journeyIndex(prior).nodes.has(input.command.payload?.objectId))throw Error('Choose an existing object in this project.');const own=documentCopy(prior),packaged=extensionHandler(type);validateExtensions(prior,input.command,{at,actor,author});result=packaged?packaged(own,input.command,at,actor,{author,revision:input.revision}):type==='knowledge.fetch'?await acquireRepositorySource(own,input.command.payload||{},env,actor,at):type.startsWith('knowledge.')?applyKnowledgeCommand(own,input.command,at,actor):type==='intelligence.adopt'?await adoptSavedIntelligence(env,owner,projectId,own,input.command.payload||{},at,actor):type==='workspace.view'?applyWorkbenchCommand(own,input.command,at,actor,{baselineSource:id=>frozenSources.get(id)||null}):commandHandler(type)(own,input.command,at,actor,{author,revision:input.revision});result.document=withFinalReview(result.document===prior?result.document:handOver(result.document));carryProvenance(prior,result.document,at);recordSuggestions(result.document,carriers,{actor,at,selected:result.selected??null,prior});
+      try{if(type==='knowledge.link'&&!journeyIndex(prior).nodes.has(input.command.payload?.objectId))throw Error('Choose an existing object in this project.');const own=documentCopy(prior),packaged=extensionHandler(type);validateExtensions(prior,input.command,{at,actor,author});result=packaged?packaged(own,input.command,at,actor,{author,revision:input.revision}):type==='knowledge.fetch'?await acquireRepositorySource(own,input.command.payload||{},env,actor,at):type.startsWith('knowledge.')?applyConceptCommand(own,input.command,at,actor,{author}):type==='intelligence.adopt'?await adoptSavedIntelligence(env,owner,projectId,own,input.command.payload||{},at,actor):type==='workspace.view'?applyWorkbenchCommand(own,input.command,at,actor,{baselineSource:id=>frozenSources.get(id)||null}):commandHandler(type)(own,input.command,at,actor,{author,revision:input.revision});result.document=withFinalReview(result.document===prior?result.document:handOver(result.document));carryProvenance(prior,result.document,at);recordSuggestions(result.document,carriers,{actor,at,selected:result.selected??null,prior});
         // A design package whose command this commit applied (its own, one a batch carries, one a merge applies) is
         // named in the document it wrote (rc44, slice S0; ruling D2: workspace.packages).
         if(result.document!==prior)markPackages(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command);
         // The records the commit wrote are stamped as its, and a brief it changed is kept as a new version of its source.
-        stampAuthorship(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command,result,author,at,{fourEyes:prior.workspace?.governance?.fourEyes===true});attachProvenanceBlocks(prior,result.document,input.command,result);versionBrief(prior,result.document,author,at)}catch(e){const message=publicMessage(e);return json({error:message,...(/^Unknown .* action\.$/.test(message)?{code:'unknown_command'}:{})},400)}
+        stampAuthorship(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command,result,author,at,{fourEyes:prior.workspace?.governance?.fourEyes===true});stampExtensions(prior,result.document,author,at);attachProvenanceBlocks(prior,result.document,input.command,result);versionBrief(prior,result.document,author,at)}catch(e){const message=publicMessage(e);return json({error:message,...(/^Unknown .* action\.$/.test(message)?{code:'unknown_command'}:{})},400)}
       let impact;
       // The trackers derive journal and impact records from the change; a fault in them is a programming fault
       // (answered as such, round 2, B2-06), never a storage outage.

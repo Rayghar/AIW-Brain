@@ -41,7 +41,11 @@ export function extensionUpgradeNotes(p) {
 // ensureExtensions: the stub of the package `id` is registered as `id-route`).
 export const PACKAGES_KEY = 'workspace.packages';
 export const documentPackages = p => list(p?.workspace?.packages).filter(id => typeof id === 'string' && id);
-export const missingPackages = p => documentPackages(p).filter(id => !EXTENSIONS.some(e => e.id === id));
+// A list this build cannot read (not a list, or an entry that is no name) is no empty list: the document is treated as
+// naming a package this build lacks, under this name, so that it is read and not changed.
+export const UNREADABLE_PACKAGES = 'a list of packages this build cannot read';
+const readablePackages = v => v === undefined || Array.isArray(v) && v.every(id => typeof id === 'string' && id);
+export const missingPackages = p => (readablePackages(p?.workspace?.packages) ? documentPackages(p).filter(id => !EXTENSIONS.some(e => e.id === id)) : [UNREADABLE_PACKAGES]);
 export function missingPackagesRefusal(ids) {
   const one = ids.length === 1;
   return 'This project holds records of ' + (one ? 'a design package' : 'design packages') + ' this build of AIW does not have (' + ids.join(', ') + '). It can be read here; a design this build cannot read in full is not changed, frozen or printed by it. Open the project with a build that has ' + (one ? 'the package' : 'those packages') + '.';
@@ -80,7 +84,15 @@ export function placeSections(document, markdown, p) {
   for (const [id, after, text] of texts) {
     const at = lines.findIndex((line, i) => !fenced[i] && line === after);
     if (at < 0) continue;
-    const level = /^#+/.exec(after)?.[0].length || 1, inner = fences(text), above = text.find((line, i) => !inner[i] && /^(#+) /.exec(line)?.[1].length <= level);
+    // Every form of a heading counts (the verifier's second round): marks with blanks before them or a tab after, a
+    // line under-ruled with = (level 1) or - (level 2), and an HTML heading.
+    const level = /^#+/.exec(after)?.[0].length || 1, inner = fences(text), headingLevel = (line, i) => {
+      if (inner[i]) return 0;
+      const marks = /^\s{0,3}(#{1,6})(?:[ \t]|$)/.exec(line); if (marks) return marks[1].length;
+      const html = /<h([1-6])[\s>]/i.exec(line); if (html) return +html[1];
+      const next = text[i + 1]; if (line.trim() && !inner[i + 1] && typeof next === 'string') { if (/^\s{0,3}=+\s*$/.test(next)) return 1; if (/^\s{0,3}-+\s*$/.test(next)) return 2; }
+      return 0;
+    }, above = text.find((line, i) => { const l = headingLevel(line, i); return l > 0 && l <= level; });
     if (above !== undefined) throw Error(id + ': its section after “' + after + '” prints a heading at or above its anchor\'s level (“' + above + '”). A section stays inside the section it follows.');
     let end = lines.length;
     for (let i = at + 1; i < lines.length; i++) { const m = !fenced[i] && /^(#+) /.exec(lines[i]); if (m && m[1].length <= level) { end = i; break; } }
@@ -168,6 +180,11 @@ export function extensionIssues(e) {
   if (!ID.test(String(e.id || ''))) say('its id is 2 to 61 lower-case letters, digits and hyphens, starting with a letter.');
   for (const k of Object.keys(e)) if (!PARTS.has(k)) say('“' + k + '” is not a part of the contract.');
   const mine = registered(e), same = (a, b) => a === b || JSON.stringify(a) === JSON.stringify(b);
+  // A key or a collection named after what every object carries (constructor, toString, …) reads, in a document that
+  // has no such key, as the inherited value: stated as a design or an evidence key it moved the fingerprints of every
+  // old document. No part of a package states one, in its first or its second segment.
+  { const part = v => (plain(v) ? v : {}), stated = [...list(e.designKeys), ...list(e.evidenceKeys), ...Object.keys(part(e.lifecycle)), ...Object.keys(part(e.provenance?.records)), ...Object.keys(part(e.provenance?.nouns)), ...Object.values(part(e.provenance?.paths)).flatMap(v => list(v))];
+    for (const k of new Set(stated.filter(k => typeof k === 'string'))) if (k.split('.').some(seg => seg in {})) say('“' + k + '” names what every object carries: it is no key of a document.'); }
   // objectTypes
   if (e.objectTypes !== undefined && !plain(e.objectTypes)) say('objectTypes is {type: {label, chapter, level, prefix}}.');
   for (const [type, t] of Object.entries(plain(e.objectTypes) ? e.objectTypes : {})) {
@@ -254,6 +271,9 @@ export function extensionIssues(e) {
   for (const [path, noun] of Object.entries(plain(pv?.nouns) ? pv.nouns : {})) {
     if (typeof noun !== 'string' || !noun) say('the noun of “' + path + '” is a word.');
     if (path in RECORD_NOUNS && !(mine && mine.provenance?.nouns?.[path] === RECORD_NOUNS[path])) say('the noun of “' + path + '” is built in or another package\'s; it stays as it is.');
+    // A noun the workbench reads one of its own collections under carries that collection's treatment in the SDD
+    // (the open fields of a “document”, the SDD's word for the narrative, are not listed): a package's noun is its own.
+    if (typeof noun === 'string' && (noun === 'document' || Object.entries(RECORD_NOUNS).some(([other, n]) => n === noun && other !== path && workbenchKey(other)))) say('the noun “' + noun + '” is one the workbench reads a collection of its own under: a package\'s records have a noun of their own.');
   }
   for (const [key, paths] of Object.entries(plain(pv?.paths) ? pv.paths : {})) if (!Array.isArray(paths) || !paths.every(x => typeof x === 'string' && PATH.test(x))) say('the paths of “' + key + '” are a list of collections.');
   // design and evidence keys

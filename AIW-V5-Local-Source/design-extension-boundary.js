@@ -30,16 +30,17 @@
 // A package only adds: a type a built-in handler takes is never a package's. The built-in handlers are asked once per
 // type (builtInType): a type they refuse as unknown ("Unknown … action.") is free for a package.
 import {EXTENSIONS} from './public/design-extensions.js';
+import {workbenchKey as onWorkbenchKey} from './public/design-extension-parts.js';
 import {verifierRefusal} from './public/architecture-obligations.js';
 import {registerReviewTypes} from './authorship.js';
 import {registerUndoExtensions} from './public/action-undo-domain.js';
-import {innerCommands, listAt, reviewOf} from './public/provenance.js';
+import {innerCommands, listAt, reviewOf, stampChanged} from './public/provenance.js';
 import {isRetiredCommand} from './public/canonical-command.js';
 import {inheritedFindings, findingCause} from './public/review-domain.js';
 import {createProject} from './shared/projects-domain.js';
 import {withFinalReview} from './public/review-domain.js';
 import {extensionIssues as partIssues, extensionConflicts, COMMAND_TYPE, notePackages} from './public/design-extension-parts.js';
-export {upgradeExtensions, extensionUpgradeNeeded, extensionUpgradeNotes, placeSections, extensionConflicts, WORKBENCH_KEYS, WORKBENCH_PREFIXES, workbenchKey, packageCollections, PACKAGES_KEY, documentPackages, missingPackages, missingPackagesRefusal} from './public/design-extension-parts.js';
+export {upgradeExtensions, extensionUpgradeNeeded, extensionUpgradeNotes, placeSections, extensionConflicts, WORKBENCH_KEYS, WORKBENCH_PREFIXES, workbenchKey, packageCollections, PACKAGES_KEY, documentPackages, missingPackages, missingPackagesRefusal, UNREADABLE_PACKAGES} from './public/design-extension-parts.js';
 
 // The built-in handler of a type, as worker.js resolves it: a function, or true for a type the Worker handles itself.
 let builtInHandler = null;
@@ -94,6 +95,15 @@ function storedRecord(p, e, type, id) {
   for (const path of [paths[type], paths[type.split('.')[0]]].find(Array.isArray) || []) { const r = listAt(p, path).find(x => x?.id === id); if (r) return r; }
   return null;
 }
+// Every collection the registered packages state as their own, by any part (lifecycle, provenance.records and the
+// lists of provenance.paths), never one on a key the workbench itself writes.
+const ownCollections = () => [...new Set(EXTENSIONS.flatMap(e => [...Object.keys(plainPart(e.lifecycle)), ...Object.keys(plainPart(e.provenance?.records)), ...Object.values(plainPart(e.provenance?.paths)).flatMap(v => (Array.isArray(v) ? v : []))]))].filter(path => typeof path === 'string' && !onWorkbenchKey(path));
+const plainPart = v => (v && typeof v === 'object' && !Array.isArray(v) ? v : {});
+// What worker.js calls after the commit's own stamping (stampAuthorship): the stamp of every package record the
+// commit changed is the commit's (ruling D1; provenance.js stampChanged). So a person's record that an agent account
+// or a draft by Sol changes, by a type whose prefix states no paths or by a command that names no record, no longer
+// reads as a person's, and a second person's step on it is refused until a person saves or confirms it.
+export const stampExtensions = (prior, next, author, at) => (EXTENSIONS.length ? stampChanged(prior, next, ownCollections(), author, at) : next);
 // The handler worker.js calls for a package's type, (document, command, at, actor, {author, revision}) as every
 // handler is called, or null. It refuses what the type says of itself, then applies.
 export function extensionHandler(type) {
@@ -115,7 +125,9 @@ export function extensionHandler(type) {
     }
     const refusal = c.validate?.(p, command, {at, actor, author});
     if (refusal) throw Error(String(refusal));
-    return c.apply(p, command, at, actor, options);
+    const from = eventsOf(p).length, result = c.apply(p, command, at, actor, options);
+    unstated(result?.document, from);
+    return result;
   };
 }
 // The commands a request applies to the design beside itself: the ones it carries (a reviewed batch's, an applied
@@ -167,9 +179,14 @@ export function markPackages(prior, next, command) {
 // tracker writes nothing for a document without its package's records. What it writes into `next` is part of the same
 // commit: the events it adds to next.changes.events are journalled and stamped with who, of what kind and why, as the
 // built-in trackers' are, and listed in the commit's activity row.
+// Who wrote a change, of what kind and why is what the server says of the commit (worker.js), never what a package
+// says: an event a tracker or a handler of a package adds states none of it, so the server's stamp is the only one.
+const AUTHOR_FIELDS = ['actor', 'authorKind', 'reviewed', 'account', 'session', 'reason'];
+const eventsOf = p => (Array.isArray(p?.changes?.events) ? p.changes.events : []);
+function unstated(next, from) { for (const event of eventsOf(next).slice(from)) if (event && typeof event === 'object') for (const k of AUTHOR_FIELDS) delete event[k]; }
 export function trackExtensions(prior, next, command, at) {
   const inner = innerCommands(command);
-  for (const c of inner.includes(command) ? inner : [command, ...inner]) for (const e of EXTENSIONS) if (typeof e.track === 'function') e.track(prior, next, c, at);
+  for (const c of inner.includes(command) ? inner : [command, ...inner]) for (const e of EXTENSIONS) if (typeof e.track === 'function') { const from = eventsOf(next).length; e.track(prior, next, c, at); unstated(next, from); }
 }
 // Whether a request of this type may be large (worker.js, beside LARGE_COMMAND_PREFIXES).
 export const extensionLarge = type => extensionCommand(type)?.large === true;

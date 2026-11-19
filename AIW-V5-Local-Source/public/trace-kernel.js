@@ -98,8 +98,9 @@ function kernelOf(p, upto = null) {
     // `on` names the layers a record of the document stands on. A hop brings a record only onto the layer of its type,
     // so the walk reads no hop of any other layer (rc44, slice S0: a package's hops cost a document without its
     // records nothing). The context is always read: it takes any Chapter 1 record, a requirement too, which stands
-    // on the requirement layer.
-    let i = 0; for (const [id, o] of G.objects) { order.set(id, i++); const l = !o.source.startsWith('model.context.') && layerOf(o); if (l) on[l] = layer.set(id, l); }
+    // on the requirement layer. A Chapter 1 record stands on the context whatever its type, and a hop still brings it
+    // onto the layer of its type (fits), so that layer is named too.
+    let i = 0; for (const [id, o] of G.objects) { order.set(id, i++); const l = !o.source.startsWith('model.context.') && layerOf(o); if (l) on[l] = on[TYPE_LAYER[o.type]] = layer.set(id, l); }
     const steps = new Map(), stepped = new Map();
     for (const e of G.relationships) if (stepConnection(e)) for (const [a, b] of stepEnds(e)) {
       if (layer.get(b) !== 'responsibility' || G.objects.get(a)?.type === 'responsibility') continue;

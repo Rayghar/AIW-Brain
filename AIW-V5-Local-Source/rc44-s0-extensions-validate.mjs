@@ -90,6 +90,10 @@ function applySynthetic(p, command, at, actor, options) {
   // made from a template resets and which is bookkeeping to the authorship stamps.
   if (command.type === 'synthetic.endorse') { const r = find(); r.review = {actor, at, account: options?.author?.account ?? null}; return {document: p, selected: r.id}; }
   if (command.type === 'synthetic.confirm') { const r = find(); r.confirmed = true; return {document: p, selected: r.id}; }
+  // Two ways a command changes a record without the stamping being told (the verifier's probes on ruling D1): a type
+  // under a prefix for which the package states no provenance.paths, and a command that names no record.
+  if (command.type === 'syntheticaside.rewrite') { const r = find(); r.title = String(raw.title || ''); s.version++; return {document: p}; }
+  if (command.type === 'synthetic.sweep') { for (const r of s.records) r.note = String(raw.note || ''); s.version++; return {document: p}; }
   throw Error('Unknown synthetic action.');
 }
 const STEP_UNDO = key => ({previous: (p, c) => ({id: c.payload.id, was: syn(p).find(r => r.id === c.payload.id)?.[key] ?? null}), revert(p, old) { const r = syn(p).find(x => x.id === old.id); if (!r) throw Error('The synthetic record changed.'); if (old.was) r[key] = old.was; else delete r[key]; return {document: p, selected: r.id}; }});
@@ -119,6 +123,7 @@ const SYNTHETIC = {
     'synthetic.save': {apply: applySynthetic, staged: true, validate: (p, command, {author}) => (command.payload?.broken !== true || author?.kind === 'person' ? null : author?.kind === 'import' ? 'An import does not mark a synthetic record broken.' : 'A draft by Sol does not mark a synthetic record broken.')},
     'synthetic.note': {apply: applySynthetic, undo: {previous: (p, c) => ({id: c.payload.id, note: syn(p).find(r => r.id === c.payload.id)?.note ?? ''}), revert(p, was) { const r = syn(p).find(x => x.id === was.id); if (!r) throw Error('The synthetic record changed.'); r.note = was.note; p.synthetic.version++; return {document: p, selected: r.id}; }}},
     'synthetic.observe': {apply: applySynthetic},
+    'syntheticaside.rewrite': {apply: applySynthetic}, 'synthetic.sweep': {apply: applySynthetic},
     // A person's step and a second person's step that can be undone by their receipt (should-fix 1: by a person).
     'synthetic.sign': {apply: applySynthetic, person: true, undo: STEP_UNDO('signed')},
     'synthetic.accept': {apply: applySynthetic, second: (p, c) => syn(p).find(r => r.id === c.payload?.id) || null, undo: STEP_UNDO('acceptance')},
@@ -132,7 +137,7 @@ const SYNTHETIC = {
   // retirement leaves the design it journals that its records were read again, in the same commit.
   track(prior, next, command, at) {
     if (!syn(next).length) return;
-    const event = (r, fields) => next.changes.events.push({id: 'CHG-' + String(++next.changes.counter).padStart(3, '0'), source: {chapter: 3, id: r.id, ref: r.id, kind: 'synthetic', title: r.title}, title: r.title, at, fields, items: []});
+    const event = (r, fields) => next.changes.events.push({id: 'CHG-' + String(++next.changes.counter).padStart(3, '0'), source: {chapter: 3, id: r.id, ref: r.id, kind: 'synthetic', title: r.title}, title: r.title, at, fields, items: [], ...(forge === 'journal' ? {actor: 'architect-z', authorKind: 'person', reviewed: true, account: 'person', session: 'forged', reason: 'forged'} : {})});
     (next.synthetic.tracked ??= []).push(command.type);
     if (command.type === 'synthetic.save') { const r = syn(next).find(x => x.id === (command.payload?.id || syn(next).at(-1)?.id)); if (r) event(r, [{key: 'title', label: 'Title', before: syn(prior).find(x => x.id === r.id)?.title ?? null, after: r.title}]); }
     if (command.type === 'record.retire' && syn(prior).length === syn(next).length) event(syn(next)[0], [{key: 'readAgain', label: 'Read again after a retirement', before: null, after: String(command.payload?.id)}]);
@@ -169,7 +174,7 @@ const OTHER = {
     ...(forge === 'finding' ? syn(p).filter(r => !r.componentId).map(r => ({code: 'synthetic-unbound', id: 'synthetic-unbound:' + r.id, title: 'A second finding under a taken id', detail: r.id, level: 'warning', objectId: r.id})) : [])],
     10: p => other(p).map(r => ({code: 'other-placed', id: 'other-placed:' + r.id, title: 'Place the other thing', detail: r.id, level: 'warning', objectId: r.id}))},
   // switched on by a case: a section that prints a heading at its anchor's level, or one a later package names as its anchor (should-fix 5)
-  sections: [{document: 'registers', after: '## Performance specification', markdown: () => (forge === 'heading' ? 'Some text.\n\n## Forged section\n\nUnder a heading at the anchor\'s level.\n\n' : forge === 'above' ? '# 7. Appendix\n\nUnder a heading above the anchor\'s level.\n\n' : forge === 'anchor' ? '### Forged anchor\n\nWhat a later package names as its anchor.\n\n' : forge === 'fenced' ? '```\n## Inside a code fence\n```\n\n' : '')}],
+  sections: [{document: 'registers', after: '## Performance specification', markdown: () => (forge.startsWith('raw:') ? 'Some text.\n\n' + forge.slice(4) + '\n\nMore text.\n' : forge === 'heading' ? 'Some text.\n\n## Forged section\n\nUnder a heading at the anchor\'s level.\n\n' : forge === 'above' ? '# 7. Appendix\n\nUnder a heading above the anchor\'s level.\n\n' : forge === 'anchor' ? '### Forged anchor\n\nWhat a later package names as its anchor.\n\n' : forge === 'fenced' ? '```\n## Inside a code fence\n```\n\n' : '')}],
   lifecycle: {'runtime.otherThings': 10},
   // otherNotes: read by the provenance reader (who wrote each, the review plan), not retired through the lifecycle family.
   provenance: {nouns: {'runtime.otherThings': 'other thing', 'runtime.otherNotes': 'other note'}, paths: {}, records: {'runtime.otherNotes': 10}},
@@ -199,7 +204,10 @@ if (PROBE >= 0) {
   const order = process.argv[PROBE + 1] || '';
   for (const ch of order) X.registerExtension({h: HOSTILE, o: OTHER, s: SYNTHETIC, n: NUMERIC}[ch]);
   // A package the start check would refuse, registered alone: what the references' trails read with it (should-fix 7).
-  if (order === 'n') { console.log(JSON.stringify({layers: kernel.TRACE_LAYERS, trails: Object.fromEntries(REFERENCES.map(t => [t, digests(reference(t)).trails]))})); process.exit(0); }
+  // The references name no runtime path from a requirement, so their trails would not show a shifted last layer (the
+  // verifier's second round): the probe also reads a document in which a requirement names a path.
+  if (order === 'n') { const q = JSON.parse(JSON.stringify(reference('bank-payment'))), req = q.artefacts.find(a => a.type === 'requirement'); q.runtime.paths[0].requirementIds = [req.id];
+    console.log(JSON.stringify({layers: kernel.TRACE_LAYERS, trails: Object.fromEntries(REFERENCES.map(t => [t, digests(reference(t)).trails])), path: kernel.requirementTrace(withFinalReview(q), req.id).layers.path, pathId: q.runtime.paths[0].id})); process.exit(0); }
   let p = reference('bank-payment'); const t = firstTrail(p);
   p = withSynthetic(p, {title: 'First synthetic record', requirementIds: [t.requirement], componentId: t.component});
   p = withSynthetic(p, {title: 'Second synthetic record', dependsOn: 'SYN-001', broken: true});
@@ -240,7 +248,10 @@ await block('registration', () => {
   // The command types the four designs state (wp1 knowledge.*, wp2 adoption.* and selection.*, wp3 workload.*, wp9a
   // runtime.* and technology.*) are free: the built-in handler of the prefix refuses each as unknown. Every built-in
   // type is taken, the ones the route calls itself among them.
-  for (const type of ['knowledge.concept-pin', 'knowledge.library', 'adoption.apply', 'adoption.accept', 'selection.judge', 'workload.model', 'workload.objective-agree', 'runtime.node', 'runtime.failure-accept', 'runtime.gate-evidence', 'technology.domain', 'technology.domain-evidence']) { assert.equal(boundary.builtInType(type), false, type + ' is free for a package'); assert.deepEqual(boundary.extensionIssues({id: 'xy', commands: {[type]: {apply() {}}}}), []); }
+  for (const type of ['knowledge.concept-pin', 'adoption.apply', 'adoption.accept', 'selection.judge', 'workload.model', 'workload.objective-agree', 'runtime.node', 'runtime.failure-accept', 'runtime.gate-evidence', 'technology.domain', 'technology.domain-evidence']) { assert.equal(boundary.builtInType(type), false, type + ' is free for a package'); assert.deepEqual(boundary.extensionIssues({id: 'xy', commands: {[type]: {apply() {}}}}), []); }
+  // knowledge.library, .topic and .concept are the workbench's own since wp1 S1 (ruling E5: the concept register is part of
+  // the built-in knowledge family), so they are no package's; what S3 registers (knowledge.concept-pin) stays free.
+  for (const type of ['knowledge.library', 'knowledge.topic', 'knowledge.concept', 'knowledge.concept-review']) { assert.equal(boundary.builtInType(type), true, type + ' is built in'); assert.ok(boundary.extensionIssues({id: 'xy', commands: {[type]: {apply() {}}}}).some(i => i.includes('is built in')), type + ' is refused to a package'); }
   for (const type of ['runtime.zone', 'runtime.simulation', 'technology.capability', 'knowledge.review', 'knowledge.fetch', 'workspace.view', 'workspace.apply', 'intelligence.adopt', 'decision.accept', 'review.disposition', 'record.retire', 'feedback.import', 'model.apply-impact', 'action.undo']) assert.equal(boundary.builtInType(type), true, type + ' is built in');
   assert.ok(boundary.extensionIssues({id: 'xy', objectTypes: {xy: {label: 'Xy', chapter: 2, level: 'intent', prefix: 'XY'}}, layers: {xy: 'xy'}, hops: [{layer: 'xy', types: ['a'], from: ['requirement'], dir: 'out', ctx: true, step: true}]}).some(i => /“step” is not a part of a hop/.test(i)), 'a hop states only what the contract names');
   assert.ok(boundary.extensionIssues({id: 'xy', provenance: {records: {'xy.things': 12}}}).some(i => /“xy\.things” is a key of the document or chapter\.list, with its chapter from 1 to 11/.test(i)));
@@ -358,6 +369,18 @@ await block('1 record graph and trail', () => {
   { const reqs = p0.artefacts.filter(a => a.type === 'requirement'), only = withFinalReview({...p0, artefacts: reqs, relationships: [{...p0.relationships[0], id: 'REL-900', from: reqs[0].id, to: reqs[1].id}]});
     assert.ok(![...recordGraph(only).objects.values()].some(o => o.source.startsWith('artefacts[') && o.type !== 'requirement'), 'the document holds no Chapter 1 record but requirements');
     assert.deepEqual(kernel.requirementTrace(only, reqs[0].id).layers.context, [reqs[1].id], 'the linked requirement is on the context layer'); assert.deepEqual(kernel.requirementTrace(only, reqs[1].id).layers.context, [reqs[0].id]); }
+  // The walk's skip must not cost a built-in layer a record (the verifier's second round): a Chapter 1 record whose
+  // type a built-in layer holds stands on the context layer, and a hop still brings it onto the layer of its type, as
+  // on rc.10.73.42, in a document where no other record stands on that layer. Only a hand-made or imported document
+  // holds such a record; it reads as it did.
+  { const q = JSON.parse(JSON.stringify(reference('bank-payment'))), req = q.artefacts.find(a => a.type === 'requirement');
+    q.artefacts.push({id: 'DAT-900', ref: 'DAT-900', type: 'data', title: 'A Chapter 1 record typed as data', statement: 'x'}, {id: 'PTY-900', ref: 'PTY-900', type: 'party', title: 'A Chapter 1 record typed as party', statement: 'x'});
+    q.interfaces.data = []; q.interfaces.parties = [];
+    for (const c of q.realisation.components.slice(0, 2)) c.dataIds = [...(c.dataIds || []), 'DAT-900'];
+    q.modelContext = {...q.modelContext, relationships: [...(q.modelContext?.relationships || []), {type: 'fulfils', from: req.id, to: 'PTY-900'}]};
+    const T = kernel.requirementTrace(withFinalReview(q), req.id);
+    assert.ok(list(T.layers.data).includes('DAT-900'), 'a Chapter 1 record typed data is on the data layer, as on rc.10.73.42: ' + JSON.stringify(T.layers.data));
+    assert.ok(list(T.layers.party).includes('PTY-900'), 'a Chapter 1 record typed party is on the party layer, as on rc.10.73.42: ' + JSON.stringify(T.layers.party)); }
   pass('1: SYN-001 is in the record graph and the connected model with fulfils and binds, on the trail and the spine of ' + T0.requirement + ', in linkedVia both ways, namedBy and servingRequirements; a context hop is on the trail and not on the spine; every built-in layer is unchanged');
 });
 
@@ -538,6 +561,19 @@ await block('D1 two persons', async () => {
     assert.equal((await send('synthetic.confirm', {id: imported}, C)).status, 200);
     assert.equal((await send('synthetic.save', {id: imported, title: 'Imported, confirmed, then rewritten'}, AGENT)).status, 200);
     await refused(imported, A, 'a confirmation of what the record no longer says');
+    // the stamp is kept current by the boundary, not by what a command says of itself: a person's record that an agent
+    // account changes through a type whose prefix states no paths, or through a command that names no record, is the
+    // agent's text, and one person accepting it is one person
+    for (const [type, payload, sender, extra] of [['syntheticaside.rewrite', {title: 'Rewritten aside by the agent account'}, AGENT, {}], ['synthetic.sweep', {note: 'Swept by the agent account'}, AGENT, {}], ['synthetic.sweep', {note: 'Swept in a draft by Sol'}, C, {authorKind: 'sol-draft'}]]) {
+      assert.equal((await send('synthetic.save', {title: 'A person\'s record'}, B)).status, 200); const id = h.last();
+      assert.deepEqual([rec(id).provenance.author.kind, rec(id).provenance.author.by], ['person', B]);
+      const changed = await send(type, {...payload, id}, sender, extra); assert.equal(changed.status, 200, type + ': ' + JSON.stringify(changed.body).slice(0, 200));
+      assert.notEqual(rec(id).provenance?.author?.kind, 'person', 'after ' + type + ' the record no longer carries a person\'s stamp');
+      await refused(id, A, 'a person\'s record changed by ' + type + ' from an account that is no person');
+      // a record the sweep did not change keeps its stamp; one a person then saves is a person's again
+      assert.equal((await send('synthetic.save', {id, title: 'Saved again by a person'}, B)).status, 200);
+      { const r = await accept(id, A); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 200)); }
+    }
     // the author is still refused first, by the one rule (verifierRefusal)
     assert.match((await accept(agentOnly, B)).error, /architect-b wrote /);
   } finally { h.close(); }
@@ -605,7 +641,14 @@ await block('D2 packages a document names', async () => {
     assert.equal((await (await h.api('/api/project' + h.q)).json()).revision, revision, 'nothing was saved by any of them');
     // what stays possible: reading (above), renaming, archiving and restoring from the archive, a recovery export, access
     { const life = async action => { const cur = await (await h.api('/api/project' + h.q)).json(), res = await h.api('/api/lifecycle' + h.q, 'POST', {revision: cur.revision, ...action}); assert.equal(res.status, 200, JSON.stringify(action) + ' stays possible: ' + JSON.stringify(await res.clone().json()).slice(0, 160)); };
+      // a rename, an archive and a restore change the name, the status and their own log, and nothing else: no upgrade of a design this build cannot read in full is stored (the verifier's second round)
+      const raw = async () => { const stored = JSON.parse((await h.env.DB.prepare('SELECT document FROM projects WHERE id=?').bind(h.pid).first()).document), {lifecycle, status, ...workspace} = stored.workspace || {}; delete stored.name; return JSON.stringify({...stored, workspace}); };
+      // (the stored design is made one the read upgrade would change: its readings are of the design fingerprint before this one)
+      { const row = await h.env.DB.prepare('SELECT document FROM projects WHERE id=?').bind(h.pid).first(), stored = JSON.parse(row.document); assert.ok(stored.finalReview.designFingerprint > 1); stored.finalReview.designFingerprint -= 1;
+        await h.env.DB.prepare('UPDATE projects SET document=? WHERE id=?').bind(JSON.stringify(stored), h.pid).run(); }
+      const before = await raw();
       await life({action: 'rename', name: 'Renamed while a package is missing'}); await life({action: 'archive'}); await life({action: 'restore'});
+      assert.equal(await raw(), before, 'the stored design is byte for byte what it was');
       assert.notEqual((await h.api('/api/access' + h.q, 'POST', {actorId: 'architect-d', role: 'viewer'})).status, 409, 'access stays possible');
       assert.notEqual((await h.api('/api/recovery' + h.q + '&action=export', 'POST', {})).status, 409, 'a recovery export stays possible');
       const after = await (await h.api('/api/project' + h.q)).json(); assert.deepEqual(after.missingPackages, ['p99-unknown'], 'and the project still names what this build lacks'); }
@@ -646,7 +689,11 @@ await block('D2 packages a document names', async () => {
     own.synthetic.records[0].acceptance = {actor: B, at: AT, account: 'person'};
     assert.throws(() => R.assertTemplateCopyClearsSteps(own, d => d.synthetic?.records || []), /carried into a project copied from it: SYN-001\.acceptance/);
     assert.throws(() => R.assertTemplateCopyClearsSteps(source, d => d.synthetic?.records || []), /holds no record with a step taken/, 'a helper that was handed nothing to check says so'); }
-  assert.deepEqual(boundary.missingPackages({workspace: {packages: ['zz-synthetic', 'mm-other']}}), []); assert.deepEqual(boundary.missingPackages({workspace: {packages: ['p40-adoption', 7, 'zz-synthetic']}}), ['p40-adoption']); assert.deepEqual(boundary.missingPackages({}), []);
+  assert.deepEqual(boundary.missingPackages({workspace: {packages: ['zz-synthetic', 'mm-other']}}), []); assert.deepEqual(boundary.missingPackages({workspace: {packages: ['p40-adoption', 'zz-synthetic']}}), ['p40-adoption']); assert.deepEqual(boundary.missingPackages({}), []);
+  // a list of packages this build cannot read is no empty list (the verifier's second round): it is refused as a missing package is
+  for (const unreadable of ['p40-adoption', [['p40-adoption']], ['p40-adoption', 7, 'zz-synthetic'], {0: 'p40-adoption'}, [''], null, 7])
+    assert.deepEqual(boundary.missingPackages({workspace: {packages: unreadable}}), [boundary.UNREADABLE_PACKAGES], JSON.stringify(unreadable) + ' reads as a list this build cannot read');
+  assert.match(boundary.missingPackagesRefusal([boundary.UNREADABLE_PACKAGES]), /cannot read/);
   pass('D2 (server): the boundary names a package under workspace.packages when its command (alone, in a batch, by a merge) or its upgrade step first writes, and neither fingerprint reads the key; a document that names a package this build does not register is read with the package named, and every command, every export and a freeze are refused in words');
 });
 
@@ -762,6 +809,13 @@ await block('D4 tracker', async () => {
     assert.equal(mine.length, 1, 'its event is in that commit\'s journal'); assert.equal(added.at(-1), mine[0], 'after what the built-in trackers wrote'); assert.equal(mine[0].fields[0].after, second);
     assert.deepEqual([mine[0].actor, mine[0].authorKind, mine[0].reviewed], [A, 'person', true], 'stamped by the boundary with who and of what kind');
     const activity = JSON.stringify(await (await h.api('/api/activity' + h.q)).json()); assert.ok(activity.includes(mine[0].id), 'the activity row of the commit names the change');
+    // who wrote a change is what the server says, never what a package's tracker or handler says (the verifier's second
+    // round): an event a tracker writes with an actor, an author kind and a review of its own, in an agent account's commit
+    try { forge = 'journal'; const third = await invariant('A second invariant a package reads'), before = d().changes.events.length;
+      const r = await send('record.retire', {id: third, reason: 'Retired by the agent account.'}, AGENT); assert.equal(r.status, 200, r.error);
+      const forged = d().changes.events.slice(before).filter(e => e.source?.kind === 'synthetic'); assert.equal(forged.length, 1);
+      assert.deepEqual([forged[0].actor, forged[0].authorKind, forged[0].reviewed, forged[0].account, forged[0].session, forged[0].reason === 'forged'], [AGENT, 'sol-draft', false, 'agent', undefined, false], 'the event carries the commit\'s author, not the tracker\'s words: ' + JSON.stringify(forged[0]).slice(0, 300));
+    } finally { forge = ''; }
     // a batch: the batch itself and each inner command, the built-in ones too
     { const commands = [{type: 'decision.save', payload: {...d().decisions.records[0], title: d().decisions.records[0].title + ' (tracked)'}}, {type: 'synthetic.save', payload: {title: 'Tracked in a batch'}}], n = d().synthetic.tracked.length;
       const batch = await send('workspace.apply', {commands, stamp: previewWorkingChange(d(), commands).stamp, reviewed: true, reason: 'A batch the tracker reads.'}); assert.equal(batch.status, 200, batch.error);
@@ -915,6 +969,15 @@ await block('SF start check', () => {
     assert.ok(isReviewCommand('xy.' + end)); assert.ok(has({id: 'xy', commands: {['xy.' + end]: {apply() {}}}}, /command “xy\.\w+” ends as a review command does \(authorship\.js\): it states person or second/), 'xy.' + end);
     assert.deepEqual(issues({id: 'xy', commands: {['xy.' + end]: {apply() {}, person: true}}}), []); assert.deepEqual(issues({id: 'xy', commands: {['xy.' + end]: {apply() {}, second: () => null}}, provenance: {paths: {xy: ['xy.records']}}}), []);
   }
+  // the verifier's second round: a key named after what every object carries is no key of a document (it moved the
+  // fingerprints of every old document), and a package's noun is not one a built-in collection reads under
+  for (const k of ['constructor', 'hasOwnProperty', 'toString', 'valueOf', '__proto__', 'constructor.name', 'synthetic.constructor', 'toString.list']) {
+    for (const part of [{evidenceKeys: [k]}, {designKeys: [k]}, {lifecycle: {[k]: 3}}, {provenance: {records: {[k]: 3}}}, {provenance: {nouns: {[k]: 'thing'}}}, {provenance: {paths: {xy: [k]}}}])
+      assert.ok(issues({id: 'xy', ...part}).some(i => /names what every object carries/.test(i)), JSON.stringify(part) + ' is refused: ' + JSON.stringify(issues({id: 'xy', ...part})));
+  }
+  assert.ok(issues({id: 'xy', lifecycle: {'xy.things': 3}, provenance: {nouns: {'xy.things': 'document'}}}).some(i => /the noun “document” is one the workbench reads a collection of its own under/.test(i)), 'a built-in noun is not a package\'s');
+  assert.ok(issues({id: 'xy', lifecycle: {'xy.things': 3}, provenance: {nouns: {'xy.things': 'driver'}}}).some(i => /the noun “driver” is one the workbench reads a collection of its own under/.test(i)));
+  assert.deepEqual(issues({id: 'xy', lifecycle: {'xy.things': 3}, provenance: {nouns: {'xy.things': 'thing'}}}), []);
   pass('should-fix 3, 6, 11 and D7.5 at the start check: a hop onto a layer of a built-in type states only; an id prefix of the workbench and a retired command name are taken; no type is free before the built-in resolver is installed; a single-segment lifecycle path is refused; a layer over a built-in type of Chapter 1 is refused; a type ending in .review, .handoff or .intake states person or second');
 });
 
@@ -1059,6 +1122,13 @@ await block('upgrade and sections', () => {
   assert.equal(boundary.placeSections('registers', assembleSDD(P), P), registers, 'with the switch off the registers are what they were');
   const all = architectureMarkdown(P), delivery = architectureMarkdown(P, {audience: 'delivery'});
   assert.match(all.markdown, /## E\. Provenance[\s\S]*Synthetic records: SYN-001, SYN-002\./); assert.ok(!delivery.markdown.includes('Synthetic records:'), 'an edition that does not print the anchor does not print the section');
+  // the verifier's second round: every form of a heading is a heading (setext, indented, a tab after the marks, HTML)
+  try {
+    for (const forged of ['Forged\n======', 'Forged\n------', '  # Forged', '#\tForged', '<h1>Forged</h1>', '<H2 class="x">Forged</H2>']) {
+      forge = 'raw:' + forged; assert.throws(() => boundary.placeSections('registers', assembleSDD(P), P), /mm-other: its section after “## Performance specification” prints a heading/, JSON.stringify(forged) + ' is refused'); }
+    // what is no heading stays text: a rule between paragraphs, a deeper heading, an HTML heading below the anchor's level
+    for (const fine of ['Text.\n\n---\n\nMore.', '### Deeper', '<h3>Deeper</h3>', 'a # in a line']) { forge = 'raw:' + fine; assert.ok(boundary.placeSections('registers', assembleSDD(P), P).includes(fine), JSON.stringify(fine) + ' is printed'); }
+  } finally { forge = ''; }
   pass('upgrade and sections: the package\'s idempotent step runs in the read upgrade chain; its sections stand at their anchors in the registers and the architecture edition');
 });
 
@@ -1116,7 +1186,7 @@ await block('7 idempotent and order-free', () => {
     assert.deepEqual(boundary.extensionIssues(victim), [], 'the package whose key it is is not told its design key lies where the fingerprint does not read'); }
   // should-fix 7: a layer whose name sorts before the built-in layers (a numeric key) moves no built-in layer's hops
   { const r = spawnSync(process.execPath, [process.argv[1], '--probe', 'n'], {encoding: 'utf8', maxBuffer: 1 << 26}); assert.equal(r.status, 0, r.stderr.slice(0, 400)); const out = JSON.parse(r.stdout.trim().split('\n').at(-1));
-    assert.equal(out.layers[0], '7', 'the probe\'s layer does sort first'); for (const t of REFERENCES) assert.equal(out.trails[t], golden.readings[t].trails, t + ': every trail is the baseline\'s with such a layer registered');
+    assert.equal(out.layers[0], '7', 'the probe\'s layer does sort first'); assert.deepEqual(out.path, [out.pathId], 'a path a requirement names is on the last built-in layer with such a layer registered'); for (const t of REFERENCES) assert.equal(out.trails[t], golden.readings[t].trails, t + ': every trail is the baseline\'s with such a layer registered');
     assert.ok(boundary.extensionIssues(NUMERIC).some(i => /layer “7” names the object type it holds/.test(i)), 'and the start check refuses the name'); }
   pass('7: five registration orders, with repeats, in separate processes give the same object types, collections, layers, nouns and the same ten readings; registering again in this process changes nothing');
 });
@@ -1145,13 +1215,14 @@ await block('8 client build', async () => {
   const HOST = 'public/architecture-task-ui.js', opens = opensWithRecords(meta, HOST, Object.keys(BUDGET.data));
   assert.equal(opens.route, report.routes.chapters.code, 'the helper counts the chapters route as the gate does'); assert.ok(opens.added > 0 && opens.total === opens.route + opens.added && opens.files > 0, 'and what the lazy entry adds to it: ' + JSON.stringify(opens));
   assert.throws(() => opensWithRecords(meta, 'public/no-such-entry.js'), /holds no lazy entry/);
-  if (process.argv.includes('--measure')) { mkdirSync('audit/rc44/build-notes', {recursive: true}); writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v1', name: 'S0 shared registration', measuredWith: 'client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)', allowance: {chapters: 900, scripts: 148, ruling: 'D9 of 2026-11-18 (was 700 B)'}, caps: {chapters: BUDGET.routes.chapters, projects: BUDGET.routes.projects, scripts: BUDGET.scripts, under10k: BUDGET.tiny, css: BUDGET.css}, baseline: BASELINE, slice: measured, delta: measured.chapters - BASELINE.chapters, projectsDelta: measured.projects - BASELINE.projects, headroomAfter: BUDGET.routes.chapters - measured.chapters,
+  if (process.argv.includes('--measure')) { mkdirSync('audit/rc44/build-notes', {recursive: true}); writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v1', name: 'S0 shared registration', measuredWith: 'client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)', allowance: {chapters: 915, scripts: 148, ruling: 'F7 of 2026-11-19 (was 900 B by D9, 700 B before)'}, caps: {chapters: BUDGET.routes.chapters, projects: BUDGET.routes.projects, scripts: BUDGET.scripts, under10k: BUDGET.tiny, css: BUDGET.css}, baseline: BASELINE, slice: measured, delta: measured.chapters - BASELINE.chapters, projectsDelta: measured.projects - BASELINE.projects, headroomAfter: BUDGET.routes.chapters - measured.chapters,
     'opens with records': {gate: 'The chapters-route gate is unchanged and measures opening a document that holds no package records (ruling D10 of 2026-11-18).', S0: 'No package exists at S0, so no document holds package records: every document opens as measured above.', how: 'A package reports, in its notes and in its size evidence under this field: the code of the chapters route and of the static closure of the lazy entry its route stub loads, each script counted once, as rc44-s0-readings.mjs opensWithRecords(metafile, entry, Object.keys(BUDGET.data)) answers it from the metafile of the same build: {route, added, total, files}.', hosts: {[HOST]: {...opens, note: 'the lazy entry wp2\'s design names for its surface, as it is before any package is held in it'}}}}, null, 1) + '\n'); }
   assert.ok(existsSync(EVIDENCE), 'the slice\'s measurement is kept (node rc44-s0-extensions-validate.mjs --measure)');
   const size = JSON.parse(readFileSync(EVIDENCE, 'utf8'));
   assert.deepEqual(size.baseline, BASELINE, 'against the build of 94dbd4f'); assert.equal(size.slice.scripts, 148, '148 script files'); assert.equal(size.slice.under10k, BASELINE.under10k); assert.equal(size.slice.css, BASELINE.css, 'no stylesheet rule');
-  // (was "at most 700 B": ruling D9 of 2026-11-18 sets S0's allowance to 900 B in all)
-  assert.equal(size.allowance.chapters, 900); assert.equal(size.delta, size.slice.chapters - size.baseline.chapters); assert.ok(size.delta > 0 && size.delta <= 900, 'the route delta measured at the slice is at most 900 B: ' + size.delta);
+  // (was "at most 700 B", then 900 B by ruling D9 of 2026-11-18; ruling F7 of 2026-11-19 sets S0's allowance to 915 B
+  // in all: the 14 B that give a Chapter 1 record its rc.10.73.42 place on the layer of its type back)
+  assert.equal(size.allowance.chapters, 915); assert.equal(size.delta, size.slice.chapters - size.baseline.chapters); assert.ok(size.delta > 0 && size.delta <= 915, 'the route delta measured at the slice is at most 915 B: ' + size.delta);
   assert.ok(size.slice.chapters <= BUDGET.routes.chapters);
   { const w = size['opens with records']; assert.ok(w && /holds no package records/.test(w.gate) && /opensWithRecords/.test(w.how) && w.hosts?.[HOST]?.total === w.hosts[HOST].route + w.hosts[HOST].added, 'the size file says what the gate measures and how a package measures what a document with its records opens with'); }
   assert.ok(measured.chapters >= size.slice.chapters - 700, 'the route as built now is the slice\'s or a later one\'s: ' + measured.chapters);
