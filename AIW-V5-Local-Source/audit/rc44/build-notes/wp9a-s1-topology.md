@@ -209,7 +209,21 @@ import of `topology.js` in `deploy-view.js` the route is the same 3,230,089 B (t
   case fails on "a project that holds the marker loads the lazy entry that holds the package" (checked once, restored).
 - `node check-syntax.mjs`: 930 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, 0 new.
   `node build.mjs`: builds with no size violation.
-- Other suites run are listed in the result of the slice.
+- With the package registered, 65 existing suites were run one after another (the machine shared) and are green:
+  the five above; `rc44-wp1-knowledge`; 27 that read the tables and files the slice touches (`chapter-records`,
+  `design-records`, `field-spark`, `provenance`, `reference-resolution`, `tray`, `chapter-lines`,
+  `native-connection-ui`, `not-stated`, `wire-merge`, `desk-fixes`, `desk`, `design-spec`, `driver-applicability`,
+  `driver-kinds`, `driver-spec-view`, `model-walk`, `product-choice`, `rc42-g1-tech-approval`,
+  `rc42-g7-data-contracts`, `review-plan`, `scale-readings`, `sol-coverage`, `tradeoff`, `utility`,
+  `component-library`, `architecture-intelligence`); and 32 that run the server or the review (`action-undo-api`,
+  `action-undo`, `baseline-size`, `changes`, `exchange-design`, `interfaces`, `journal-archive`, `rc42-g2-library`,
+  `rc42-g3a-risk-and-limits`, `rc42-g3b-trace-and-delivery`, `rc42-g3c-evidence-fingerprint`, `recovery-authority`,
+  `recovery-size`, `review`, `runtime-assistance`, `sdd-formats`, `sdd-size`, `security`, `technology-realisation`,
+  `platform`, `readiness`, `ars`, `model-impact`, `model-lifecycle`, `workspace`, `projects`, `reference-projects`,
+  `connected-design-projections`, `trace-narrative`, `model-conformance`, `workbench-ui`, `model-alternatives`).
+  The five named suites, `rc44-wp1-knowledge`, S0's suite and 20 of the others were run again at the final code.
+  None of the 37 suites that are red at the baseline was run, and no full regression (the lead runs it); `test:scale`
+  was not run.
 
 ## Open questions (for the lead)
 
