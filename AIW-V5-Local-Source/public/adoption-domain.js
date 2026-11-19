@@ -120,13 +120,16 @@ export function adoptionAccepted(p,a){
 // claim a released design concern rests on, and the claims its design consulted. Each is read with the existing rule
 // (claimReceiptCurrent: the release is active, the claim and its source are what was reviewed), and the sources its
 // method names with the existing withdrawal reading, as the obligation basis reads them
-// (architecture-obligation-basis.js). A built-in definition's own reading is its interpretation, as before.
+// (architecture-obligation-basis.js). A built-in definition's own reading is its interpretation, as before. A
+// definition this build cannot identify (the upgrade wrote it under the id its receipt carries, authority
+// 'unrecognised') is never read as current: its interpretation was not evaluated.
 function definitionOf(p,a){
  const receipt=a?.definition?.receipt,claims=[...list(a?.legacy?.governedKnowledge),receipt?.governedConcern?.receipt].filter(r=>r&&r.claimId),reasons=[];
  const sources=[...claims.flatMap(r=>[r.sourceId,r.claimId,r.releaseId]),receipt?.packId,receipt?.methodId,receipt?.sources?.method?.id,...list(receipt?.sources?.references).map(r=>r?.id),...(receipt?.sources?.method?.file||receipt?.sources?.file?['SA-PLAYBOOK',BRAIN_PLAYBOOK.id]:[])].filter(Boolean);
  if(claims.some(r=>!claimReceiptCurrent(p,r)))reasons.push('A reviewed source interpretation changed or is no longer eligible.');
  if(sources.length&&withdrawn(p,sources).length)reasons.push('A source supporting this definition was withdrawn.');
  if(reasons.length)return {state:'withdrawn',reasons};
+ if(a?.definition?.authority==='unrecognised')return {state:'not-evaluated',reasons:['This build does not author the method “'+a.definition.definitionId+'”: its interpretation was not evaluated.']};
  return !receipt?.methodId||architectureMethodReceiptStatus(receipt).interpretationCurrent?{state:'current',reasons:[]}:{state:'interpretation-changed',reasons:['The architecture method interpretation needs review.']};
 }
 // The earlier path's finding for the same design, while it stands (ruling J6): its sources changed, and

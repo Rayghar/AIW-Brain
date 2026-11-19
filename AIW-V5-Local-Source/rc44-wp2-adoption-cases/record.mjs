@@ -1,22 +1,26 @@
 // AIW rc44, wp2 slice S1: the adoption record, its readers and the upgrade (audit/rc44/design/wp2-adoption.md §g S1,
-// §e.3; the lead's rulings of 2026-11-18, sections A, D and F; the registration contract in
-// audit/rc44/build-notes/s0-extensions.md). The cases, in the order the design lists them:
+// §e.3; the lead's rulings of 2026-11-18 and 2026-11-19, sections A, D, F and J; the registration contract in
+// audit/rc44/build-notes/s0-extensions.md). The blocks, in the order they run:
+//   registration    the package conforms; three steps, each a signed-in person's; the two held back (ruling J6);
 //   old documents   the three references and the document with a review list read byte for byte as at the base, with
-//                   the package registered and no adoption in them;
+//                   the package registered and no adoption in them; so do documents with tasks never applied;
 //   upgrade         the Bank Payment reference with three applied tasks yields three adoptions with the tasks'
-//                   obligations by id, as design e.3 says, once;
-//   e.3 rules 1-5   no guarantee appears, no stamp moves, no verification is lost, a storage upgrade and not a design
-//                   change, a frozen source is not upgraded;
-//   rows            architectureObligationsFor answers the same rows before and after;
+//                   obligations by id, as design e.3 says, once; a lost pointer is put right;
+//   e3 rules        1 to 3 and 5: no guarantee and no finding appears, no stamp moves, no verification is lost, a
+//                   frozen source is not upgraded; architectureObligationsFor answers the same rows;
 //   trace           the adoption on the layer `mechanism`, linkedVia 'binds', the built-in layers as they were;
-//   accept          a second signed-in person: refused for the confirmer, an agent account, a draft by Sol and no
+//   storage upgrade e.3 rule 4 and ruling J8: stored by the first read with a recovery point; a command that arrives
+//                   first is answered with a reload;
+//   accept          a second signed-in person: refused for the applier, an agent account, a draft by Sol and no
 //                   actor; an upgraded adoption no person has stood behind needs a person's confirmation first
-//                   (ruling F4); the projection (a save left in, a save left out: ruling D7.1); the step is kept under
-//                   `review` and a copy from a template clears it (ruling F3); it lapses when a deviation is added;
+//                   (ruling F4); refused while the earlier path's finding for the same design stands (ruling J6);
+//   deviation       the projection (a save left in, a save left out: ruling D7.1); the acceptance lapses;
+//   template copy   the step is kept under `review`, which a copy from a template clears (ruling F3);
 //   tracker         retiring a bound store raises adoption-role-broken in the same commit — the case that fails
 //                   today: "retire the store an applied outbox design placed its commit obligation on; a finding
 //                   names the applied mechanism";
-//   withdraw, definitions, registration, size.
+//   held back       adoption.withdraw is no command of this build; a reversed design takes its adoption with it;
+//   J1 to J6, J9    the cases of the fix-up, one block for each ruling; size.
 import assert from 'node:assert/strict';
 import {readFileSync, existsSync, writeFileSync, mkdirSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
@@ -143,6 +147,13 @@ export default async function ({block, pass, load}) {
     assert.equal(BI.builtinFromReceipt({...tasks[0].methodReceipt, sources: {...tasks[0].methodReceipt.sources, evaluationRevision: 1}}).interpretationCurrent, false);
     for (const d of Object.values(BI.BUILTIN_DEFINITIONS)) assert.deepEqual(DEF.definitionIssues(d), [], d.definitionId + ' is a well-formed skeleton');
     assert.ok(DEF.definitionIssues({definitionId: 'x', roles: [{id: 'a'}, {id: 'a'}]}).length > 0); assert.ok(DEF.definitionIssues(null).length > 0);
+    // a receipt that names a method this build does not author (and no released concern): the adoption is upgraded under the id its receipt carries,
+    // is not called a built-in, and its definition is never read as current
+    { const odd = bankPaymentApplied(), t = odd.coauthoring.designTasks[0]; for (const holder of [t, t.applied]) holder.methodReceipt = {...holder.methodReceipt, methodId: 'retired-method-9'};
+      const u = asWritten(U.upgradeAdoptions(odd)), x = byId(u, 'ADP-001');
+      assert.deepEqual([x.definition.definitionId, x.definition.authority, x.kind, x.definition.snapshot.kind], ['retired-method-9', 'unrecognised', 'method', 'method'], 'a method this build cannot identify is not given the authority of a built-in');
+      assert.equal(BI.receiptDefinition({methodId: 'retired-method-9'}).authority, 'unrecognised'); assert.equal(BI.receiptDefinition(null), null); assert.equal(BI.builtinFromReceipt({methodId: 'retired-method-9'}), null);
+      assert.deepEqual(D.adoptionReading(u, x).definition, {state: 'not-evaluated', reasons: ['This build does not author the method “retired-method-9”: its interpretation was not evaluated.']}, 'and is not read as current (it was, before this case: the receipt\'s source revisions still matched)'); assert.deepEqual(own(chapter5(u)), [], 'an old document gains no finding for it'); assert.deepEqual(DEF.definitionIssues(x.definition.snapshot), []); }
     // a task of another kind (boundary, exchange, security, operation): roles from the applied records' slots, no obligations
     const other = bankPaymentApplied(); other.coauthoring.designTasks = [{id: 'DES-009', kind: 'exchange', title: 'Exchange instruction status', status: 'applied', requirementId: 'REQ-001', answers: {}, basis: {contextIds: []}, history: [], applied: {at: APPLIED_AT, alternativeId: 'ALT-009', reviewer: 'Synthetic architect', reason: 'Fixture.', changeIds: [], records: [{id: 'api-pod', ref: 'OBJ-001', title: 'Payment service', chapter: 5, slot: 'provider', isNew: false}, {id: 'if-001', ref: 'IF-001', title: 'A contract', chapter: 8, slot: 'contract', isNew: true}]}}];
     const o = records(U.upgradeAdoptions(other))[0];

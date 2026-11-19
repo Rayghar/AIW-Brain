@@ -35,12 +35,14 @@ export function builtinFromReceipt(receipt){
 }
 // The definition a method receipt names when it identifies no built-in (the lead's ruling J4 of 2026-11-19): a released
 // design concern, compared and applied before selections were records, under its own id, kind and title (slice S5 moves
-// such a comparison to selection.*); or a method this build no longer authors, under the id its receipt carries. Null
-// for no receipt: the task's kind then says which guided flow it was (builtinOfKind).
+// such a comparison to selection.*); or a method this build does not author, under the id its receipt carries and with
+// the authority 'unrecognised': this build cannot say whose knowledge it was, and does not call it a built-in (its
+// reading is never 'current': adoption-domain.js definitionOf). Null for no receipt: the task's kind then says which
+// guided flow it was (builtinOfKind).
 export function receiptDefinition(receipt){
  const c=receipt?.governedConcern;
  if(c&&typeof c==='object')return skeleton(String(receipt.methodId||'knowledge-concern:'+c.id),'concern',String(c.title||c.question||'Released design concern'),'knowledge:'+c.id,'released');
- return typeof receipt?.methodId==='string'&&receipt.methodId?skeleton(receipt.methodId,'method',String(receipt.sources?.method?.title||'Guided design'),'guided'):null;
+ return typeof receipt?.methodId==='string'&&receipt.methodId?skeleton(receipt.methodId,'method',String(receipt.sources?.method?.title||'Guided design'),'guided','unrecognised'):null;
 }
 // The built-in an applied task of another kind is upgraded under (the boundary task's kind is 'design').
 export const builtinOfKind=kind=>builtinDefinition({exchange:'exchange-contract-1',security:'protection-control-1',operation:'operation-continuation-1'}[kind]||'guided-boundary-1');

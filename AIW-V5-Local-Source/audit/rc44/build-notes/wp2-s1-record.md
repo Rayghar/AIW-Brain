@@ -88,6 +88,12 @@ concerns). Every case below was written first and seen to fail on the head it wa
    components, and Chapter 5 is where a reader fixes them; their `objectId` is the adoption.
 7. **J1, where the journal names more than one actor** for one apply, nobody is recorded as the applier, each of them
    is refused by the one rule (read from the journal at every reading), and a person confirms first.
+8. **J4, further: a definition this build cannot identify is never read as current.** A receipt that names a method
+   this build does not author (and no released concern) was upgraded as a built-in and read `current`, because its
+   source revisions still matched. It is now upgraded under the id its receipt carries with the authority
+   `unrecognised`, and reads `not-evaluated` in words. It raises no finding (an old document gains none) and does not
+   refuse an acceptance: the second person accepts the record as it reads, and the reading says what was not
+   evaluated. If the lead wants acceptance refused for it, it is one line. Case: block "upgrade", seen to fail.
 
 ### Replaced assertions, old -> new (`rc44-wp2-adoption-cases/record.mjs`; the suite does not exist on `94dbd4f`)
 
@@ -135,7 +141,7 @@ changed.
 | `architectureSolutionsFor`, `acceptedObligation`, `architectureObligationsFor`, the obligation basis | the one place an obligation's standing is read; the adoption holds a verbatim copy of the obligations and reads their state from that reader | S2, when the first adoption without a task exists, and `adoption.obligation` with them; S6 at the latest |
 | The built-in emitter of design tasks (`record-graph.js`) | skips a task that has an adoption; still emits a task without one | S6 |
 | `reviewSource` `guidedDesign` | says to the fingerprint what the task says; the adoption's statement leaves that out; the task is read without `adoptionId` | S6 |
-| A project copied from a template (`instantiateTemplate` deletes the tasks) | the copy carries the adoption without its task: the adoption lists its obligations as open while `architectureObligationsFor` answers no row | S2, with the obligation readers |
+| A project copied from a template (`instantiateTemplate` deletes the tasks) | the copy carries the adoption without its task: the adoption lists its obligations as open while `architectureObligationsFor` answers no row. A copy made from a template whose stored row no read of this build has upgraded yet carries no adoption at all (the copy is made from the row as stored) | S2, with the obligation readers; the lead says whether a copy carries adoptions once it does not carry tasks |
 | The task's method receipt, refreshed by `architecture.refresh` | the adoption pins the receipt as applied; its currency is read from the receipts the adoption holds | S3 |
 | `architecture.measure` | quantitative evidence on the task | wp3 and wp6 (design e.1) |
 
@@ -276,6 +282,10 @@ groupId, authority, receipt, snapshot, snapshotHash}`, `facts`, `bindings`, `par
 - **Findings** (with Chapter 5's, id `<code>:<adoption id>`, `objectId` the adoption): `adoption-role-broken` (error),
   `adoption-role-missing` (error), `adoption-definition-withdrawn` (error), `adoption-basis` (warning),
   `adoption-deviation-unreviewed` (warning). None is marked `hard` in S1.
+- **The definition's standing** (`definition.state`): `current`; `interpretation-changed` (a built-in whose
+  interpretation moved); `withdrawn` (the released knowledge it pins is no longer current: an error, and no
+  acceptance); `not-evaluated` (a method this build does not author). `definition.authority` is `built-in`,
+  `released` or `unrecognised`.
 - **The reading** (`adoptionReading`): `label`, `accepted`, `definition {state, reasons}`, `basis {state, findingId}`
   (the earlier path's finding for the same design), `roles`, `parameters`, `obligations` (their state from the one
   obligation reader), `deviations`, `acceptance {accepted, by, at, next}`, `changed`, `bounds`, `findings`.
