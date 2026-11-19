@@ -138,7 +138,7 @@ function saveNode(p,raw,at){
  const m=p.runtime,xs=m.nodes||[],old=raw.id?find(xs,raw.id):null;if(raw.id&&!old)throw Error('Choose an existing deployment node.');
  const f=patchFields(old,raw,NODE_FIELDS);if(!f.title||!f.kind)throw Error('Name the node and choose its kind.');
  if(f.tier&&!['network','subnet'].includes(f.kind))throw Error('Only a network or a subnet has a tier.');
- const jurisdiction=patchValue(old,raw,'jurisdiction');if(jurisdiction!==''&&!/^[A-Z]{2}$/.test(jurisdiction))throw Error('Give the jurisdiction as two capital letters (ISO 3166-1 alpha-2), or leave it not stated.');
+ const jurisdiction=patchValue(old,raw,'jurisdiction');if(jurisdiction!==''&&!(typeof jurisdiction==='string'&&/^[A-Z]{2}$/.test(jurisdiction)))throw Error('Give the jurisdiction as two capital letters (ISO 3166-1 alpha-2), or leave it not stated.');
  let address=patchValue(old,raw,'address');if(address!==''){const x=parsePrefix(address);if(!x)throw Error('Give the address as one IPv4 or IPv6 prefix with its length and no host bit set (10.20.0.0/16, 2001:db8::/32), or leave it not stated.');address=x.text;}
  const domainId=patchValue(old,raw,'domainId');if(domainId&&domainId!==old?.domainId)authoredRecord(p.technology.domains,domainId,'failure domain');
  const boundaryIds=patchBounded(old,raw,'boundaryIds',id=>list(p.technology.boundaries).some(b=>b.id===id),'trust boundaries',20,'A deployment node');
@@ -239,6 +239,19 @@ export function emitTopology(p,add,rel){
 // kind and why. Journalled: the step that types the project; a node or a failure domain made or changed (AIW's own
 // proposals are not changes of the design, and a record a restore brought back was not made by the commit); where a
 // zone or a placement stands. A change of the typed topology opens no review of other records, and says so.
+// One thing the tracker changes itself, and journals: a zone or a placement that a commit brings back (a restore; a
+// placement comes back with its plan) may name a node or a failure domain that left the design while it was retired,
+// when nothing held them. Those names are dropped (mend), so that a zone never reads as standing in a domain that is
+// not there: it reads by its own name again, and a person locates it anew.
+function mend(p,r,path){
+ const nodes=deploymentNodes(p),domains=failureDomains(p),there=(xs,id)=>{const x=find(xs,id);return x&&!isProposed(x)?x:null;},was=JSON.stringify([r.nodeId,r.domainIds]);
+ if(path==='runtime.zones'){
+  if(r.nodeId&&!there(nodes,r.nodeId))delete r.nodeId;
+  if(r.domainIds){const ds=list(r.domainIds).map(id=>there(domains,id));put(r,'domainIds',ds[0]&&!sharedCause(ds[0])?ds.filter((d,i)=>d&&(!i||sharedCause(d))).map(d=>d.id):[]);}
+ }else if(r.nodeId&&!(there(nodes,r.nodeId)&&nodeUnder(p,r.nodeId,find(p.runtime.zones,r.zoneId)?.nodeId)))delete r.nodeId;
+ if(JSON.stringify([r.nodeId,r.domainIds])===was)return false;
+ r.revision=(r.revision||0)+1;return true;
+}
 const LABELS={title:'Name',kind:'Kind of node',parentId:'Lies in',domainId:'Failure domain it is',jurisdiction:'Jurisdiction',place:'Place',provider:'Provider',tier:'Tier',exposure:'Exposure',address:'Address prefix',reason:'Reason',owner:'Owner',basis:'Basis',boundaryIds:'Trust boundaries',scope:'Scope',cause:'Cause',recoveryOwner:'Recovery owner',treatment:'Treatment',nodeId:'Deployment node',domainIds:'Failure domains'};
 const QUIET='A change of the typed topology is read as it stands by the checks of Chapters 6 and 10: it opens no review of other records.';
 const said=(r,keys)=>Object.fromEntries(keys.map(k=>[k,structuredClone(r?.[k]??(k.endsWith('Ids')?[]:''))]));
@@ -260,7 +273,8 @@ export function trackTopology(prior,next,command,at){
   const old=new Map(rows(prior,path).map(r=>[r?.id,r]));
   for(const r of rows(next,path)){
    // (every save of these records moves the revision, so a record at its earlier revision says what it said)
-   const o=old.get(r?.id);if(!r?.id||(o?o.revision===r.revision:!own||isProposed(r)&&r.origin===SEEDED||restored.has(path+'|'+r.id)))continue;
+   let o=old.get(r?.id);if(!r?.id||(o?o.revision===r.revision:own&&(isProposed(r)&&r.origin===SEEDED||restored.has(path+'|'+r.id))))continue;
+   if(!o&&!own){o=structuredClone(r);if(!mend(next,r,path))continue;}
    const before=said(o,keys),after=said(r,keys),fields=keys.filter(k=>JSON.stringify(before[k])!==JSON.stringify(after[k])).map(k=>({key:k,label:LABELS[k],before:before[k],after:after[k]}));
    if(fields.length)journal(chapter,r.id,refOf(r),kind,r.title||r.id,o?before:null,after,fields);
   }

@@ -142,7 +142,8 @@ await block('S1.1 a deployment node', () => {
   refuses(d, 'runtime.node', {title: 'A data centre', kind: 'datacentre'}, /Choose the kind of node/);
   refuses(d, 'runtime.node', {kind: 'region'}, /Name the node and choose its kind/);
   refuses(d, 'runtime.node', {id: 'dn-404', title: 'Gone'}, /Choose an existing deployment node/);
-  for (const jurisdiction of ['Norway', 'no', 'N', 'NOR', 'N0']) refuses(d, 'runtime.node', {id: 'dn-001', jurisdiction}, /two capital letters/, 'jurisdiction ' + jurisdiction);
+  for (const jurisdiction of ['Norway', 'no', 'N', 'NOR', 'N0', ['NO'], {code: 'NO'}, 78]) refuses(d, 'runtime.node', {id: 'dn-001', jurisdiction}, /two capital letters/, 'jurisdiction ' + JSON.stringify(jurisdiction));
+  for (const [field, value] of [['parentId', ['dn-001']], ['domainId', ['fd-001']], ['address', ['10.0.0.0/8']], ['boundaryIds', 'tb-001']]) assert.throws(() => run(d, 'runtime.node', {title: 'Odd', kind: 'site', [field]: value}), /Choose|Give/, field + ' is an id, a prefix or a list of ids, never another shape');
   // one strictly parsed prefix
   for (const address of ['10.20.0.0/16', '10.0.0.0/8', '0.0.0.0/0', '192.168.4.128/25', '2001:db8::/32', '::/0', 'fd00:1:2:3::/64', '2001:db8:0:0:0:0:0:1/128']) assert.equal(nodeOf(doc(d, 'runtime.node', {title: 'Net', kind: 'network', address}), 'dn-002').address, address.toLowerCase(), address);
   for (const address of ['10.20.0.0', '10.20.1.5/16', '10.0.0.0/33', '010.0.0.0/8', '10.0.0/8', '10.0.0.0/08', '256.0.0.0/8', '2001:db8::1/32', '2001:db8::/129', '2001::db8::/32', '2001:db8:0:0:0:0:0:0:0/32', '::ffff:10.0.0.0/104', 'reservations-net', '10.0.0.0/8, 10.1.0.0/16'])
@@ -395,6 +396,27 @@ await block('S1.6 journalled and stamped by the server', async () => {
       ok(await h.send('record.retire', {id: spare, chapter: 10, reason: 'Not a site of this design.'})); same('a retirement is kept with who, when and why by the lifecycle family');
       ok(await h.send('record.restore', {id: spare, chapter: 10})); same('a restored record was not made by the commit'); assert.equal(nodeOf(d(), spare).title, 'Spare site');
       ok(await h.send('runtime.zone', {id: I.zone1, isolation: 'Separate power, network and cooling (synthetic).'})); same('the zone\'s own save changes nothing of where it stands'); assert.deepEqual(zoneOf(d(), I.zone1).domainIds, ['fd-001']); }
+    // A zone a restore brings back names nothing that left the design while it was retired (nothing held those records
+    // then): the names are dropped, so it reads by its own name again and never as standing in a domain that is not
+    // there, and the change is journalled with who restored it. A placement that comes back with its plan likewise.
+    { ok(await h.send('runtime.zone', {environmentId: I.production, title: 'Bergen zone 3', kind: 'hosting', failureDomain: 'AZ-1', isolation: 'Separate power and network (synthetic).', owner: 'Reservations team (synthetic)'})); const z3 = h.state.selected;
+      ok(await h.send('technology.domain', {title: 'Bergen availability zone 3', scope: 'zone', cause: 'location'})); const fd = h.state.selected;
+      ok(await h.send('runtime.node', {title: 'Bergen AZ 3', kind: 'availability-zone', parentId: 'dn-001'})); const dn = h.state.selected;
+      ok(await h.send('runtime.locate', {zoneId: z3, nodeId: dn, domainIds: [fd]})); assert.equal(runtimeModel.failureDomainKey(zoneOf(d(), z3)), fd);
+      ok(await h.send('record.retire', {id: z3, chapter: 10, reason: 'A third zone is not built.'}));
+      ok(await h.send('record.retire', {id: fd, chapter: 6, reason: 'A third zone is not built.'})); ok(await h.send('record.retire', {id: dn, chapter: 10, reason: 'A third zone is not built.'}));
+      ok(await h.send('record.restore', {id: z3, chapter: 10}, B)); const zone = zoneOf(d(), z3); event = events().at(-1);
+      assert.ok(!('domainIds' in zone) && !('nodeId' in zone), 'the restored zone names no record that is not there: ' + JSON.stringify([zone.nodeId, zone.domainIds]));
+      assert.equal(runtimeModel.failureDomainKey(zone), 'az-1', 'so it reads by its name, as a zone that names no typed domain does');
+      assert.deepEqual([event.source.id, event.source.kind, event.actor, event.fields.map(f => [f.key, f.before, f.after])], [z3, 'zone', B, [['nodeId', dn, ''], ['domainIds', [fd], []]]], 'what the restore dropped is journalled under the zone');
+      // restored while the records it names are there, it comes back as it left, and nothing is journalled
+      ok(await h.send('runtime.locate', {zoneId: z3, nodeId: 'dn-001', domainIds: ['fd-001']})); ok(await h.send('record.retire', {id: z3, chapter: 10, reason: 'A third zone is not built.'})); const last = events().at(-1).id;
+      ok(await h.send('record.restore', {id: z3, chapter: 10})); assert.deepEqual([zoneOf(d(), z3).nodeId, zoneOf(d(), z3).domainIds, events().at(-1).id], ['dn-001', ['fd-001'], last]);
+      // a placement that left with its plan and names a node retired meanwhile
+      const cluster = d().runtime.nodes.find(n => n.title === 'Reservation cluster').id, placement = d().runtime.placements.find(l => l.nodeId === cluster);
+      ok(await h.send('record.retire', {id: I.apiPlan, chapter: 10, reason: 'Planned again later.'})); ok(await h.send('record.retire', {id: cluster, chapter: 10, reason: 'No cluster of its own.'}));
+      ok(await h.send('record.restore', {id: I.apiPlan, chapter: 10}, B)); const back = d().runtime.placements.find(l => l.id === placement.id); event = events().at(-1);
+      assert.ok(back && !('nodeId' in back), 'the restored placement names no node that is not there'); assert.deepEqual([event.source.id, event.source.kind, event.actor, event.fields.map(f => [f.key, f.before, f.after])], [placement.id, 'placement', B, [['nodeId', cluster, '']]]); }
     // validated as built-in commands are
     { const r = await h.send('runtime.node', {title: 'No kind'}); assert.equal(r.status, 400); assert.match(r.error, /Name the node and choose its kind/); }
     { const stale = await h.api('/api/commands' + h.q, 'POST', {revision: h.state.revision - 1, command: {type: 'runtime.node', payload: {title: 'Stale', kind: 'site'}}}); assert.equal(stale.status, 409, 'the revision check is the boundary\'s'); }
