@@ -3,9 +3,9 @@
  "name": "S0 shared registration",
  "measuredWith": "client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)",
  "allowance": {
-  "chapters": 900,
+  "chapters": 915,
   "scripts": 148,
-  "ruling": "D9 of 2026-11-18 (was 700 B)"
+  "ruling": "F7 of 2026-11-19 (was 900 B by D9, 700 B before)"
  },
  "caps": {
   "chapters": 3233792,
@@ -23,25 +23,25 @@
   "css": 901873
  },
  "slice": {
-  "chapters": 3229761,
+  "chapters": 3229775,
   "projects": 506802,
   "scripts": 148,
   "under10k": 53,
   "css": 901873,
   "registry": 400
  },
- "delta": 898,
+ "delta": 912,
  "projectsDelta": 700,
- "headroomAfter": 4031,
+ "headroomAfter": 4017,
  "opens with records": {
   "gate": "The chapters-route gate is unchanged and measures opening a document that holds no package records (ruling D10 of 2026-11-18).",
   "S0": "No package exists at S0, so no document holds package records: every document opens as measured above.",
   "how": "A package reports, in its notes and in its size evidence under this field: the code of the chapters route and of the static closure of the lazy entry its route stub loads, each script counted once, as rc44-s0-readings.mjs opensWithRecords(metafile, entry, Object.keys(BUDGET.data)) answers it from the metafile of the same build: {route, added, total, files}.",
   "hosts": {
    "public/architecture-task-ui.js": {
-    "route": 3229761,
+    "route": 3229775,
     "added": 79189,
-    "total": 3308950,
+    "total": 3308964,
     "files": 2,
     "note": "the lazy entry wp2's design names for its surface, as it is before any package is held in it"
    }
