@@ -90,6 +90,10 @@ function applySynthetic(p, command, at, actor, options) {
   // made from a template resets and which is bookkeeping to the authorship stamps.
   if (command.type === 'synthetic.endorse') { const r = find(); r.review = {actor, at, account: options?.author?.account ?? null}; return {document: p, selected: r.id}; }
   if (command.type === 'synthetic.confirm') { const r = find(); r.confirmed = true; return {document: p, selected: r.id}; }
+  // Two ways a command changes a record without the stamping being told (the verifier's probes on ruling D1): a type
+  // under a prefix for which the package states no provenance.paths, and a command that names no record.
+  if (command.type === 'syntheticaside.rewrite') { const r = find(); r.title = String(raw.title || ''); s.version++; return {document: p}; }
+  if (command.type === 'synthetic.sweep') { for (const r of s.records) r.note = String(raw.note || ''); s.version++; return {document: p}; }
   throw Error('Unknown synthetic action.');
 }
 const STEP_UNDO = key => ({previous: (p, c) => ({id: c.payload.id, was: syn(p).find(r => r.id === c.payload.id)?.[key] ?? null}), revert(p, old) { const r = syn(p).find(x => x.id === old.id); if (!r) throw Error('The synthetic record changed.'); if (old.was) r[key] = old.was; else delete r[key]; return {document: p, selected: r.id}; }});
@@ -119,6 +123,7 @@ const SYNTHETIC = {
     'synthetic.save': {apply: applySynthetic, staged: true, validate: (p, command, {author}) => (command.payload?.broken !== true || author?.kind === 'person' ? null : author?.kind === 'import' ? 'An import does not mark a synthetic record broken.' : 'A draft by Sol does not mark a synthetic record broken.')},
     'synthetic.note': {apply: applySynthetic, undo: {previous: (p, c) => ({id: c.payload.id, note: syn(p).find(r => r.id === c.payload.id)?.note ?? ''}), revert(p, was) { const r = syn(p).find(x => x.id === was.id); if (!r) throw Error('The synthetic record changed.'); r.note = was.note; p.synthetic.version++; return {document: p, selected: r.id}; }}},
     'synthetic.observe': {apply: applySynthetic},
+    'syntheticaside.rewrite': {apply: applySynthetic}, 'synthetic.sweep': {apply: applySynthetic},
     // A person's step and a second person's step that can be undone by their receipt (should-fix 1: by a person).
     'synthetic.sign': {apply: applySynthetic, person: true, undo: STEP_UNDO('signed')},
     'synthetic.accept': {apply: applySynthetic, second: (p, c) => syn(p).find(r => r.id === c.payload?.id) || null, undo: STEP_UNDO('acceptance')},
@@ -538,6 +543,19 @@ await block('D1 two persons', async () => {
     assert.equal((await send('synthetic.confirm', {id: imported}, C)).status, 200);
     assert.equal((await send('synthetic.save', {id: imported, title: 'Imported, confirmed, then rewritten'}, AGENT)).status, 200);
     await refused(imported, A, 'a confirmation of what the record no longer says');
+    // the stamp is kept current by the boundary, not by what a command says of itself: a person's record that an agent
+    // account changes through a type whose prefix states no paths, or through a command that names no record, is the
+    // agent's text, and one person accepting it is one person
+    for (const [type, payload, sender, extra] of [['syntheticaside.rewrite', {title: 'Rewritten aside by the agent account'}, AGENT, {}], ['synthetic.sweep', {note: 'Swept by the agent account'}, AGENT, {}], ['synthetic.sweep', {note: 'Swept in a draft by Sol'}, C, {authorKind: 'sol-draft'}]]) {
+      assert.equal((await send('synthetic.save', {title: 'A person\'s record'}, B)).status, 200); const id = h.last();
+      assert.deepEqual([rec(id).provenance.author.kind, rec(id).provenance.author.by], ['person', B]);
+      const changed = await send(type, {...payload, id}, sender, extra); assert.equal(changed.status, 200, type + ': ' + JSON.stringify(changed.body).slice(0, 200));
+      assert.notEqual(rec(id).provenance?.author?.kind, 'person', 'after ' + type + ' the record no longer carries a person\'s stamp');
+      await refused(id, A, 'a person\'s record changed by ' + type + ' from an account that is no person');
+      // a record the sweep did not change keeps its stamp; one a person then saves is a person's again
+      assert.equal((await send('synthetic.save', {id, title: 'Saved again by a person'}, B)).status, 200);
+      { const r = await accept(id, A); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 200)); }
+    }
     // the author is still refused first, by the one rule (verifierRefusal)
     assert.match((await accept(agentOnly, B)).error, /architect-b wrote /);
   } finally { h.close(); }

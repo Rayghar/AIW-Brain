@@ -431,6 +431,20 @@ export function stampAuthorship(prior,next,command,result,author,at,{fourEyes=fa
  }
  return next;
 }
+// stampChanged(prior, next, paths, author, at): every record of these collections that the commit changed is stamped
+// as the commit's, whether or not a command named it and whatever its type states (rc44, slice S0; the lead's ruling
+// D1: a second person's step reads the stamp, so the stamp is kept current by the boundary, not by what a command
+// says of itself). A record the commit did not change keeps its stamp (settle); a record the commit made is left to
+// stampAuthorship, and one with no stamp has no person behind it. Server only: design-extension-boundary.js.
+export function stampChanged(prior,next,paths,author,at){
+ if(!author)return next;
+ for(const path of paths){
+  const after=listAt(next,path);if(!after.length)continue;
+  const old=new Map();for(const r of listAt(prior,path))if(plain(r)&&r.id!=null&&!old.has(r.id))old.set(r.id,r);
+  for(const now of after){const was=plain(now)&&now.id!=null?old.get(now.id):null;if(was)settle(was,now,author,at);}
+ }
+ return next;
+}
 // The provenance block a command carries (round 12, GR-GOV-09): the source, citations and basis of payload.provenance,
 // checked (provenanceBlock: each citation must name a row, a source version or a record the project holds) and set on the
 // record the command wrote, apart from what the record says. A key sent replaces the record's (empty clears it); a key

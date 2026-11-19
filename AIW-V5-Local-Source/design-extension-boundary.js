@@ -30,10 +30,11 @@
 // A package only adds: a type a built-in handler takes is never a package's. The built-in handlers are asked once per
 // type (builtInType): a type they refuse as unknown ("Unknown … action.") is free for a package.
 import {EXTENSIONS} from './public/design-extensions.js';
+import {workbenchKey as onWorkbenchKey} from './public/design-extension-parts.js';
 import {verifierRefusal} from './public/architecture-obligations.js';
 import {registerReviewTypes} from './authorship.js';
 import {registerUndoExtensions} from './public/action-undo-domain.js';
-import {innerCommands, listAt, reviewOf} from './public/provenance.js';
+import {innerCommands, listAt, reviewOf, stampChanged} from './public/provenance.js';
 import {isRetiredCommand} from './public/canonical-command.js';
 import {inheritedFindings, findingCause} from './public/review-domain.js';
 import {createProject} from './shared/projects-domain.js';
@@ -94,6 +95,15 @@ function storedRecord(p, e, type, id) {
   for (const path of [paths[type], paths[type.split('.')[0]]].find(Array.isArray) || []) { const r = listAt(p, path).find(x => x?.id === id); if (r) return r; }
   return null;
 }
+// Every collection the registered packages state as their own, by any part (lifecycle, provenance.records and the
+// lists of provenance.paths), never one on a key the workbench itself writes.
+const ownCollections = () => [...new Set(EXTENSIONS.flatMap(e => [...Object.keys(plainPart(e.lifecycle)), ...Object.keys(plainPart(e.provenance?.records)), ...Object.values(plainPart(e.provenance?.paths)).flatMap(v => (Array.isArray(v) ? v : []))]))].filter(path => typeof path === 'string' && !onWorkbenchKey(path));
+const plainPart = v => (v && typeof v === 'object' && !Array.isArray(v) ? v : {});
+// What worker.js calls after the commit's own stamping (stampAuthorship): the stamp of every package record the
+// commit changed is the commit's (ruling D1; provenance.js stampChanged). So a person's record that an agent account
+// or a draft by Sol changes, by a type whose prefix states no paths or by a command that names no record, no longer
+// reads as a person's, and a second person's step on it is refused until a person saves or confirms it.
+export const stampExtensions = (prior, next, author, at) => (EXTENSIONS.length ? stampChanged(prior, next, ownCollections(), author, at) : next);
 // The handler worker.js calls for a package's type, (document, command, at, actor, {author, revision}) as every
 // handler is called, or null. It refuses what the type says of itself, then applies.
 export function extensionHandler(type) {
