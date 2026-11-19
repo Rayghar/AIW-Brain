@@ -17,10 +17,12 @@ export const A = 'architect-a', B = 'architect-b', C = 'architect-c', AGENT = 's
 // The records the fixture starts with (design section h): two components, two realizations, one data definition, a
 // production and a recovery environment, and an availability driver on the Reservation API. The ids are read from the
 // document once it is built (ids below), never assumed.
-let built = null, names = null;
+const NAME = 'Tidewater Ferries — vehicle-deck reservation service';
+let built = null, names = null, sent = null;
 function build() {
-  let p = withFinalReview(createProject({name: 'Tidewater Ferries — vehicle-deck reservation service', template: 'blank'}, 'tidewater-ferries', BUILT_AT));
-  const send = (type, payload) => { const r = applyCanonical(p, {type, payload}, BUILT_AT, A); p = r.document; return r.selected; };
+  let p = withFinalReview(createProject({name: NAME, template: 'blank'}, 'tidewater-ferries', BUILT_AT));
+  sent = [];
+  const send = (type, payload) => { sent.push(structuredClone({type, payload})); const r = applyCanonical(p, {type, payload}, BUILT_AT, A); p = r.document; return r.selected; };
   const owner = 'Reservations team (synthetic)', source = 'Tidewater workshop notes (synthetic)';
   send('artefact', {type: 'requirement', title: 'Reserve a vehicle-deck space', description: 'A passenger reserves a deck space for a sailing and is told one outcome.', acceptance: 'One booking reference identifies one reservation outcome.', owner, source, confirmed: true});
   const requirement = p.artefacts.find(a => a.type === 'requirement').id;
@@ -60,13 +62,49 @@ function build() {
 export function tidewater() { if (!built) build(); return withFinalReview(JSON.parse(built)); }
 export function ids() { if (!names) build(); return {...names}; }
 
-// A server that holds the Tidewater project for person A, with B and C as editors and an agent account, as the S0
-// harness builds it. `send(type, payload, as, extra)` answers {status, body, error}; `extra` is what a request says of
-// itself beside the command (authorKind, reason). `read(as)` answers the project as that account reads it.
+// Types the Tidewater topology as design section h lays it out, through `send(type, payload)`, which answers the id of
+// the record each command wrote (the pure handlers in a case, a server's commands in another): a primary region with
+// two availability zones and a cluster in the first, a recovery region, a failure domain for each of the four places,
+// and each zone in its node and its domain. Answers the ids it made. The jurisdictions are synthetic statements of the
+// fixture's author, a person.
+export function typeTopology(send) {
+  const I = ids();
+  send('runtime.topology-start', {});
+  const fdRegion = send('technology.domain', {title: 'Norway East region', scope: 'region', cause: 'location', basis: 'One provider region (synthetic).', owner: 'Platform team (synthetic)'});
+  const fdZone1 = send('technology.domain', {title: 'Bergen availability zone 1', scope: 'zone', cause: 'location', parentId: fdRegion, basis: 'Its own power and network (synthetic).'});
+  const fdZone2 = send('technology.domain', {title: 'Bergen availability zone 2', scope: 'zone', cause: 'location', parentId: fdRegion, basis: 'Its own power and network (synthetic).'});
+  const fdRecovery = send('technology.domain', {title: 'Recovery region', scope: 'region', cause: 'location', basis: 'A second provider region (synthetic).'});
+  const region = send('runtime.node', {title: 'Norway East', kind: 'region', jurisdiction: 'NO', domainId: fdRegion, reason: 'Where reservations are taken.'});
+  const az1 = send('runtime.node', {title: 'Bergen AZ 1', kind: 'availability-zone', parentId: region, domainId: fdZone1});
+  const az2 = send('runtime.node', {title: 'Bergen AZ 2', kind: 'availability-zone', parentId: region, domainId: fdZone2});
+  const recoveryRegion = send('runtime.node', {title: 'Sweden Central', kind: 'region', jurisdiction: 'SE', domainId: fdRecovery, reason: 'Where reservations are taken when Norway East is lost.'});
+  const cluster = send('runtime.node', {title: 'Reservation cluster', kind: 'cluster', parentId: az1, reason: 'Runs the Reservation API.'});
+  send('runtime.locate', {zoneId: I.zone1, nodeId: az1, domainIds: [fdZone1], reason: 'The first of two zones.'});
+  send('runtime.locate', {zoneId: I.zone2, nodeId: az2, domainIds: [fdZone2]});
+  send('runtime.locate', {zoneId: I.zone3, nodeId: recoveryRegion, domainIds: [fdRecovery]});
+  return {fdRegion, fdZone1, fdZone2, fdRecovery, region, az1, az2, recoveryRegion, cluster};
+}
+
+// The commands that built it, in order, for a server to build the same project (the ids come from counters, so the
+// same commands on a blank project give the same ids).
+export function tidewaterCommands() { if (!sent) build(); return structuredClone(sent); }
+
+// A server that holds the Tidewater project for person A, built there through POST /api/commands, with B and C as
+// editors and an agent account, as the S0 harness has them. `send(type, payload, as, extra)` answers {status, body,
+// error}; `extra` is what a request says of itself beside the command (authorKind, reason). `read(as)` answers the
+// project as that account reads it, and keeps it as `state`.
 export async function server(worker) {
   const files = new Map(), FILES = {async put(k, v) { files.set(k, v); }, async get(k) { return files.has(k) ? {text: async () => files.get(k)} : null; }, async delete(k) { files.delete(k); }};
   const env = {DB: localDatabase(':memory:'), FILES, ASSETS: {fetch: () => new Response('asset')}, AIW_AGENT_ACTORS: AGENT};
   const api = (path, method = 'GET', body = null, owner = A) => { const headers = new Headers({'oai-authenticated-user-id': owner}); if (body) { headers.set('Content-Type', 'application/json'); headers.set('Origin', 'https://aiw.test'); } return worker.fetch(new Request('https://aiw.test' + path, {method, headers, ...(body ? {body: JSON.stringify(body)} : {})}), env); };
-  const h = {env, api, files};
+  const made = await api('/api/projects', 'POST', {name: NAME, template: 'blank'}); assert.equal(made.status, 201, 'the server makes a blank project');
+  const h = {env, api, files, state: await made.json()};
+  h.pid = h.state.document.id; h.q = '?project=' + encodeURIComponent(h.pid);
+  h.read = async (as = A) => (h.state = await (await api('/api/project' + h.q, 'GET', null, as)).json());
+  h.send = async (type, payload, as = A, extra = {}) => { const cur = await h.read(as), res = await api('/api/commands' + h.q, 'POST', {revision: cur.revision, command: {type, payload}, ...extra}, as), body = await res.json(); if (res.status === 200) h.state = body; return {status: res.status, body, error: body.error || ''}; };
+  for (const c of tidewaterCommands()) { const r = await h.send(c.type, c.payload); assert.equal(r.status, 200, 'the server takes ' + c.type + ': ' + r.error); }
+  for (const actorId of [B, C, AGENT]) assert.equal((await api('/api/access' + h.q, 'POST', {actorId, role: 'editor'})).status, 200);
+  h.activity = async () => JSON.stringify(await (await api('/api/activity' + h.q)).json());
+  h.close = () => env.DB.close();
   return h;
 }
