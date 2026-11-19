@@ -57,7 +57,7 @@ function fromTask(p,t,id,typeOf){
   bindings=list(s.placement).map(r=>({id:id+':'+r.role,roleId:r.role,recordId:r.componentId,recordType:'component',mode:isNew(r.componentId)?'created':'reused',at:x.at,...by}));
  }else{
   const rows=list(x.records).filter(r=>r?.id).map(r=>({r,role:String(r.slot||'record').trim().replace(/[^A-Za-z0-9]+/g,'-')||'record',type:typeOf(r)})).filter(y=>y.type),count={};
-  roles=[...new Map(rows.map(({role,type,r})=>[role,{id:role,label:String(r.slot||'record'),required:true,cardinality:rows.filter(y=>y.role===role).length>1?'many':'one',accepts:[...new Set(rows.filter(y=>y.role===role).map(y=>y.type))].map(type=>({type}))}])).values()];
+  roles=[...new Map(rows.map(({role,r})=>[role,{id:role,label:String(r.slot||'record'),required:true,cardinality:rows.filter(y=>y.role===role).length>1?'many':'one',accepts:[...new Set(rows.filter(y=>y.role===role).map(y=>y.type))].map(type=>({type}))}])).values()];
   bindings=rows.map(({r,role,type})=>{const n=count[role]=(count[role]||0)+1;return {id:id+':'+role+(n>1?':'+n:''),roleId:role,recordId:r.id,recordType:type,mode:r.isNew?'created':'reused',at:x.at,...by};});
  }
  const prefix=t.id+':',snapshot={definitionId,version,kind:built.kind,title:built.title+(s?.mechanism?.pattern?' · '+s.mechanism.pattern:''),groupId:t.topic||built.groupId,...(s?.optionId?{optionId:s.optionId}:{}),...(s?.mechanism?{mechanism:copy(s.mechanism)}:{}),roles,

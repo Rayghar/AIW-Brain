@@ -1,266 +1,348 @@
 # rc44 wp2 slice S1: the adoption record, its readers and the upgrade — build notes
 
-Branch `rc44/wp2-s1-record`, from `8e8240e` (S0's fix-up head `72204ff` plus the lead's rulings F2 and F3 on
-`rc44/s0-lead-f`). Design: `audit/rc44/design/wp2-adoption.md` (sections a to f, S1 under g, e.3). Contract:
-`audit/rc44/build-notes/s0-extensions.md` ("Contract for packages"), the rulings of 2026-11-18 (A, D, F).
+First build: branch `rc44/wp2-s1-record` (head `13a72c2`), from `8e8240e`. Fix-up: `rc44/wp2-s1-record-fix`, continued on
+`rc44/wp2-s1-record-fix-c2` after a session was cut off, merged with `rc44/integration` (`9673661`: the final S0, wp1
+S1, the rulings to section J). Design: `audit/rc44/design/wp2-adoption.md` (sections a to f, S1 under g, e.3).
+Contract: `audit/rc44/build-notes/s0-extensions.md` ("Contract for packages", and "With wp2 S1" for the rows this
+fix-up added). Rulings: `audit/rc44/RULINGS-2026-11-18.md`, sections A, D, F, H and J.
 `productionAccepted` stays false. No external authority is impersonated: nothing here approves, releases or accepts
 anything for a person.
 
 ## Fix-up (after the adversarial review; rulings of 2026-11-19, section J)
 
-Branch `rc44/wp2-s1-record-fix`, from the builder's head `13a72c2`, merged with `rc44/integration` (`b59bc88`: the
-final S0, wp1 S1, the rulings to section I). Review: `/home/user/hb-review/rc44-build/wp2-s1-record.review.json`.
-Rulings: section J of `RULINGS-2026-11-18.md` (in the main checkout; not on this branch).
+Review: `/home/user/hb-review/rc44-build/wp2-s1-record.review.json` (five must-fix, thirteen should-fix, ten design
+concerns). Every case below was written first and seen to fail on the head it was written on.
 
-**State of the fix-up (kept current; a session can be cut off):**
+### State
 
-- Item 0, the merge: done (`a2403ab`, no conflict). The three rc44 suites on the merged head, before any change:
-  `rc44-wp1-knowledge` 34 passed; `rc44-wp2-adoption` 11 of 12 (block `size`: the evidence file was measured against
-  the S0 figure before S0's second round, `304 !== 290`); `rc44-s0-extensions` 13 of 22. The nine S0 blocks that fail
-  because a real package is registered: `6a no extension registered`, `registration`, `D2 packages a document names`,
-  `D3 workbench keys`, `D5 SDD provenance`, `SF start check`, `needs and load`, `7 idempotent and order-free`,
-  `8 client build`.
-- Item 1 (J11): in progress.
-- Items 2 to 5: next, in the order of the task.
-
-## State (of the first build)
-
-- **Done:** the package `p40-adoption` (record, reading and findings, emitter, layer `mechanism`, five steps, tracker,
-  upgrade, built-in skeletons, definition shape), its two lines, its host entry, three edits of built-in code, the
-  suite (12 blocks, green), the size evidence. Every block was seen to fail first (commit `7f9deda`: all 12).
+- **Done:** items 0 to 5 of the fix-up, each line below. The slice's suite has 19 blocks, S0's suite 24.
 - **In progress:** nothing.
-- **Next (for the lead):** merge after S0; decide the items under "Open questions"; S0's own suite needs nine blocks
-  adapted now that a package exists (listed there). Later slices: see "What later slices must know".
+- **Next (for the lead):** the points under "Where I went further than a ruling, or read it narrowly" and "Open
+  questions"; then the merge.
 
-## What was built
+### One line per item
 
-| File | Where it runs | What it is |
+| Item | State | Where it is held |
 |---|---|---|
-| `public/adoption-domain.js` | server; lazy entry | `adoptionRecords`, `adoption`, `adoptionReading`, `adoptionFindings`, `acceptanceSubject` (the projection), `adoptionAccepted` (the reader), `emitAdoptions`, `applyAdoptionCommand` (five steps), `trackAdoptionChange`, `ADOPTION_LIMITS` |
-| `public/adoption-upgrade.js` | server; lazy entry | `needsAdoptionUpgrade`, `upgradeAdoptions` (design e.3) |
-| `public/adoption-builtins.js` | server; lazy entry | `BUILTIN_DEFINITIONS` (twelve skeletons by method id), `builtinFromReceipt`, `builtinOfKind` |
-| `public/adoption-definitions.js` | server; lazy entry | the definition shape, `definitionIssues` |
-| `public/adoption-package.js` | server; lazy entry | the one `registerExtension({id: 'p40-adoption', …})` |
-| `design-packages.js` | server | one line: the import of `adoption-package.js` |
-| `public/design-package-routes.js` | route | one line: the stub `p40-adoption-route` (`needs: p => p.adoptions`, `load`: the lazy entry) |
-| `public/architecture-task-ui.js` | lazy entry | one import: the entry that holds the package (ruling D7.6) |
-| `rc44-wp2-adoption-validate.mjs`, `rc44-wp2-adoption-cases/record.mjs`, `rc44-wp2-fixtures.mjs`, `rc44-wp2-adoption-baseline.json` | suite | runner, S1's cases, fixtures, the goldens of the references captured from `8e8240e` |
-| `audit/rc44/evidence/wp2-s1-size.json` | evidence | the route measurement with "opens with records" |
+| 0. Merge `rc44/integration` | done (`a2403ab` at `b59bc88`, no conflict; again `21f5e5c` at `9673661`, which adds section J and the merge evidence and no product file). On the merged head before any change: `rc44-wp1-knowledge` 34 passed; `rc44-wp2-adoption` 11 of 12 (the size evidence was counted against S0 before its second round); `rc44-s0-extensions` 13 of 22. | — |
+| 1. Ruling J11, S0's suite with real packages | done: 24 of 24 blocks with `p40-adoption` registered. Twelve assertions replaced, each at least as strict; the list old -> new is in S0's notes, section "With wp2 S1". | S0's suite, every block |
+| 2. Must-fix 1 / J1, the applier is named | done. The upgrade records who applied the design, read from the journal events the task names, as a history entry (`event: 'apply'`, `identity: 'journal'`); a design applied on this build is named by the tracker in the next commit and read live from the journal until then. The projection names the applier, every other actor those events name, and the owner. Where the journal names nobody, a person confirms first (F4). | block "J1 applier" (A applies, B confirms: A is refused by the one rule, B by the two-persons rule, C is taken), "accept", "storage upgrade" |
+| 2. Must-fix 2 / J2, a relation only between objects | done. S0 hands the emitter `has(id)`; the package states `binds`, `scopes`, `addresses` and `assesses` only to an object of the graph. The connected model of the upgraded Bank Payment document has no issue, as before, and its model package validates; the same for a task of another kind whose records include an allocation. | block "J2 connected model"; S0 "J2 emitter has" |
+| 2. Must-fix 3 / J3, what of a record is design | done. S0's row `design {adoptions: adoptionDesign}`: no `history`, `review`, `confirmed` or `provenance`, and nothing the earlier design task still says, under one rule for every revision. The upgrade, a confirmation and an acceptance move no design stamp at any revision; a baseline frozen before the upgrade reads no change; a deviation is a change. `review-domain.js` names the key nowhere. | block "J3 design statement" (with a baseline actually frozen); S0 "J3 design statement"; `assertStepsMoveNoStamp` |
+| 2. Must-fix 4 / J4, current only if its knowledge is | done. The receipts a definition pins are read with `claimReceiptCurrent` and `withdrawn`; a deactivated release reads `withdrawn`, raises `adoption-definition-withdrawn` (error), refuses acceptance, ends a standing acceptance and is flagged by the tracker. A released design concern is upgraded under its own skeleton and kind (`concern`). A candidate claim on the same subject moves no reading. | block "J4 knowledge" |
+| 2. Must-fix 5 / J5, the tracker is journalled | done. One change event for each change the tracker opens or adds to and for each reversal, with the adoption as its source; the server stamps who sent the commit. | blocks "J5 journal" (a bound record, the driver, the decision, a reviewed batch, a merged alternative, a reversal), "tracker", "held back" |
+| 2. J10, the minted prefix | done. S0's row `prefixes {pattern: 'ADP'}`, read by the clash check; `WORKBENCH_PREFIXES` holds no package's prefix. | "registration"; S0 "SF start check", "7", "D3" |
+| 3. J6, no second truth | done. `adoption.obligation` and `adoption.withdraw` are no commands of this build; `adoption.accept` is refused while `design-source:<task>` stands as an error and is taken after `architecture.refresh`. The reader holds it too (my addition, below). The retirement list is below. | blocks "registration", "accept", "deviation", "held back", "J6 basis after acceptance" |
+| 3. J7, no finding before the step can be taken | done. No `adoption-acceptance` finding; the reading states the standing and what must happen next in a reader's words. An upgraded old document gains no finding. | blocks "e3 rules", "accept", "template copy" |
+| 3. J8, an upgrade is stored by a read | done for commands, as ruled: 409 with a reload, nothing stored; the read stores the upgrade with its recovery point. | block "storage upgrade"; S0 block "2 command boundary" (a synthetic upgrade) |
+| 3. J9, the SDD's count | done: a line and a column of their own, only in a document that holds such a record; 62 by a person before and after, 3 by an upgrade. | block "J9 SDD provenance"; S0 "D5 SDD provenance" |
+| 4. Should-fix 1, the owner | done: the projection carries `owner`; the one rule refuses the owner. | "J1 applier" |
+| 4. Should-fix 2, two re-read steps | done as J6 rules: the reading carries the earlier path's basis state, accept is refused while it stands. | "accept", "tracker", "J6 basis after acceptance" |
+| 4. Should-fix 3, `adoption.obligation` | done: held back to S2. | "registration", "deviation" |
+| 4. Should-fix 4, `adoption.withdraw` | done: held back to S3, so a withdrawn adoption whose design can still be reversed cannot arise. | "held back" |
+| 4. Should-fix 5, e.3 rule 4 for a command | done (J8). | "storage upgrade" |
+| 4. Should-fix 6, suite gaps | done: the applier; a baseline frozen before the upgrade; documents with tasks in flight, proposed, set aside or reversed (read as a process without the package reads them); the tracker on a contract, a data definition and a need, in a reviewed batch and through a merged alternative; the connected model's issues; the SDD's counts. | "J1", "J3", "old documents", "J5", "J2", "J9" |
+| 4. Should-fix 7, unstamped records | done (J9). | "J9 SDD provenance" |
+| 4. Should-fix 8, a bound record's type | done: the type the record graph gives it; a record the graph keeps as a relation is no role; a record that left keeps the type of its chapter and reads as a broken role. | "J2 connected model", "upgrade" |
+| 4. Should-fix 9, a mechanism that no longer stands | done: a reversed adoption stays one object of the graph with what it addressed and scoped, on no trail, as a task set aside before the upgrade is. | "held back", "J5 journal" |
+| 4. Should-fix 10, a lost pointer | done: a task whose `adoptionId` names no adoption of its own is linked again or upgraded again. | "upgrade" |
+| 4. Should-fix 11, a reader's words | done: no finding, reading or refusal of the package names a command type. | "tracker", "e3 rules", "accept" |
+| 4. Should-fix 12, the upgrade and the browser | done: see "Which code the browser holds" below. | "registration", "size" |
+| 4. Should-fix 13, notes | done: "Corrections to the first build's notes" below. | — |
+| J12, the chapter | done: an adoption is counted under Chapter 3, the chapter of its object type (provenance, the SDD's table, the journal event's source). | "registration", "trace", "J9" |
+| 5. Notes | done: this section; S0's contract text. | — |
 
-Registration rows (nothing hand-edited into the shared files): `records` (type `pattern`, from the package's own
-collection, D7.2), `layers` and `hops` (each states `only`, D6.3; both are context), `checks` (Chapter 5), `commands`
-(four `person`, `adoption.accept` `second`), `track` (D4), `provenance` (noun, paths, records: read by the provenance
-reader, not retired by the lifecycle family), `upgrade` and `upgradeNote`. Needs and load are the stub's.
+### Where I went further than a ruling, or read it narrowly
 
-Edits of built-in code (inside the allowance, each commented "rc44, wp2"):
-1. `public/record-graph.js`: the built-in emitter skips a task that has `adoptionId` (one record for one mechanism).
-2. `public/review-domain.js` `reviewSource`: a task is read without its `adoptionId`; `adoptions` joins the design
-   source as the records whose revision is past 1 (see deviation 2). A document without such a record keeps no key.
-3. `public/architecture-task-ui.js`: the import above.
+1. **J6, further: the reader holds it too.** As ruled, the accept step was refused while the earlier path's finding
+   stood. But an adoption accepted earlier went on reading "applied · accepted by …" while `design-source:<task>` (an
+   error) stood, whenever a source changed that the tracker does not watch by id (another driver, another decision,
+   the knowledge stamp). Now `adoptionAccepted` is false while that finding stands, and an acceptance given before
+   `architecture.refresh` re-read the design (the task's `sourceReview.at`) does not stand again: a second person
+   accepts the design as re-read. This is stricter than ruled. Case: "J6 basis after acceptance", seen to fail
+   (`true !== false`).
+2. **J8, as ruled and no further: commands.** A writing route that is not a command still stores a due package
+   upgrade with its own write and without a recovery point, exactly as it stores the built-in read upgrades:
+   `intake-service.js`, `drafting-service.js`, `baseline-service.js`, `collaboration-service.js`,
+   `operation-service.js`, `organization-service.js` and `project-lifecycle.js` each read with `withFinalReview` and
+   save. Read from the code, not probed. One place for all of them would be the one writer
+   (`project-storage.js` `saveStoredProject`), told by `readStoredProject` that an upgrade was due. That changes the
+   storage layer for every route, and I could not run the full regression against it, so it is not done. **I think the
+   ruling's headline ("stored by a read") asks for it; the lead should decide.**
+3. **J8, read narrowly: a command that makes an upgrade due is not refused.** `alternative.apply` on this build
+   writes the adoption in its own commit (the step runs where the commit's document is read). The row was up to date
+   when the command arrived, and the commit is a design change with its journal. Refusing it would put a storage
+   upgrade after every applied design.
+4. **J3, one edit of `reviewSource` stays.** The key's name is gone. What stays is that a guided task is read without
+   `adoptionId`, the pointer the upgrade adds, because `guidedDesign` reads the task whole. S0's `design` row cannot
+   say it: a statement on a key the workbench writes is refused at start, rightly. The alternative is no pointer on
+   the task and a lookup in the built-in emitter, which costs more on the route. It goes with the task readers (S6).
+5. **J7, read narrowly: `adoption-deviation-unreviewed` stays a warning.** It can arise only after a person recorded a
+   deviation through the command, so no upgraded old document gains it. I kept it because a recorded deviation that
+   nobody reviewed is something a reader of the review must see. If the lead reads J7 as "no finding of the package
+   that only `adoption.accept` clears before S3", it is one line to hold back.
+6. **J12, the findings stay with Chapter 5's checks.** The ruling says "counted". The findings are about bound
+   components, and Chapter 5 is where a reader fixes them; their `objectId` is the adoption.
+7. **J1, where the journal names more than one actor** for one apply, nobody is recorded as the applier, each of them
+   is refused by the one rule (read from the journal at every reading), and a person confirms first.
 
-`architectureSolutionsFor` and the obligation basis are **not** edited in S1 (see deviation 3).
+### Replaced assertions, old -> new (`rc44-wp2-adoption-cases/record.mjs`; the suite does not exist on `94dbd4f`)
 
-## The record as built (differences from design b.1 are deviations below)
+Each is recorded in the code beside the assertion ("was: …"). No assertion of a suite that exists on `94dbd4f` was
+changed.
 
-`p.adoptions = {schemaVersion: 1, definition: 1, counter, version, records}`, created when first written. A record:
-`id` (`ADP-nnn`), `ref`, `revision`, `status` (`applied`, `withdrawn`, `reversed`; `draft`, `prepared`, `superseded`
-come with S2), `origin`, `kind`, `title`, `owner`, `scope`, `definition {definitionId, version, optionId, groupId,
-authority, receipt, snapshot, snapshotHash}`, `facts`, `bindings`, `parameters`, `obligations`, `decisionId`,
-`deviations`, `applied`, `review` (the acceptance), `confirmed`, `legacy`, `history`.
+1. l.70, "registration": five steps stated -> exactly three, and `adoption.obligation` and `adoption.withdraw` are
+   unknown commands of this build (J6).
+2. l.74, "registration", and l.240, "trace": the provenance reader counts adoptions under Chapter 5 -> Chapter 3 (J12).
+3. l.79, "registration": no module of the package names a knowledge store in its source -> the package reads released
+   knowledge through the one existing rule and no store of its own, and the behaviour is held in "J4 knowledge" (J4).
+4. l.194, "e3 rules": each upgraded adoption raises `adoption-acceptance` (warning) and nothing else -> an upgraded old
+   document gains no finding of the package and no other finding, and the reading states the standing (J7).
+5. l.214, "e3 rules": the upgrade moves graph, model, trails, findings, readiness, provenance, registers, sdd -> graph,
+   model, trails, provenance, sdd (stricter: fewer readings move).
+6. l.296, "accept": B's first accept is refused with "names no author" -> refused with "A second person's step needs
+   two persons" (the applier is named, so the one rule passes B and the two-persons rule asks for a person behind the
+   record).
+7. l.299, "accept": the next step matched `adoption.reassess` -> it names no command type and says the earlier design
+   is reviewed first (should-fix 11, J6).
+8. l.310 and l.401, "accept" and "template copy": the projection without `owner` -> with `owner` (should-fix 1).
+9. l.361 and l.420, "deviation" and "tracker": `adoption-acceptance` beside the other warning -> the other warning
+   alone (J7).
+10. l.370, "deviation": the save left out is `adoption.obligation` -> the save left out is a confirmation of a record
+    whose applier is named (J6 holds the obligation step back).
+11. l.399, "template copy": the finding `adoption-acceptance` is back in the copy -> the reading says who must act, and
+    no finding of the package is raised (J7).
+12. l.442, "tracker": the marker alone -> the marker and a journal event that names the adoption with who sent the
+    commit (J5; stricter).
+13. l.478, "held back" (was block "withdraw"): `adoption.withdraw` marks the adoption withdrawn and its task dismissed
+    -> the step is no command of this build, and the obligations stand where the earlier path keeps them (J6).
+14. "J4 knowledge": the hand-written acceptance was dated before the fixture's apply -> dated after it, and the
+    earlier date is held as not standing.
+15. "size": the evidence was counted against S0's own figure -> against the integrated base, with the bytes of J2, J3
+    and J10 on the route included.
 
-- **History** entries are `{n, at, event, actor, revision, note?, causes?}`; `n` counts up for good. Events: `upgrade`,
-  `reassess`, `accept`, `deviation`, `obligation`, `withdraw`, `reverse`, `changed` (the tracker's). The entries the
-  projection and the tracker read are never trimmed; the others keep their last 30.
-- **Steps** (all refuse a stale `revision` with "This adoption changed. Reopen it; your input is retained.", and a
-  record that is not `applied`): `adoption.reassess` (confirms; no revision), `adoption.accept` (writes `review`; no
-  revision), `adoption.deviation` (add, or withdraw with a reason; revision), `adoption.obligation` (discharge by a
-  record a bound record reaches, or clear; revision), `adoption.withdraw` (reason; revision; the task it was upgraded
-  from is marked `dismissed`, as `model-reversal.js` marks a reversed design's task).
-- **Findings** (Chapter 5, id `<code>:<adoption id>`, `objectId` the adoption): `adoption-role-broken` (error),
-  `adoption-role-missing` (error), `adoption-basis` (warning), `adoption-deviation-unreviewed` (warning),
-  `adoption-acceptance` (warning). None is marked `hard` in S1: the one the design makes non-waivable
-  (`adoption-contraindicated`, ruling A1's class) needs preconditions, which are S2's.
+### No second truth: each earlier step and reader, and the slice that retires it (ruling J6)
 
-## The second person (rulings D1, D7.1, F3, F4, A5)
-
-- **No check of the package's own.** `adoption.accept` is a `second` type. Its function answers the projection
-  `acceptanceSubject(a)` = `{id, actor, history: [{revision, actor}]}`: `actor` is who stands behind the applied record
-  (the signed-in applier from S2 on; for a record no signed-in person applied, the person who first confirmed it
-  here); `history` names once each, since the last apply, who applied, who confirmed in the applier's place, and who
-  changed facts, bindings, parameters or deviations.
-- **Left out of the projection** (design c.1; D7.1 asks for it to be said): a save that changed none of those —
-  `adoption.obligation` (discharging an obligation), and `adoption.reassess` of a record a signed-in person applied.
-  Cases: *left in* — C adds a deviation and is refused ("architect-c wrote ADP-001") whoever confirms afterwards;
-  *left out* — B discharges an obligation, is not named by the projection, and accepts once another person stands
-  behind the record (the boundary's two-persons rule, D1, refuses B first, because B's save is the record's last).
-- **At read time** `adoptionAccepted(p, a)` calls `verifierRefusal` on the same projection with the stored step's
-  actor and account kind and requires `account === 'person'`, the step's revision to be the record's, its deviation
-  ids to be the active ones, nothing changed or reassessed after it (`review.seq`), and the step to be taken in this
-  project (after a restore or a template copy). A status written by hand does not count.
-- **Kept under `review`** (F3): `{actor, at, account, revision, seq, note, deviationIds}`. The stored status stays
-  `applied`; "accepted" is read, never stored (deviation 1). `assertTemplateCopyClearsSteps` passes; in a copy the
-  adoption reads "applied in another project · not applied or accepted in this project".
-- **Ruling F4 — the person-only step that confirms a record no person has stood behind: `adoption.reassess`.** An
-  upgraded adoption carries no author stamp and its applier is a typed name, so `adoption.accept` is refused by the
-  one rule ("ADP-001 names no author: save it again first."; the sentence is `verifierRefusal`'s, ruling A5). A
-  signed-in person reads it against the model and sends `adoption.reassess`; the boundary stamps who confirmed
-  (`provenance.reviewed`), the projection names that person, and a second person accepts. The package says which step
-  comes first in its own words (`adoptionReading(...).acceptance.next`, and the finding's detail). Case: block `accept`.
-  The same path serves a record a template copy carries (block `template copy`).
-
-## The upgrade (design e.3) and what it moves
-
-`upgradeAdoptions(p)` answers `p` itself when no task stands as applied without an adoption. Otherwise, for each such
-task, one adoption exactly as e.3 lists (asserted field by field in block `upgrade`): origin `upgrade`, status
-`applied`, no acceptance; `legacy {taskId, solutionId, alternativeId, methodReceipt, governedKnowledge, answers}`
-verbatim; the definition from `builtinFromReceipt` with the receipt and a snapshot of what the project used (roles
-from the placement, obligations by id suffix); bindings from `solution.placement`; facts from `applied.designAnswers`
-(`by` the typed reviewer name, `identity: 'typed-name'`); parameters from `specifications[].parameters` with
-`unit: ''`, `migrated: true`; obligations verbatim with their ids; `decisionId`; `applied {at, reviewer, reason,
-changeIds, records, reviewAuthority}` verbatim; no deviations, no bounds. A task of another kind gives roles from
-`applied.records[].slot` and no obligations. The task stays, with `adoptionId` added. It writes nothing else.
-
-**What it moves** (asserted, block `e3 rules`, on the Bank Payment reference with three applied tasks): of the ten
-readings of `rc44-s0-readings.mjs` it moves `graph`, `model` (three `pattern` objects are the adoptions instead of the
-tasks, with `binds`), `trails` (the layer `mechanism`), `findings` and `readiness` (three `adoption-acceptance`
-warnings in Chapter 5), `provenance` (three records with no author stamp), `registers` and `sdd` (those findings and
-counts). It leaves `stamps` and `ars`. Also asserted unmoved: the design fingerprint and its version stamp, the
-evidence fingerprint, every requirement's trace stamp, the design source a freeze keeps (byte-identical), the whole
-`finalReview` record, every chapter container, the obligation basis stamp of a verified action (which stays
-`current-verified`), and the 22 rows of `architectureObligationsFor`. Built-in layers of every trail and spine:
-unchanged (`assertBuiltInTrailsUnchanged`).
-
-The five "must not" rules: 1 block `e3 rules`; 2 block `e3 rules`; 3 block `e3 rules`; 4 block `storage upgrade`
-(a row written as an older build kept it is stored again at its first read, once, with a recovery point that holds
-the row as it was and the step's sentence in the activity, and no event in the design journal); 5 block `e3 rules` (a
-frozen source holds no task list and is answered as it is).
-
-**Observed, and worth knowing:** on the server the read upgrades run wherever a document is read (`withFinalReview`),
-the commit's own copy included. So a design applied on this build through `alternative.apply` is an adoption from
-its own commit (origin `upgrade`, not accepted), and the document names `p40-adoption` from then on. Only a row stored
-by an older build goes through the storage upgrade.
-
-## Ruling A6: the chapter's record count, and types for relationships a person draws
-
-- **Types for drawn relationships: not needed, and should stay so.** An adoption's relations (`binds`, `addresses`,
-  `assesses`, `scopes`) are stated by its own steps and read from the record; a person never draws one. If a drawn
-  link could be typed onto an adoption, a binding could be asserted outside `bind` and `apply`. No surface offers an
-  adoption as an end of a drawn relationship.
-- **The chapter's "N records" count: not in S1; yes from S3.** In S1 no chapter page lists adoptions (their surface is
-  S3's, in the comparison tools). When S3 shows them, `adoptions.records` should count for the chapter that lists them.
-  Which chapter that is, is open: the built-in type `pattern` is Chapter 3's ("Applied design reasoning"), while the
-  package's collection and findings are stated for Chapter 5, where the bound components are (open question 3).
-
-## Deviations from the design, the task text and the contract
-
-1. **`accepted` is read, not stored.** Design b.1 stores status `accepted`. The contract keeps a second person's step
-   under `review` because any other key is content to the authorship stamps: moving `status` would stamp the accepter
-   as the record's author and clear the confirmation the two-persons rule reads.
-2. **No design fingerprint 3 and no conversion of stored stamps.** The design converts stamps as D14 did. Instead the
-   upgrade moves no stamp by construction: `reviewSource` leaves an adoption whose revision is 1 out (its content is
-   the task's, which `guidedDesign` reads already) and reads a task without its `adoptionId`. A deviation, a discharge
-   or a withdrawal moves the revision, so the record joins the design source and the fingerprint moves (asserted). A
-   confirmation and an acceptance of a record as upgraded move no design stamp (asserted). Cost: about 100 B on the
-   route; no stored stamp, alias table or frozen baseline is touched.
-3. **The readers of the applied solution are not moved in S1.** `architectureSolutionsFor` and `acceptedObligation`
-   still read the task. Every adoption of S1 has its task beside it, so the rows are the same (asserted), and a
-   withdrawn or reversed adoption takes its task's applied standing with it (asserted: no reader lists its
-   obligations). A body swap that reads adoptions needs an adoption that holds a solution, which S2 writes; doing it
-   now would add route bytes for no reading that differs.
-4. **The tracker's flag is a history entry, not a key `review {required, since, causes}`.** `review` is the
-   acceptance (F3). A `changed` entry is bookkeeping to the stamps and is closed by the next `reassess`.
-5. **No stored `reading`.** The design stores it so the route evaluates nothing. Under S0 the findings are the
-   package's `checks`, which run in the lazily loaded package and are kept per settled document.
-6. **`adoption-basis` is a warning** (the design's kept code `design-source` is an error). The task's own
-   `design-source:<task id>` finding still comes from `designTaskFindings` for an upgraded record, as an error, as
-   before; a second error for a changed bound record would block every review on an edit of a shared component.
-7. **Both hops are context** (`ctx: true`); the design's hop has no context mark. No spine holds the layer, so no
-   governance check reads it.
-8. **No `designKeys` row.** The registry's check of a design key probes `reviewSource` with a list under the key,
-   where the package keeps a container; it cannot read the line of deviation 2. The suite holds that the key moves the
-   fingerprint.
-9. **`adoption.reassess` does not recompute a basis** (the design's does): an upgraded record's basis is its task's,
-   which `designBasisCurrent` already reads. It confirms and closes an open change.
-10. **Base commit `8e8240e`, not `72204ff`** as the task text says. Ruling F3 binds every package with a person's step
-    to call `assertTemplateCopyClearsSteps`, which exists only from `8e8240e`; the worktree was handed over there.
-11. **The "fails today" case is held on the persistence design**, whose commit obligation
-    (`DES-003:persistence-commit`) does rest on its store; the outbox's commit obligation rests on its processor in this
-    code. The outbox's own store is held too (block `withdraw`, the tracker called as the server calls it).
-
-## Measurements (`audit/rc44/evidence/wp2-s1-size.json`; `node build.mjs`, `dist/client-size-report.json`)
-
-| | Before (S0, `s0-size.json`) | This slice |
+| Earlier step or reader | What it still does beside the adoption | Retired or moved in |
 |---|---|---|
-| Chapters route (`routes.chapters.code`) | 3,229,761 B | 3,230,065 B (**+304 B** of wp2's 600 B; cap 3,233,792 unchanged; 3,727 B left) |
-| Projects route | 506,802 B | 507,030 B (+228 B: the stub and the registry's `registerExtension`) |
+| `alternative.apply` of a guided design (`model-alternatives.js`) | writes the applied solution on the task; the upgrade step writes the adoption in the same commit | S2 writes adoptions of its own (`adoption.apply`, a signed-in `applied.actor`); S3 deletes the handler for design tasks |
+| `alternative.rollback` and `previewReversal` (`model-reversal.js`) | reverses the design and marks the task; the tracker takes the adoption with it (`reversed`), journalled | S3, with `adoption.withdraw`: until then the applied standing is kept by the task, the model alternative and the adoption, and only the earlier path moves it |
+| `architecture.refresh` (a typed reviewer name) | re-reads a design's sources and clears `design-source:<task>`; `adoption.accept` waits for it | S3 for a task with an adoption: the basis becomes the adoption's own reading, and the `sourceReview` clause of `adoptionAccepted` goes with it |
+| `designTaskFindings` `design-source:<task id>` (`design-task-state.js`) | the error for a design whose sources changed | S6: the adoption raises it under the same id, or a recorded treatment is lost |
+| `architectureSolutionsFor`, `acceptedObligation`, `architectureObligationsFor`, the obligation basis | the one place an obligation's standing is read; the adoption holds a verbatim copy of the obligations and reads their state from that reader | S2, when the first adoption without a task exists, and `adoption.obligation` with them; S6 at the latest |
+| The built-in emitter of design tasks (`record-graph.js`) | skips a task that has an adoption; still emits a task without one | S6 |
+| `reviewSource` `guidedDesign` | says to the fingerprint what the task says; the adoption's statement leaves that out; the task is read without `adoptionId` | S6 |
+| A project copied from a template (`instantiateTemplate` deletes the tasks) | the copy carries the adoption without its task: the adoption lists its obligations as open while `architectureObligationsFor` answers no row | S2, with the obligation readers |
+| The task's method receipt, refreshed by `architecture.refresh` | the adoption pins the receipt as applied; its currency is read from the receipts the adoption holds | S3 |
+| `architecture.measure` | quantitative evidence on the task | wp3 and wp6 (design e.1) |
+
+### What S2 and S3 inherit
+
+**S2 (the definition contract, `adoption.start` to `adoption.apply`):**
+1. `adoption.apply` puts the signed-in applier on `applied.actor` and an `apply` history entry with no `identity`:
+   the projection reads both already, and counts the covered saves from the last such entry.
+2. `adoption.obligation` comes with the obligation readers. The projection then also names whoever discharged an
+   obligation (ruling J12: the discharge moves the revision, so the acceptance covers it). Add `'obligation'` to
+   `COVERED` in `adoption-domain.js` and a case for it.
+3. A step that changes what an adoption says moves `revision` and sets `confirmed` false (`changed()`).
+4. `adoptionDesign` says everything but the bookkeeping for an adoption with no task beside it. A new key that is
+   bookkeeping must be left out there; `assertStepsMoveNoStamp` catches one that is not.
+5. Every relation the emitter states asks `has(id)` first.
+6. `definitionOf` reads released knowledge from `definition.receipt.governedConcern.receipt` and
+   `legacy.governedKnowledge`. A definition S2 builds from a released claim puts its claim receipt where that reader
+   finds it, or extends the reader, with a case that a withdrawn claim reads `withdrawn`.
+7. `adoption-contraindicated` is the `hard` finding (ruling A1). Preconditions, relationships, parameters with units,
+   companions and cross rules are not evaluated in S1.
+8. The upgrade writes no more than the tasks give; `ADOPTION_LIMITS.records` (60) is for S2's `adoption.start` to hold.
+9. A list named `evidence` on the record is emptied by a template copy; S4 names its rows otherwise.
+10. Route: wp2 has used 316 B of 600 B. 284 B are left for S2 to S6.
+
+**S3 (the surface and the retirement of the eight paths):**
+1. When the surface offers the two steps, the warning "not accepted by a second person" is raised (J7): the reading
+   already holds the standing and the words (`acceptance.next`).
+2. `adoption.withdraw` moves all three places of the applied standing in one commit, or refuses (should-fix 4).
+3. `architecture.refresh` is retired for a task with an adoption; `adoption.reassess` then recomputes the basis, and
+   `design-source:<task id>` is carried under the same id (S6).
+4. The chapter's "N records" count (ruling A6): adoptions are counted under Chapter 3 by the provenance reader now;
+   the chapter page that lists them should count them there.
+5. The browser reads the record with `adoption-domain.js` only. If a surface needs a definition's skeleton, it comes
+   from the record's snapshot, not from `adoption-builtins.js` (a server module).
+
+### Which code the browser holds (should-fix 12, ruling J12)
+
+The lazy entry rooted at `public/architecture-task-ui.js` holds `adoption-domain.js` (the readers, the three steps,
+the tracker) and `adoption-package.js` (the registration). It does not hold `adoption-upgrade.js`,
+`adoption-builtins.js` or `adoption-definitions.js`: **the browser reads no old document with the upgrade.** Every
+document it draws was read by the server, which stores the upgrade at that read. `adoption-server.js` adds the
+`upgrade` to the registered package on the server.
+
+### Measurements (`audit/rc44/evidence/wp2-s1-size.json`; `node build.mjs`, `dist/client-size-report.json`)
+
+| | Integrated base (`rc44/integration`) | This slice after the fix-up |
+|---|---|---|
+| Chapters route (`routes.chapters.code`) | 3,229,840 B | 3,230,156 B (**+316 B** of wp2's 600 B; cap 3,233,792 B unchanged; 3,636 B left) |
+| Projects route | 506,829 B | 507,069 B (+240 B) |
 | Script files | 148 | 148 |
 | Files under 10 KB | 53 | 53 |
 | Stylesheet | 901,873 B | 901,873 B |
-| Opens with records (D10) | 3,308,950 B (79,189 B beside the route, 2 scripts) | 3,327,437 B (97,372 B beside the route, 2 scripts) |
+| **Opens with records** (ruling D10) | 3,308,964 B at S0 (79,189 B beside the route, 2 scripts) | see the evidence file: the route and the lazy entry, 2 scripts |
 
-Where the 304 B are: the stub and the first use of `registerExtension` on the route (S0 measured 217 B for a first
-package), the emitter's skip, the two changes of `reviewSource`. **This is half of wp2's allowance, not "well under
-half"**: the stub alone is a third of it. See open question 1.
+The base figure is the lead's (`audit/rc44/evidence/merge-s0-wp1-2026-11-19.json`: 3,229,840 B). The 316 B hold the
+route stub and the first use of `registerExtension` on the route, the emitter's skip of a task that has an adoption,
+`has(id)` for the emitter (J2), the loop that reads a package's `design` statement in `reviewSource` (J3) and the task
+read without `adoptionId`. They were not measured piece by piece. J10, J8 and J9 are server code. The first build
+measured 304 B against S0 before its second round. No gate was changed.
 
-## Suites
+### Suites run on the fix-up's head
 
-- `test:rc44-wp2-adoption`: 12 blocks, green.
-- Green, unchanged: `design-task`, `architecture-design`, `composition`, `persistence`, `read-design`,
-  `knowledge-design`, `architecture-obligation`, `component-library`, `rc42-g2-library`, `rc42-g4-trace-kernel`,
-  `action-undo`, `architecture-case`, `architecture-drafting`, `architecture-operation-continuation`,
-  `architecture-operation-group`, `architecture-verification`, `brain`, `exchange-design`, `model-alternatives`,
-  `realisation`, `security-design`, `rc42-g1-tech-approval`, `rc42-g3a-risk-and-limits`, `rc42-g3b-trace-and-delivery`,
-  `rc42-g3c-evidence-fingerprint`, `rc42-g5-runtime`, `rc42-g6-import`, `rc42-g7-data-contracts`, `baseline-size`,
-  `driver-design-ui`, `output-stage`, `recovery-authority`, `review`, `roadmap`, `sdd-architecture`, `fingerprint`,
-  `model-lifecycle`, `model-views`, `provenance`, `scale-readings`, `sdd-content`, `sdd-formats`, `sdd-modules`,
-  `sdd-size`, `sol-sdd`, `trace-narrative`, `design-task-ui`, `exchange-task-ui`, `brain-ui`, `field-spark`.
-- Red as on the baseline (both in `audit/rc42/regression-2026-11-16.json`, same failure line, and red on `8e8240e`):
-  `design-concern`, `command-equivalence`.
-- **Red because a package now exists: `test:rc44-s0-extensions`, 9 of 22 blocks** (S0's own file; not edited, by
-  instruction). See open question 2.
-- `node check-syntax.mjs`: passes. `node scripts/lint.mjs --summary`: 162 problems, 0 new. `node build.mjs`: passes
-  every gate.
-- Not run: the full regression (the lead's), and the browser suites that are red on this machine at the baseline
-  (`architecture-ui`, `composition-ui`, `security-task-ui`).
+See the result file of the fix-up for the list with each outcome. In short: `rc44-wp2-adoption` 19 blocks,
+`rc44-s0-extensions` 24, `rc44-wp1-knowledge` 34 cases; the related suites of the first build and of the review;
+`node check-syntax.mjs`; `node scripts/lint.mjs --summary` (0 new); `node build.mjs` (every gate). Not run: the full
+regression (the lead's) and the browser suites that are red on this machine at the baseline.
 
-## What later slices must know
+### Corrections to the first build's notes (should-fix 13)
 
-1. **S2/S3: move the applied-solution readers when the first adoption without a task is written** (deviation 3), and
-   give `adoption.apply` a signed-in `applied.actor`: the projection and the reader already read it.
-2. **S2: `adoption-contraindicated` is the `hard` finding** (ruling A1). Preconditions, relationships, parameters
-   with units, companions and cross rules are not evaluated in S1; the reading has the places for them.
-3. **S6: `design-source:<task id>`** still comes from `designTaskFindings`. When the task readers skip a task with
-   `adoptionId`, the adoption must raise it under the same id, or a recorded treatment is lost.
-4. **A step that changes what an adoption says must move `revision` and set `confirmed` false** (`changed()` in
-   `applyAdoptionCommand`): the acceptance and the fingerprint read the revision.
-5. **`evidence` rows (S4) cannot be a list named `evidence`** on the record: a template copy empties every list of
-   that name.
-6. **The tracker writes no journal event of its own.** The cause is on the adoption's history; who sent the commit is
-   in the journal of the command.
+- The first build listed nine S0 blocks that failed "because a package exists". Two more assertions were hidden behind
+  earlier failures in the same blocks: "ADP is free" (block "SF start check") and the `designKeys` probe that named
+  `adoptions` (block "D3 workbench keys"). Both failed because of how the package was built, not because a package
+  exists. Rulings J10 and J3 gave the rows that settle them.
+- The first build said a baseline could not be frozen in the fixture because of its blockers. A working-draft freeze
+  needs only current checks; the suite now freezes one before the upgrade (block "J3 design statement").
+- The base of the first build was `8e8240e`, not `72204ff` as its task text said: ruling F3's helper exists only from
+  there.
 
-## Open questions (for the lead)
+### Open questions (for the lead)
 
-1. **Route allowance.** S1 uses 304 B of wp2's 600 B. The design's later rows (`component-library.js` about 120 B,
-   `normaliseOption` 40 B, `design-questions.js` 60 B, `design-task-state.js` 30 B, `model-reversal.js` 40 B) do not
-   fit in 296 B unless S3 and S6 take the legacy builders off the route first, as the design expects.
-2. **S0's suite, with a package registered** (nothing of S0's was edited). Nine blocks fail, each on an assertion that
-   no package exists or that uses what this package now holds:
-   - `6a no extension registered`, `registration`, `7 idempotent and order-free`: equality with the list of the
-     synthetic packages; `EXTENSIONS` now also holds `p40-adoption` and `p40-adoption-route`.
-   - `needs and load`: "no package exists at this slice: neither list names one".
-   - `D2 packages a document names`: uses `p40-adoption` as the example of a package this build lacks.
-   - `SF start check`: its allowed probe is a layer over `pattern`, which now stands on `mechanism`.
-   - `D5 SDD provenance`: the list of the packages' collections now starts with `adoptions.records`.
-   - `8 client build`: the registry module is 479 B in the bundle, over the suite's own 420 B (the first route stub
-     keeps `registerExtension` on the route; the bytes are inside the 304 B above).
-   - `D3 workbench keys`: **needs one token in a product file of S0**: `ADP` in `WORKBENCH_PREFIXES`
-     (`public/design-extension-parts.js`), as S0's note 3 asks of a slice that mints an id prefix. Until then another
-     package could state `ADP` as its prefix unrefused.
-3. **Which chapter an adoption belongs to** (A6): the built-in type `pattern` says 3; the package states 5 for its
-   collection and findings.
-4. **An acceptance of an adoption that has left its upgraded state moves the design fingerprint**, as a review kept
-   on any built-in record does (the fingerprint reads records whole). If a frozen baseline should not read an
-   acceptance as a design change, that is a ruling for all packages (wp9b).
-5. **S0's check of `designKeys`** cannot read a projection of a key (deviation 8).
-6. **The sentence of the first refusal** for a record nobody stands behind is `verifierRefusal`'s ("names no author:
-   save it again first."), which misleads on an accept step; ruling A5 leaves it to wp9b.
+1. J8 for the writing routes that are not commands (point 2 above).
+2. Whether `adoption-deviation-unreviewed` waits for S3 too (point 5 above).
+3. Route: 284 B are left of wp2's 600 B. The design's later rows (`component-library.js` about 120 B,
+   `normaliseOption` 40 B, `design-questions.js` 60 B, `design-task-state.js` 30 B, `model-reversal.js` 40 B) fit only
+   if S3 and S6 take the legacy builders off the route first, as the design expects.
+4. The sentence of the two refusals on an accept step is the shared one ("verifies it", "wrote ADP-001"); ruling A5
+   leaves it to wp9b.
+
+## The slice as it now stands
+
+### What was built
+
+| File | Where it runs | What it is |
+|---|---|---|
+| `public/adoption-domain.js` | server; the browser's lazy entry | `adoptionRecords`, `adoption`, `adoptionReading`, `adoptionFindings`, `journalApplier`, `acceptanceSubject` (the projection), `adoptionAccepted` (the reader), `adoptionDesign` (what a record says to the design fingerprint), `emitAdoptions`, `applyAdoptionCommand` (three steps), `trackAdoptionChange`, `ADOPTION_LIMITS` |
+| `public/adoption-package.js` | server; the browser's lazy entry | the one `registerExtension({id: 'p40-adoption', …})` |
+| `adoption-server.js` | server | adds `upgrade` and `upgradeNote` to the registered package; the line of `design-packages.js` |
+| `public/adoption-upgrade.js` | server | `needsAdoptionUpgrade`, `upgradeAdoptions` (design e.3) |
+| `public/adoption-builtins.js` | server | `BUILTIN_DEFINITIONS` (twelve skeletons by method id), `builtinFromReceipt`, `receiptDefinition` (a released design concern), `builtinOfKind` |
+| `public/adoption-definitions.js` | server | the definition shape, `definitionIssues`, `DEFINITION_KINDS` (with `concern`) |
+| `public/design-package-routes.js` | route | the stub `p40-adoption-route` (`needs: p => p.adoptions`, `load`: the lazy entry) |
+| `public/architecture-task-ui.js` | lazy entry | one import: the entry that holds the package (ruling D7.6) |
+| `rc44-wp2-adoption-validate.mjs`, `rc44-wp2-adoption-cases/record.mjs`, `rc44-wp2-fixtures.mjs`, `rc44-wp2-adoption-baseline.json` | suite | runner, S1's cases, fixtures, the goldens of the references |
+| `audit/rc44/evidence/wp2-s1-size.json` | evidence | the route measurement with "opens with records" |
+
+Registration rows: `prefixes` (`{pattern: 'ADP'}`), `records` (type `pattern`, from the package's own collection),
+`layers` and `hops` (each states `only`; both are context), `checks` (with Chapter 5's), `commands`
+(`adoption.reassess` and `adoption.deviation` a person's, `adoption.accept` a second person's), `track`, `provenance`
+(noun, paths, records under Chapter 3), `design` (`{adoptions: adoptionDesign}`), and on the server `upgrade` and
+`upgradeNote`. Needs and load are the stub's.
+
+Edits of built-in code, each commented "rc44, wp2" or with its ruling:
+1. `public/record-graph.js`: the built-in emitter skips a task that has `adoptionId`; the one emitter hands a package
+   `has(id)` (J2, S0's row).
+2. `public/review-domain.js` `reviewSource`: a task is read without its `adoptionId`; a package's `design` statement is
+   read in place of its raw key (J3, S0's row).
+3. `public/architecture-task-ui.js`: the import above.
+4. `public/sdd-architecture.js`: the count of records an upgrade or a merge wrote (J9).
+5. `worker.js`, `design-extension-boundary.js`: the reload for a command on a row whose package upgrade is due (J8).
+6. `public/design-extension-parts.js`: the start checks and the clash checks of `prefixes` and `design` (J10, J3).
+
+### The record
+
+`p.adoptions = {schemaVersion: 1, definition: 1, counter, version, records}`, created when first written. A record:
+`id` (`ADP-nnn`), `ref`, `revision`, `status` (`applied`, `reversed`; `draft`, `prepared`, `withdrawn`, `superseded`
+come with later slices), `origin`, `kind`, `title`, `owner`, `scope`, `definition {definitionId, version, optionId,
+groupId, authority, receipt, snapshot, snapshotHash}`, `facts`, `bindings`, `parameters`, `obligations`, `decisionId`,
+`deviations`, `applied`, `review` (the acceptance), `confirmed`, `legacy`, `history`.
+
+- **History** entries are `{n, at, event, actor, revision, note?, causes?, changeId?, identity?}`; `n` counts up for
+  good. Events: `upgrade`, `apply` (with `identity: 'journal'` when the journal named the applier), `reassess`,
+  `accept`, `deviation`, `changed` (the tracker's, with the journal event's id), `reverse`. The entries the projection
+  and the tracker read are never trimmed; the others keep their last 30. The history is bookkeeping to the authorship
+  stamps and to the design fingerprint alike.
+- **Steps** (each refuses a stale `revision` with "This adoption changed. Reopen it; your input is retained.", and a
+  record that is not `applied`): `adoption.reassess` (confirms; no revision), `adoption.accept` (writes `review`; no
+  revision), `adoption.deviation` (add, or withdraw with a reason; revision).
+- **Findings** (with Chapter 5's, id `<code>:<adoption id>`, `objectId` the adoption): `adoption-role-broken` (error),
+  `adoption-role-missing` (error), `adoption-definition-withdrawn` (error), `adoption-basis` (warning),
+  `adoption-deviation-unreviewed` (warning). None is marked `hard` in S1.
+- **The reading** (`adoptionReading`): `label`, `accepted`, `definition {state, reasons}`, `basis {state, findingId}`
+  (the earlier path's finding for the same design), `roles`, `parameters`, `obligations` (their state from the one
+  obligation reader), `deviations`, `acceptance {accepted, by, at, next}`, `changed`, `bounds`, `findings`.
+
+### The second person (rulings D1, D7.1, F3, F4, A5, J1, J6)
+
+- **No check of the package's own.** `adoption.accept` is a `second` type. Its function answers the projection
+  `acceptanceSubject(a, p)` = `{id, actor, owner, history: [{revision, actor}]}`: `actor` is the signed-in applier
+  (on the record, named by the journal, or read from the journal now), or, where nobody is named, the person who first
+  confirmed the record here; `history` names once each everyone the journal names for the apply, and since the last
+  apply who confirmed in the applier's place and who changed facts, bindings, parameters or deviations.
+- **Left out of the projection** (design c.1; ruling D7.1): a confirmation of a record whose applier is named. Cases:
+  *left in* — C adds a deviation and is refused whoever confirms afterwards; *left out* — B confirms a record A
+  applied and C deviated, is not named, and accepts.
+- **At read time** `adoptionAccepted(p, a)` requires a person's stored step, of the record's revision and its active
+  deviations, taken in this project, with nothing changed or reassessed since, of a definition whose knowledge is
+  current, with no finding of the earlier path standing for the same design and no source review of that design after
+  it, and independent by `verifierRefusal` on the same projection. A status written by hand does not count.
+- **Kept under `review`** (F3): `{actor, at, account, revision, seq, note, deviationIds}`. The stored status stays
+  `applied`; "accepted" is read, never stored. `assertTemplateCopyClearsSteps` passes; in a copy the adoption reads
+  "applied in another project · not applied or accepted in this project".
+- **Ruling F4 — the person-only step that confirms a record no person has stood behind: `adoption.reassess`.** An
+  upgraded adoption carries no author stamp, so the boundary's two-persons rule refuses an accept until a signed-in
+  person has read it against the model and confirmed it. The same path serves a record a template copy carries.
+
+### The upgrade (design e.3) and what it moves
+
+`upgradeAdoptions(p)` answers `p` itself when no task stands as applied without an adoption of its own. Otherwise, for
+each such task, one adoption as e.3 lists (asserted field by field in block "upgrade"): origin `upgrade`, status
+`applied`, no acceptance, no author stamp; `legacy` verbatim; the definition from the built-in its receipt names, or
+the released design concern it pins, with a snapshot of what the project used; bindings from the placement (for a task
+of another kind, from its applied records, typed by the record graph); facts, parameters (`unit: ''`, `migrated:
+true`), obligations verbatim with their ids; `applied` verbatim; the applier where the journal names one.
+
+**What it moves** (block "e3 rules", on the Bank Payment reference with three applied tasks): of the ten readings of
+`rc44-s0-readings.mjs` it moves `graph`, `model`, `trails` (the layer `mechanism`), `provenance` and `sdd` (the count
+of who wrote the records). It leaves `findings`, `stamps`, `readiness`, `registers` and `ars`. Also unmoved: the
+design fingerprint and its version stamp, the evidence fingerprint, every requirement's trace stamp, the design source
+a freeze keeps (byte-identical), the whole `finalReview` record, every chapter container, the obligation basis stamp
+of a verified action (which stays `current-verified`), the 22 rows of `architectureObligationsFor`, the issues of the
+connected model (none) and every built-in layer of every trail and spine.
+
+The five "must not" rules: 1, 2, 3 and 5 in block "e3 rules"; 4 in block "storage upgrade" (a row an older build kept
+is stored again at its first read, once, with a recovery point and the step's sentence in the activity, and no event
+in the design journal; a command that arrives first is answered with a reload).
+
+### Ruling A6: the chapter's record count, and types for relationships a person draws
+
+- **Types for drawn relationships: not needed, and should stay so.** An adoption's relations are stated by its own
+  steps and read from the record. If a drawn link could be typed onto an adoption, a binding could be asserted
+  outside its steps. No surface offers an adoption as an end of a drawn relationship.
+- **The chapter's "N records" count: not in S1; from S3,** under Chapter 3 (ruling J12).
+
+### Deviations from the design, the task text and the contract
+
+1. **`accepted` is read, not stored.** Design b.1 stores status `accepted`. The contract keeps a second person's step
+   under `review`, because any other key is content to the authorship stamps.
+2. **No design fingerprint 3 and no conversion of stored stamps.** The upgrade moves no stamp by construction: the
+   package states what its records say to the fingerprint (S0's row `design`, ruling J3), and an adoption leaves out
+   what its task still says.
+3. **The readers of the applied solution are not moved in S1**, and the two steps that would write beside them are
+   held back (ruling J6). See the retirement list above.
+4. **The tracker's flag is a history entry**, not a key `review {required, since, causes}`: `review` is the acceptance
+   (F3). Each flag is also one journal event (J5).
+5. **No stored `reading`.** The findings are the package's `checks`, kept per settled document.
+6. **`adoption-basis` is a warning**; the earlier path's `design-source:<task id>` stays the error for changed
+   sources, and the adoption's reading carries its state.
+7. **Both hops are context.** No spine holds the layer, so no governance check reads it.
+8. **`adoption.reassess` does not recompute a basis**: the basis is the task's until S3.
+9. **The "fails today" case is held on the persistence design**, whose commit obligation rests on its store; the
+   outbox's own store is held too (block "held back").
+10. **A kind `concern`** beside the design's five (ruling J4): a released design concern compared and applied as a
+    guided design; S5 moves such a comparison to `selection.*`.
