@@ -33,7 +33,7 @@ import worker, {commandHandler} from './worker.js';
 import * as X from './public/design-extensions.js';
 import * as boundary from './design-extension-boundary.js';
 import {storageUpgradeNeeded} from './storage-upgrade.js';
-import {withFinalReview, inheritedFindings, reviewSourceStamp} from './public/review-domain.js';
+import {withFinalReview, inheritedFindings, reviewSourceStamp, evidenceStamp} from './public/review-domain.js';
 import * as rt from './public/runtime-domain.js';
 import * as runtimeModel from './public/runtime-model.js';
 import {technologyFindings} from './public/technology-domain.js';
@@ -112,6 +112,12 @@ await block('S1.0 the marker', async () => {
   assert.equal(run(copy, 'runtime.node', {title: 'A node of the copy', kind: 'site'}).selected, 'dn-00' + (typed.runtime.nodes.length + 1), 'the copy takes topology commands');
   const retaken = doc(copy, 'runtime.topology-start', {}, B);
   assert.deepEqual({actor: retaken.runtime.topology.review.actor, account: retaken.runtime.topology.review.account}, {actor: B, account: 'person'}, 'a person takes the step in the copy');
+  // What the step is to the design: choosing it is a change of Chapter 10 (its version moves, and with it the design
+  // stamp); who chose it is bookkeeping, which neither fingerprint reads, so a step taken again moves no stamp (ruling J3).
+  { const base = F.tidewater(), first = started();
+    assert.notEqual(reviewSourceStamp(first), reviewSourceStamp(base)); assert.equal(evidenceStamp(first), evidenceStamp(base), 'the marker is no evidence');
+    assert.deepEqual([reviewSourceStamp(retaken), evidenceStamp(retaken), retaken.runtime.version], [reviewSourceStamp(copy), evidenceStamp(copy), copy.runtime.version], 'taken again in the copy it moves no stamp and no version');
+    assert.deepEqual([mine().evidenceKeys, mine().designKeys], [['runtime.topology'], ['technology.domains', 'runtime.nodes']]); }
   pass('S1.0: before the marker runtime.node, technology.domain, technology.domain-proposals and runtime.locate are refused; runtime.topology-start is refused for an agent account, a draft by Sol and an import, and for a person writes the marker, names the package in the document and is journalled; sent again it changes nothing; a template copy stays typed and clears who chose it');
 });
 
@@ -200,7 +206,14 @@ await block('S1.2 one typed failure domain is one hosting failure domain', () =>
   assert.deepEqual(zoneOf(p, I.zone1).domainIds, ['fd-002', 'fd-003']); assert.equal(runtimeModel.failureDomainKey(zoneOf(p, I.zone1)), 'fd-002', 'a shared cause is not the hosting failure domain');
   refuses(p, 'technology.domain', {id: 'fd-002', cause: 'power'}, /ZON-001.* stands? in FD-002: it keeps a location as its cause/, 'a domain a zone stands in does not become a shared cause');
   refuses(p, 'technology.domain', {id: 'fd-003', cause: 'location'}, /ZON-001 names? FD-003 as a cause it shares/, 'and a shared cause a zone names does not become a location');
-  refuses(p, 'runtime.locate', {zoneId: I.zone1, domainIds: Array.from({length: 13}, () => 'fd-002')}.domainIds && {zoneId: I.zone1, domainIds: ['fd-404']}, /existing failure domains/);
+  refuses(p, 'runtime.locate', {zoneId: I.zone1, domainIds: ['fd-002', 'fd-404']}, /Choose existing failure domains; fd-404 is not in this project/);
+  refuses(p, 'runtime.locate', {zoneId: I.zone1, domainIds: 'fd-002'}, /Choose existing failure domains/, 'a list, or what to add and remove');
+  assert.deepEqual(zoneOf(doc(p, 'runtime.locate', {zoneId: I.zone1, domainIds: {remove: ['fd-003']}}), I.zone1).domainIds, ['fd-002'], 'a link list is sent whole or as what to add and remove');
+  { // a zone names up to twelve failure domains: the one it stands in and eleven causes it shares
+    let q = p; for (let i = 0; i < 11; i++) q = doc(q, 'technology.domain', {title: 'Cause ' + i, cause: 'power'});
+    const causes = q.technology.domains.filter(d => d.title.startsWith('Cause ')).map(d => d.id);
+    refuses(q, 'runtime.locate', {zoneId: I.zone1, domainIds: ['fd-002', 'fd-003', ...causes]}, /A zone names up to 12 failure domains; 13 were sent/);
+    assert.equal(zoneOf(doc(q, 'runtime.locate', {zoneId: I.zone1, domainIds: ['fd-002', ...causes]}), I.zone1).domainIds.length, 12); assert.equal(T.TOPOLOGY_LIMITS.zoneDomains, 12); }
   refuses(p, 'runtime.locate', {zoneId: 'zon-404', domainIds: ['fd-002']}, /Choose an existing zone or placement/);
   refuses(p, 'runtime.locate', {}, /Choose an existing zone or placement/);
   // the node a zone sits in, and the node of a placement under it
@@ -238,7 +251,7 @@ await block('S1.3 old documents', async () => {
     assert.ok(!('topology' in q.runtime) && !('nodes' in q.runtime) && !('domains' in q.technology) && !('node' in q.runtime.counters) && !('domain' in q.technology.counters), t + ': no key of the package exists until it is first written');
     assert.equal(q.workspace.packages, undefined, t + ' names no package');
     assert.equal(boundary.extensionUpgradeNeeded(q), false, t + ' needs no upgrade step of the package'); assert.equal(boundary.upgradeExtensions(q), q);
-    assert.equal(await storageUpgradeNeeded(q), false, t + ': the storage upgrade has nothing to store');
+    assert.equal(storageUpgradeNeeded({document: q, keys: new Map()}), false, t + ': the storage upgrade has nothing to store');
   }
   { const listed = R.reviewListDocument(), now = R.digests(listed); for (const k of Object.keys(golden.reviewList.readings)) assert.equal(now[k], golden.reviewList.readings[k], 'a document with a review list: ' + k); }
   assert.equal(mine().upgrade, undefined, 'the package states no upgrade step: no record is converted (design b.4)');
@@ -269,7 +282,9 @@ await block('S1.4 proposals from the names in use', () => {
   assert.deepEqual(technologyFindings(p), technologyFindings(p0)); assert.deepEqual(rt.runtimeFindings(p), rt.runtimeFindings(p0)); assert.deepEqual(ids(inheritedFindings(p)), ids(inheritedFindings(p0)), 'a proposal counts in no check');
   assert.notEqual(reviewSourceStamp(p), reviewSourceStamp(p0), 'the records are design: the design fingerprint reads them');
   // the SDD's reading of who wrote the records counts them as AIW's proposals (ruling D5), none as a person's (ruling J9)
-  { const before = provenanceReading(p0), after = provenanceReading(p); assert.equal(after.counts.proposal, before.counts.proposal + 5, 'five more proposals: ' + JSON.stringify(after.counts)); assert.equal(after.counts.person, before.counts.person); }
+  { const before = provenanceReading(p0), after = provenanceReading(p), chapter6 = x => x.chapters.find(c => c.chapter === 6);
+    assert.equal(after.by.proposal, before.by.proposal + 5, 'five more proposals: ' + JSON.stringify(after.by)); assert.equal(after.by.person, before.by.person, 'none counted as written by a person'); assert.equal(after.total, before.total + 5);
+    assert.deepEqual([chapter6(after).total, chapter6(after).proposal], [chapter6(before).total + 5, chapter6(before).proposal + 5], 'under Chapter 6, where the failure domains are'); }
   // sent again it proposes nothing more; a dismissed proposal is not proposed again while it is retired
   { const again = run(p, 'technology.domain-proposals'); assert.equal(again.document.technology.domains.length, 5); assert.equal(again.selected, null); assert.ok(sameText(again.document.technology, p.technology)); }
   { const az2 = made.find(d => d.title === 'AZ-2'), dismissed = doc(p, 'record.retire', {id: az2.id, chapter: 6, reason: 'Not a failure domain of its own.'});
@@ -279,7 +294,17 @@ await block('S1.4 proposals from the names in use', () => {
     assert.deepEqual(doc(q, 'technology.domain-proposals').technology.domains.filter(d => d.state === 'proposed').map(d => d.title).sort(), ['Identity issuer', 'Primary region'], 'AZ-1 is typed, zone 2 stands in it, zone 3 states none'); }
   // the bound holds for proposals: none is dropped silently
   { const full = structuredClone(p0); full.technology.domains = Array.from({length: T.TOPOLOGY_LIMITS.domains - 2}, (_, i) => ({id: 'fd-b' + i, ref: 'FD-B' + i, revision: 1, title: 'Bound ' + i, scope: '', cause: '', parentId: '', origin: 'user', history: []}));
-    refuses(withFinalReview(full), 'technology.domain-proposals', {}, /keeps up to 500 failure domains; 5 names in use would make 503/); refuses(withFinalReview(full), 'technology.domain', {title: 'A'}, /^(?!.*keeps up to)/s, 'one more by hand still fits'); }
+    const at498 = withFinalReview(full);
+    refuses(at498, 'technology.domain-proposals', {}, /keeps up to 500 failure domains; 5 names in use would make 503/); assert.equal(T.TOPOLOGY_LIMITS.domains, 500);
+    const at500 = doc(doc(at498, 'technology.domain', {title: 'One more by hand'}), 'technology.domain', {title: 'And the last'});
+    assert.equal(at500.technology.domains.length, 500, 'two more by hand still fit'); refuses(at500, 'technology.domain', {title: 'One too many'}, /keeps up to 500 failure domains\.$/); }
+  // what counts as a name in use: a capability's alternate failure domain too; not a zone people connect from, a name
+  // kept open, a text too long to be a name, nor a second spelling of a name already proposed
+  { let q = doc(started(), 'technology.capability', {id: I.identity, alternateDomain: 'Second issuer'});
+    q = doc(q, 'runtime.zone', {environmentId: I.production, title: 'Passenger devices', kind: 'access', failureDomain: 'The public internet'});
+    q = doc(q, 'runtime.zone', {id: I.zone3, failureDomain: ' recovery REGION '}); q = doc(q, 'technology.capability', {id: I.storage, failureDomain: 'Recovery region'});
+    q = doc(q, 'runtime.zone', {id: I.zone2, failureDomain: 'x'.repeat(170)});
+    assert.deepEqual(doc(q, 'technology.domain-proposals').technology.domains.map(d => [d.title, d.legacyKeys]), [['AZ-1', ['az-1']], ['recovery REGION', ['recovery region']], ['Identity issuer', ['identity issuer']], ['Second issuer', ['second issuer']]], 'in the order the zones and then the capabilities state them, each once'); }
   pass('S1.4: technology.domain-proposals proposes FD-001 to FD-005 from the five names in use, each AIW\'s proposal with no scope or cause guessed; no zone, capability or placement changes; the review stamps of Chapters 6 and 10 and every finding stay as they were; the SDD counts five proposals more; sent again, after a dismissal, or over typed names it proposes nothing twice');
 });
 
@@ -294,7 +319,10 @@ await block('S1.5 the lifecycle', () => {
   // a proposal binds nothing: a zone stands in a domain a person wrote or kept
   refuses(p, 'runtime.locate', {zoneId: I.zone1, domainIds: [az1.id]}, new RegExp(az1.ref + ' is still a proposal: keep it first'));
   refuses(p, 'runtime.node', {title: 'Norway East', kind: 'region', domainId: az1.id}, new RegExp(az1.ref + ' is still a proposal'));
-  refuses(p, 'technology.domain', {title: 'Rack 4', parentId: az1.id}, /^(?!.*proposal)/s, 'a proposal may be a parent: nothing reads it until both are kept');
+  // only the tree link may name a proposal (so that a drafted tree can stand), and nothing reads a link to one
+  { const q = doc(p, 'technology.domain', {title: 'Rack 4', parentId: az1.id}), G = recordGraph(q), rack = q.technology.domains.at(-1);
+    assert.deepEqual([rack.parentId, rack.state, G.objects.get(rack.id)?.type, G.objects.has(az1.id)], [az1.id, undefined, 'failureDomain', false], 'a proposal is no object of the record graph');
+    assert.ok(!G.relationships.some(e => e.from === az1.id || e.to === az1.id), 'and no relation names it'); assert.deepEqual(architectureModel(q).issues, architectureModel(p).issues); }
   // record.keep makes it authored
   p = doc(p, 'record.keep', {id: az1.id, chapter: 6});
   assert.deepEqual([domainOf(p, az1.id).state, domainOf(p, az1.id).origin, p.technology.version], [undefined, 'suggestion', version + 1], 'kept: authored, AIW\'s words a person kept, and Chapter 6 changed');
@@ -357,6 +385,16 @@ await block('S1.6 journalled and stamped by the server', async () => {
       // a person keeps one: stamped as kept by them, and the record reads as the person's, from AIW's proposal
       ok(await h.send('record.keep', {id: proposed[0].id, chapter: 6}, B)); const kept = domainOf(d(), proposed[0].id);
       assert.deepEqual([kept.state, kept.provenance?.reviewed?.by, kept.provenance?.reviewed?.how, authorship(kept)], [undefined, B, 'kept', {kind: 'person', from: 'seeded'}]); }
+    // a placement located under its zone's node is journalled under the placement
+    { ok(await h.send('runtime.node', {title: 'Reservation cluster', kind: 'cluster', parentId: 'dn-001'})); const cluster = h.state.selected, placement = d().runtime.placements.find(l => l.planId === I.apiPlan && l.zoneId === I.zone1);
+      const r = await h.send('runtime.locate', {placementId: placement.id, nodeId: cluster}, B); ok(r); event = events().at(-1);
+      assert.deepEqual([r.body.selected, event.source, event.fields.map(f => [f.key, f.before, f.after]), event.actor], [I.apiPlan, {chapter: 10, id: placement.id, ref: placement.id, kind: 'placement', title: placement.id}, [['nodeId', '', cluster]], B]);
+      assert.equal(d().runtime.placements.find(l => l.id === placement.id).provenance.author.by, B, 'and the placement is stamped as the commit\'s (selectedIds)'); }
+    // what is no change of what a record says is not journalled: a keep, a retirement, a restore, and the zone's own save
+    { ok(await h.send('runtime.node', {title: 'Spare site', kind: 'site'})); const spare = h.state.selected, last = events().at(-1).id, same = why => assert.equal(events().at(-1).id, last, why);
+      ok(await h.send('record.retire', {id: spare, chapter: 10, reason: 'Not a site of this design.'})); same('a retirement is kept with who, when and why by the lifecycle family');
+      ok(await h.send('record.restore', {id: spare, chapter: 10})); same('a restored record was not made by the commit'); assert.equal(nodeOf(d(), spare).title, 'Spare site');
+      ok(await h.send('runtime.zone', {id: I.zone1, isolation: 'Separate power, network and cooling (synthetic).'})); same('the zone\'s own save changes nothing of where it stands'); assert.deepEqual(zoneOf(d(), I.zone1).domainIds, ['fd-001']); }
     // validated as built-in commands are
     { const r = await h.send('runtime.node', {title: 'No kind'}); assert.equal(r.status, 400); assert.match(r.error, /Name the node and choose its kind/); }
     { const stale = await h.api('/api/commands' + h.q, 'POST', {revision: h.state.revision - 1, command: {type: 'runtime.node', payload: {title: 'Stale', kind: 'site'}}}); assert.equal(stale.status, 409, 'the revision check is the boundary\'s'); }
@@ -373,6 +411,8 @@ await block('S1.7 the trace', () => {
   assert.deepEqual([rel('sitsIn', I.zone1, made.region)?.derived, rel('sitsIn', I.zone1, made.region)?.via], [true, [made.az1]], 'a zone sits in each node its node lies in, derived by way of the parents');
   assert.equal(rel('partOf', made.az1, made.region)?.source, 'runtime.nodes.parentId'); assert.equal(rel('partOf', made.fdZone1, made.fdRegion)?.source, 'technology.domains.parentId');
   assert.equal(rel('failsWith', I.zone1, made.fdZone1)?.source, 'runtime.zones.domainIds'); assert.equal(rel('failsWith', made.region, made.fdRegion)?.source, 'runtime.nodes.domainId');
+  assert.deepEqual([rel('failsWith', I.zone1, made.fdRegion)?.derived, rel('failsWith', I.zone1, made.fdRegion)?.via, rel('failsWith', I.zone1, made.fdZone1)?.derived], [true, [made.fdZone1], false], 'a zone fails with each domain its domain lies in, derived by way of the parents');
+  assert.deepEqual(kernel.linkedVia(p, made.fdRegion, 'failsWith', 'in').sort(), [I.zone1, I.zone2, made.region, made.az1, made.az2].sort(), 'so what a lost region takes with it is one hop of the graph');
   // from a component to its zones' nodes and failure domains
   const forward = kernel.forwardTrace(p, I.api);
   assert.deepEqual([...forward.layers.node].sort(), [made.region, made.az1, made.az2, made.recoveryRegion].sort(), 'the nodes its zones sit in, with the region they lie in; not the cluster nothing stands in');
@@ -439,6 +479,9 @@ await block('S1.8 a draft by Sol and an agent account', async () => {
     r = await h.send('record.keep', {id: 'dn-001', chapter: 10}, B); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); node = nodeOf(d(), 'dn-001');
     assert.deepEqual([node.state, node.origin, authorship(node), node.provenance.reviewed.by, node.provenance.reviewed.how], [undefined, 'sol-draft', {kind: 'person', from: 'sol-draft'}, B, 'kept']);
     assert.equal((await h.send('runtime.locate', {zoneId: I.zone3, nodeId: 'dn-001'})).status, 200);
+    // a draft that locates a zone in a record a person kept: applied as the draft it is, the zone stamped as Sol's and journalled unreviewed
+    r = await h.send('runtime.locate', {zoneId: I.zone2, nodeId: 'dn-001'}, AGENT); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300));
+    assert.deepEqual([zoneOf(d(), I.zone2).nodeId, zoneOf(d(), I.zone2).provenance.author.kind, authorship(zoneOf(d(), I.zone2)).kind, events().at(-1).source.id, events().at(-1).reviewed, events().at(-1).account], ['dn-001', 'sol-draft', 'sol-draft', I.zone2, false, 'agent']);
     // a person's save of Sol's proposal makes it the person's record
     r = await h.send('runtime.node', {id: 'dn-002', jurisdiction: 'FI'}, B); assert.equal(r.status, 200); node = nodeOf(d(), 'dn-002');
     assert.deepEqual([node.state, node.origin, node.jurisdiction, node.provenance.author.kind, node.provenance.author.by, authorship(node).kind], [undefined, 'sol-draft', 'FI', 'person', B, 'person']);
@@ -471,6 +514,27 @@ await block('S1.9 staging; candidate knowledge reaches no topology reading', () 
   const reading = q => JSON.stringify({keys: q.runtime.zones.map(runtimeModel.failureDomainKey), facts: planFacts(reasoningSource(q), q.runtime.plans.find(r => r.id === I.apiPlan)).domains, checks10: rt.runtimeFindings(q), checks6: technologyFindings(q), trail: kernel.requirementTrace(q, I.requirement).layers, topology: recordGraph(q).relationships.filter(e => ['sitsIn', 'failsWith', 'partOf'].includes(e.type)).map(e => [e.type, e.from, e.to, e.source]), proposals: doc(q, 'technology.domain-proposals').technology.domains.map(d => [d.id, d.title, d.state])});
   assert.equal(reading(k), reading(p), 'no candidate claim reaches the failure-domain reading, a check, the trail, the topology relations or the proposals');
   pass('S1.9: technology.domain, runtime.node and runtime.locate are staged design edits (previewed and applied by the package\'s handler), the person\'s step and the generator are not; eleven command types of the later slices are free and unstated; an unreleased claim about the same records moves no topology reading');
+});
+
+await block('S1.11 the parts of the package', async () => {
+  need();
+  // The package is one registration assembled from its parts (public/topology.js): a later slice fills its own part.
+  const P = await import('./public/topology.js'), emitted = [], tracked = [];
+  assert.equal(P.DEPLOYMENT_PACKAGE, mine(), 'what the server registered is the assembly');
+  const a = {objectTypes: {one: {label: 'One'}}, commands: {'x.one': {apply: () => 1}}, hops: [{layer: 'one'}], designKeys: ['x.ones'], lifecycle: {'x.ones': 6}, provenance: {nouns: {'x.ones': 'one'}, paths: {'x.one': ['x.ones']}}, records: () => emitted.push('a'), track: () => tracked.push('a'), checks: {10: () => [{id: 'a:1'}]}};
+  const b = {objectTypes: {two: {label: 'Two'}}, commands: {'x.two': {apply: () => 2}}, hops: [{layer: 'two'}], evidenceKeys: ['x.marks'], provenance: {paths: {'x.one': ['x.twos'], 'x.two': ['x.twos']}, records: {'x.twos': 10}}, records: () => emitted.push('b'), track: () => tracked.push('b'), checks: {10: () => [{id: 'b:1'}], 6: () => [{id: 'b:2'}]}};
+  const e = P.assembleParts('p-test', [a, {}, b]);
+  assert.deepEqual([e.id, Object.keys(e.objectTypes), Object.keys(e.commands), e.hops.map(h => h.layer), e.designKeys, e.evidenceKeys, e.lifecycle, e.provenance], ['p-test', ['one', 'two'], ['x.one', 'x.two'], ['one', 'two'], ['x.ones'], ['x.marks'], {'x.ones': 6}, {nouns: {'x.ones': 'one'}, paths: {'x.one': ['x.ones', 'x.twos'], 'x.two': ['x.twos']}, records: {'x.twos': 10}}]);
+  e.records(); e.track(); assert.deepEqual([emitted, tracked], [['a', 'b'], ['a', 'b']], 'the emitters and the trackers each run, in the parts\' order');
+  assert.deepEqual([e.checks[10]({}).map(f => f.id), e.checks[6]({}).map(f => f.id), Object.keys(e.checks).sort()], [['a:1', 'b:1'], ['b:2'], ['10', '6']], 'a chapter\'s findings are those of every part');
+  assert.deepEqual(Object.keys(P.assembleParts('p-test', [{}, {}])), ['id'], 'a part that states nothing adds no row');
+  assert.throws(() => P.assembleParts('p-test', [a, {commands: {'x.one': {apply: () => 3}}}]), /p-test: two parts state commands “x\.one”/, 'a row is one part\'s');
+  assert.throws(() => P.assembleParts('p-test', [a, {provenance: {nouns: {'x.ones': 'other'}}}]), /two parts state provenance\.nouns “x\.ones”/);
+  assert.throws(() => P.assembleParts('p-test', [{upgrade: p => p}]), /a part states “upgrade”, which the assembly does not carry/, 'what the assembly does not carry is refused, never dropped');
+  // Slice 1 states one part; the other four are in place and state nothing yet.
+  for (const [file, name] of [['failures', 'FAILURES_PART'], ['gates', 'GATES_PART'], ['blueprints', 'BLUEPRINTS_PART'], ['fallback', 'FALLBACK_PART']]) assert.deepEqual((await import('./public/topology-' + file + '.js'))[name], {}, name + ' waits for its slice');
+  assert.deepEqual(Object.keys(mine()).sort(), ['commands', 'designKeys', 'evidenceKeys', 'hops', 'id', 'layers', 'lifecycle', 'objectTypes', 'provenance', 'records', 'track'], 'slice 1 states no check, no upgrade step and no section (rulings J7 and J3; design b.4)');
+  pass('S1.11: the package is one registration assembled from five parts, of which slice 1 fills one: tables joined, lists in order, emitters, trackers and a chapter\'s findings of every part; a row two parts state and a part the assembly does not carry are refused');
 });
 
 // The size evidence of the slice (audit/rc44/evidence/, ruling A7), written by `node rc44-wp9a-deployment-validate.mjs

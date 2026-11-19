@@ -76,6 +76,9 @@ function patchParent(xs,old,raw,noun,max){
  if(chain.length+(old?height(xs,old.id):1)>max)throw Error((noun==='failure domain'?'Failure domains nest':'Deployment nodes nest')+' at most '+max+' deep.');
  return id;
 }
+// A link list as every save takes one (whole, or {add, remove}; null clears it; each id exists), bounded here in the
+// record's own words.
+function patchBounded(old,raw,f,exists,noun,max,owner){const ids=patchLinks(old,raw,f,exists,noun,Infinity);if(ids.length>max)throw Error(owner+' names up to '+max+' '+noun+'; '+fmt(ids.length)+' were sent.');return ids;}
 // A record a zone, a placement or a node may name: there, and a person's (written or kept).
 function authoredRecord(xs,id,noun){const r=find(xs,id);if(!r)throw Error('Choose an existing '+noun+'.');if(isProposed(r))throw Error(refOf(r)+' is still a proposal: keep it first.');return r;}
 function revise(r,at,origin){r.history=[...list(r.history),{at,revision:r.revision,title:r.title,...(origin&&origin!==r.origin?{origin:r.origin}:{})}];if(r.history.length>24)r.history=[r.history[0],...r.history.slice(-23)];r.revision++;}
@@ -138,7 +141,7 @@ function saveNode(p,raw,at){
  const jurisdiction=patchValue(old,raw,'jurisdiction');if(jurisdiction!==''&&!/^[A-Z]{2}$/.test(jurisdiction))throw Error('Give the jurisdiction as two capital letters (ISO 3166-1 alpha-2), or leave it not stated.');
  let address=patchValue(old,raw,'address');if(address!==''){const x=parsePrefix(address);if(!x)throw Error('Give the address as one IPv4 or IPv6 prefix with its length and no host bit set (10.20.0.0/16, 2001:db8::/32), or leave it not stated.');address=x.text;}
  const domainId=patchValue(old,raw,'domainId');if(domainId&&domainId!==old?.domainId)authoredRecord(p.technology.domains,domainId,'failure domain');
- const boundaryIds=patchLinks(old,raw,'boundaryIds',id=>list(p.technology.boundaries).some(b=>b.id===id),'trust boundaries',20);
+ const boundaryIds=patchBounded(old,raw,'boundaryIds',id=>list(p.technology.boundaries).some(b=>b.id===id),'trust boundaries',20,'A deployment node');
  const next={...f,parentId:patchParent(xs,old,raw,'deployment node',TOPOLOGY_LIMITS.nodeDepth),domainId,jurisdiction,address,boundaryIds},open=patchOpen(old,raw,NODE_OPEN);if(open)next.open=open;
  if(!old&&xs.length>=TOPOLOGY_LIMITS.nodes)throw Error('This workspace keeps up to '+fmt(TOPOLOGY_LIMITS.nodes)+' deployment nodes.');
  m.nodes=xs;
@@ -169,7 +172,7 @@ function locate(p,raw){
   if(nodeId)authoredRecord(nodes,nodeId,'deployment node');
   for(const l of m.placements)if(l.zoneId===z.id&&l.nodeId&&!(nodeId&&nodeUnder(p,l.nodeId,nodeId)))throw Error(l.id+' stands in '+node(l.nodeId)+(nodeId?', which does not lie under '+node(nodeId)+'. Move it first.':', under the node of '+refOf(z)+'. Clear it first.'));
  }
- const domains=p.technology.domains,domainIds=patchLinks(z,raw,'domainIds',id=>!!find(domains,id),'failure domains',TOPOLOGY_LIMITS.zoneDomains);
+ const domains=p.technology.domains,domainIds=patchBounded(z,raw,'domainIds',id=>!!find(domains,id),'failure domains',TOPOLOGY_LIMITS.zoneDomains,'A zone');
  if(raw.domainIds!==undefined)domainIds.forEach((id,i)=>{
   const d=authoredRecord(domains,id,'failure domain');
   if(!i&&sharedCause(d))throw Error('The first failure domain a zone names is the one it stands in: '+d.ref+' is a shared cause ('+d.cause+').');
