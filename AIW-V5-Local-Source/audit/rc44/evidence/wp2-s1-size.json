@@ -1,10 +1,10 @@
 {
  "schema": "aiw.rc44.slice-size.v1",
- "name": "wp2 S1 the adoption record",
+ "name": "wp2 S1 the adoption record, after its fix-up",
  "measuredWith": "client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)",
  "allowance": {
   "chapters": 600,
-  "of": "all of wp2 (ruling A4)",
+  "of": "all of wp2 (ruling A4), counted against the integrated base; the route bytes of the rows S0 gained by rulings J2, J3 and J10 are wp2's",
   "scripts": 148
  },
  "caps": {
@@ -12,36 +12,44 @@
   "scripts": 148
  },
  "before": {
-  "name": "S0 shared registration (audit/rc44/build-notes/s0-size.json)",
-  "chapters": 3229761,
-  "projects": 506802,
+  "name": "the integrated base",
+  "commit": "b59bc88 (rc44/integration: S0 closed, wp1 S1 merged)",
+  "chapters": 3229840,
+  "projects": 506829,
   "scripts": 148,
   "under10k": 53,
   "css": 901873,
-  "registry": 400
+  "measured": "node build.mjs on an archive of the commit, 2026-11-19"
  },
  "slice": {
-  "chapters": 3230065,
-  "projects": 507030,
+  "chapters": 3230156,
+  "projects": 507069,
   "scripts": 148,
   "under10k": 53,
   "css": 901873
  },
- "delta": 304,
- "headroomAfter": 3727,
+ "delta": 316,
+ "projectsDelta": 240,
+ "headroomAfter": 3636,
+ "firstBuild": {
+  "commit": "13a72c2",
+  "delta": 304,
+  "note": "the slice as first built, against S0 before its second round"
+ },
  "opens with records": {
   "gate": "The chapters-route gate measures opening a document that holds no package records (ruling D10).",
   "host": "public/architecture-task-ui.js",
-  "route": 3230065,
-  "added": 97372,
-  "total": 3327437,
+  "route": 3230156,
+  "added": 94744,
+  "total": 3324900,
   "files": 2,
   "before": {
-   "route": 3229761,
+   "route": 3229775,
    "added": 79189,
-   "total": 3308950,
+   "total": 3308964,
    "files": 2,
-   "note": "the lazy entry wp2's design names for its surface, as it is before any package is held in it"
-  }
+   "note": "the lazy entry as S0 measured it, before any package was held in it"
+  },
+  "holds": "the record's readers, steps and tracker (adoption-domain.js) and the registration (adoption-package.js); not the upgrade, which the server alone runs (ruling J12)"
  }
 }

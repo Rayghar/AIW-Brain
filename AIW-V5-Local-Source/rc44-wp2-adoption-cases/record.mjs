@@ -19,6 +19,7 @@
 //   withdraw, definitions, registration, size.
 import assert from 'node:assert/strict';
 import {readFileSync, existsSync, writeFileSync, mkdirSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
 import worker, {commandHandler, commandShape} from '../worker.js';
 import * as R from '../rc44-s0-readings.mjs';
 import {bankPaymentApplied, beforeAdoptions, server, A, B, C, AGENT, APPLIED_AT, governedConcernApplied, knowledgeCommand, otherKindApplied} from '../rc44-wp2-fixtures.mjs';
@@ -38,6 +39,7 @@ import {isReviewCommand} from '../authorship.js';
 import {instantiateTemplate} from '../project-lifecycle.js';
 import {architectureSourceStamp} from '../public/architecture-design.js';
 import {previewReversal} from '../public/model-reversal.js';
+import {previewWorkingChange, previewScenarioAlternative, rebaseWorkingAlternative} from '../public/workbench-domain.js';
 
 const {REFERENCES, reference, readings, digests, reviewListDocument, assertBuiltInTrailsUnchanged, assertFindingIdsUnique, assertTemplateCopyClearsSteps, opensWithRecords} = R;
 const list = v => (Array.isArray(v) ? v : []);
@@ -92,7 +94,15 @@ export default async function ({block, pass, load}) {
     // a document with design tasks that were never applied gains nothing either
     const open = bankPaymentApplied(); for (const t of open.coauthoring.designTasks) { t.status = 'proposed'; delete t.applied; }
     assert.equal(U.needsAdoptionUpgrade(open), false); assert.equal(U.upgradeAdoptions(open), open);
-    pass('old documents: the three references and the document with a review list read byte for byte as at ' + BASE.capturedFrom + ' with the package registered (graph, model, trails, findings, stamps, readiness, provenance, registers, SDD, ARS); no key is created; a task that was never applied is left alone');
+    // should-fix 6: documents whose design tasks are in flight, proposed, set aside or applied and then reversed. Each reads, with the package
+    // registered, byte for byte as a process without the server's package list reads it (the ten readings), and gains no key.
+    { const variants = {'in flight': t => { t.status = 'questions'; delete t.applied; }, proposed: t => { t.status = 'proposed'; delete t.applied; }, 'set aside': t => { t.status = 'dismissed'; delete t.applied; }, reversed: t => { t.status = 'dismissed'; t.reverted = {at: APPLIED_AT, reviewer: 'Synthetic architect', reason: 'Reversed.'}; }};
+      const docs = Object.values(variants).map(edit => { const d = JSON.parse(JSON.stringify(bankPaymentApplied())); d.coauthoring.designTasks.forEach(edit); return d; });
+      mkdirSync('.aiw-local/rc44-wp2', {recursive: true}); writeFileSync('.aiw-local/rc44-wp2/tasks-not-applied.json', JSON.stringify(docs));
+      const r = spawnSync(process.execPath, ['--input-type=module', '-e', 'import {readFileSync} from "node:fs"; import {EXTENSIONS} from "./public/design-extensions.js"; import * as R from "./rc44-s0-readings.mjs"; import {withFinalReview} from "./public/review-domain.js"; console.log(JSON.stringify({registered: EXTENSIONS.length, digests: JSON.parse(readFileSync(".aiw-local/rc44-wp2/tasks-not-applied.json", "utf8")).map(d => R.digests(withFinalReview(d)))}));'], {encoding: 'utf8', maxBuffer: 1 << 26});
+      assert.equal(r.status, 0, r.stderr.slice(0, 300)); const bare = JSON.parse(r.stdout.trim().split('\n').at(-1)); assert.equal(bare.registered, 0, 'the comparison is read with no package registered');
+      for (const [i, name] of Object.keys(variants).entries()) { const p = withFinalReview(structuredClone(docs[i])); assert.deepEqual(digests(p), bare.digests[i], 'a document with its design tasks ' + name + ' reads as it does without the package'); assert.ok(!('adoptions' in p) && !p.workspace?.packages && p.coauthoring.designTasks.every(t => !t.adoptionId), name + ': no key is created'); assert.equal(U.upgradeAdoptions(p), p); assert.deepEqual(D.adoptionFindings(p), []); } }
+    pass('old documents: the three references and the document with a review list read byte for byte as at ' + BASE.capturedFrom + ' with the package registered (graph, model, trails, findings, stamps, readiness, provenance, registers, SDD, ARS); no key is created; a task that was never applied is left alone; documents with tasks in flight, proposed, set aside or reversed read as a process without the package reads them');
   });
 
   // ------------------------------------------------------------ the upgrade (design e.3)
@@ -424,7 +434,8 @@ export default async function ({block, pass, load}) {
     const findings = chapter5(withFinalReview(structuredClone(doc))), broken = findings.find(f => f.id === 'adoption-role-broken:' + id);
     assert.ok(broken, 'the document the retiring commit answers holds adoption-role-broken: ' + JSON.stringify(own(findings).map(f => f.id)));
     assert.equal(broken.level, 'error'); assert.equal(broken.objectId, id); assert.ok(broken.detail.includes(id) && broken.detail.includes(a.title) && broken.detail.includes('store') && /retired/.test(broken.detail), 'the finding names the applied mechanism, the role and what happened: ' + broken.detail);
-    assert.ok(broken.detail.includes('DES-003:persistence-commit'), 'and the obligations that rest on the record'); assert.ok(!/adoption\.\w+/.test(broken.detail), 'in a reader\'s words');
+    assert.ok(broken.detail.includes('DES-003:persistence-commit'), 'and the obligations that rest on the record'); for (const x of own(findings)) assert.ok(!/adoption\.\w+/.test(x.title + ' ' + x.detail), 'a finding says the step in a reader\'s words (should-fix 11): ' + x.detail);
+    for (const x of records(doc)) assert.ok(!/adoption\.\w+/.test(D.adoptionReading(doc, x).acceptance.next), 'and so does the reading');
     assert.ok(inheritedFindings(withFinalReview(structuredClone(doc))).some(f => String(f.id).endsWith('adoption-role-broken:' + id)), 'the review inherits it');
     assert.deepEqual(g.roles.find(r => r.roleId === 'store'), {roleId: 'store', required: true, state: 'broken', recordIds: [store], issues: ['retired']});
     assert.ok(g.changed.required && g.changed.causes.some(c => c.kind === 'binding' && c.id === store && c.detail === 'retired'), 'the tracker recorded the cause in the commit: ' + JSON.stringify(g.changed)); assert.equal(g.accepted, false);
@@ -646,9 +657,24 @@ export default async function ({block, pass, load}) {
       { await confirm(); const decision = s.doc().decisions.records.find(d => d.id === get().decisionId); assert.ok(decision, 'the adoption rests on a decision');
         const seen = naming(await s.read(), id).map(e => e.id), r = await s.ok('decision.save', {...decision, question: decision.question + ' (reviewed)'}, C), third = naming(r, id).filter(e => !seen.includes(e.id));
         assert.equal(third.length, 1, 'the commit that changes the decision the adoption rests on holds one event naming the adoption'); assert.deepEqual([third[0].actor, third[0].authorKind], [C, 'person']); }
+      // should-fix 6: inside a reviewed batch and through a merged alternative — one event each, though the tracker is called for the commit's own command and for each command it carries
+      { await confirm(); const c = s.doc().realisation.components.find(x => x.id === store), commands = [{type: 'realisation.component', payload: {...c, purpose: c.purpose + ' In a batch.'}}], seen = naming(await s.read(), id).map(e => e.id);
+        const r = await s.ok('workspace.apply', {commands, stamp: previewWorkingChange(s.doc(), commands).stamp, reviewed: true, reason: 'A reviewed batch.'}, C), fresh = naming(r, id).filter(e => !seen.includes(e.id));
+        assert.equal(fresh.length, 1, 'a reviewed batch that changes a bound record: one event names the adoption'); assert.equal(fresh[0].actor, C); assert.equal(D.adoptionReading(s.doc(), get()).changed.required, true); }
+      { await confirm(); const c = s.doc().realisation.components.find(x => x.id === store), commands = [{type: 'realisation.component', payload: {...c, purpose: c.purpose + ' In an alternative.'}}];
+        const saved = await s.ok('workspace.alternative', {commands, stamp: previewScenarioAlternative(s.doc(), commands, undefined).stamp, title: 'An alternative', reason: 'Holds an edit of a bound component.'}, C);
+        assert.equal(D.adoptionReading(saved.document, byId(saved.document, id)).changed.required, false, 'an alternative that is only saved changes no bound record');
+        const alt = s.doc().workbench.alternatives.at(-1), seen = naming(await s.read(), id).map(e => e.id), r = await s.ok('workspace.merge', {id: alt.id, stamp: rebaseWorkingAlternative(s.doc(), alt).stamp, reviewed: true, reason: 'Merged.'}, B), fresh = naming(r, id).filter(e => !seen.includes(e.id));
+        assert.equal(fresh.length, 1, 'a merge that changes a bound record: one event names the adoption'); assert.equal(fresh[0].actor, B); assert.equal(D.adoptionReading(s.doc(), get()).changed.required, true); }
       // a commit that changes nothing the adoption rests on journals nothing of the package
       { const seen = naming(await s.read(), id).length, r = await s.ok('guide.start', {chapter: 1}, B); assert.equal(naming(r, id).length, seen, 'a commit that touches nothing an adoption rests on names none'); }
     } finally { s.close(); }
+    // should-fix 6: a bound record that is not a component (an applied task of another kind binds a contract, a data definition and a need)
+    { const prior = asWritten(U.upgradeAdoptions(otherKindApplied())), a0 = byId(prior, 'ADP-001'); assert.deepEqual(a0.bindings.map(b => b.recordType), ['component', 'contract', 'data', 'need', 'component']);
+      for (const [path, rid] of [['interfaces.data', 'instruction'], ['interfaces.contracts', 'rest'], ['technology.needs', 'TN-001']]) {
+        const next = structuredClone(prior), [k, l] = path.split('.'), record = next[k][l].find(x => x.id === rid), events = list(next.changes?.events).length; record.title = (record.title || rid) + ' (changed)';
+        pkg().track(prior, next, {type: 'record.edit', payload: {id: rid}}, AT);
+        assert.deepEqual(D.adoptionReading(next, byId(next, 'ADP-001')).changed.causes, [{kind: 'binding', id: rid, detail: 'changed'}], 'a change of the bound ' + path + ' record is flagged'); assert.equal(list(next.changes.events).length, events + 1); assert.equal(next.changes.events.at(-1).source.id, 'ADP-001'); } }
     pass('J5: what the tracker changes is journalled — the commit that changes a bound record, the one that changes its driver, the one that changes its decision and the one that reverses the design each hold one change event with the adoption as its source, stamped by the server with who sent the commit and of what kind; the adoption\'s note points at the event; a reversed adoption stays one object of the graph on no trail and takes no further step');
   });
 
@@ -681,16 +707,24 @@ export default async function ({block, pass, load}) {
     const HOST = 'public/architecture-task-ui.js', opens = opensWithRecords(meta, HOST, Object.keys(BUDGET.data));
     const holds = Object.entries(meta.outputs).filter(([, o]) => Object.keys(o.inputs || {}).some(i => /public\/adoption-/.test(i))).map(([f]) => f), host = Object.keys(meta.outputs).find(f => meta.outputs[f].entryPoint === HOST);
     assert.deepEqual(holds, [host], 'the package is held in the lazy entry rooted at ' + HOST + ' and nowhere else (ruling D7.6)');
-    for (const o of Object.values(meta.outputs)) for (const i of Object.keys(o.inputs || {})) assert.ok(!/rc44-wp2|design-packages\.js/.test(i), i + ' is not in the client');
-    const S0 = JSON.parse(readFileSync('audit/rc44/build-notes/s0-size.json', 'utf8')).slice, measured = {chapters: report.routes.chapters.code, projects: report.routes.projects.code, scripts: report.scripts, under10k: report.buckets.under10k, css: report.css};
-    if (process.argv.includes('--measure')) { mkdirSync('audit/rc44/evidence', {recursive: true}); writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v1', name: 'wp2 S1 the adoption record', measuredWith: 'client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)', allowance: {chapters: 600, of: 'all of wp2 (ruling A4)', scripts: 148}, caps: {chapters: BUDGET.routes.chapters, scripts: BUDGET.scripts}, before: {name: 'S0 shared registration (audit/rc44/build-notes/s0-size.json)', ...S0}, slice: measured, delta: measured.chapters - S0.chapters, headroomAfter: BUDGET.routes.chapters - measured.chapters, 'opens with records': {gate: 'The chapters-route gate measures opening a document that holds no package records (ruling D10).', host: HOST, ...opens, before: JSON.parse(readFileSync('audit/rc44/build-notes/s0-size.json', 'utf8'))['opens with records'].hosts[HOST]}}, null, 1) + '\n'); }
+    // ruling J12 (should-fix 12): the browser reads no old document with the upgrade, so the upgrade, its built-in skeletons and the server's registration are in no client output
+    const inClient = Object.values(meta.outputs).flatMap(o => Object.keys(o.inputs || {}));
+    assert.deepEqual(inClient.filter(i => /adoption-/.test(i)).sort(), ['public/adoption-domain.js', 'public/adoption-package.js'], 'the lazy entry holds the record\'s readers and the registration, and nothing else of the package');
+    for (const i of inClient) assert.ok(!/rc44-wp2|design-packages\.js|adoption-server|adoption-upgrade|adoption-builtins|adoption-definitions/.test(i), i + ' is not in the client');
+    // The base the allowance is counted against (the lead's task for the fix-up): the integrated base rc44/integration at b59bc88 (S0 as closed, and
+    // wp1 S1), built from an archive of that commit with node build.mjs on 2026-11-19. Every route byte of the rows S0 gained by J2, J3 and J10 is wp2's.
+    const INTEGRATED = {commit: 'b59bc88 (rc44/integration: S0 closed, wp1 S1 merged)', chapters: 3229840, projects: 506829, scripts: 148, under10k: 53, css: 901873};
+    const S0 = JSON.parse(readFileSync('audit/rc44/build-notes/s0-size.json', 'utf8')), measured = {chapters: report.routes.chapters.code, projects: report.routes.projects.code, scripts: report.scripts, under10k: report.buckets.under10k, css: report.css};
+    if (process.argv.includes('--measure')) { mkdirSync('audit/rc44/evidence', {recursive: true}); writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v1', name: 'wp2 S1 the adoption record, after its fix-up', measuredWith: 'client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)', allowance: {chapters: 600, of: 'all of wp2 (ruling A4), counted against the integrated base; the route bytes of the rows S0 gained by rulings J2, J3 and J10 are wp2\'s', scripts: 148}, caps: {chapters: BUDGET.routes.chapters, scripts: BUDGET.scripts}, before: {name: 'the integrated base', ...INTEGRATED, measured: 'node build.mjs on an archive of the commit, 2026-11-19'}, slice: measured, delta: measured.chapters - INTEGRATED.chapters, projectsDelta: measured.projects - INTEGRATED.projects, headroomAfter: BUDGET.routes.chapters - measured.chapters, firstBuild: {commit: '13a72c2', delta: 304, note: 'the slice as first built, against S0 before its second round'},
+      'opens with records': {gate: 'The chapters-route gate measures opening a document that holds no package records (ruling D10).', host: HOST, ...opens, before: {...S0['opens with records'].hosts[HOST], note: 'the lazy entry as S0 measured it, before any package was held in it'}, holds: 'the record\'s readers, steps and tracker (adoption-domain.js) and the registration (adoption-package.js); not the upgrade, which the server alone runs (ruling J12)'}}, null, 1) + '\n'); }
     assert.ok(existsSync(EVIDENCE), 'the slice\'s measurement is kept (node rc44-wp2-adoption-validate.mjs --measure)');
     const size = JSON.parse(readFileSync(EVIDENCE, 'utf8'));
-    assert.equal(size.delta, size.slice.chapters - S0.chapters); assert.ok(size.delta > 0 && size.delta <= 600, 'the route delta of the slice is inside the allowance of wp2: ' + size.delta); assert.equal(size.slice.scripts, 148); assert.equal(size.slice.css, S0.css, 'no stylesheet rule'); assert.equal(size.slice.under10k, S0.under10k);
+    assert.equal(size.before.chapters, INTEGRATED.chapters, 'the evidence is counted against the integrated base'); assert.equal(size.delta, size.slice.chapters - INTEGRATED.chapters); assert.ok(size.delta > 0 && size.delta <= 600, 'the route delta of wp2 is inside its allowance: ' + size.delta); assert.equal(size.slice.scripts, 148); assert.equal(size.slice.css, INTEGRATED.css, 'no stylesheet rule'); assert.equal(size.slice.under10k, INTEGRATED.under10k);
     assert.ok(size['opens with records'].total === size['opens with records'].route + size['opens with records'].added && size['opens with records'].route === size.slice.chapters);
+    assert.ok(size['opens with records'].added < 79189 + 20000, 'the lazy entry grew by the readers only: ' + size['opens with records'].added + ' B beside the route (79,189 B before any package; 97,372 B at the first build, with the upgrade in it)');
     if (process.argv.includes('--measure')) assert.deepEqual(measured, size.slice);
-    assert.ok(measured.chapters <= BUDGET.routes.chapters);
-    pass('size: the client build passes every gate with the caps unchanged; the slice measured ' + size.delta + ' B on the chapters route (' + S0.chapters + ' → ' + size.slice.chapters + ' of ' + BUDGET.routes.chapters + '; allowance of wp2: 600 B), 148 script files, no stylesheet rule; the package is held in the lazy entry of ' + HOST + '; opens with records: ' + size['opens with records'].total + ' B (' + size['opens with records'].added + ' B in ' + size['opens with records'].files + ' scripts beside the route); this build: ' + measured.chapters + ' B');
+    assert.ok(measured.chapters <= BUDGET.routes.chapters); assert.ok(measured.chapters - INTEGRATED.chapters <= 600, 'this build is inside the allowance of wp2: ' + (measured.chapters - INTEGRATED.chapters) + ' B');
+    pass('size: the client build passes every gate with the caps unchanged; wp2 measured ' + size.delta + ' B on the chapters route against the integrated base (' + INTEGRATED.chapters + ' → ' + size.slice.chapters + ' of ' + BUDGET.routes.chapters + '; allowance of wp2: 600 B), 148 script files, no stylesheet rule; the package is held in the lazy entry of ' + HOST + ' without the upgrade; opens with records: ' + size['opens with records'].total + ' B (' + size['opens with records'].added + ' B in ' + size['opens with records'].files + ' scripts beside the route); this build: ' + measured.chapters + ' B');
   });
   if (h) h.close();
 }
