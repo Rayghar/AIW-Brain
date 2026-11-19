@@ -94,7 +94,7 @@ import './public/readings-upgrade.js';
 // shared machinery (public/design-extensions.js); their commands reach their handlers through the boundary below, and a
 // package that does not conform to the registration contract stops the server here, when it starts.
 import './design-packages.js';
-import {installBuiltInCommands,assertExtensions,extensionCommand,extensionHandler,extensionLarge,validateExtensions,trackExtensions,stampExtensions,placeSections,markPackages,missingPackages,missingPackagesRefusal} from './design-extension-boundary.js';
+import {installBuiltInCommands,assertExtensions,extensionCommand,extensionHandler,extensionLarge,validateExtensions,trackExtensions,stampExtensions,placeSections,markPackages,missingPackages,missingPackagesRefusal,upgradeDueRefusal} from './design-extension-boundary.js';
 installCatalogue(BRAIN_CATALOGUE);
 const log=(event,details)=>console.error(JSON.stringify({at:new Date().toISOString(),event,...details}));
 // Command types reach their domain module by prefix (round 2, B2-05): one registry instead of a ternary chain, and
@@ -654,6 +654,10 @@ async function route(request,env,ctx){
       const stored=await readStoredProject(env,owner,row.document);
       // No command changes a design this build cannot read in full (rc44, slice S0; ruling D2): a built-in one neither.
       {const refusal=missingPackageRefusal(stored.document);if(refusal)return refusal;}
+      // Nor is a design package's upgrade of an older row written inside a command (rc44; ruling J8): the command is
+      // answered with a reload, and the read that follows stores the upgrade with its recovery point. (Without object
+      // storage a read stores no upgrade, so there the command goes on as before.)
+      {const due=env.FILES&&upgradeDueRefusal(stored.document);if(due)return json({error:due,conflict:true,code:'conflict'},409);}
       stored.document=await refreshRepositoryAssurance(env,owner,await refreshOrganizationAssurance(env,owner,withFinalReview(stored.document)));if(stored.document.workspace?.status==='archived')return json({error:'Restore this project before changing its design.',code:'archived'},409);let result;const at=new Date().toISOString();
       // The document as it was, completed once (round 12): what the checks, the provenance and the trackers read, and
       // never change. The command works on its own copy of it (document-memo.js documentCopy: the journal's recorded

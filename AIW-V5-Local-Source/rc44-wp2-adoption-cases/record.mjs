@@ -251,9 +251,19 @@ export default async function ({block, pass, load}) {
     const before = await row(), kept = await readStoredProject(env, A, before.document);
     assert.ok(!('adoptions' in kept.document)); assert.equal(storageUpgradeNeeded(kept), true, 'a stored row with applied tasks and no adoptions is stored again');
     const journal = list(kept.document.changes?.events).length, points = () => [...h.files.keys()].filter(k => k.startsWith('upgrades/')).length, pointsBefore = points();
+    // ruling J8 (should-fix 5): a tab left open across the deploy sends a command at the stored revision before any read. It is answered
+    // with a reload; nothing is stored, so the upgrade is not written inside a design change and without its recovery point.
+    { const storageRows = async () => (await env.DB.prepare('SELECT document FROM project_activity WHERE owner_id=? AND project_id=?').bind(A, pid).all()).results.map(r => JSON.parse(r.document)).filter(e => e.kind === 'storage').length, rowsBefore = await storageRows();
+      for (const [type, payload, as] of [['guide.start', {chapter: 1}, A], ['adoption.reassess', {id: 'ADP-001', revision: 1, reviewed: true, reason: 'x'}, B], ['record.retire', {id: 'obj-005', reason: 'Refused.'}, C]]) {
+        const res = await h.api('/api/commands' + h.q, 'POST', {revision: before.revision, command: {type, payload}}, as), body = await res.json();
+        assert.equal(res.status, 409, type + ' on a row whose package upgrade is due is answered with a reload: ' + res.status + ' ' + JSON.stringify(body).slice(0, 200)); assert.equal(body.conflict, true); assert.match(body.error, /earlier build of AIW.*Reload the latest project, then apply your preserved changes\./);
+      }
+      const still = await row(); assert.equal(still.revision, before.revision, 'nothing was stored'); assert.equal(still.document, before.document, 'the row is byte for byte what it was'); assert.equal(points(), pointsBefore, 'no recovery point'); assert.equal(await storageRows(), rowsBefore, 'no activity row'); }
     const read = await h.read(B);
     assert.equal(read.revision, before.revision + 1, 'the first read stores the upgrade'); assert.deepEqual(records(read.document).map(a => [a.id, a.origin, a.status]), [['ADP-001', 'upgrade', 'applied'], ['ADP-002', 'upgrade', 'applied'], ['ADP-003', 'upgrade', 'applied']]);
     assert.deepEqual(read.document.workspace.packages, [PACKAGE]); assert.deepEqual(read.document.coauthoring.designTasks.map(t => t.adoptionId), ['ADP-001', 'ADP-002', 'ADP-003']);
+    // ruling J1: the stored journal says who sent each apply, so the upgrade itself records the applier, as bookkeeping
+    for (const a of records(read.document)) { assert.deepEqual(a.history.map(x => [x.event, x.actor, x.identity ?? null, x.revision]), [['upgrade', null, null, 1], ['apply', A, 'journal', 1]], a.id + ': the upgrade names the applier the journal names'); assert.ok(!a.provenance && !('actor' in a.applied), 'and writes no author stamp: the typed reviewer stays what was applied with'); }
     assert.equal(points(), pointsBefore + 1, 'with a recovery point that keeps the row as it was');
     const point = JSON.parse([...h.files.entries()].filter(([k]) => k.startsWith('upgrades/')).at(-1)[1]); assert.equal(point.revision, before.revision); assert.equal(point.document, before.document);
     const events = (await env.DB.prepare('SELECT document FROM project_activity WHERE owner_id=? AND project_id=?').bind(A, pid).all()).results.map(r => JSON.parse(r.document)).filter(e => e.kind === 'storage');
@@ -262,7 +272,7 @@ export default async function ({block, pass, load}) {
     await h.read(A); await h.read(B); assert.equal(h.state.revision, read.revision, 'a later read stores nothing'); assert.equal(points(), pointsBefore + 1);
     assert.equal((await env.DB.prepare('SELECT document FROM project_activity WHERE owner_id=? AND project_id=?').bind(A, pid).all()).results.map(r => JSON.parse(r.document)).filter(e => e.kind === 'storage').length, 1);
     h.ready = true;
-    pass('e.3 rule 4: a row stored before the adoption record is stored again at its first read, once, as a storage upgrade with a recovery point that keeps the row as it was and with the step\'s sentence in the activity; the design journal holds no event of it; the document names p40-adoption. A design applied on this build through the earlier commands is an adoption from its own commit');
+    pass('e.3 rule 4 and ruling J8: a row stored before the adoption record is stored again at its first read, once, as a storage upgrade with a recovery point that keeps the row as it was and with the step\'s sentence in the activity; the design journal holds no event of it; the document names p40-adoption; the upgrade names the applier the journal names. A command sent at the stored revision before that read is answered with a reload and stores nothing. A design applied on this build through the earlier commands is an adoption from its own commit');
   });
 
   await block('accept', async () => {
@@ -601,6 +611,26 @@ export default async function ({block, pass, load}) {
       } else assert.fail('the fixture\'s protected call can be reversed: ' + JSON.stringify(pre).slice(0, 300));
     } finally { s.close(); }
     pass('J5: what the tracker changes is journalled — the commit that changes a bound record, the one that changes its driver and the one that reverses the design each hold one change event with the adoption as its source, stamped by the server with who sent the commit and of what kind; the adoption\'s note points at the event');
+  });
+
+  // ------------------------------------------------------------ J9, J12: who wrote the records
+  await block('J9 SDD provenance', async () => {
+    pkg(); const {provenanceReading, architectureMarkdown} = await import('../public/sdd-architecture.js');
+    const before = bankPaymentApplied(), after = upgraded(), r0 = provenanceReading(before), r = provenanceReading(after), chapter = (x, n) => x.chapters.find(c => c.chapter === n);
+    assert.equal(r.total, r0.total + 3, 'the three adoptions are counted'); assert.equal(r.by.person, r0.by.person, 'and not as written by a person (they were, before the fix-up: ' + r0.by.person + ' became ' + (r0.by.person + 3) + ')');
+    assert.equal(r.by.upgrade, 3, 'they are counted as what an upgrade wrote'); assert.ok(!('upgrade' in r0.by), 'a document without such a record has no such count'); assert.equal(r.confirmed, r0.confirmed);
+    assert.equal(chapter(r, 3).total, chapter(r0, 3).total + 3, 'under the chapter of their object type (ruling J12)'); assert.equal(chapter(r, 5).total, chapter(r0, 5).total, 'not under Chapter 5'); assert.equal(chapter(r, 3).upgrade, 3); assert.equal(chapter(r, 3).person, chapter(r0, 3).person);
+    const text = architectureMarkdown(after).markdown, base = architectureMarkdown(before).markdown, E = t => t.slice(t.indexOf('## E. Provenance'));
+    assert.match(E(text), /Written by an upgrade of the project or by a merge, with no author stamp: 3 records\. No person wrote them; none is confirmed by a person\./, 'the SDD counts them on a line of their own: ' + E(text).slice(0, 600));
+    assert.ok(!/Written by an upgrade of the project/.test(base), 'a document without such records prints as before'); assert.match(E(text), /3 written by an upgrade of the project or a merge/);
+    // once a person has confirmed one, the line says so; it is still not counted as written by a person
+    const one = structuredClone(after), x = byId(one, 'ADP-001'); x.confirmed = true; x.provenance = {reviewed: {by: A, at: AT, how: 'confirmed'}};
+    const r1 = provenanceReading(withFinalReview(one)); assert.equal(r1.by.upgrade, 3); assert.equal(r1.by.person, r0.by.person); assert.equal(r1.confirmed, r0.confirmed + 1);
+    assert.match(E(architectureMarkdown(withFinalReview(one)).markdown), /with no author stamp: 3 records\. No person wrote them; 1 is confirmed by a person since\./);
+    // a record a person's step changed is that person's
+    const dev = withFinalReview(commandHandler('adoption.deviation')(structuredClone(after), {type: 'adoption.deviation', payload: {id: 'ADP-003', revision: 1, target: {kind: 'role', id: 'store'}, statement: 'A managed store.', reason: 'One team.'}}, AT, C, {author: person(C)}).document); byId(dev, 'ADP-003').provenance = {author: {kind: 'person', by: C, at: AT}};
+    const r2 = provenanceReading(withFinalReview(dev)); assert.deepEqual([r2.by.upgrade, r2.by.person], [2, r0.by.person + 1], 'a record a person changed since is counted as that person\'s');
+    pass('J9 and J12: the SDD counts the records an upgrade wrote on a line of their own, not as written by a person (' + r0.by.person + ' by a person before and after; 3 by an upgrade), under Chapter 3; a document without such records prints as before; a confirmation is counted as a confirmation, a person\'s change as that person\'s');
   });
 
   // ------------------------------------------------------------ size (rulings A3, A4, D7.6, D10)

@@ -929,6 +929,14 @@ await block('D5 SDD provenance', () => {
   assert.ok(!base.slice(base.indexOf('## B. Open items'), base.indexOf('## C. ')).includes('Drafted by Sol, to keep'), 'a document without such records prints as before (6b holds the whole text)');
   // a field a package's record keeps open is an open item under the package's noun
   { const q = documentCopy(p); q.synthetic.records[0] = {...q.synthetic.records[0], state: 'authored', provenance: undefined, open: {window: {state: 'open-question', question: 'Which window applies?'}}}; const t = architectureMarkdown(withFinalReview(q)).markdown; assert.match(t.slice(t.indexOf('## B. Open items'), t.indexOf('## C. ')), /SYN-001/, 'an open field of a package\'s record is listed'); }
+  // (the lead's ruling J9 of 2026-11-19) a package's record that carries no author stamp was written by an upgrade step or a merge: it is
+  // counted as that, on a line of its own, never as written by a person
+  { const q = documentCopy(p0); q.synthetic = {version: 1, counter: 2, records: [1, 2].map(n => ({id: 'SYN-00' + n, ref: 'SYN-00' + n, title: 'Written by an upgrade ' + n, requirementIds: [], componentId: 'none', revision: 1}))}; q.synthetic.records[1].provenance = {reviewed: {by: A, at: AT, how: 'confirmed'}};
+    const u = provenanceReading(withFinalReview(q)), t = architectureMarkdown(withFinalReview(q)).markdown;
+    assert.equal(u.total, r0.total + 2); assert.equal(u.by.person, r0.by.person, 'an unstamped record of a package is not counted as written by a person'); assert.equal(u.by.upgrade, 2); assert.ok(!('upgrade' in r0.by), 'a document without such a record has no such count');
+    assert.match(t.slice(t.indexOf('## E. Provenance')), /Written by an upgrade of the project or by a merge, with no author stamp: 2 records\. No person wrote them; 1 is confirmed by a person since\./, 'on a line of their own');
+    // an unstamped built-in record reads as it always did (rc.10.73.42 documents hold many)
+    const b = documentCopy(p0); b.realisation.components = b.realisation.components.map(({provenance, ...c}) => c); assert.equal(provenanceReading(withFinalReview(b)).by.upgrade, undefined, 'the count is of the packages\' collections only'); }
   // a row a package states over a built-in collection is not read a second time (the hostile package states decisions.records)
   // (ruling J11; was: the list equals the three synthetic collections: now those and the ones the build's packages state, and no built-in collection among them)
   assert.deepEqual(boundary.packageCollections().map(x => x[0]).sort(), [...buildCollections(), 'runtime.otherNotes', 'runtime.otherThings', 'synthetic.records'].sort());
