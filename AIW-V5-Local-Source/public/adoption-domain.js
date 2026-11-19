@@ -86,7 +86,9 @@ function nameApplier(p,a){
 // adoption.reassess. `history` names, once each, everyone who applied it (every actor the journal names), and since
 // the last apply who confirmed in the applier's place and who changed its facts, bindings, parameters or deviations.
 // `owner` is the adoption's: the one rule refuses the owner too. Left out (design §c.1): a save that changed none of
-// those — a reassessment of a record whose applier is named, and (from slice S2 on) discharging an obligation.
+// those — a reassessment of a record whose applier is named. When slice S2 brings the step that discharges an
+// obligation, the projection names who discharged one too (ruling J12): the discharge moves the revision, so the
+// acceptance covers it.
 const COVERED=new Set(['apply','facts','bind','parameters','deviation']);
 export function acceptanceSubject(a,p=null){
  const h=list(a?.history),from=h.findLastIndex(x=>x.event==='apply'&&!x.identity),named=h.find(x=>x.event==='apply'&&x.identity==='journal'&&x.actor)?.actor||null;

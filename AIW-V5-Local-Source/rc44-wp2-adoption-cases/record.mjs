@@ -610,8 +610,11 @@ export default async function ({block, pass, load}) {
     { const d = structuredClone(off), x = byId(d, 'ADP-001'); x.confirmed = true; x.history.push({n: 2, at: AT, event: 'reassess', actor: A, revision: 1}); x.provenance = {reviewed: {by: A, at: AT, how: 'confirmed'}};
       assert.throws(() => commandHandler('adoption.accept')(d, {type: 'adoption.accept', payload: {id: 'ADP-001', revision: 1, deviationIds: [], note: ''}}, AT, B, {author: person(B)}), /open error|no longer current|withdrawn/i, 'acceptance is refused while the pinned knowledge is not current'); }
     // an acceptance given while the knowledge was current does not stand once it is not
-    { const d = structuredClone(up), x = byId(d, 'ADP-001'); x.confirmed = true; x.history.push({n: 2, at: AT, event: 'reassess', actor: A, revision: 1}); x.review = {actor: B, at: AT, account: 'person', revision: 1, seq: 2, note: '', deviationIds: []};
+    // (the acceptance is written by hand with a time after the fixture's apply, as a real one is; was: at AT, a week before the design was applied and its
+    // sources read, which the reader now takes for an acceptance given before the design was re-read: block "J6 basis after acceptance")
+    { const d = structuredClone(up), x = byId(d, 'ADP-001'), ACCEPTED_AT = '2026-10-12T10:00:00.000Z'; assert.ok(ACCEPTED_AT > KAT); x.confirmed = true; x.history.push({n: 2, at: ACCEPTED_AT, event: 'reassess', actor: A, revision: 1}); x.review = {actor: B, at: ACCEPTED_AT, account: 'person', revision: 1, seq: 2, note: '', deviationIds: []};
       assert.equal(D.adoptionAccepted(asWritten(d), byId(d, 'ADP-001')), true);
+      { const e = structuredClone(d); byId(e, 'ADP-001').review.at = AT; assert.equal(D.adoptionAccepted(asWritten(e), byId(e, 'ADP-001')), false, 'an acceptance dated before the design\'s sources were last read does not stand'); }
       const gone = asWritten(knowledgeCommand(structuredClone(d), 'knowledge.deactivate', {reason: 'Withdraw project activation.', id: releaseId}, KAT)); assert.equal(D.adoptionAccepted(gone, byId(gone, 'ADP-001')), false, 'accepted is read: not while the definition\'s knowledge is not current');
       // and the tracker flags it in the commit that deactivates (design c.3)
       const next = structuredClone(gone); pkg().track(asWritten(d), next, {type: 'knowledge.deactivate', payload: {id: releaseId}}, LATER);
