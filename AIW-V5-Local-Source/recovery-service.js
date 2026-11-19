@@ -93,6 +93,13 @@ export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??
  // by a signed-in person before it is used: a released claim is immutable, so that means a successor release.
  const verifier=c=>{if(c?.review&&typeof c.review==='object'){if(c.review.actor!=null)c.review.importedActor=c.review.actor;c.review.actor=null;}};
  for(const c of p.knowledge?.claims||[])verifier(c);
+ // A concept's review (rc44, wp1) is the same assertion: it stands only when a second person here records it.
+ for(const c of Array.isArray(p.knowledge?.concepts)?p.knowledge.concepts:[])verifier(c);
+ // The mark that makes a project a knowledge library (rc44, wp1; ruling G5 of 2026-11-18) is a person's step made on the
+ // workbench the package came from: the recovered project is no library until a person marks it one here, and takes no
+ // concept, topic or form before. The imported mark is kept as history. A document that holds no mark gains none.
+ const library=p.knowledge?.library;
+ if(library&&typeof library==='object'){if(library.actor!=null)library.importedActor=library.actor;library.actor=null;if(library.enabled===true){library.importedEnabled=true;library.enabled=false;}}
  for(const r of p.knowledge?.releases||[])for(const c of r.claims||[])verifier(c);
  // Round 12 (GR-DOM-09): a pinned organisation knowledge release was verified on the workbench it came from; here its
  // claims stay ineligible until this workbench's organisation is found to sign exactly it (refreshOrganizationAssurance).
@@ -136,7 +143,7 @@ export async function handleRecovery(request,env,identity,project){const {owner,
   for(const f of pack.files||[]){const key=prefix+crypto.randomUUID();await env.FILES.put(key,f.data||decoded(f.body));created.push(key);p.workspace.recovery.keys[f.originalKey||f.key]=key;p.workspace.recovery.files.push({kind:f.kind,key,originalKey:f.originalKey||f.key,metadata:f.metadata,hash:f.hash,bytes:f.bytes});}
   // The imported audit record is stored with its digest, so a later read detects alteration in object storage.
   const auditBytes=new TextEncoder().encode(JSON.stringify({importedAt:at,authority:'Historical imported assertions, not current authenticated approvals.',audit:pack.audit||{}}));await env.FILES.put(p.workspace.recovery.auditKey,auditBytes);created.push(p.workspace.recovery.auditKey);p.workspace.recovery.auditDigest=await sha256(auditBytes);
-  const empty=createProject({name:p.name,template:'blank'},id,at);await env.DB.prepare('INSERT INTO projects(owner_id,id,document,revision,updated_at) VALUES(?,?,?,1,?)').bind(actor,id,JSON.stringify(empty),at).run();const saved=await saveStoredProject(env,actor,id,withFinalReview(p),1,at,new Map());if(!saved.meta.changes)throw Error('The restored project could not be saved.');
+  const empty=createProject({name:p.name,template:'blank'},id,at);await env.DB.prepare('INSERT INTO projects(owner_id,id,document,revision,updated_at) VALUES(?,?,?,1,?)').bind(actor,id,JSON.stringify(empty),at).run();const saved=await saveStoredProject(env,actor,id,withFinalReview(p),1,at,new Map(),()=>[],{allowMissing:true});if(!saved.meta.changes)throw Error('The restored project could not be saved.');
   if(raw.upload!==undefined)await dropUpload(env,actor,raw.upload,source.total);
   return json({id,revision:2,name:p.name,objects:preview.objects,modelView,importedAuthority:preview.importedAuthority},201);
  }catch(e){await env.DB.prepare('DELETE FROM requirement_index WHERE owner_id=? AND project_id=?').bind(actor,id).run();await env.DB.prepare('DELETE FROM projects WHERE owner_id=? AND id=?').bind(actor,id).run();await Promise.allSettled(created.map(key=>env.FILES.delete(key)));throw e;}

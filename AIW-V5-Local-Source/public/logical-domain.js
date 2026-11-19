@@ -121,7 +121,7 @@ function logicalGraphOf(p){
  return runtimeProjection(p,securityProjection(p,interfacesProjection(p,technologyRealisationProjection(p,technologyProjection(p,{nodes,edges})))));
 }
 // The chapter's checks, worked out once per settled document or pass (each caller gets its own copies).
-export function logicalFindings(p){return memoPass(p,()=>sharedList(p,'logical:findings',()=>logicalFindingsOf(p)));}
+export function logicalFindings(p){return memoPass(p,()=>sharedList(p,4,()=>logicalFindingsOf(p)));}
 function logicalFindingsOf(p){
  const l=p.logical,{nodes,edges}=logicalGraph(p),out=[],add=(code,id,title,detail,level='error',extra={})=>out.push({id:code+':'+id,code,objectId:id,title,detail,level,...extra});
  const reqs=p.artefacts.filter(a=>a.type==='requirement');

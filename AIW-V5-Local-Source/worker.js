@@ -1,5 +1,5 @@
 import {prepareRepositoryPacket} from './repository-packet.js';
-import {publicMessage,isIntegrityError,isInternalError} from './error-message.js';
+import {publicMessage,isIntegrityError,isInternalError,isMissingPackage} from './error-message.js';
 import {handleRepositorySync,repositorySyncRequest,refreshRepositoryAssurance} from './repository-sync.js';
 import {handleOperations} from './operation-service.js';
 import {handleRecovery} from './recovery-service.js';
@@ -24,7 +24,7 @@ import {applyAssuranceCommand} from './public/assurance-domain.js';
 import {acquireRepositorySource} from './knowledge-service.js';
 import {handleRepositoryCorpus} from './knowledge-repository.js';
 import {handleRepositoryTransfer} from './repository-transfer.js';
-import {applyKnowledgeCommand} from './public/knowledge-governance.js';
+import {applyConceptCommand} from './public/knowledge-concept-commands.js';
 import {journeyIndex} from './public/journey-context.js';
 import {applyArchitectureCommand} from './public/architecture-design.js';
 import {applyLensCommand} from './public/domain-lens.js';
@@ -90,6 +90,11 @@ import {installCatalogue} from './public/catalogue-store.js';
 // Documents whose records keep copies of what they read are upgraded to fingerprints on read (round 12, D-04): the
 // upgrade registers itself with withFinalReview here, on the server only.
 import './public/readings-upgrade.js';
+// The design packages (rc44, slice S0): design-packages.js imports each package's module, which registers it with the
+// shared machinery (public/design-extensions.js); their commands reach their handlers through the boundary below, and a
+// package that does not conform to the registration contract stops the server here, when it starts.
+import './design-packages.js';
+import {installBuiltInCommands,assertExtensions,extensionCommand,extensionHandler,extensionLarge,validateExtensions,trackExtensions,stampExtensions,placeSections,markPackages,missingPackages,missingPackagesRefusal} from './design-extension-boundary.js';
 installCatalogue(BRAIN_CATALOGUE);
 const log=(event,details)=>console.error(JSON.stringify({at:new Date().toISOString(),event,...details}));
 // Command types reach their domain module by prefix (round 2, B2-05): one registry instead of a ternary chain, and
@@ -104,13 +109,18 @@ const COMMAND_PREFIXES=new Set([...COMMAND_HANDLERS.map(([key])=>key.split('.')[
 // bounded by how many it links, refused past its domain's limit with the limit named (5,000 requirements), never by the
 // characters of the ids; the whole request stays within 500 KB.
 const LARGE_COMMAND_PREFIXES=['evidence.model-reconcile','alternative.','design.','exchange.','protection.','architecture.','knowledge.','standards.','workspace.','requirements.','quality.','decision.','logical.','realisation.'];
-export function commandHandler(type){for(const [key,handler] of COMMAND_HANDLERS)if(key.endsWith('.')?type.startsWith(key):type===key)return handler;return applyCommand;}
+function builtInHandler(type){for(const [key,handler] of COMMAND_HANDLERS)if(key.endsWith('.')?type.startsWith(key):type===key)return handler;return applyCommand;}
+// A type a design package states (rc44, slice S0) reaches the package's handler through its boundary, unless a built-in
+// handler takes the type: the built-in handlers are asked first, the ones this route calls itself among them.
+installBuiltInCommands(type=>type==='knowledge.fetch'||type==='workspace.view'||type.startsWith('intelligence.')?true:type.startsWith('knowledge.')?applyConceptCommand:builtInHandler(type));
+assertExtensions();
+export function commandHandler(type){return extensionHandler(type)||builtInHandler(type);}
 export function commandShape(command){
   if(!command||typeof command!=='object'||typeof command.type!=='string'||!/^[A-Za-z][A-Za-z0-9-]{0,60}(?:\.[A-Za-z][A-Za-z0-9-]{0,60})?$/.test(command.type))return {error:'The project action is incomplete.',code:'invalid_command'};
   if(command.payload!==undefined&&(!command.payload||typeof command.payload!=='object'||Array.isArray(command.payload)))return {error:'The project action payload must be an object.',code:'invalid_payload'};
   // A prefixed type whose prefix no module owns is refused here; an unprefixed type is the requirements domain's to
   // accept or refuse, as before (its refusal is answered with the same code).
-  const dot=command.type.indexOf('.');if(dot>=0&&!COMMAND_PREFIXES.has(command.type.slice(0,dot)))return {error:'Unknown project action.',code:'unknown_command'};
+  const dot=command.type.indexOf('.');if(dot>=0&&!COMMAND_PREFIXES.has(command.type.slice(0,dot))&&!extensionCommand(command.type))return {error:'Unknown project action.',code:'unknown_command'};
   return null;
 }
 // ---------------------------------------------------------------- accepted field suggestions (round 2, I2-12)
@@ -269,6 +279,9 @@ export function trackCommandChanges(prior,next,command,at,{author=null}={}){
     trackModelChange(prior,next,command,at);
     trackDecisionChange(prior,next,command,at);
     if(command.type==='workspace.apply')for(const c of Array.isArray(command.payload?.commands)?command.payload.commands:[]){trackModelChange(prior,next,c,at);trackInterfaceChange(prior,next,c,at);}
+    // The design packages' trackers (rc44, slice S0; ruling D4), after every built-in tracker: for this command, a
+    // built-in one too, and for each command it carries.
+    trackExtensions(prior,next,command,at);
     quietChanges(prior,(next.changes?.events||[]).slice(already),author);
     return impact;
   }));
@@ -382,7 +395,8 @@ async function sddExport(project,url,filename,{env=null,key=()=>null,open=null,w
       const body=format==='md'?A.markdown:format==='html'?kept(['annex','figures','html'],()=>sddHTML(A.markdown,null,{figures:A.figures})):kept(['annex','figures','pdf'],()=>makeReviewPDF(A.markdown,project.name+' Solution Design — figures annex'));
       return new Response(body,headers(SDD_TYPES[format],file,format==='html'&&view));
     }
-    const md=()=>annex==='requirements'?requirementRegisterMarkdown(project,{page}):annex==='specifications'?componentSpecsAnnex(project):exportSDD(project,null);
+    // The working registers carry the sections the design packages state for them, at their anchors (rc44, slice S0).
+    const md=()=>annex==='requirements'?requirementRegisterMarkdown(project,{page}):annex==='specifications'?componentSpecsAnnex(project):placeSections('registers',exportSDD(project,null),project);
     const body=format==='csv'?kept(['annex',annex,'csv'],()=>annex==='matrix'?traceabilityMatrixCSV(project):requirementRegisterCSV(project)):format==='json'?JSON.stringify(annex==='matrix'?{exportedAt:new Date().toISOString(),document:'traceability-matrix',project:{id:project.id,name:project.name},rows:traceabilityMatrix(project)}:{exportedAt:new Date().toISOString(),document:'requirement-register',...requirementRegisterPage(project,{page})},null,2):kept(['annex',annex,format,paged?page:null],()=>format==='html'?sddHTML(md(),null,{figures:{figures:[],manifest:[],omitted:[]}}):md());
     return new Response(body,headers(SDD_TYPES[format],filename+'_'+ANNEX_FILES[annex]+(paged?'_p'+page:'')+'.'+format,format==='html'&&view));
   }
@@ -420,6 +434,15 @@ const REGISTER_FILES={1:'Requirements',2:'Quality_Drivers',3:'Decisions',4:'Logi
 function registerMarkdown(project,chapter){switch(chapter){case 2:return exportQualityMarkdown(project);case 3:return exportDecisionsMarkdown(project);case 4:return exportLogicalMarkdown(project);case 5:return exportRealisationMarkdown(project);case 6:return exportTechnologyMarkdown(project);case 7:return exportTechnologyRealisationMarkdown(project);case 8:return exportInterfacesMarkdown(project);case 9:return exportSecurityMarkdown(project);case 10:return exportRuntimeMarkdown(project);default:return exportMarkdown(project);}}
 export function stampDocument(markdown,revision,at=new Date()){const line='Project revision '+(revision??'not recorded')+' · '+appDate(at)+' · a working snapshot of the saved records; nothing here is approved by being written down.';const lines=String(markdown??'').split('\n'),i=lines.findIndex(l=>/^# /.test(l));if(i<0)return line+'\n\n'+lines.join('\n');lines.splice(i+1,0,'',line);return lines.join('\n').replace(/\n{3,}/g,'\n\n');}
 function registerFigures(project,chapter){const scene=CHAPTER_SCENES[chapter]?.[0];if(!scene)return {figures:[],manifest:[],omitted:[]};try{return sddFigures(project,{chapters:[chapter],scenes:[scene]});}catch(e){console.warn('The register\'s picture could not be drawn.',e?.message);return {figures:[],manifest:[],omitted:[{chapter,scene,title:scene,reason:'The picture could not be drawn: '+(e?.message||'unknown')}]};}}
+// A project whose document names a design package this build does not register (rc44, slice S0; the lead's ruling D2:
+// workspace.packages, public/design-extension-parts.js) holds records this build cannot read. It is read, with the
+// missing package named; it is not changed, frozen or printed here: every command, every export, a freeze, an intake
+// and a draft by Sol are refused with these words. missingPackageRefusal answers that refusal for a document, or null;
+// refuseMissingPackages reads the stored row for the routes that do not read the project themselves (the row keeps
+// the workspace inline: project-storage.js).
+const missingPackageRefusal=document=>{const missing=missingPackages(document);return missing.length?json({error:missingPackagesRefusal(missing),code:'missing_package',packages:missing},409):null;};
+async function refuseMissingPackages(env,owner,projectId){const row=await env.DB.prepare('SELECT document FROM projects WHERE owner_id=? AND id=?').bind(owner,projectId).first();if(!row)return null;let document=null;try{document=JSON.parse(row.document);}catch{return null;}return missingPackageRefusal(document);}
+const MISSING_PACKAGE_OPEN=new Set(['/api/commands','/api/lifecycle','/api/recovery','/api/access','/api/discussions','/api/projects']);
 async function route(request,env,ctx){
   const url=new URL(request.url);
   if(!url.pathname.startsWith('/api/'))return env.ASSETS.fetch(request);
@@ -437,6 +460,11 @@ async function route(request,env,ctx){
     const identity=await projectIdentity(env,actor,projectId);owner=identity.owner;
     // An agent or service account is never a person (round 12, GR-GOV-12): its account kind travels with its identity.
     identity.account=accountKind(env,actor);
+    // rc44, slice S0 (the lead's rulings D2 and F2): a project that names a design package this build does not register
+    // is read and not changed here. Every route that writes is refused at this one place, whatever it is asked, except
+    // the ones in MISSING_PACKAGE_OPEN: commands (refused below, on the document the route reads anyway), and the steps
+    // that leave the design as it is. saveStoredProject refuses again, for a route that is routed before this line.
+    if(request.method!=='GET'&&!MISSING_PACKAGE_OPEN.has(url.pathname)){const refusal=await refuseMissingPackages(env,owner,projectId);if(refusal)return refusal;}
     if(['/api/connections','/api/jobs','/api/operations'].includes(url.pathname))return await handleOperations(request,env,identity,projectId,ctx);
     if(url.pathname==='/api/recovery')return await handleRecovery(request,env,identity,projectId);
     if(['/api/discussions','/api/activity','/api/graph'].includes(url.pathname))return await handleObjects(request,env,identity,projectId);
@@ -489,14 +517,17 @@ async function route(request,env,ctx){
       // storage upgrade, recorded in its activity, its previous version kept for recovery); the reads after it are
       // answered from the upgraded row. A project changed meanwhile by another request is read again as it now is.
       let stored=await readStoredProject(env,owner,row.document);
-      if(storageUpgradeNeeded(stored)){
+      // A document that names a design package this build does not register (rc44, slice S0; ruling D2) is read and
+      // answered with the missing package named (missingPackages); this build stores no upgrade of it.
+      const missing=missingPackages(stored.document);
+      if(!missing.length&&storageUpgradeNeeded(stored)){
         const upgraded=withFinalReview(stored.document),saved=await storeStorageUpgrade(env,identity,projectId,row,stored,upgraded);
         if(saved){log('storage-upgrade',{owner,project:projectId,from:row.revision,to:saved.revision});return json({document:recentJournal(await refreshRepositoryAssurance(env,owner,await refreshOrganizationAssurance(env,owner,upgraded)),url),revision:saved.revision,updatedAt:saved.updatedAt});}
         row=await env.DB.prepare('SELECT document,revision,updated_at FROM projects WHERE owner_id=? AND id=?').bind(owner,projectId).first();
         if(!row)return json({error:'This project is unavailable for your account. Return to Projects to choose another.'},404);
         stored=await readStoredProject(env,owner,row.document);
       }
-      return json({document:recentJournal(await refreshRepositoryAssurance(env,owner,await refreshOrganizationAssurance(env,owner,withFinalReview(stored.document))),url),revision:row.revision,updatedAt:row.updated_at});
+      return json({document:recentJournal(await refreshRepositoryAssurance(env,owner,await refreshOrganizationAssurance(env,owner,withFinalReview(stored.document))),url),revision:row.revision,updatedAt:row.updated_at,...(missing.length?{missingPackages:missing}:{})});
     }
     if(url.pathname==='/api/changes'&&request.method==='GET'){
       // Older journal pages, newest first, keyed by event id (round 2, B2-03): the companion of ?changes=recent.
@@ -514,6 +545,8 @@ async function route(request,env,ctx){
       // The journal's archive pages (journal-archive.js): read back whole by the annex and by every export a project can be
       // restored from, never by the SDD itself.
       const stored=await readStoredProject(env,owner,row.document),archive=stored.keys.get('__change_journal')?.archive||[];
+      // No document is assembled from a design this build cannot read in full (rc44, slice S0; ruling D2).
+      {const refusal=missingPackageRefusal(stored.document);if(refusal)return refusal;}
       const project=await refreshRepositoryAssurance(env,owner,await refreshOrganizationAssurance(env,owner,withFinalReview(stored.document)));
       const filename='AIW_'+project.name.replace(/[^a-zA-Z0-9_-]+/g,'_').slice(0,100);
       if(url.searchParams.get('format')==='delivery')return new Response(JSON.stringify(deliveryExchange(project),null,2),{headers:{'Content-Type':'application/json','Content-Disposition':'attachment; filename="'+filename+'_Delivery.json"','Cache-Control':'no-store'}});
@@ -538,7 +571,7 @@ async function route(request,env,ctx){
         const view=url.searchParams.get('view')==='1',format=url.searchParams.get('format')||(view?'html':'md');
         if(!['md','json','html'].includes(format))return json({error:'Choose Markdown, JSON, or HTML.'},400);
         let built=null;
-        if(named==='ars')built={markdown:()=>arsMarkdown(project),data:()=>arsJSON(project),file:'Architecture_Requirements_Specification'};
+        if(named==='ars')built={markdown:()=>placeSections('ars',arsMarkdown(project),project),data:()=>arsJSON(project),file:'Architecture_Requirements_Specification'};
         else if(named==='spec'){const doc=componentSpecDocument(project,url.searchParams.get('id')||'');if(!doc)return json({error:'Choose an existing application component (id=).'},404);built={markdown:()=>doc.markdown,data:()=>doc.json,file:'Component_Specification_'+doc.ref.replace(/[^A-Za-z0-9_-]+/g,'_')};}
         if(!built)return json({error:'Choose the requirements specification (document=ars) or a component specification (document=spec&id=).'},400);
         // Round 26 (D-26-13): the first line after the title carries the project revision and the date; the JSON names the revision.
@@ -551,11 +584,12 @@ async function route(request,env,ctx){
       if(url.searchParams.get('chapter')==='11')return await sddExport(project,url,filename,{env,key:parts=>exportKey(owner,projectId,row,project,parts),open:(entry,names)=>openBaseline(env,owner,projectId,entry,names),whole:()=>wholeProject(env,owner,projectId,project,stored.keys),lastSource:p=>withLastBaselineSource(env,owner,projectId,p)});
       // Round 26 (D-26-13): a chapter register comes as Markdown (format=md) or HTML (format=html; view=1 opens it in the
       // browser, as the ARS and the specifications open), its first line after the title carrying the project revision and
-      // the date; the HTML view draws the chapter's own picture (sdd-figures.js). Any other format is the whole saved
+      // the date; the HTML view draws the chapter's own picture (sdd-figures.js). A chapter's register carries the sections
+      // the design packages state for it ('chapter-n'), at their anchors (rc44, slice S0). Any other format is the whole saved
       // project as JSON, which every Output page offers once without a chapter. Nothing here changes the project.
       const format=url.searchParams.get('format')||'json',chapterN=Number(url.searchParams.get('chapter'))||(format==='md'||format==='html'?1:0);
       if(REGISTER_FILES[chapterN]&&(format==='md'||format==='html')){
-        const view=url.searchParams.get('view')==='1',md=stampDocument(registerMarkdown(project,chapterN),row.revision),name=filename+'_'+REGISTER_FILES[chapterN]+'.'+format;
+        const view=url.searchParams.get('view')==='1',md=stampDocument(placeSections('chapter-'+chapterN,registerMarkdown(project,chapterN),project),row.revision),name=filename+'_'+REGISTER_FILES[chapterN]+'.'+format;
         if(format==='md')return new Response(md,{headers:{'Content-Type':'text/markdown; charset=utf-8','Content-Disposition':'attachment; filename="'+name+'"','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
         return new Response(sddHTML(md,null,{figures:registerFigures(project,chapterN)}),{headers:{'Content-Type':'text/html; charset=utf-8','Content-Disposition':(view?'inline':'attachment')+'; filename="'+name+'"','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'self'; base-uri 'none'"}});
       }
@@ -597,7 +631,7 @@ async function route(request,env,ctx){
       if(body.length>500000&&type!=='evidence.model-reconcile')return json({error:'This change is too large. Shorten the fields and try again.',code:'too_large'},413);
       // A baseline is frozen as a job with a receipt and its progress (baseline-service.js), never on a save's request.
       if(type==='review.baseline')return json({error:'A baseline is frozen as a job that reports its progress: freeze it from the review desk.',code:'freeze_job',route:'/api/baselines?action=freeze'},400);
-      if(body.length>40000&&!LARGE_COMMAND_PREFIXES.some(prefix=>type.startsWith(prefix))&&type!=='feedback.import')return json({error:'This change is too large. Shorten the fields and try again.',code:'too_large'},413);
+      if(body.length>40000&&!LARGE_COMMAND_PREFIXES.some(prefix=>type.startsWith(prefix))&&type!=='feedback.import'&&!extensionLarge(type))return json({error:'This change is too large. Shorten the fields and try again.',code:'too_large'},413);
       // Who or what writes this commit (round 12, D-06): a person, an import or a draft by Sol, from the signed-in account
       // and what the request says of itself. A draft by Sol and an agent account review, confirm and approve nothing.
       let author;try{author=commitAuthor({actor,account:identity.account},input,input.command);refuseUnreviewable(input.command,author);}catch(e){return json({error:publicMessage(e),code:'authorship'},400);}
@@ -617,7 +651,10 @@ async function route(request,env,ctx){
         }
       }
       if(row.revision!==input.revision)return json({error:'This project changed in another tab or session. Reload the latest project, then apply your preserved changes.',conflict:true,code:'conflict'},409);
-      const stored=await readStoredProject(env,owner,row.document);stored.document=await refreshRepositoryAssurance(env,owner,await refreshOrganizationAssurance(env,owner,withFinalReview(stored.document)));if(stored.document.workspace?.status==='archived')return json({error:'Restore this project before changing its design.',code:'archived'},409);let result;const at=new Date().toISOString();
+      const stored=await readStoredProject(env,owner,row.document);
+      // No command changes a design this build cannot read in full (rc44, slice S0; ruling D2): a built-in one neither.
+      {const refusal=missingPackageRefusal(stored.document);if(refusal)return refusal;}
+      stored.document=await refreshRepositoryAssurance(env,owner,await refreshOrganizationAssurance(env,owner,withFinalReview(stored.document)));if(stored.document.workspace?.status==='archived')return json({error:'Restore this project before changing its design.',code:'archived'},409);let result;const at=new Date().toISOString();
       // The document as it was, completed once (round 12): what the checks, the provenance and the trackers read, and
       // never change. The command works on its own copy of it (document-memo.js documentCopy: the journal's recorded
       // events are shared, everything else is copied), where each of these used to complete a fresh copy.
@@ -635,9 +672,12 @@ async function route(request,env,ctx){
       // read carries a baseline's metadata, not its parts: project-storage.js openBaseline).
       const frozenSources=new Map(),viewed=type==='workspace.view'?input.command.payload?.exploration?.baselineId:null,viewedEntry=typeof viewed==='string'?prior.finalReview?.baselines?.find(b=>b.id===viewed):null;
       if(viewedEntry?.frozen)frozenSources.set(viewed,(await openBaseline(env,owner,projectId,viewedEntry,['source'])).source);
-      try{if(type==='knowledge.link'&&!journeyIndex(prior).nodes.has(input.command.payload?.objectId))throw Error('Choose an existing object in this project.');const own=documentCopy(prior);result=type==='knowledge.fetch'?await acquireRepositorySource(own,input.command.payload||{},env,actor,at):type.startsWith('knowledge.')?applyKnowledgeCommand(own,input.command,at,actor):type==='intelligence.adopt'?await adoptSavedIntelligence(env,owner,projectId,own,input.command.payload||{},at,actor):type==='workspace.view'?applyWorkbenchCommand(own,input.command,at,actor,{baselineSource:id=>frozenSources.get(id)||null}):commandHandler(type)(own,input.command,at,actor,{author,revision:input.revision});result.document=withFinalReview(result.document===prior?result.document:handOver(result.document));carryProvenance(prior,result.document,at);recordSuggestions(result.document,carriers,{actor,at,selected:result.selected??null,prior});
+      try{if(type==='knowledge.link'&&!journeyIndex(prior).nodes.has(input.command.payload?.objectId))throw Error('Choose an existing object in this project.');const own=documentCopy(prior),packaged=extensionHandler(type);validateExtensions(prior,input.command,{at,actor,author});result=packaged?packaged(own,input.command,at,actor,{author,revision:input.revision}):type==='knowledge.fetch'?await acquireRepositorySource(own,input.command.payload||{},env,actor,at):type.startsWith('knowledge.')?applyConceptCommand(own,input.command,at,actor,{author}):type==='intelligence.adopt'?await adoptSavedIntelligence(env,owner,projectId,own,input.command.payload||{},at,actor):type==='workspace.view'?applyWorkbenchCommand(own,input.command,at,actor,{baselineSource:id=>frozenSources.get(id)||null}):commandHandler(type)(own,input.command,at,actor,{author,revision:input.revision});result.document=withFinalReview(result.document===prior?result.document:handOver(result.document));carryProvenance(prior,result.document,at);recordSuggestions(result.document,carriers,{actor,at,selected:result.selected??null,prior});
+        // A design package whose command this commit applied (its own, one a batch carries, one a merge applies) is
+        // named in the document it wrote (rc44, slice S0; ruling D2: workspace.packages).
+        if(result.document!==prior)markPackages(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command);
         // The records the commit wrote are stamped as its, and a brief it changed is kept as a new version of its source.
-        stampAuthorship(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command,result,author,at,{fourEyes:prior.workspace?.governance?.fourEyes===true});attachProvenanceBlocks(prior,result.document,input.command,result);versionBrief(prior,result.document,author,at)}catch(e){const message=publicMessage(e);return json({error:message,...(/^Unknown .* action\.$/.test(message)?{code:'unknown_command'}:{})},400)}
+        stampAuthorship(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command,result,author,at,{fourEyes:prior.workspace?.governance?.fourEyes===true});stampExtensions(prior,result.document,author,at);attachProvenanceBlocks(prior,result.document,input.command,result);versionBrief(prior,result.document,author,at)}catch(e){const message=publicMessage(e);return json({error:message,...(/^Unknown .* action\.$/.test(message)?{code:'unknown_command'}:{})},400)}
       let impact;
       // The trackers derive journal and impact records from the change; a fault in them is a programming fault
       // (answered as such, round 2, B2-06), never a storage outage.
@@ -669,6 +709,7 @@ async function route(request,env,ctx){
     // Integrity faults are permanent and precise (round 2, B2-06); programming faults are faults; only an adapter that
     // could not be reached is the transient outage the client may retry.
     const base={owner,project:projectId,route:url.pathname,method:request.method,message:String(e?.message||e)};
+    if(isMissingPackage(e))return json({error:e.message,code:'missing_package',packages:e.packages},409);
     if(isIntegrityError(e)){log('integrity-fault',{...base,key:e.key||null});return json({error:e.message,code:'integrity'},422);}
     if(isInternalError(e)){log('fault',{...base,stack:typeof e?.stack==='string'?e.stack.split('\n').slice(0,6).join(' | '):null});return json({error:'This action could not be completed. Your input is kept; reload the project and try again.',code:'fault'},500);}
     log('storage-unavailable',base);return json({error:'We could not reach project storage. Your input is still here; please retry.',code:'storage_unavailable'},503);

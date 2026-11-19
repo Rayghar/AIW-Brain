@@ -1,0 +1,395 @@
+{
+ "schema": "aiw.rc44.slice-evidence/1",
+ "slice": "wp1-s1-forms, second fix-up after the verification and the rulings of 2026-11-18 (sections E and G)",
+ "date": "2026-11-18",
+ "branch": "rc44/wp1-s1-forms-fix-c3",
+ "from": "b2cc73d6b348f8b926b71463785bc5498dd36f66",
+ "baseline": "94dbd4f",
+ "release": "AIW v0.10.0-rc.10.73.42 (upgrade rc44 in progress)",
+ "productionAccepted": false,
+ "knowledgePromoted": false,
+ "fixtures": "synthetic only; no handbook text is in the repository",
+ "authorities": {
+  "licenceCounsel": "not engaged",
+  "fourEyesKnowledgeApprover": "not assigned",
+  "independentArchitectureReviewer": "not started",
+  "productionAcceptanceAuthority": "not established"
+ },
+ "suite": {
+  "script": "test:rc44-wp1-knowledge",
+  "suite": "rc44-wp1-knowledge",
+  "passed": 34,
+  "failed": 0,
+  "pending": 4,
+  "failures": [],
+  "note": "run after node build.mjs, so that S1.14 also read the built client"
+ },
+ "walk": {
+  "case": "S1.29",
+  "sent": 770,
+  "refused": 546,
+  "accepted": 224,
+  "lowering": 36,
+  "types": 25,
+  "kindsOfRequest": 7,
+  "stages": [
+   "reviewed",
+   "released and active"
+  ],
+  "note": "sent: requests of the walk; refused and accepted: of those; lowering: requests that lower the standing when a person sends them, each refused to every kind and saved for a person"
+ },
+ "bounds": [
+  "60 concepts, nine forms each, topics of 4236 characters: 1867 commands of 6000; characters of 8000000: imported 1696592, reviewed 2066193, released 3507790, correction round 1 5113724, correction round 2 6729018",
+  "topics of 12697 characters and longer passages, measured on 10 concepts: characters for each concept imported 53949, reviewed 60109, released 101312, correction round 1 147928, correction round 2 194392; the largest tranche within 8000000 characters: 78 concepts with the first release, 54 with one successor release, 41 with two",
+  "a library's history at its bound of 6000 lines holds 793316 characters",
+  "the character bound was reached through the commands with 20 further sources of 60,000 characters (7964678 characters); the next is refused: start another library for the next tranche"
+ ],
+ "clientSize": {
+  "measured": "node build.mjs on b2cc73d (the branch start) and on this branch after its last product change",
+  "before": {
+   "chaptersRouteCode": 3228928,
+   "projectsRouteCode": 506129,
+   "scripts": 148,
+   "buckets": {
+    "under10k": 53,
+    "from10to50k": 50,
+    "over50k": 45
+   },
+   "stylesheet": 901873,
+   "total": 8877272,
+   "violations": []
+  },
+  "after": {
+   "chaptersRouteCode": 3228928,
+   "projectsRouteCode": 506129,
+   "scripts": 148,
+   "buckets": {
+    "under10k": 53,
+    "from10to50k": 50,
+    "over50k": 45
+   },
+   "stylesheet": 901873,
+   "total": 8877272,
+   "violations": []
+  },
+  "chaptersRouteDelta": 0,
+  "projectsRouteDelta": 0,
+  "totalDelta": 0,
+  "budgetUnchanged": true,
+  "chaptersRouteCap": 3233792,
+  "knowledgeGovernanceInClient": 8132,
+  "newModulesInClient": [],
+  "wp1Allowance": 660,
+  "wp1AllowanceUsed": 65,
+  "note": "wp1AllowanceUsed is against the baseline figure 3,228,863 B measured by the first fix-up and by the verifier"
+ },
+ "static": {
+  "syntax": [
+   "Syntax checks passed for 914 application, service, script and verification modules.",
+   "syntax exit 0"
+  ],
+  "lint": {
+   "files": 920,
+   "problems": 162,
+   "rules": {
+    "no-empty": 27,
+    "no-unused-vars": 135
+   },
+   "baseline": 162,
+   "new": 0,
+   "lowerable": 0
+  }
+ },
+ "relatedSuites": {
+  "selection": "every *-validate.mjs that imports or names a file or a command this round changed (knowledge-governance.js, recovery-service.js, the three modules of the slice, a knowledge.* command); browser suites and scale are the lead's",
+  "ran": 53,
+  "passed": 45,
+  "notPassed": [
+   "brain-ahead-validate.mjs",
+   "brain-reasoning-validate.mjs",
+   "chapter-reasoning-validate.mjs",
+   "composition-ui-validate.mjs",
+   "contextual-intelligence-ui-validate.mjs",
+   "design-concern-validate.mjs",
+   "repository-packet-validate.mjs",
+   "stewardship-validate.mjs"
+  ],
+  "comparedWithBaseline": [
+   "SAME on 94dbd4f: brain-ahead-validate.mjs (exit 1)",
+   "SAME on 94dbd4f: brain-reasoning-validate.mjs (exit 1)",
+   "SAME on 94dbd4f: composition-ui-validate.mjs (exit 1)",
+   "SAME on 94dbd4f: chapter-reasoning-validate.mjs (exit 1)",
+   "SAME on 94dbd4f: contextual-intelligence-ui-validate.mjs (exit 1)",
+   "SAME on 94dbd4f: design-concern-validate.mjs (exit 1)",
+   "SAME on 94dbd4f: repository-packet-validate.mjs (exit 1)",
+   "SAME on 94dbd4f: stewardship-validate.mjs (exit 1)"
+  ],
+  "results": [
+   {
+    "file": "architecture-evaluation-validate.mjs",
+    "exit": 0,
+    "seconds": 3
+   },
+   {
+    "file": "architecture-intelligence-validate.mjs",
+    "exit": 0,
+    "seconds": 7
+   },
+   {
+    "file": "architecture-knowledge-unit-validate.mjs",
+    "exit": 0,
+    "seconds": 0
+   },
+   {
+    "file": "architecture-obligation-validate.mjs",
+    "exit": 0,
+    "seconds": 4
+   },
+   {
+    "file": "brain-ahead-validate.mjs",
+    "exit": 1,
+    "seconds": 1
+   },
+   {
+    "file": "brain-chain-validate.mjs",
+    "exit": 0,
+    "seconds": 4
+   },
+   {
+    "file": "brain-integration-validate.mjs",
+    "exit": 0,
+    "seconds": 4
+   },
+   {
+    "file": "brain-reasoning-validate.mjs",
+    "exit": 1,
+    "seconds": 3
+   },
+   {
+    "file": "brain-synthesis-retrieval-validate.mjs",
+    "exit": 0,
+    "seconds": 13
+   },
+   {
+    "file": "brain-tradeoffs-validate.mjs",
+    "exit": 0,
+    "seconds": 2
+   },
+   {
+    "file": "caller-resilience-validate.mjs",
+    "exit": 0,
+    "seconds": 1
+   },
+   {
+    "file": "candidate-import-validate.mjs",
+    "exit": 0,
+    "seconds": 1
+   },
+   {
+    "file": "chapter-reasoning-validate.mjs",
+    "exit": 1,
+    "seconds": 5
+   },
+   {
+    "file": "composition-ui-validate.mjs",
+    "exit": 1,
+    "seconds": 2
+   },
+   {
+    "file": "composition-validate.mjs",
+    "exit": 0,
+    "seconds": 18
+   },
+   {
+    "file": "connected-design-projections-validate.mjs",
+    "exit": 0,
+    "seconds": 11
+   },
+   {
+    "file": "contextual-intelligence-ui-validate.mjs",
+    "exit": 1,
+    "seconds": 6
+   },
+   {
+    "file": "decision-reading-validate.mjs",
+    "exit": 0,
+    "seconds": 15
+   },
+   {
+    "file": "design-concern-validate.mjs",
+    "exit": 1,
+    "seconds": 2
+   },
+   {
+    "file": "domain-lens-validate.mjs",
+    "exit": 0,
+    "seconds": 21
+   },
+   {
+    "file": "drafter-groups-validate.mjs",
+    "exit": 0,
+    "seconds": 214
+   },
+   {
+    "file": "driver-applicability-validate.mjs",
+    "exit": 0,
+    "seconds": 1
+   },
+   {
+    "file": "embedded-intelligence-validate.mjs",
+    "exit": 0,
+    "seconds": 10
+   },
+   {
+    "file": "execution-composition-validate.mjs",
+    "exit": 0,
+    "seconds": 2
+   },
+   {
+    "file": "execution-journey-validate.mjs",
+    "exit": 0,
+    "seconds": 6
+   },
+   {
+    "file": "hosted-knowledge-validate.mjs",
+    "exit": 0,
+    "seconds": 1
+   },
+   {
+    "file": "intake-validate.mjs",
+    "exit": 0,
+    "seconds": 52
+   },
+   {
+    "file": "knowledge-boundaries-validate.mjs",
+    "exit": 0,
+    "seconds": 2
+   },
+   {
+    "file": "knowledge-coverage-validate.mjs",
+    "exit": 0,
+    "seconds": 2
+   },
+   {
+    "file": "knowledge-design-validate.mjs",
+    "exit": 0,
+    "seconds": 4
+   },
+   {
+    "file": "knowledge-ingestion-validate.mjs",
+    "exit": 0,
+    "seconds": 1
+   },
+   {
+    "file": "knowledge-repository-validate.mjs",
+    "exit": 0,
+    "seconds": 1
+   },
+   {
+    "file": "knowledge-retrieval-validate.mjs",
+    "exit": 0,
+    "seconds": 10
+   },
+   {
+    "file": "knowledge-second-brain-validate.mjs",
+    "exit": 0,
+    "seconds": 1
+   },
+   {
+    "file": "knowledge-structure-validate.mjs",
+    "exit": 0,
+    "seconds": 0
+   },
+   {
+    "file": "local-accounts-validate.mjs",
+    "exit": 0,
+    "seconds": 2
+   },
+   {
+    "file": "operations-validate.mjs",
+    "exit": 0,
+    "seconds": 5
+   },
+   {
+    "file": "outcome-contract-validate.mjs",
+    "exit": 0,
+    "seconds": 2
+   },
+   {
+    "file": "outcome-design-journey-validate.mjs",
+    "exit": 0,
+    "seconds": 28
+   },
+   {
+    "file": "payment-knowledge-pilot-validate.mjs",
+    "exit": 0,
+    "seconds": 15
+   },
+   {
+    "file": "rc42-g2-library-validate.mjs",
+    "exit": 0,
+    "seconds": 4
+   },
+   {
+    "file": "rc42-g3a-risk-and-limits-validate.mjs",
+    "exit": 0,
+    "seconds": 3
+   },
+   {
+    "file": "rc42-g3b-trace-and-delivery-validate.mjs",
+    "exit": 0,
+    "seconds": 6
+   },
+   {
+    "file": "read-outcome-validate.mjs",
+    "exit": 0,
+    "seconds": 16
+   },
+   {
+    "file": "recovery-authority-validate.mjs",
+    "exit": 0,
+    "seconds": 22
+   },
+   {
+    "file": "recovery-size-validate.mjs",
+    "exit": 0,
+    "seconds": 397
+   },
+   {
+    "file": "repository-packet-validate.mjs",
+    "exit": 1,
+    "seconds": 0
+   },
+   {
+    "file": "repository-service-validate.mjs",
+    "exit": 0,
+    "seconds": 1
+   },
+   {
+    "file": "repository-sync-validate.mjs",
+    "exit": 0,
+    "seconds": 1
+   },
+   {
+    "file": "repository-transfer-validate.mjs",
+    "exit": 0,
+    "seconds": 2
+   },
+   {
+    "file": "service-routes-validate.mjs",
+    "exit": 0,
+    "seconds": 3
+   },
+   {
+    "file": "stewardship-validate.mjs",
+    "exit": 1,
+    "seconds": 4
+   },
+   {
+    "file": "ui-modules-validate.mjs",
+    "exit": 0,
+    "seconds": 3
+   }
+  ]
+ }
+}

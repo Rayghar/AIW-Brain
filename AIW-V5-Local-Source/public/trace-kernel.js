@@ -15,16 +15,20 @@
 import {recordGraph} from './record-graph.js';
 import {remember} from './document-memo.js';
 import {stepOfNode} from './model-scope.js';
+import {EXTENSIONS, extendTable} from './design-extensions.js';
 
-export const TRACE_LAYERS = ['requirement', 'context', 'driver', 'decision', 'responsibility', 'component', 'need', 'capability', 'realization', 'contract', 'data', 'plan', 'placement', 'zone', 'control', 'threat', 'party', 'path'];
-// The model's object types each layer holds; a Chapter 1 record that is not a requirement is context.
-const LAYER_TYPES = Object.fromEntries(TRACE_LAYERS.filter(l => l !== 'context').map(l => [l, {driver: 'quality', realization: 'technology', plan: 'runtime', placement: 'instance'}[l] || l]));
-const TYPE_LAYER = Object.fromEntries(Object.entries(LAYER_TYPES).map(([layer, type]) => [type, layer]));
+export const BUILT_IN_LAYERS = 'requirement context driver decision responsibility component need capability realization contract data plan placement zone control threat party path'.split(' ');
+// The model's object type each layer holds; a Chapter 1 record that is not a requirement is context, which holds no
+// type of its own (0). The layers the design packages state ({layer: type}) follow the built-in ones, in the packages'
+// id order (rc44, slice S0: design-extensions.js); the tables below are rebuilt when a package registers.
+export const TRACE_LAYER_TYPES = Object.fromEntries(BUILT_IN_LAYERS.map(l => [l, {context: 0, driver: 'quality', realization: 'technology', plan: 'runtime', placement: 'instance'}[l] ?? l]));
+export let TRACE_LAYERS;
+let TYPE_LAYER, RANK, HOPS_INTO, NAMING;
 const chapterOne = o => !!o?.source?.startsWith('artefacts[');
 export const layerOf = o => !o ? null : chapterOne(o) && o.type !== 'requirement' ? 'context' : TYPE_LAYER[o.type] || null;
 // What a hop may bring onto a layer: a record of the layer's type; onto the context, any Chapter 1 record (a requirement
 // linked to the one traced is its context, not a second trail).
-const fits = (layer, o) => layer === 'context' ? chapterOne(o) : LAYER_TYPES[layer] === o?.type;
+const fits = (layer, o) => layer === 'context' ? chapterOne(o) : TYPE_LAYER[o?.type] === layer;
 const PROTECTED = 'component capability realization contract data';
 // A Chapter 4 connection between a responsibility and a journey step: kind serves or realises, whichever end it is drawn
 // from, or a structural (trace) connection drawn from the step, which reads as serving it (logical-domain.js LAYER_KINDS;
@@ -65,10 +69,20 @@ export const TRACE_HOPS = [
   hop('control', 'protects', PROTECTED, IN), hop('control', 'enforces', 'plan'),
   hop('threat', 'threatens', PROTECTED, IN), hop('threat', 'mitigates', 'control')
 ];
-const RANK = new Map(TRACE_LAYERS.map((l, i) => [l, i]));
-const HOPS_INTO = new Map(TRACE_LAYERS.map(l => [l, TRACE_HOPS.filter(h => h.layer === l)]));
-// The hop by which a requirement names a record of each layer (fulfils), for namedBy and namingRequirements.
-const NAMING = new Map(TRACE_LAYERS.map(l => [l, HOPS_INTO.get(l).find(h => h.types?.includes('fulfils'))]).filter(([, h]) => h));
+// A type stands on the first layer that holds it, so a package's layer never takes a built-in layer's records. A
+// built-in layer reads the built-in hops above and no other; a package's layer reads the hops the packages state
+// ({layer, types: [...], from: [...], dir: 'out' | 'in', ctx: whether it is context and not the own chain}), in the
+// packages' id order, so a package's hop never brings a record onto a built-in layer.
+extendTable(TRACE_LAYER_TYPES, e => e.layers, () => {
+  TRACE_LAYERS = Object.keys(TRACE_LAYER_TYPES);
+  TYPE_LAYER = Object.fromEntries(Object.entries(TRACE_LAYER_TYPES).reverse().map(([layer, type]) => [type, layer]));
+  RANK = new Map(TRACE_LAYERS.map((l, i) => [l, i]));
+  // A built-in layer is told by its name, not by its place: a name that sorts before these as a key of the table
+  // (a numeric one) would shift every place.
+  HOPS_INTO = new Map(TRACE_LAYERS.map(l => [l, (BUILT_IN_LAYERS.includes(l) ? TRACE_HOPS : EXTENSIONS.flatMap(e => e.hops || [])).filter(h => h.layer === l)]));
+  // The hop by which a requirement names a record of each layer (fulfils), for namedBy and namingRequirements.
+  NAMING = new Map(TRACE_LAYERS.map(l => [l, HOPS_INTO.get(l).find(h => h.types?.includes('fulfils'))]).filter(([, h]) => h));
+});
 
 // A plan is in scope while its environment lists its asset and the asset is a component or a realisation; a plan left
 // behind by a removed asset carries nothing (runtime-domain.js plans reads the same rule).
@@ -78,10 +92,15 @@ export const planInScope = (environment, plan, asset) => !!environment && Array.
 // position, the journey steps' connections to responsibilities, and the plans in scope.
 function kernelOf(p, upto = null) {
   return remember(p, 'trace-kernel', 'graph:' + (upto || ''), () => {
-    const G = recordGraph(p, upto), layer = new Map(), order = new Map();
+    const G = recordGraph(p, upto), layer = new Map(), order = new Map(), on = {context: 1};
     // Only a record of the document stands on a layer: the reference graph's illustrative nodes and declared context
     // objects ('model.context.*', record-graph.js) stay in the graph to resolve relations, never as recorded design.
-    let i = 0; for (const [id, o] of G.objects) { order.set(id, i++); const l = !o.source.startsWith('model.context.') && layerOf(o); if (l) layer.set(id, l); }
+    // `on` names the layers a record of the document stands on. A hop brings a record only onto the layer of its type,
+    // so the walk reads no hop of any other layer (rc44, slice S0: a package's hops cost a document without its
+    // records nothing). The context is always read: it takes any Chapter 1 record, a requirement too, which stands
+    // on the requirement layer. A Chapter 1 record stands on the context whatever its type, and a hop still brings it
+    // onto the layer of its type (fits), so that layer is named too.
+    let i = 0; for (const [id, o] of G.objects) { order.set(id, i++); const l = !o.source.startsWith('model.context.') && layerOf(o); if (l) on[l] = on[TYPE_LAYER[o.type]] = layer.set(id, l); }
     const steps = new Map(), stepped = new Map();
     for (const e of G.relationships) if (stepConnection(e)) for (const [a, b] of stepEnds(e)) {
       if (layer.get(b) !== 'responsibility' || G.objects.get(a)?.type === 'responsibility') continue;
@@ -90,7 +109,7 @@ function kernelOf(p, upto = null) {
       let ys = stepped.get(b); if (!ys) stepped.set(b, ys = []); ys.push({e, other: s});
     }
     const inScope = id => { const plan = G.objects.get(id)?.record; return planInScope(G.objects.get(plan?.environmentId)?.record, plan, ['component', 'realization'].includes(layer.get(plan?.assetId))); };
-    return {G, layer, order, steps, stepped, inScope, upto};
+    return {G, layer, order, steps, stepped, inScope, upto, on};
   });
 }
 const NONE = [];
@@ -127,7 +146,7 @@ function walk(K, seeds, until = null, spine = false) {
   // them: the driver scope walks once for every driver).
   for (let r = 0, last = until ? RANK.get(until) : TRACE_LAYERS.length - 1; r <= last; r++) {
     const layer = TRACE_LAYERS[r];
-    for (const hop of HOPS_INTO.get(layer)) if (!spine || !hop.ctx) for (const l of hop.from) for (const id of held[l] || NONE) eachEdge(K, id, hop, (e, other) => reach(layer, e, other, id));
+    if (K.on[layer]) for (const hop of HOPS_INTO.get(layer)) if (!spine || !hop.ctx) for (const l of hop.from) for (const id of held[l] || NONE) eachEdge(K, id, hop, (e, other) => reach(layer, e, other, id));
   }
   return {at, hops};
 }
@@ -147,9 +166,10 @@ function walkBack(K, id) {
   return {at, hops};
 }
 function traceOf(K, start, at, hops) {
-  const layers = Object.fromEntries(TRACE_LAYERS.map(l => [l, []]));
-  for (const [id, l] of at) layers[l].push(id);
-  for (const l of TRACE_LAYERS) if (layers[l].length > 1) layers[l].sort((a, b) => K.order.get(a) - K.order.get(b));
+  // Every built-in layer, and a package's layer only when it holds a record (a trail without one reads as it did).
+  const layers = Object.fromEntries(BUILT_IN_LAYERS.map(l => [l, []]));
+  for (const [id, l] of at) (layers[l] ||= []).push(id);
+  for (const l in layers) if (layers[l].length > 1) layers[l].sort((a, b) => K.order.get(a) - K.order.get(b));
   let ids = null;
   return {start, layers, hops, get ids() { return ids ??= new Set(at.keys()); }, layerOf: id => at.get(id) || null, has: id => at.has(id), record: id => K.G.objects.get(id) || null};
 }

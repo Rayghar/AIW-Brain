@@ -19,6 +19,20 @@ const init=p=>p.knowledge||=(copy(knowledgeState(p)));
 const next=(s,prefix)=>prefix+'-'+String(++s.counter).padStart(4,'0');
 export const catalogueRecord=id=>catalogue().records.find(r=>r.id===id);
 export const knowledgeStamp=p=>digest(knowledgeState(p));
+// What a project's knowledge may hold, and what a knowledge library's may (rc44, wp1; knowledge.library marks one): its
+// sources, claims, concepts and topics, and the lines of its history, which is never trimmed. A project's bounds are those
+// of rc.10.73.42. A library holds one tranche of a handbook: sixty concepts of nine forms cost 1,383 commands to import,
+// review and release, and a correction round of every concept 242 more (rc44-wp1-cases-forms.mjs, S1.25). The 30
+// releases and the 8,000,000 characters are the same in both, and the characters bind first: eligibility never reads
+// the tier. Every knowledge command reads the tier of the project it is applied to, whoever calls it.
+// A library holds one tranche (ruling E3 of 2026-11-18), so its concept bound is 60: each concept with its first
+// release costs about 100,000 characters and each successor release of the tranche about 47,000 more, so sixty
+// pattern-sized concepts fit with two correction rounds and a bound of 300 could never be reached. The next tranche
+// goes into another library, and the refusals at the concept bound and at the character bound say so.
+// (A plain literal on purpose: the client reads no tier, and its bundle drops a literal nothing reads but keeps a call.
+// The module the command route loads, knowledge-concept-commands.js, freezes it.)
+export const KNOWLEDGE_LIMIT_TIERS={project:{sources:100,claims:250,concepts:100,topics:100,history:2000},library:{sources:300,claims:1000,concepts:60,topics:300,history:6000}};
+export const knowledgeLimits=p=>KNOWLEDGE_LIMIT_TIERS[knowledgeState(p).library?.enabled===true?'library':'project'];
 export function withdrawn(p,refs){return knowledgeState(p).withdrawals.filter(w=>refs.includes(w.targetId));}
 // ---------------------------------------------------------------- organisation knowledge releases (round 12, GR-DOM-09)
 // A project release whose every claim a second person verified can be published once to an organisation
@@ -64,9 +78,13 @@ export function knowledgeEligibility(p,claim,release=null){
  if(release&&(!s.pins.includes(release.id)||release.checksum!==(org?organizationReleaseChecksum(release):digest({...release,checksum:undefined}))))reasons.push('This exact release is not active for the project.');
  return {eligible:reasons.length===0,reasons};
 }
-// The project's pinned releases and the organisation releases pinned to it, each claim with its eligibility.
+// The project's pinned releases and the organisation releases pinned to it, each claim with its eligibility. A release
+// that holds a claim carrying a form (rc44, wp1) is not among them in any state: forms are released apart from plain
+// claims and only the concept readers read them (knowledge-concepts.js); a design record relies on one through an
+// active concept pin, never as a released claim. Every reader of released claims is handed the release too, so the
+// whole release is left out, not only its form claims.
 export function releasedClaims(p){
- const s=knowledgeState(p);return [...s.releases,...list(s.organizationReleases)].filter(r=>s.pins.includes(r.id)).flatMap(r=>r.claims.map(c=>({claim:c,release:r,...knowledgeEligibility(p,c,r)})));
+ const s=knowledgeState(p);return [...s.releases,...list(s.organizationReleases)].filter(r=>s.pins.includes(r.id)&&!r.claims.some(c=>c.form)).flatMap(r=>r.claims.map(c=>({claim:c,release:r,...knowledgeEligibility(p,c,r)})));
 }
 export function claimReceipt(p,claim,release){const source=sourceFor(knowledgeState(p),claim,release);return {kind:'governed-claim',claimId:claim.id,releaseId:release.id,releaseHash:release.checksum,claimHash:digest(claim),statement:claim.statement,subjectId:claim.subjectId,sourceId:source.id,sourceHash:source.hash,repository:source.repository,revision:source.revision,path:source.path,lineStart:claim.lineStart,lineEnd:claim.lineEnd,excerptHash:claim.excerptHash,conditions:copy(claim.conditions),limitations:copy(claim.limitations),...(Object.hasOwn(claim,'architectureUnit')?{architectureUnit:copy(claim.architectureUnit)}:{}),review:copy(claim.review),...(isOrganization(release)?{organizationId:release.organizationId,organizationSignature:release.signature}:{}),scoring:false};}
 export function claimReceiptCurrent(p,r){const hit=releasedClaims(p).find(x=>x.release.id===r?.releaseId&&x.claim.id===r?.claimId);return !!hit&&hit.eligible&&digest(hit.claim)===r.claimHash&&hit.release.checksum===r.releaseHash;}
@@ -79,7 +97,7 @@ export function pinOrganizationKnowledge(input,release,{at=new Date().toISOStrin
  const L=ORGANIZATION_KNOWLEDGE_LIMITS;if(release.claims.length>L.claims||release.sources.length>L.sources||JSON.stringify(orgContent(release)).length>L.characters)throw Error('This organisation release is larger than a project can pin ('+L.claims+' claims, '+L.sources+' sources).');
  if(release.checksum!==organizationReleaseChecksum(release))throw Error('The organisation release does not match its checksum.');
  if(!text(reason))throw Error('Say why the project uses this organisation release.');
- const p=copy(input),s=init(p);if(s.history.length>=2000)throw Error('Export the knowledge history before extending this project further.');
+ const p=copy(input),s=init(p);if(s.history.length>=knowledgeLimits(p).history)throw Error('Export the knowledge history before extending this project further.');
  s.organizationReleases=[...list(s.organizationReleases).filter(r=>r.id!==release.id),{...copy(orgContent(release)),checksum:release.checksum,signature:release.signature,assurance:{eligible:true,status:'Verified signed release',signature:release.signature},pinnedAt:at,pinnedBy:actor}];
  if(!s.pins.includes(release.id))s.pins=[...s.pins,release.id];
  s.version++;s.history.push({at,actor,type:'knowledge.organization-pin',id:release.id,reason:text(reason),reviewer:text(reviewer,180)});
@@ -113,13 +131,45 @@ export function knowledgeImpact(p,targetId){
 }
 export const knowledgeImpactStamp=(p,targetId)=>digest([knowledgeStamp(p),targetId,knowledgeImpact(p,targetId)]);
 export function methodKnowledgeCurrent(p,receipt){return !withdrawn(p,['SA-PLAYBOOK',BRAIN_PLAYBOOK.id,receipt?.packId,...list(receipt?.sources?.references).map(r=>r.id)]).length;}
-function claimRecord(s,src,r,start,end,excerpt,at,actor){
- const type=['definition','applicability','benefit','tradeoff','prerequisite','obligation','risk','anti-pattern-signal','mitigation','component-attribute','relationship'].includes(r.claimType)?r.claimType:null;if(!type)throw Error('Choose a supported claim type.');
- return {id:next(s,'KC'),subjectId:required(r.subjectId,'a concept identifier',180),predicate:required(r.predicate,'the relationship being claimed',180),statement:required(r.statement,'the interpretation'),claimType:type,polarity:['supports','limits','requires','prohibits','neutral'].includes(r.polarity)?r.polarity:'neutral',conditions:lines(r.conditions),limitations:lines(r.limitations),tags:lines(r.tags),...(Object.hasOwn(r,'architectureUnit')?{architectureUnit:architectureUnitRecord(r.architectureUnit)}:{}),sourceId:src.id,sourceHash:src.hash,lineStart:start,lineEnd:end,excerpt,excerptHash:sha256(excerpt),createdAt:at,actor};
+// A claim may carry one typed form of its passage (rc44, wp1: concept-form.js). Forms are written, reviewed and released
+// only by the entry that holds the form capability (knowledge-concept-commands.js applyConceptCommand, which the command
+// route calls): it checks the concept, each item's lines and quote, and who may review and release. Every other caller
+// of applyKnowledgeCommand passes none, so a claim sent with a form is refused there, never stored without it.
+const FORM_ENTRY='A knowledge form is saved, reviewed and released through the concept register, which checks each item against its passage. This entry handles no form.';
+function claimRecord(s,src,r,start,end,excerpt,at,actor,forms=null){
+ if(r.form!==undefined&&!forms)throw Error(FORM_ENTRY);
+ const f=r.form!==undefined?forms.claim(s,r,{excerpt,lineStart:start}):null;
+ const type=f?f.claimType:['definition','applicability','benefit','tradeoff','prerequisite','obligation','risk','anti-pattern-signal','mitigation','component-attribute','relationship'].includes(r.claimType)?r.claimType:null;if(!type)throw Error('Choose a supported claim type.');
+ return {id:next(s,'KC'),subjectId:required(r.subjectId,'a concept identifier',180),predicate:required(r.predicate,'the relationship being claimed',180),statement:required(r.statement,'the interpretation'),claimType:type,polarity:['supports','limits','requires','prohibits','neutral'].includes(r.polarity)?r.polarity:'neutral',conditions:lines(r.conditions),limitations:lines(r.limitations),tags:lines(r.tags),...(Object.hasOwn(r,'architectureUnit')?{architectureUnit:architectureUnitRecord(r.architectureUnit)}:{}),...(f?{form:f.form,authoredAs:f.authoredAs}:{}),sourceId:src.id,sourceHash:src.hash,lineStart:start,lineEnd:end,excerpt,excerptHash:sha256(excerpt),createdAt:at,actor};
 }
-function flagOverlaps(s,c,at){
+// A contradiction with a claim that carries a form (rc44, wp1) makes the review of that form's concept lapse until a
+// person resolves it. So it is opened only through the entry that holds the form capability, which asks who may: on a
+// concept that is reviewed or in a release, a signed-in person (rulings B3 and B9 of 2026-11-18). An entry that holds
+// none opens no contradiction with a form. Two plain claims contradict each other as before.
+function flagOverlaps(s,c,at,forms=null){
  const overlaps=s.claims.filter(x=>x.id!==c.id&&x.subjectId===c.subjectId&&x.predicate===c.predicate&&x.polarity!==c.polarity&&[x.polarity,c.polarity].some(v=>v==='prohibits'||v==='limits'));
+ const held=overlaps.filter(x=>x.form);
+ if(held.length){if(!forms)throw Error('This claim contradicts the knowledge form '+held[0].id+': a contradiction with a form is recorded through the concept register, which asks who may record it. This entry handles no form.');forms.opposes(s,c,held);}
  for(const other of overlaps)s.contradictions.push({id:next(s,'KX'),claimIds:[other.id,c.id],status:'open',explanation:'Different polarities for the same subject and predicate. Compare applicability contexts before using either claim.',at});
+}
+// What a command would do to something a claim that carries a form rests on (rc44, wp1; ruling E1 of 2026-11-18): a
+// source of another text that supersedes the form's source; a withdrawal of the claim, of its source or of a release
+// that holds it; a disposition of a contradiction that names it; the activation or deactivation of a release that holds
+// it, and the activation of a release recorded as the successor of an active one that does. Each makes the form
+// ineligible, or changes what an active release offers of it, so each is the form capability's to allow, which asks who
+// sends it. An entry that holds none does none of them. A command that touches no form is not read here.
+function formsRestingOn(s,type,r){
+ const held=x=>list(x?.claims).filter(c=>c?.form),hit=(claims,what,more={})=>claims.map(claim=>({claim,what:what(claim),...more})),release=id=>s.releases.find(x=>x.id===id);
+ switch(type){
+ case 'knowledge.source':{const prior=r.supersedes?s.sources.find(x=>x.id===r.supersedes):null;return prior&&typeof r.body==='string'&&sha256(r.body)!==prior.hash?hit(s.claims.filter(c=>c.form&&c.sourceId===prior.id),c=>'a source that supersedes '+prior.id+', which '+c.id+', a form of it, rests on'):[];}
+ case 'knowledge.withdraw':return [...hit(s.claims.filter(c=>c.form&&c.id===r.id),c=>'the withdrawal of '+c.id+', a form of it'),...hit(s.claims.filter(c=>c.form&&c.sourceId===r.id),c=>'the withdrawal of '+r.id+', which '+c.id+', a form of it, rests on'),
+  ...[...s.releases,...list(s.organizationReleases)].filter(x=>x.id===r.id).flatMap(x=>hit(held(x),c=>'the withdrawal of '+x.id+', a release that holds '+c.id+', a form of it')),
+  ...list(s.organizationReleases).flatMap(o=>hit(held(o).filter(c=>[organizationRef(o,c.id),organizationRef(o,c.sourceId)].includes(r.id)),c=>'the withdrawal of '+r.id+', which '+c.id+', a form of it, rests on'))];
+ case 'knowledge.contradiction':{const x=s.contradictions.find(c=>c.id===r.id);return x?hit(s.claims.filter(c=>c.form&&x.claimIds.includes(c.id)),c=>'the disposition of '+x.id+', which names '+c.id+', a form of it',{contradiction:x.id}):[];}
+ case 'knowledge.deactivate':return hit(held([...s.releases,...list(s.organizationReleases)].find(x=>x.id===r.id)),c=>'the active release of '+c.id+', a form of it');
+ case 'knowledge.activate':{const x=release(r.id);return hit([...held(x),...(x&&s.pins.includes(x.supersedes)?held(release(x.supersedes)):[])],c=>'the active release of '+c.id+', a form of it');}
+ default:return [];
+ }
 }
 // What the stewards may decide about an item in their queue (knowledge-stewardship.js).
 export const STEWARD_DECISIONS={captured:'Captured as project knowledge',holds:'The knowledge and the design stand',revisit:'Revisit the record',withdrawn:'Withdrew what the advice rested on'};
@@ -129,24 +179,48 @@ export function dismissalSourceBody(sa,subject=''){
  return [`Architect's disagreement with Sol's advice · ${one(sa.id)}`,`Concerning: ${one(subject||sa.title)} (Chapter ${one(sa.chapter)})`,`Sol advised: ${one(sa.headline)}`,`The architect disagreed: ${one(sa.reason)}`,`Recorded ${one(sa.at).slice(0,10)} · Sol ${one(sa.model)} · run ${one(sa.runId)}`,`Sol's advice rested on: ${list(sa.sources).map(x=>one(x.title)).join('; ')||'the design’s own readings'}`].join('\n');
 }
 function assertReview(raw){if(raw.reviewed!==true||!text(raw.reason)||!text(raw.reviewer,180))throw Error('Review the exact change and record the reviewer and rationale.');}
+// What a source may also state (rc44, wp1): the day it was last checked and the day it is due again, the product or
+// edition scope it speaks for, and the file it was rendered from (file SHA-256 -> rendition SHA-256 -> these lines of the
+// rendition). Each key exists only when it was sent. `origin` keeps its meaning: how the source was acquired.
+function sourceExtras(raw){
+ const out={},hex=v=>typeof v==='string'&&/^[0-9a-f]{64}$/.test(v),day=v=>typeof v==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(v)&&!Number.isNaN(Date.parse(v+'T00:00:00Z'));
+ for(const k of ['checkedAt','reviewDue'])if(raw[k]!==undefined){if(!day(raw[k]))throw Error('Record '+k+' as a date (YYYY-MM-DD).');out[k]=raw[k];}
+ if(raw.versionScope!==undefined){if(!text(raw.versionScope)||raw.versionScope.trim().length>240)throw Error('Record the version scope in at most 240 characters.');out.versionScope=raw.versionScope.trim();}
+ if(raw.sourceFile!==undefined){
+  const f=raw.sourceFile;if(!f||typeof f!=='object'||Array.isArray(f))throw Error('Record the source file as an object (file, fileSha256, rendition, renditionSha256, lineStart, lineEnd, topicId).');
+  for(const k of Object.keys(f))if(!['file','fileSha256','rendition','renditionSha256','lineStart','lineEnd','topicId'].includes(k))throw Error('The source file has an unsupported field: '+k+'.');
+  if(!hex(f.fileSha256)||!hex(f.renditionSha256))throw Error('Record the SHA-256 of the file and of its rendition (64 hexadecimal characters each).');
+  if(!Number.isInteger(f.lineStart)||!Number.isInteger(f.lineEnd)||f.lineStart<1||f.lineEnd<f.lineStart)throw Error('Record the lines of the rendition this source holds.');
+  out.sourceFile={file:required(f.file,'the source file name',240),fileSha256:f.fileSha256,rendition:required(f.rendition,'the rendition file name',240),renditionSha256:f.renditionSha256,lineStart:f.lineStart,lineEnd:f.lineEnd,topicId:required(f.topicId,'the topic identifier',80)};
+ }
+ return out;
+}
 function sourceInput(raw,at,actor,id){
  const body=typeof raw.body==='string'?raw.body:'';if(!body.trim())throw Error('Record the original source text.');if(String(raw.body).length>60000)throw Error('Use a focused source file of at most 60,000 characters.');
  const url=text(raw.url,1000);if(url&&!/^https:\/\/[^\s]+$/.test(url))throw Error('Use an HTTPS source URL.');
- return {id,title:required(raw.title,'a source title',180),body,hash:sha256(body),url,repository:text(raw.repository,160),revision:required(raw.revision,'the source revision or retrieval date',100),path:required(raw.path,'a file path or document locator',500),license:text(raw.license,500),origin:'recorded-original',acquiredAt:at,actor};
+ return {id,title:required(raw.title,'a source title',180),body,hash:sha256(body),url,repository:text(raw.repository,160),revision:required(raw.revision,'the source revision or retrieval date',100),path:required(raw.path,'a file path or document locator',500),license:text(raw.license,500),origin:'recorded-original',acquiredAt:at,actor,...sourceExtras(raw)};
 }
-export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),actor='local-review'){
- const p=copy(input),s=init(p),r=command.payload||{};let selected='';
- if(s.history.length>=2000)throw Error('Export the knowledge history before extending this project further.');
+// The fifth argument is what the command route's wrapper injects (rc44, wp1): `forms`, the form capability (above; it
+// also handles the concept register's own command types). Without it no form is handled. The bounds are those of the
+// project's own tier (KNOWLEDGE_LIMIT_TIERS), read from the document, so every caller is held to the same ones: the
+// wrapper, repository fetch and transfer, repository sync and the import scripts; `limits` states them explicitly, and
+// a bound it does not name as a whole number is the tier's (ruling G6 of 2026-11-18): no caller is left without one.
+export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),actor='local-review',{forms=null,limits=null}={}){
+ const p=copy(input),s=init(p),r=command.payload||{},tier=knowledgeLimits(p),L=limits?Object.fromEntries(Object.keys(tier).map(k=>[k,Number.isInteger(limits[k])?limits[k]:tier[k]])):tier;let selected='';
+ if(s.history.length>=L.history)throw Error('Export the knowledge history before extending this project further.');
+ // What a form rests on is superseded, withdrawn, disposed of, activated or deactivated through the form capability only.
+ const rests=formsRestingOn(s,command.type,r);
+ if(rests.length){if(!forms)throw Error('This request supersedes, withdraws, disposes of or changes the release of what the knowledge form '+rests[0].claim.id+' rests on: that is recorded through the concept register, which asks who may record it. This entry handles no form.');forms.rests(p,rests);}
  switch(command.type){
  case 'knowledge.project-source':{
   const original=list(p.coauthoring?.sources).find(x=>x.id===r.sourceId),v=original?.versions?.at(-1);if(!v)throw Error('Choose a saved project source.');
   const existing=s.sources.find(x=>x.projectSource?.id===original.id&&x.projectSource?.revision===v.revision);if(existing)return {document:p,selected:existing.id};
-  if(s.sources.length>=100)throw Error('This project has reached its source revision limit.');
+  if(s.sources.length>=L.sources)throw Error('This project has reached its source revision limit.');
   const source=sourceInput({title:v.title,body:v.excerpt||v.text||v.content,path:v.location||'Project source '+original.id,revision:String(v.revision),license:'Project source; review permitted use and interpretation.'},at,actor,next(s,'KS'));
   source.origin='project-source';source.projectSource={id:original.id,revision:v.revision};s.sources.push(source);selected=source.id;break;
  }
  case 'knowledge.source':{
-  if(s.sources.length>=100)throw Error('This project has reached its source revision limit.');
+  if(s.sources.length>=L.sources)throw Error('This project has reached its source revision limit.');
   const src=sourceInput(r,at,actor,next(s,'KS'));if(r.supersedes&&!s.sources.some(x=>x.id===r.supersedes))throw Error('Choose an existing source revision.');if(r.supersedes)src.supersedes=r.supersedes;s.sources.push(src);selected=src.id;break;
  }
  case 'knowledge.suggest':{
@@ -162,17 +236,17 @@ export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),
   suggestion.status='dismissed';suggestion.dismissedAt=at;suggestion.dismissedBy=actor;selected=suggestion.id;break;
  }
  case 'knowledge.claim':{
-  if(s.claims.length>=250)throw Error('This project has reached its claim limit.');
+  if(s.claims.length>=L.claims)throw Error('This project has reached its claim limit.');
   const src=s.sources.find(x=>x.id===r.sourceId);if(!src)throw Error('Choose a saved source revision.');
   const suggestion=r.suggestionId?(s.suggestions||[]).find(x=>x.id===r.suggestionId):null;
   if(r.suggestionId&&(!suggestion||suggestion.status!=='open'||suggestion.sourceId!==src.id||!passageIsCurrent(src,suggestion)))throw Error('The suggested passage has changed or was already handled. Reopen the exact source.');
   const start=Number(r.lineStart),end=Number(r.lineEnd),body=src.body.split('\n');if(!Number.isInteger(start)||!Number.isInteger(end)||start<1||end<start||end>body.length||end-start>100)throw Error('Choose a valid passage of at most 101 lines.');
   const excerpt=body.slice(start-1,end).join('\n');if(!excerpt.trim()||excerpt.length>12000)throw Error('Choose a focused, non-empty source passage.');
-  const c=claimRecord(s,src,r,start,end,excerpt,at,actor);
+  const c=claimRecord(s,src,r,start,end,excerpt,at,actor,forms);
   if((c.claimType!=='definition'||c.architectureUnit)&&(!c.conditions.length||!c.limitations.length))throw Error('Record applicability conditions and limitations for this architectural claim.');
   s.claims.push(c);selected=c.id;
   if(suggestion){suggestion.status='interpreted';suggestion.claimId=c.id;suggestion.interpretedAt=at;}
-  flagOverlaps(s,c,at);break;
+  flagOverlaps(s,c,at,forms);break;
  }
  // Stewardship: an architect's disagreement with Sol becomes an original source — the project's own
  // record of it — and a candidate claim, which then takes the ordinary review, release, activation
@@ -182,12 +256,12 @@ export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),
   if(!sa||sa.outcome!=='dismissed')throw Error('Choose a disagreement with Sol’s advice.');
   s.stewardship||=[];const key='dismissal:'+sa.id;
   if(s.stewardship.some(d=>d.key===key))throw Error('A steward has already handled this disagreement.');
-  if(s.sources.length>=100||s.claims.length>=250)throw Error('This project has reached its knowledge limit.');
+  if(s.sources.length>=L.sources||s.claims.length>=L.claims)throw Error('This project has reached its knowledge limit.');
   const subject=text(r.subject,300),body=dismissalSourceBody(sa,subject);
   const src={id:next(s,'KS'),title:('Disagreement with Sol · '+sa.id+' · '+(subject||sa.title)).slice(0,180),body,hash:sha256(body),url:'',repository:'',revision:String(sa.at||at).slice(0,10),path:'Sol assessment '+sa.id,license:'Project record: the architect’s own statement.',origin:'architect-dismissal',assessmentId:sa.id,acquiredAt:at,actor};
   const c=claimRecord(s,src,{...r,claimType:r.claimType||'applicability',polarity:r.polarity||'limits',predicate:r.predicate||'limits-advice'},4,4,body.split('\n')[3],at,actor);
   if(!c.conditions.length||!c.limitations.length)throw Error('Record where this knowledge applies and its limits.');
-  s.sources.push(src);s.claims.push(c);flagOverlaps(s,c,at);
+  s.sources.push(src);s.claims.push(c);flagOverlaps(s,c,at,forms);
   s.stewardship.push({id:next(s,'KD'),key,assessmentId:sa.id,decision:'captured',claimId:c.id,sourceId:src.id,objectId:text(r.objectId,100),at,actor,reviewer:text(r.reviewer,180),reason:text(r.reason)});selected=c.id;break;
  }
  case 'knowledge.steward':{
@@ -200,11 +274,12 @@ export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),
  case 'knowledge.review':{
   assertReview(r);const c=s.claims.find(x=>x.id===r.id);if(!c)throw Error('Choose a candidate claim.');if(s.releases.some(x=>x.claims.some(x=>x.id===c.id)))throw Error('Published reviews are immutable. Withdraw the claim or prepare a successor.');
   if(!['verified','rejected','disputed'].includes(r.decision))throw Error('Record a review outcome.');
+  if(c.form){if(!forms)throw Error(FORM_ENTRY);forms.review(p,c,r,actor);}
   if(r.decision==='verified'&&c.actor===actor)throw Error('You wrote this claim. Another authenticated person must verify it.');
   if(r.decision==='verified'&&c.architectureUnit&&!text(s.sources.find(src=>src.id===c.sourceId)?.license,4000))throw Error('Record the source permission / use note before verifying structured architecture guidance.');
   if(r.decision==='verified'&&(!r.sourceChecked||!r.rightsChecked||!r.conditionsChecked))throw Error('Review the original passage, permitted use and applicability conditions.');
   if(r.decision==='verified'&&s.contradictions.some(x=>x.status==='open'&&x.claimIds.includes(c.id)))throw Error('Resolve the possible contradiction before verifying this claim.');
-  c.review={decision:r.decision,reviewer:text(r.reviewer,180),actor,at,reason:text(r.reason),sourceChecked:r.sourceChecked===true,rightsChecked:r.rightsChecked===true,conditionsChecked:r.conditionsChecked===true,claimHash:digest({...c,review:undefined})};selected=c.id;break;
+  c.review={decision:r.decision,reviewer:text(r.reviewer,180),actor,at,reason:text(r.reason),sourceChecked:r.sourceChecked===true,rightsChecked:r.rightsChecked===true,conditionsChecked:r.conditionsChecked===true,...(c.form?{formChecked:r.formChecked===true}:{}),claimHash:digest({...c,review:undefined})};selected=c.id;break;
  }
  case 'knowledge.contradiction':{
   assertReview(r);const c=s.contradictions.find(x=>x.id===r.id);if(!c)throw Error('Choose a recorded contradiction.');if(!['context-separated','resolved','open'].includes(r.status))throw Error('Choose a contradiction disposition.');
@@ -215,6 +290,7 @@ export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),
  case 'knowledge.release':{
   assertReview(r);const ids=[...new Set(list(r.claimIds))],claims=ids.map(id=>s.claims.find(c=>c.id===id));if(!ids.length||claims.some(c=>!c))throw Error('Choose the exact reviewed claims to release.');
   for(const c of claims){const check=knowledgeEligibility(p,c);if(!check.eligible)throw Error(c.id+': '+check.reasons.join(' '));}
+  if(claims.some(c=>c.form)){if(!forms)throw Error(FORM_ENTRY);forms.release(p,claims,r,actor);}
   if(s.releases.length>=30)throw Error('This project has reached its release limit.');
   const release={id:next(s,'KR'),title:required(r.title,'a release title',180),claims:copy(claims),sourceIds:[...new Set(claims.map(c=>c.sourceId))],createdAt:at,actor,reviewer:text(r.reviewer,180),reason:text(r.reason),supersedes:r.supersedes||null,authority:'Project-reviewed conditional guidance; no scoring or automatic model mutation'};
   if(release.supersedes&&!s.releases.some(x=>x.id===release.supersedes))throw Error('Choose the previous release.');
@@ -244,10 +320,14 @@ export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),
   const objectId=required(r.objectId,'the model object',100);if(s.links.some(x=>x.status!=='retired'&&x.objectId===objectId&&x.receipt.claimId===hit.claim.id&&x.receipt.releaseId===hit.release.id))throw Error('This claim is already linked to the object.');
   const link={id:next(s,'KL'),objectId,relationship:'informs',reason:text(r.reason),reviewer:text(r.reviewer,180),actor,at,receipt:claimReceipt(p,hit.claim,hit.release)};s.links.push(link);selected=link.id;break;
  }
- default:throw Error('Choose a supported knowledge action.');
+ // The concept register's own command types (rc44, wp1) are the form capability's: one entry, one history line, one
+ // storage bound for every knowledge.* command.
+ // An upsert that changes nothing writes nothing (as knowledge.project-source above): no history line, no new version.
+ default:{const done=forms?forms.command({p,s,r,type:command.type,at,actor,next:prefix=>next(s,prefix)}):undefined;if(done===undefined)throw Error('Choose a supported knowledge action.');if(done?.unchanged)return {document:p,selected:done.selected};selected=done;}
  }
  // The pinned organisation releases count against their own limit, not the project's (GR-DOM-09).
- const {organizationReleases:_pinned,...own}=s;if(JSON.stringify(own).length>8000000)throw Error('This project knowledge collection has reached its storage limit. Export it before extending it.');
+ // A knowledge library is told what to do at the bound (ruling E3): it holds one tranche, and the next goes into another.
+ const {organizationReleases:_pinned,...own}=s;if(JSON.stringify(own).length>8000000)throw Error(s.library?.enabled===true?'This knowledge library has reached its storage limit (8,000,000 characters): start another library for the next tranche.':'This project knowledge collection has reached its storage limit. Export it before extending it.');
  s.version++;s.history.push({at,actor,type:command.type,id:selected,reason:text(r.reason),reviewer:text(r.reviewer,180)});return {document:p,selected};
 }
 export function knowledgeFindings(p){const s=knowledgeState(p);return s.links.filter(l=>l.status!=='retired'&&!claimReceiptCurrent(p,l.receipt)).map(l=>({id:'knowledge:'+l.id,chapter:11,chapterTitle:'Knowledge support',objectId:l.objectId,level:'warning',title:'Review changed architectural support',detail:l.receipt.claimId+' no longer has eligible support in the active project release. The original rationale is retained.'}));}

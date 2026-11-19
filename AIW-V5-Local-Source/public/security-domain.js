@@ -110,7 +110,7 @@ function saveControl(p,raw,at){const m=p.security,old=raw.id?control(p,raw.id):n
 function requireReview(raw){if(raw.reviewed!==true||!txt(raw.reviewer)||!txt(raw.reference)||!txt(raw.observations))throw Error('Provide a reviewer, evidence reference, observations, and explicit confirmation.');}
 function clearReview(m){m.review=null;m.handoff=null;}
 // The chapter's checks, worked out once per settled document or pass (each caller gets its own copies).
-export function securityFindings(p){return memoPass(p,()=>sharedList(p,'security:findings',()=>securityFindingsOf(p)));}
+export function securityFindings(p){return memoPass(p,()=>sharedList(p,9,()=>securityFindingsOf(p)));}
 function securityFindingsOf(p){const m=p.security,fs=[],add=(code,r,title,detail,level='error',extra={})=>fs.push({id:code+':'+(r.id||r),objectId:r.id||r,code,title,detail,level,...extra});
  if(!securityIntakeCurrent(p))add('intake','project','Review inherited protection obligations','Review contracts, classified data, trust boundaries, and the Chapter 8 handoff.','warning');
  for(const c of m.controls){

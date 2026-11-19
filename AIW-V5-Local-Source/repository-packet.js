@@ -1,5 +1,6 @@
 import {BRAIN_CATALOGUE} from './public/brain-catalogue.js';
 import {sha256} from './public/brain-integrity.js';
+import {KNOWLEDGE_LIMIT_TIERS,knowledgeLimits} from './public/knowledge-governance.js';
 const VERSION='aiw-repository-packet-v1';
 const object=x=>x&&typeof x==='object'&&!Array.isArray(x);
 const fail=message=>{throw Error('Repository packet: '+message);};
@@ -19,7 +20,8 @@ export function prepareRepositoryPacket(project,packet,{tenantId,projectId}){
  if(packet.schemaVersion!==VERSION||packet.tenantId!==tenantId||packet.projectId!==projectId)fail('version or authenticated scope mismatch');
  if(packet.authority!=='candidate'||packet.productionAccepted!==false)fail('candidate authority required');
  if(!Number.isSafeInteger(packet.fromCursor)||packet.fromCursor<0||!Number.isSafeInteger(packet.cursor)||packet.cursor<packet.fromCursor)fail('invalid cursor');
- if(!bounded(packet.sources,100)||!bounded(packet.claims,250)||!bounded(packet.notices,500))fail('project bounds');
+ // A packet names at most what a project holds; what is left to this project is read from its own tier (a knowledge library's is larger).
+ if(!bounded(packet.sources,KNOWLEDGE_LIMIT_TIERS.project.sources)||!bounded(packet.claims,KNOWLEDGE_LIMIT_TIERS.project.claims)||!bounded(packet.notices,500))fail('project bounds');
  keys(packet.release,['status','reason']);if(packet.release.status!=='blocked'||!str(packet.release.reason,1000))fail('release must remain blocked');
  const seen=new Set(),passages=new Map(),sources=new Map(),locators=[],candidates=[];
  for(const s of packet.sources){
@@ -63,7 +65,7 @@ export function prepareRepositoryPacket(project,packet,{tenantId,projectId}){
   last=n.cursor;
  }
  if(last!==packet.cursor)fail('incomplete notice range');
- const remainingSources=100-(project.knowledge?.sources?.length||0),remainingClaims=250-(project.knowledge?.claims?.length||0);
+ const limits=knowledgeLimits(project),remainingSources=limits.sources-(project.knowledge?.sources?.length||0),remainingClaims=limits.claims-(project.knowledge?.claims?.length||0);
  return {schemaVersion:VERSION,storeId:packet.storeId,scope:{tenantId,projectId},cursor:packet.cursor,readOnly:true,authority:'discovery-only',productionAccepted:false,
   locators,candidates,counts:{sources:packet.sources.length,candidates:packet.claims.length},capacity:{remainingSources,remainingClaims},
   notices:packet.notices,activation:{allowed:false,reason:'An unsigned metadata packet cannot activate claims. Retrieve exact originals, interpret and independently review their passages, then use the existing trusted signed-release path. Candidate cues remain discovery only.'}};

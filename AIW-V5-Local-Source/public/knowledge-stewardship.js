@@ -129,7 +129,8 @@ export function stewardshipReading(p, id) {
   const s = knowledgeState(p), objectId = assessmentObject(p, sa.itemId), t = objectId ? findRecord(p, objectId) : null;
   let now = null;
   try { const x = chapterIdOf(t) ? chapterReading(p, chapterIdOf(t)) : null; now = x ? fitReading(x.reading, 1400) : null; } catch { now = null; }
-  const onRecord = s.claims.filter(c => (t && c.subjectId === String(t.record.ref || t.record.id)) || s.links.some(l => l.status !== 'retired' && l.objectId === objectId && l.receipt?.claimId === c.id))
+  // A claim that carries a form is the concept readers' alone (rc44, wp1): this lists the plain claims on the record.
+  const onRecord = s.claims.filter(c => !c.form && ((t && c.subjectId === String(t.record.ref || t.record.id)) || s.links.some(l => l.status !== 'retired' && l.objectId === objectId && l.receipt?.claimId === c.id)))
     .map(c => { const d = list(s.stewardship).find(x => x.claimId === c.id); return `${c.id} (${d ? captureTrail(p, d, objectId).stage : c.review?.decision || 'candidate'}): ${clip(c.statement, 220)}`; });
   const earlier = A.filter(x => x.id !== sa.id && x.outcome === 'dismissed' && assessmentObject(p, x.itemId) === objectId).map(x => `${x.id}: ${clip(x.reason, 200)}`).slice(0, 4);
   const reading = {
