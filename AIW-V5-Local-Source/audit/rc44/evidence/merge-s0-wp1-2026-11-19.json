@@ -1,0 +1,1311 @@
+{
+ "schema": "aiw.rc44.merge-evidence.v1",
+ "release": "AIW v0.10.0-rc.10.73.44 (working number, not confirmed by the owner)",
+ "date": "2026-11-19",
+ "what": "Merge of the shared registration slice (S0) and knowledge forms (wp1 S1) into the development line",
+ "mergeCommit": "662bad0f814e9d48a0c5b3b9545b007fc50e4944",
+ "slices": [
+  {
+   "id": "s0-extensions",
+   "branch": "rc44/s0-lead-f",
+   "head": "477df17",
+   "suite": "rc44-s0-extensions-validate.mjs",
+   "result": "22 checks passed on the merged tree"
+  },
+  {
+   "id": "wp1-s1-forms",
+   "branch": "rc44/wp1-s1-forms-fix-c3",
+   "head": "d70d643",
+   "suite": "rc44-wp1-knowledge-validate.mjs",
+   "result": "34 cases passed, 4 pending for slices not built yet"
+  }
+ ],
+ "size": {
+  "baselineChaptersRoute": 3228863,
+  "chaptersRoute": 3229840,
+  "delta": 977,
+  "cap": 3233792,
+  "scriptFiles": 148,
+  "violations": []
+ },
+ "syntax": "passed",
+ "lint": {
+  "problems": 162,
+  "baseline": 162,
+  "new": 0
+ },
+ "regression": {
+  "scope": "the 247 non-browser suites that import a file changed since 94dbd4f, two at a time",
+  "passed": 227,
+  "failed": 20,
+  "newlyRed": [],
+  "notRun": [
+   "browser suites",
+   "the full regression of all 379 suites (it closes the wave)"
+  ],
+  "suites": [
+   {
+    "suite": "action-undo-api",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "action-undo",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "architecture-case",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "anatomy",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "suite": "architecture-design",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "architecture-drafting",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "architecture-evaluation",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "architecture-job",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "architecture-knowledge-unit",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "suite": "architecture-intelligence",
+    "status": "passed",
+    "seconds": 6
+   },
+   {
+    "suite": "architecture-obligation-ui",
+    "status": "passed",
+    "seconds": 7
+   },
+   {
+    "suite": "architecture-obligation",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "architecture-modules",
+    "status": "passed",
+    "seconds": 53
+   },
+   {
+    "suite": "architecture-operation-continuation",
+    "status": "passed",
+    "seconds": 44
+   },
+   {
+    "suite": "architecture-scenarios-ui",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "architecture-scenarios",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "architecture-service",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "architecture-ui",
+    "status": "failed",
+    "seconds": 1,
+    "classification": "red at the baseline (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "suite": "architecture-verification-ui",
+    "status": "passed",
+    "seconds": 5
+   },
+   {
+    "suite": "architecture-verification",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "architecture-whatif",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "suite": "ars",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "architecture-operation-group",
+    "status": "passed",
+    "seconds": 32
+   },
+   {
+    "suite": "brain-ahead",
+    "status": "failed",
+    "seconds": 0,
+    "classification": "red at the baseline (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "suite": "brain-chain",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "brain-generated-outcome",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "brain-governance-ui",
+    "status": "passed",
+    "seconds": 5
+   },
+   {
+    "suite": "brain-integration",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "suite": "brain-reasoning",
+    "status": "failed",
+    "seconds": 2,
+    "classification": "red at the baseline (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "suite": "brain-synthesis-retrieval",
+    "status": "passed",
+    "seconds": 13
+   },
+   {
+    "suite": "brain-tradeoffs",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "brain-ui",
+    "status": "passed",
+    "seconds": 11
+   },
+   {
+    "suite": "brain-unknown-facts",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "brain",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "brief-interpreter",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "caller-resilience-ui",
+    "status": "passed",
+    "seconds": 6
+   },
+   {
+    "suite": "caller-resilience",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "candidate-import",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "changes",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "chapter-insight",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "chapter-reasoning",
+    "status": "failed",
+    "seconds": 4,
+    "classification": "red at the baseline (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "suite": "chapter-records",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "coauthor",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "command-equivalence",
+    "status": "failed",
+    "seconds": 1,
+    "classification": "red at the baseline (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "suite": "component-library",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "component-needs",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "composition-ui",
+    "status": "failed",
+    "seconds": 2,
+    "classification": "red at the baseline (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "suite": "composition",
+    "status": "passed",
+    "seconds": 14
+   },
+   {
+    "suite": "connected-architecture-ui",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "connected-design-projections",
+    "status": "passed",
+    "seconds": 10
+   },
+   {
+    "suite": "contextual-intelligence-ui",
+    "status": "failed",
+    "seconds": 6,
+    "classification": "red at the baseline (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "suite": "contextual-service",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "decision-prerequisite",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "decision-reading",
+    "status": "passed",
+    "seconds": 16
+   },
+   {
+    "suite": "decisions",
+    "status": "passed",
+    "seconds": 9
+   },
+   {
+    "suite": "deferred-case",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "deferred-intake",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "deploy",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "design-concern",
+    "status": "failed",
+    "seconds": 1,
+    "classification": "red at the baseline (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "suite": "design-links",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "design-questions",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "design-records",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "design-spec",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "design-task-ui",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "suite": "design-task",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "desk-fixes",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "desk",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "details-toggle",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "suite": "development",
+    "status": "passed",
+    "seconds": 13
+   },
+   {
+    "suite": "diagram-arrangement",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "dialog",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "domain-lens",
+    "status": "passed",
+    "seconds": 19
+   },
+   {
+    "suite": "baseline-size",
+    "status": "passed",
+    "seconds": 400
+   },
+   {
+    "suite": "driver-applicability",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "driver-design-ui",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "driver-kinds",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "drafter-groups",
+    "status": "passed",
+    "seconds": 207
+   },
+   {
+    "suite": "driver-product-ui",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "driver-solution",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "driver-spec-view",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "suite": "durability",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "embedded-intelligence",
+    "status": "passed",
+    "seconds": 11
+   },
+   {
+    "suite": "enhancements-ui",
+    "status": "failed",
+    "seconds": 0,
+    "classification": "fails the same way on the rc.10.73.42 tree (2f685b3) run alone: it needs an argument this runner does not give"
+   },
+   {
+    "suite": "enhancements",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "enterprise-references",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "evidence",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "exchange-design",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "suite": "driver-led-journey",
+    "status": "passed",
+    "seconds": 32
+   },
+   {
+    "suite": "exchange-task-ui",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "suite": "exchange",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "suite": "exchange-proposal-companion",
+    "status": "passed",
+    "seconds": 10
+   },
+   {
+    "suite": "execution-composition",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "execution-journey",
+    "status": "passed",
+    "seconds": 5
+   },
+   {
+    "suite": "execution-journey-ui",
+    "status": "passed",
+    "seconds": 6
+   },
+   {
+    "suite": "execution-navigation-ui",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "field-spark",
+    "status": "passed",
+    "seconds": 10
+   },
+   {
+    "suite": "export-build",
+    "status": "passed",
+    "seconds": 13
+   },
+   {
+    "suite": "figures-at-size",
+    "status": "passed",
+    "seconds": 128
+   },
+   {
+    "suite": "fingerprint",
+    "status": "passed",
+    "seconds": 6
+   },
+   {
+    "suite": "governance-review-wording",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "hosted-knowledge",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "intake",
+    "status": "passed",
+    "seconds": 42
+   },
+   {
+    "suite": "intelligence-ui",
+    "status": "failed",
+    "seconds": 7,
+    "classification": "red at the baseline (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "suite": "intelligence",
+    "status": "failed",
+    "seconds": 12,
+    "classification": "red at the baseline (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "suite": "interface-impact",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "interfaces",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "journal-archive",
+    "status": "passed",
+    "seconds": 9
+   },
+   {
+    "suite": "journey-audit",
+    "status": "failed",
+    "seconds": 0,
+    "classification": "red at the baseline (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "suite": "journey-context",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "journey-drafter",
+    "status": "passed",
+    "seconds": 33
+   },
+   {
+    "suite": "knowledge-boundaries",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "knowledge-coverage",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "knowledge-design",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "suite": "knowledge-ingestion",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "suite": "knowledge-repository",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "knowledge-retrieval",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "suite": "knowledge-second-brain",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "suite": "knowledge-structure",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "knowledge",
+    "status": "failed",
+    "seconds": 1,
+    "classification": "red at the baseline (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "suite": "link-picker",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "logical",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "figures-integrity",
+    "status": "passed",
+    "seconds": 280
+   },
+   {
+    "suite": "model-alternatives",
+    "status": "passed",
+    "seconds": 6
+   },
+   {
+    "suite": "model-chrome",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "suite": "model-conformance",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "model-dossier",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "model-alternatives-ui",
+    "status": "passed",
+    "seconds": 26
+   },
+   {
+    "suite": "model-impact",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "model-reconciliation",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "model-tab-refinement",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "model-views",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "model-reversal",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "suite": "module-proposal-ui",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "suite": "module-scope",
+    "status": "passed",
+    "seconds": 6
+   },
+   {
+    "suite": "native-editor-loading-ui",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "not-stated",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "notation-code",
+    "status": "passed",
+    "seconds": 6
+   },
+   {
+    "suite": "notation-layout",
+    "status": "passed",
+    "seconds": 34
+   },
+   {
+    "suite": "notation",
+    "status": "passed",
+    "seconds": 7
+   },
+   {
+    "suite": "open-fields",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "suite": "operations",
+    "status": "passed",
+    "seconds": 5
+   },
+   {
+    "suite": "order-independence",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "outcome-context",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "outcome-contract-ui",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "outcome-contract",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "module-model",
+    "status": "passed",
+    "seconds": 80
+   },
+   {
+    "suite": "output-completion",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "suite": "output-restoration",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "suite": "output-stage",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "suite": "outcome-design-journey",
+    "status": "passed",
+    "seconds": 24
+   },
+   {
+    "suite": "pattern-dna",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "suite": "payment-case-journey",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "persistence",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "suite": "payment-knowledge-pilot",
+    "status": "passed",
+    "seconds": 10
+   },
+   {
+    "suite": "platform",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "perspective-view",
+    "status": "passed",
+    "seconds": 6
+   },
+   {
+    "suite": "product-choice",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "process-semantics",
+    "status": "passed",
+    "seconds": 10
+   },
+   {
+    "suite": "provenance",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "projects",
+    "status": "passed",
+    "seconds": 15
+   },
+   {
+    "suite": "provider-quota",
+    "status": "passed",
+    "seconds": 13
+   },
+   {
+    "suite": "quality",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "suite": "rc42-g2-library",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "rc42-g3a-risk-and-limits",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "rc42-g1-tech-approval",
+    "status": "passed",
+    "seconds": 6
+   },
+   {
+    "suite": "rc42-g3b-trace-and-delivery",
+    "status": "passed",
+    "seconds": 5
+   },
+   {
+    "suite": "rc42-g4-trace-kernel",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "suite": "rc42-g5-runtime",
+    "status": "passed",
+    "seconds": 15
+   },
+   {
+    "suite": "rc42-g6-import",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "rc42-g7-data-contracts",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "rc42-g3c-evidence-fingerprint",
+    "status": "passed",
+    "seconds": 77
+   },
+   {
+    "suite": "read-design",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "read-outcome-ui",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "read-outcome",
+    "status": "passed",
+    "seconds": 13
+   },
+   {
+    "suite": "readiness",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "realisation",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "realise",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "reasoning-history-service",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "rc44-s0-extensions",
+    "status": "passed",
+    "seconds": 68
+   },
+   {
+    "suite": "reconciliation",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "recovery-authority",
+    "status": "passed",
+    "seconds": 18
+   },
+   {
+    "suite": "reference-projects",
+    "status": "passed",
+    "seconds": 42
+   },
+   {
+    "suite": "recovery-size",
+    "status": "passed",
+    "seconds": 65
+   },
+   {
+    "suite": "repository-packet",
+    "status": "failed",
+    "seconds": 0,
+    "classification": "fails the same way on the rc.10.73.42 tree (2f685b3) run alone: it needs a path argument this runner does not give"
+   },
+   {
+    "suite": "repository-service",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "repository-sync",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "reference-resolution",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "suite": "repository-video",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "repository-transfer",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "requirements",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "suite": "responsibility",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "resilience",
+    "status": "passed",
+    "seconds": 11
+   },
+   {
+    "suite": "review",
+    "status": "passed",
+    "seconds": 17
+   },
+   {
+    "suite": "roadmap",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "round27-model",
+    "status": "failed",
+    "seconds": 1,
+    "classification": "red at the baseline (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "suite": "runtime-assistance",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "runtime",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "review-plan",
+    "status": "passed",
+    "seconds": 37
+   },
+   {
+    "suite": "scale-design",
+    "status": "passed",
+    "seconds": 12
+   },
+   {
+    "suite": "scale-readings",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "sdd-architecture",
+    "status": "passed",
+    "seconds": 12
+   },
+   {
+    "suite": "sdd-content",
+    "status": "passed",
+    "seconds": 28
+   },
+   {
+    "suite": "sdd-formats",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "suite": "sdd-layout-cache",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "sdd-mermaid",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "sdd-modules",
+    "status": "passed",
+    "seconds": 48
+   },
+   {
+    "suite": "sdd-size",
+    "status": "passed",
+    "seconds": 123
+   },
+   {
+    "suite": "security-design",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "security-task-ui",
+    "status": "failed",
+    "seconds": 5,
+    "classification": "red at the baseline (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "suite": "security",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "seeded-proposals",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "selection-consistency",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "service-routes",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "settlement-investigation",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "size-speed",
+    "status": "passed",
+    "seconds": 37
+   },
+   {
+    "suite": "sol-comparison",
+    "status": "failed",
+    "seconds": 0,
+    "classification": "fails with the same assertion on the rc.10.73.42 tree (2f685b3) run alone"
+   },
+   {
+    "suite": "sol-current-evaluation",
+    "status": "passed",
+    "seconds": 28
+   },
+   {
+    "suite": "sol-disclosure",
+    "status": "failed",
+    "seconds": 12,
+    "classification": "red at the baseline (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "suite": "sol-open-fields",
+    "status": "passed",
+    "seconds": 5
+   },
+   {
+    "suite": "sol-sdd",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "specification-reasoning",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "stack",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "standards-preview-loading-ui",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "stewardship",
+    "status": "failed",
+    "seconds": 3,
+    "classification": "red at the baseline (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "suite": "story",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "technology-catalogue",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "technology-realisation",
+    "status": "passed",
+    "seconds": 7
+   },
+   {
+    "suite": "technology",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "threat",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "tradeoff",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "ui-modules",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "utility",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "validate-output-refinement",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "suite": "validation-capabilities",
+    "status": "passed",
+    "seconds": 13
+   },
+   {
+    "suite": "validation-confirmation",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "validation-output-workspace",
+    "status": "passed",
+    "seconds": 37
+   },
+   {
+    "suite": "view-experience-dom",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "wire-merge",
+    "status": "passed",
+    "seconds": 23
+   },
+   {
+    "suite": "work-composition",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "work-editors",
+    "status": "passed",
+    "seconds": 18
+   },
+   {
+    "suite": "work-glance",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "work-review-continuity",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "work-review-readability",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "suite": "work-sections",
+    "status": "passed",
+    "seconds": 27
+   },
+   {
+    "suite": "workbench-ui",
+    "status": "passed",
+    "seconds": 5
+   },
+   {
+    "suite": "workspace",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "suite": "scale",
+    "status": "failed",
+    "seconds": 942,
+    "classification": "red at the baseline (audit/rc42/regression-2026-11-16.json)"
+   }
+  ]
+ },
+ "productionAccepted": false,
+ "externalAuthorities": {
+  "licenceCounsel": "not engaged",
+  "fourEyesKnowledgeApprover": "not assigned",
+  "independentArchitectureReview": "not started",
+  "productionAcceptanceAuthority": "none"
+ }
+}
