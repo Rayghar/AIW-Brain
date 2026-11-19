@@ -174,7 +174,7 @@ const OTHER = {
     ...(forge === 'finding' ? syn(p).filter(r => !r.componentId).map(r => ({code: 'synthetic-unbound', id: 'synthetic-unbound:' + r.id, title: 'A second finding under a taken id', detail: r.id, level: 'warning', objectId: r.id})) : [])],
     10: p => other(p).map(r => ({code: 'other-placed', id: 'other-placed:' + r.id, title: 'Place the other thing', detail: r.id, level: 'warning', objectId: r.id}))},
   // switched on by a case: a section that prints a heading at its anchor's level, or one a later package names as its anchor (should-fix 5)
-  sections: [{document: 'registers', after: '## Performance specification', markdown: () => (forge === 'heading' ? 'Some text.\n\n## Forged section\n\nUnder a heading at the anchor\'s level.\n\n' : forge === 'above' ? '# 7. Appendix\n\nUnder a heading above the anchor\'s level.\n\n' : forge === 'anchor' ? '### Forged anchor\n\nWhat a later package names as its anchor.\n\n' : forge === 'fenced' ? '```\n## Inside a code fence\n```\n\n' : '')}],
+  sections: [{document: 'registers', after: '## Performance specification', markdown: () => (forge.startsWith('raw:') ? 'Some text.\n\n' + forge.slice(4) + '\n\nMore text.\n' : forge === 'heading' ? 'Some text.\n\n## Forged section\n\nUnder a heading at the anchor\'s level.\n\n' : forge === 'above' ? '# 7. Appendix\n\nUnder a heading above the anchor\'s level.\n\n' : forge === 'anchor' ? '### Forged anchor\n\nWhat a later package names as its anchor.\n\n' : forge === 'fenced' ? '```\n## Inside a code fence\n```\n\n' : '')}],
   lifecycle: {'runtime.otherThings': 10},
   // otherNotes: read by the provenance reader (who wrote each, the review plan), not retired through the lifecycle family.
   provenance: {nouns: {'runtime.otherThings': 'other thing', 'runtime.otherNotes': 'other note'}, paths: {}, records: {'runtime.otherNotes': 10}},
@@ -664,7 +664,11 @@ await block('D2 packages a document names', async () => {
     own.synthetic.records[0].acceptance = {actor: B, at: AT, account: 'person'};
     assert.throws(() => R.assertTemplateCopyClearsSteps(own, d => d.synthetic?.records || []), /carried into a project copied from it: SYN-001\.acceptance/);
     assert.throws(() => R.assertTemplateCopyClearsSteps(source, d => d.synthetic?.records || []), /holds no record with a step taken/, 'a helper that was handed nothing to check says so'); }
-  assert.deepEqual(boundary.missingPackages({workspace: {packages: ['zz-synthetic', 'mm-other']}}), []); assert.deepEqual(boundary.missingPackages({workspace: {packages: ['p40-adoption', 7, 'zz-synthetic']}}), ['p40-adoption']); assert.deepEqual(boundary.missingPackages({}), []);
+  assert.deepEqual(boundary.missingPackages({workspace: {packages: ['zz-synthetic', 'mm-other']}}), []); assert.deepEqual(boundary.missingPackages({workspace: {packages: ['p40-adoption', 'zz-synthetic']}}), ['p40-adoption']); assert.deepEqual(boundary.missingPackages({}), []);
+  // a list of packages this build cannot read is no empty list (the verifier's second round): it is refused as a missing package is
+  for (const unreadable of ['p40-adoption', [['p40-adoption']], ['p40-adoption', 7, 'zz-synthetic'], {0: 'p40-adoption'}, [''], null, 7])
+    assert.deepEqual(boundary.missingPackages({workspace: {packages: unreadable}}), [boundary.UNREADABLE_PACKAGES], JSON.stringify(unreadable) + ' reads as a list this build cannot read');
+  assert.match(boundary.missingPackagesRefusal([boundary.UNREADABLE_PACKAGES]), /cannot read/);
   pass('D2 (server): the boundary names a package under workspace.packages when its command (alone, in a batch, by a merge) or its upgrade step first writes, and neither fingerprint reads the key; a document that names a package this build does not register is read with the package named, and every command, every export and a freeze are refused in words');
 });
 
@@ -933,6 +937,15 @@ await block('SF start check', () => {
     assert.ok(isReviewCommand('xy.' + end)); assert.ok(has({id: 'xy', commands: {['xy.' + end]: {apply() {}}}}, /command “xy\.\w+” ends as a review command does \(authorship\.js\): it states person or second/), 'xy.' + end);
     assert.deepEqual(issues({id: 'xy', commands: {['xy.' + end]: {apply() {}, person: true}}}), []); assert.deepEqual(issues({id: 'xy', commands: {['xy.' + end]: {apply() {}, second: () => null}}, provenance: {paths: {xy: ['xy.records']}}}), []);
   }
+  // the verifier's second round: a key named after what every object carries is no key of a document (it moved the
+  // fingerprints of every old document), and a package's noun is not one a built-in collection reads under
+  for (const k of ['constructor', 'hasOwnProperty', 'toString', 'valueOf', '__proto__', 'constructor.name', 'synthetic.constructor', 'toString.list']) {
+    for (const part of [{evidenceKeys: [k]}, {designKeys: [k]}, {lifecycle: {[k]: 3}}, {provenance: {records: {[k]: 3}}}, {provenance: {nouns: {[k]: 'thing'}}}, {provenance: {paths: {xy: [k]}}}])
+      assert.ok(issues({id: 'xy', ...part}).some(i => /names what every object carries/.test(i)), JSON.stringify(part) + ' is refused: ' + JSON.stringify(issues({id: 'xy', ...part})));
+  }
+  assert.ok(issues({id: 'xy', lifecycle: {'xy.things': 3}, provenance: {nouns: {'xy.things': 'document'}}}).some(i => /the noun “document” is one the workbench reads a collection of its own under/.test(i)), 'a built-in noun is not a package\'s');
+  assert.ok(issues({id: 'xy', lifecycle: {'xy.things': 3}, provenance: {nouns: {'xy.things': 'driver'}}}).some(i => /the noun “driver” is one the workbench reads a collection of its own under/.test(i)));
+  assert.deepEqual(issues({id: 'xy', lifecycle: {'xy.things': 3}, provenance: {nouns: {'xy.things': 'thing'}}}), []);
   pass('should-fix 3, 6, 11 and D7.5 at the start check: a hop onto a layer of a built-in type states only; an id prefix of the workbench and a retired command name are taken; no type is free before the built-in resolver is installed; a single-segment lifecycle path is refused; a layer over a built-in type of Chapter 1 is refused; a type ending in .review, .handoff or .intake states person or second');
 });
 
@@ -1077,6 +1090,13 @@ await block('upgrade and sections', () => {
   assert.equal(boundary.placeSections('registers', assembleSDD(P), P), registers, 'with the switch off the registers are what they were');
   const all = architectureMarkdown(P), delivery = architectureMarkdown(P, {audience: 'delivery'});
   assert.match(all.markdown, /## E\. Provenance[\s\S]*Synthetic records: SYN-001, SYN-002\./); assert.ok(!delivery.markdown.includes('Synthetic records:'), 'an edition that does not print the anchor does not print the section');
+  // the verifier's second round: every form of a heading is a heading (setext, indented, a tab after the marks, HTML)
+  try {
+    for (const forged of ['Forged\n======', 'Forged\n------', '  # Forged', '#\tForged', '<h1>Forged</h1>', '<H2 class="x">Forged</H2>']) {
+      forge = 'raw:' + forged; assert.throws(() => boundary.placeSections('registers', assembleSDD(P), P), /mm-other: its section after “## Performance specification” prints a heading/, JSON.stringify(forged) + ' is refused'); }
+    // what is no heading stays text: a rule between paragraphs, a deeper heading, an HTML heading below the anchor's level
+    for (const fine of ['Text.\n\n---\n\nMore.', '### Deeper', '<h3>Deeper</h3>', 'a # in a line']) { forge = 'raw:' + fine; assert.ok(boundary.placeSections('registers', assembleSDD(P), P).includes(fine), JSON.stringify(fine) + ' is printed'); }
+  } finally { forge = ''; }
   pass('upgrade and sections: the package\'s idempotent step runs in the read upgrade chain; its sections stand at their anchors in the registers and the architecture edition');
 });
 

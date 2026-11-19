@@ -40,7 +40,7 @@ import {inheritedFindings, findingCause} from './public/review-domain.js';
 import {createProject} from './shared/projects-domain.js';
 import {withFinalReview} from './public/review-domain.js';
 import {extensionIssues as partIssues, extensionConflicts, COMMAND_TYPE, notePackages} from './public/design-extension-parts.js';
-export {upgradeExtensions, extensionUpgradeNeeded, extensionUpgradeNotes, placeSections, extensionConflicts, WORKBENCH_KEYS, WORKBENCH_PREFIXES, workbenchKey, packageCollections, PACKAGES_KEY, documentPackages, missingPackages, missingPackagesRefusal} from './public/design-extension-parts.js';
+export {upgradeExtensions, extensionUpgradeNeeded, extensionUpgradeNotes, placeSections, extensionConflicts, WORKBENCH_KEYS, WORKBENCH_PREFIXES, workbenchKey, packageCollections, PACKAGES_KEY, documentPackages, missingPackages, missingPackagesRefusal, UNREADABLE_PACKAGES} from './public/design-extension-parts.js';
 
 // The built-in handler of a type, as worker.js resolves it: a function, or true for a type the Worker handles itself.
 let builtInHandler = null;
