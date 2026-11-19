@@ -218,7 +218,7 @@ function saveOption(p,r,raw,at){const old=raw.id?r.options.find(o=>o.id===raw.id
  if(old)r.options[r.options.indexOf(old)]=o;else r.options.push(o);changed(p,r,'Revise option '+o.id,at);return o;}
 const CONNECTION_FIELDS=[['title','t',4000,'interface name'],['protocol','t',4000,'protocol'],['contract','t',4000,'contract'],['security','t',4000,'access protection'],['failure','t',4000,'failure behaviour'],['data','t',4000,'data'],['owner','t',4000,'owner']];
 // The chapter's checks, worked out once per settled document or pass (each caller gets its own copies).
-export function technologyRealisationFindings(p){return memoPass(p,()=>sharedList(p,'techrealisation:findings',()=>technologyRealisationFindingsOf(p)));}
+export function technologyRealisationFindings(p){return memoPass(p,()=>sharedList(p,7,()=>technologyRealisationFindingsOf(p)));}
 function technologyRealisationFindingsOf(p){const t=p.technologyRealisation,fs=[],add=(code,id,title,detail,level='error',extra={})=>fs.push({id:code+':'+id,code,objectId:id,title,detail,level,...extra});if(!realizationIntakeCurrent(p))add('intake','project','Review Chapter 6 inputs','Logical capabilities or their upstream inputs have changed.','warning');
  const realised=new Set(t.mappings.map(m=>m.capabilityId));
  for(const c of capabilities(p))if(!realised.has(c.id))add('unrealized',c.id,'Realize '+c.ref+' · '+c.title,'Create an implementation boundary or add this capability to an existing realization.');

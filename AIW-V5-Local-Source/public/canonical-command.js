@@ -13,6 +13,7 @@ import {withFinalReview,applyFinalReviewCommand} from './review-domain.js';
 import {applyProcessCommand} from './process-model.js';
 import {documentCopy,handOver} from './document-memo.js';
 import {resolveGroupAliases} from './requirement-groups.js';
+import {EXTENSIONS} from './design-extensions.js';
 // The roadmap's commands (round 6, Contract S): review.plateau, review.plateau-remove and review.plateau-assign, with
 // review.action carrying plateauId. They are registered here with the rest and are not staged: each is applied through
 // review-domain.js's command path (applyFinalReviewCommand), where its checks live, under the worker's revision check,
@@ -36,7 +37,13 @@ export const STAGED_COMMANDS=new Set([...BATCHED,'brief','artefact','relationshi
 // Sent on their own, the seven keep the path their pages always gave them (no change review before the save); the
 // workbench asks for a person's change review of a single edit only for the other staged commands, as before.
 export const BATCH_ONLY=new Set(BATCHED);
-export const reviewsOnItsOwn=type=>STAGED_COMMANDS.has(type)&&!BATCH_ONLY.has(type);
+export const reviewsOnItsOwn=type=>!!stagedBy(type)&&!BATCH_ONLY.has(type);
+// Whether a type may be staged, and by whom it is applied (rc44, slice S0): true for a type staged here, which is never
+// a design package's; else the command the first package by id states for it (design-extensions.js), where that command
+// says it is a design edit (staged) and is neither a person-only nor a second-person step; undefined for any other type.
+// The staged path below, a single edit's review (reviewsOnItsOwn) and the workbench's change review (workbench-ui.js)
+// read it.
+export const stagedBy=type=>STAGED_COMMANDS.has(type)||[EXTENSIONS.map(e=>e.commands?.[type]).find(c=>c)].find(c=>c?.staged&&!c.person&&!c.second);
 export const LIFECYCLE_RULES=Object.freeze({...TECHNOLOGY_LIFECYCLE,...INTERFACES_LIFECYCLE,...RUNTIME_LIFECYCLE});
 export const applyRecordCommand=(input,command,at=new Date().toISOString(),actor='')=>applyRecordLifecycleCommand(input,command,at,actor,LIFECYCLE_RULES);
 // The per-chapter commands round 12 first gave AIW's proposals (D2) and retired for the one family (GR-GOV-23). Nothing
@@ -55,7 +62,9 @@ export function migrateCommand(command){
 export function applyCanonical(input,raw,at=new Date().toISOString(),actor=''){
  // A group link sent by a legacy GRP id is stored as the RG id it reads as (round 12, GR-REQ-18).
  const command=resolveGroupAliases(input,migrateCommand(raw));
- if(!STAGED_COMMANDS.has(command?.type))throw Error('This action must use its chapter review workflow.');
+ // A design package's staged command is applied by its own handler (stagedBy above).
+ const type=command?.type,x=stagedBy(type);
+ if(!x)throw Error('This action must use its chapter review workflow.');
  const handlers={process:applyProcessCommand,quality:applyQualityCommand,decision:applyDecisionCommand,logical:applyLogicalCommand,realisation:applyRealisationCommand,technology:applyTechnologyCommand,techrealisation:applyTechnologyRealisationCommand,interfaces:applyInterfacesCommand,security:applySecurityCommand,runtime:applyRuntimeCommand,record:applyRecordCommand,review:applyFinalReviewCommand};
  // One copy per command (round 12): the handler changes it in place and the review sections are completed on it in place,
  // where the handler and withFinalReview each copied it again after a structured clone; the journal's recorded events are
@@ -64,7 +73,7 @@ export function applyCanonical(input,raw,at=new Date().toISOString(),actor=''){
  // copied at all. A handler that answers with another document (one that copies by other means) has it completed on a
  // copy, as before.
  const own=handOver(documentCopy(input));
- const result=(handlers[command.type.split('.')[0]]||applyCommand)(own,command,at,actor);
+ const result=(x.apply||handlers[type.split('.')[0]]||applyCommand)(own,command,at,actor);
  if(result.document===own)handOver(own);
  result.document=withFinalReview(result.document);return result;
 }

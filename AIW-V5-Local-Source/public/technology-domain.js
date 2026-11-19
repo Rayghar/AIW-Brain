@@ -208,7 +208,7 @@ export function withTechnology(input){
  return p;
 }
 // The chapter's checks, worked out once per settled document or pass (each caller gets its own copies).
-export function technologyFindings(p){return memoPass(p,()=>sharedList(p,'technology:findings',()=>technologyFindingsOf(p)));}
+export function technologyFindings(p){return memoPass(p,()=>sharedList(p,6,()=>technologyFindingsOf(p)));}
 function technologyFindingsOf(p){
  const t=p.technology,fs=[],add=(code,id,title,detail,level='error',extra={})=>fs.push({id:code+':'+id,code,objectId:id,title,detail,level,...extra}),g=logicalGraph(p),ids=new Set(g.nodes.map(n=>n.id));
  if(!technologyIntakeCurrent(p))add('intake','project','Review the application handoff','Application needs or their upstream rationale have changed.','warning');

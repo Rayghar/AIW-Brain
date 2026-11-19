@@ -296,7 +296,7 @@ export function partyIntegration(p,id){const r=party(p,id);if(!r)return null;
  return {id:r.id,ref:r.ref,title:r.title,purpose:r.purpose,owner:r.owner,confirmed:!!r.confirmed,origin:r.origin,kind:r.kind||'',status:r.status||'',source:r.source||'',requirementIds:groundIds(p,r),flows:flows.map(l=>({id:l.id,title:l.title,dataId:l.from,ref:dataRecord(p,l.from)?.ref||l.from})),contracts:ends(cs),components:users(cs),proposed:{contracts:ends(ps),components:users(ps)},...Object.fromEntries(PARTY_INTEGRATION.map(([f])=>[f,field(f)]))};}
 export const partyIntegrations=p=>list(p.interfaces?.parties).map(r=>partyIntegration(p,r.id));
 // The chapter's checks, worked out once per settled document or pass (each caller gets its own copies).
-export function interfaceFindings(p){return memoPass(p,()=>sharedList(p,'interfaces:findings',()=>interfaceFindingsOf(p)));}
+export function interfaceFindings(p){return memoPass(p,()=>sharedList(p,8,()=>interfaceFindingsOf(p)));}
 function interfaceFindingsOf(p){const m=p.interfaces,fs=[],add=(code,r,title,detail,level='error',extra={})=>fs.push({id:code+':'+(r.id||r),objectId:r.id||r,code,title,detail,level,...extra});
  if(!interfaceIntakeCurrent(p))add('intake','project','Review inherited boundaries','Review the current application interactions and Chapter 7 handoff.','warning');
  const inputs=firstById(contractInputs(p)),pairs=new Map(),checksOf=groupBy(m.checks,t=>t.contractId),exchanged=new Set(m.contracts.flatMap(c=>c.exchanges.map(x=>x.dataId))),traced=new Set(m.lineage.flatMap(l=>[l.from,l.to])),read=new Set(p.realisation.connections.filter(e=>e.interaction==='data').flatMap(e=>[e.from,e.to]));

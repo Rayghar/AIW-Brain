@@ -1,6 +1,7 @@
 import {digest,sha256} from './public/brain-integrity.js';
 import {readRequirements,writeRequirements,requirementIndexStatements} from './requirement-storage.js';
-import {integrityError} from './error-message.js';
+import {integrityError,missingPackageError} from './error-message.js';
+import {missingPackages,missingPackagesRefusal} from './public/design-extension-parts.js';
 import {projectSummary,projectSummaryOf,projectReadiness} from './shared/projects-domain.js';
 // Baselines are immutable documents. Keep their bytes in private object storage
 // and only their references in the revision-controlled working project row.
@@ -342,7 +343,12 @@ export function storedSummary(serialized,full=null,{previous=null,at=new Date().
 export const listedProject=row=>row.summary?{...JSON.parse(row.summary),updatedAt:row.updated_at,revision:row.revision}:projectSummary(row);
 // keepPrior: the objects the previous row referenced are kept, not swept, because a recovery point names them (a storage
 // upgrade keeps the version it upgraded recoverable: storage-upgrade.js).
-export async function saveStoredProject(env,owner,projectId,document,revision,at,keys,extraStatements=()=>[],{keepPrior=false,jobGuard=null}={}){
+// rc44, slice S0 (the lead's ruling F2): this is the one writer of a project, so it is where a project that names a
+// design package this build does not register is kept from being written, whichever route asks. allowMissing is for
+// the steps that leave the design as it is: renaming, archiving, restoring from the archive, and storing a recovered
+// project (which is then read and not changed here).
+export async function saveStoredProject(env,owner,projectId,document,revision,at,keys,extraStatements=()=>[],{keepPrior=false,jobGuard=null,allowMissing=false}={}){
+  if(!allowMissing){const missing=missingPackages(document);if(missing.length)throw missingPackageError(missingPackagesRefusal(missing),missing);}
   const stored={...document,finalReview:{...document.finalReview}},created=[];delete stored.storageSweep;delete stored.storageRetained;
   await writeRequirements(env,owner,projectId,document,stored,keys,created);
   const extensions={...Object.fromEntries(['workbench','assurance','guidance','intake'].filter(k=>document[k]).map(k=>[k,document[k]]))};

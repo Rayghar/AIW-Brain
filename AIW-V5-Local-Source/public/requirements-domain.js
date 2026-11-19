@@ -78,7 +78,7 @@ export function seedProject(){
 export function related(project,id){return project.relationships.filter(r=>r.from===id||r.to===id);}
 export function neighbours(project,id){const ids=new Set([id]);for(const r of related(project,id)){ids.add(r.from);ids.add(r.to)}return ids;}
 // The chapter's checks, worked out once per settled document or pass (each caller gets its own copies).
-export function findings(project){return memoPass(project,()=>sharedList(project,'requirements:findings',()=>findingsOf(project)));}
+export function findings(project){return memoPass(project,()=>sharedList(project,1,()=>findingsOf(project)));}
 function findingsOf(project){
   const result=[],add=(code,id,title,detail,level='warning',extra={})=>result.push({id:code+':'+id,code,artefactId:id,title,detail,level,...extra});
   const byId=new Map(project.artefacts.map(a=>[a.id,a])),adjacency=new Map(),titles=new Map();

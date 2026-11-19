@@ -40,7 +40,11 @@ const REVIEW_TYPES=new Set(['review','handoff','change.review','change.request',
 // The concept register's person-only steps (rc44, wp1: public/knowledge-concept-commands.js).
 for(const type of ['knowledge.library','knowledge.concept-review','knowledge.concept-retire','knowledge.concept-restore'])REVIEW_TYPES.add(type);
 const REVIEW_SUFFIX=/\.(?:review|handoff|intake)$/;
-export const isReviewCommand=type=>REVIEW_TYPES.has(type)||REVIEW_SUFFIX.test(type);
+// The person-only and second-person command types of the design packages are review commands too (rc44, slice S0):
+// design-extension-boundary.js, which knows the types the packages state, says which (registerReviewTypes).
+let extensionReview=null;
+export function registerReviewTypes(isReview){extensionReview=typeof isReview==='function'?isReview:null;}
+export const isReviewCommand=type=>REVIEW_TYPES.has(type)||REVIEW_SUFFIX.test(type)||!!extensionReview?.(type);
 // A payload that claims a review: a confirmation, an acknowledgement, a resolved assumption, a checked source, a
 // reviewed, accepted, approved, verified or confirmed state, or (rc42, D2) a judgement that a driver does not apply to a
 // Chapter 7 realization (effect not-applicable, which stands in for an assessment when a selection is recorded), at any

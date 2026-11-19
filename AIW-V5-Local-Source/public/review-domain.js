@@ -3,7 +3,7 @@ import {workbenchMarkdown,guidanceFindings,guideMarkdown} from './guidance-recor
 import {CHAPTER_TITLES} from './chapter-names.js';
 // Round 6 (Contract T): a recorded relationship the standard forbids is a finding of the chapter that owns its source record.
 import {relationshipFindings} from './architecture-model.js';
-import {remember,isSettled,memoOff,memoPass,findIn} from './document-memo.js';
+import {remember,isSettled,memoOff,memoPass,findIn,sharedList} from './document-memo.js';
 import {assuranceMarkdown,semanticFindings} from './assurance-domain.js';
 import {qualityMeasurementFindings} from './quality-analysis.js';
 import {knowledgeFindings,knowledgeMarkdown} from './knowledge-governance.js';
@@ -43,6 +43,7 @@ import {withRoadmap,applyRoadmapCommand,actionPlateau,roadmapFindings,transition
 import {architectureObligationsFor,architectureObligationBasis,architectureObligationAction,architectureObligationActionState,architectureActionStamp,architectureEvidenceSources,deliveryActionDefinition,independentVerification,verifierRefusal,SECOND_VERIFIER} from './architecture-obligations.js';
 import {normaliseVerificationContract,verificationForAction,verificationEvidence} from './architecture-verification.js';
 import {digest} from './brain-integrity.js';
+import {EXTENSIONS} from './design-extensions.js';
 
 const text=(v,max=4000)=>typeof v==='string'?v.trim().slice(0,max):'',unique=xs=>[...new Set(xs)],pad=n=>String(n).padStart(3,'0');
 // A compact change detector, not a security signature or a verification claim.
@@ -76,6 +77,9 @@ const OVERLAY={security:'evidence risks governance simulations|assuranceVersion 
 export function designOf(s){const d={...s},o=[],put=v=>v?.length&&o.push(v),a=d.assurance,e=d.evidence;
  for(const k in OVERLAY)if(d[k]){const v=d[k]={...d[k]};for(const x of OVERLAY[k].split('|')[0].split(' '))put(v[x]);for(const x of OVERLAY[k].split(/\W/))delete v[x];}
  if(a){const {version,counter,semanticFindings,records=[],...c}=a;c.records=records.filter(x=>assuranceChapter(x)<11);put(records.filter(x=>!c.records.includes(x)));put(semanticFindings);Object.values(c).some(v=>v?.length)?d.assurance=c:delete d.assurance;}
+ // What a design package records as evidence (rc44, slice S0: its evidenceKeys, each a key of the document or 'chapter.key')
+ // leaves the design the same way; every other key a package writes is design, as any key is.
+ for(const x of EXTENSIONS)for(const k of x.evidenceKeys||[]){const [a,b]=k.split('.'),v=b?d[a]&&(d[a]={...d[a]}):d;if(v){put(v[b||a]);delete v[b||a];}}
  if(e){const json=JSON.stringify({...d,evidence:e.tasks}),sources=e.sources.filter(x=>json.includes('"'+x.id+'"'));put(e.sources.filter(x=>!sources.includes(x)));sources.length||e.tasks.length?d.evidence={sources,tasks:e.tasks}:delete d.evidence;}
  return [d,o];}
 export function designSource(p){const s=reviewSource(p);return fingerprintVersion>1?designOf(s)[0]:s;}
@@ -122,8 +126,11 @@ export const DISPOSITIONS=['Fix before review','Carry as action','Accepted desig
 export const NON_WAIVABLE=Object.freeze({'hard-constraint':'C3:breaks C7:hard-constraint',invariant:'C8:posting-guard C8:invariant-link C9:dual-control-same C9:dual-control-uncovered C9:dual-control-roles C10:state-protection C10:standby C10:backup-zone'});
 const LIMIT='Accepted design limitation';
 export const WAIVERS=Object.freeze([LIMIT,'Not applicable',SOURCE_SILENT]);
-export const nonWaivable=f=>f?.level==='error'&&Object.keys(NON_WAIVABLE).find(k=>NON_WAIVABLE[k].split(' ').includes(String(f.id).split(':')[0]+':'+f.code))||null;
-function refuseWaiver(f,treatment){const kind=nonWaivable(f);if(kind&&WAIVERS.includes(treatment))throw Error('“'+f.title+'” breaks '+(kind==='invariant'?'an invariant: change the design':'a hard constraint: change the design, or its Chapter 1 constraint and Chapter 2 driver by a reviewed change')+'. It cannot be waived; until then, fix it before review or carry it as an action.');}
+// An error a design package marks hard is in the class too (rc44, slice S0; the lead's rulings A1 and D11 of
+// 2026-11-18): it is read here, the class's one reader, which answers the kind of a built-in code, true for a
+// package's hard error and null for any other finding. Its refusal is worded to fit any package.
+export const nonWaivable=f=>f?.level==='error'&&(f.hard||Object.keys(NON_WAIVABLE).find(k=>NON_WAIVABLE[k].split(' ').includes(String(f.id).split(':')[0]+':'+f.code)))||null;
+function refuseWaiver(f,treatment){const kind=nonWaivable(f);if(kind&&WAIVERS.includes(treatment))throw Error('“'+f.title+'” '+(f.hard?'cannot be waived: change the design. Until':'breaks '+(kind==='invariant'?'an invariant: change the design':'a hard constraint: change the design, or its Chapter 1 constraint and Chapter 2 driver by a reviewed change')+'. It cannot be waived; until')+' then, fix it before review or carry it as an action.');}
 // The treatments a dialog offers for a finding (review-ui.js, app.js).
 export const treatmentsFor=f=>DISPOSITIONS.filter(d=>!(nonWaivable(f)&&WAIVERS.includes(d)));
 // An accepted limitation is reviewed by a date (rc.10.73.42, D13): it is recorded with a review-by date after the day it
@@ -171,7 +178,10 @@ export function inheritedFindings(p){if(fingerprintVersion===DESIGN_FINGERPRINT&
 const chapterInherited=(p,c)=>remember(p,'review:inherited-chapter',c.id,()=>c.checks(p).map(f=>stamped(p,{...f,id:'C'+c.id+':'+f.id,sourceId:f.id,chapter:c.id,chapterTitle:c.title,objectId:f.objectId||f.artefactId||f.driverId||f.decisionId||'project'},()=>findingStamp(p,c.id,f))));
 // inheritedFindings(p).filter(f=>f.chapter===chapter&&f.id.startsWith('C'+chapter+':')), the same records in the same order.
 export function chapterInheritedFindings(p,chapter){const c=CHAPTERS.find(x=>x.id===Number(chapter));return c?memoPass(p,()=>chapterInherited(p,c)):[];}
-const inheritedSupplement=p=>remember(p,'review:inherited-supplement','',()=>[...semanticFindings(p).filter(f=>f.chapter!==1),...evidenceFindings(p),...designTaskFindings(p),...qualityMeasurementFindings(p),...knowledgeFindings(p),...guidanceFindings(p),...narrativeFindings(p)]);
+// The review's own findings: the semantic, evidence, guided-design, measurement, knowledge, guidance and narrative
+// findings, stated once and kept as the chapters' lists are (document-memo.js sharedList, list 11), so the findings
+// the design packages state for the review follow them (rc44, slice S0).
+const inheritedSupplement=p=>sharedList(p,11,()=>[...semanticFindings(p).filter(f=>f.chapter!==1),...evidenceFindings(p),...designTaskFindings(p),...qualityMeasurementFindings(p),...knowledgeFindings(p),...guidanceFindings(p),...narrativeFindings(p)]);
 function inheritedBase(p){return remember(p,'review:inherited-base','',()=>{const result=CHAPTERS.flatMap(c=>chapterInherited(p,c));result.push(...inheritedSupplement(p).map(f=>stamped(p,{...f,id:'EVIDENCE:'+f.id,sourceId:f.id},()=>findingStamp(p,'evidence',f))));return result;});}
 function inheritedFindingsOf(p){const result=inheritedBase(p).slice();result.push(...antiPatternFindings(p).map(f=>stamped(p,{...f,id:'ANTI:'+f.sourceId},()=>findingStamp(p,'anti',f))));if(fingerprintVersion===DESIGN_FINGERPRINT)findingCache.set(p,result);return result;}
 // Anti-patterns found in the recorded design (design-spec.js) are review items like any other
@@ -216,11 +226,10 @@ export const actionReady=a=>!!(a.title&&a.owner&&a.due&&a.acceptance&&a.objectId
 // 'cause', GR-GOV-13) keeps each finding with its own stamp: a change to one finding's inputs reopens that finding alone.
 // The stamp a treatment recorded before round 12 took: the whole design's, with the finding as its rule raised it, worked
 // out only when such a treatment is read (once per settled document or pass), never kept on every finding.
-const evidenceRaw=p=>[...semanticFindings(p).filter(f=>f.chapter!==1),...evidenceFindings(p),...designTaskFindings(p),...qualityMeasurementFindings(p),...knowledgeFindings(p),...guidanceFindings(p),...narrativeFindings(p)];
 export function legacyStampOf(p,f){return f?remember(p,'review:legacy-stamp',f.id,()=>{
  const m=/^C(\d+):/.exec(f.id);
  if(m){const c=CHAPTERS.find(x=>x.id===Number(m[1])),raw=c?c.checks(p).find(x=>x.id===f.sourceId):null;return raw?reviewFingerprint([reviewSourceStamp(p),c.id,raw]):null;}
- if(f.id.startsWith('EVIDENCE:')){const raw=evidenceRaw(p).find(x=>x.id===f.sourceId);return raw?reviewFingerprint([reviewSourceStamp(p),raw]):null;}
+ if(f.id.startsWith('EVIDENCE:')){const raw=inheritedSupplement(p).find(x=>x.id===f.sourceId);return raw?reviewFingerprint([reviewSourceStamp(p),raw]):null;}
  if(f.id.startsWith('ANTI:')){const raw=antiPatternFindings(p).find(x=>x.sourceId===f.sourceId);return raw?reviewFingerprint([reviewSourceStamp(p),raw]):null;}
  return null;
 }):null;}
