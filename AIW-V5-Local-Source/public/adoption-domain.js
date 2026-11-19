@@ -104,10 +104,13 @@ const here=(p,at)=>{const from=[p?.finalReview?.imported?.at,p?.workspace?.templ
 // Whether the stored acceptance stands: a person's step, of the record as it reads (its revision, its deviations),
 // with nothing changed or reassessed since, taken in this project, of a definition whose knowledge is still current,
 // and independent by the one rule on the same projection. A status written by hand, an imported step and an agent's
-// step do not count.
+// step do not count. Nor is there a second truth beside the earlier path (ruling J6): an adoption is not read as
+// accepted while that path's finding for the same design stands, and an acceptance given before that path re-read the
+// design's sources (architecture.refresh: the task's sourceReview) does not stand again; a second person accepts the
+// design as re-read.
 export function adoptionAccepted(p,a){
  const r=a?.review;
- return applied(a)&&plain(r)&&r.account==='person'&&!!r.actor&&r.revision===a.revision&&here(p,r.at)&&!list(a.history).some(x=>x.n>r.seq&&(x.event==='changed'||x.event==='reassess'))&&sameIds(list(r.deviationIds),activeDeviations(a).map(d=>d.id))&&definitionOf(p,a).state!=='withdrawn'&&!verifierRefusal(acceptanceSubject(a,p),r.actor,r.account);
+ return applied(a)&&plain(r)&&r.account==='person'&&!!r.actor&&r.revision===a.revision&&here(p,r.at)&&!list(a.history).some(x=>x.n>r.seq&&(x.event==='changed'||x.event==='reassess'))&&sameIds(list(r.deviationIds),activeDeviations(a).map(d=>d.id))&&definitionOf(p,a).state!=='withdrawn'&&!basisFinding(p,a)&&!(taskOf(p,a)?.sourceReview?.at>r.at)&&!verifierRefusal(acceptanceSubject(a,p),r.actor,r.account);
 }
 
 // ---------------------------------------------------------------- the definition's standing (ruling J4)
@@ -126,7 +129,7 @@ function definitionOf(p,a){
 }
 // The earlier path's finding for the same design, while it stands (ruling J6): its sources changed, and
 // architecture.refresh is still the step that re-reads them (retired for a task with an adoption in slice S3).
-const basisFinding=(p,a)=>taskOf(p,a)?.status==='applied'&&designTaskFindings(p).find(f=>f.id==='design-source:'+a.legacy.taskId)||null;
+const basisFinding=(p,a)=>taskOf(p,a)?.status==='applied'&&remember(p,'adoption:earlier','',()=>designTaskFindings(p)).find(f=>f.id==='design-source:'+a.legacy.taskId)||null;
 
 // ---------------------------------------------------------------- the reading (design §b.4, the part S1 evaluates)
 const listAt=(p,path)=>{const [a,b]=path.split('.'),v=b?p?.[a]?.[b]:p?.[a];return Array.isArray(v)?v:[];};

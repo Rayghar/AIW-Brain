@@ -678,6 +678,33 @@ export default async function ({block, pass, load}) {
     pass('J5: what the tracker changes is journalled — the commit that changes a bound record, the one that changes its driver, the one that changes its decision and the one that reverses the design each hold one change event with the adoption as its source, stamped by the server with who sent the commit and of what kind; the adoption\'s note points at the event; a reversed adoption stays one object of the graph on no trail and takes no further step');
   });
 
+  // ------------------------------------------------------------ J6: no second truth after the acceptance either
+  await block('J6 basis after acceptance', async () => {
+    pkg(); const id = 'ADP-003', step = (p, type, payload, actor, at = AT) => withFinalReview(commandHandler(type)(structuredClone(p), {type, payload}, at, actor, {author: person(actor)}).document);
+    const earlier = p => inheritedFindings(p).filter(f => String(f.id).endsWith('design-source:DES-003')).map(f => f.level), read = p => D.adoptionReading(p, byId(p, id));
+    const acceptAs = (p, actor, at) => step(p, 'adoption.accept', {id, revision: byId(p, id).revision, deviationIds: [], note: ''}, actor, at);
+    let p = step(upgraded(), 'adoption.reassess', {id, revision: 1, reviewed: true, reason: 'Read.'}, A); byId(p, id).provenance = {reviewed: {by: A, at: AT, how: 'confirmed'}};
+    p = acceptAs(p, B, AT); assert.equal(D.adoptionAccepted(p, byId(p, id)), true); assert.deepEqual(earlier(p), [], 'accepted while the earlier path reads the design current');
+    // a source of the design changes that the adoption does not rest on by id (another quality driver): the tracker has nothing to flag, and the
+    // earlier path raises its finding for the same design, an error
+    const prior = p, next = structuredClone(p), other = next.quality.drivers.find(d => d.id !== byId(p, id).scope.driverId && d.id === 'QD-001'); other.response = (other.response || '') + ' Revised.';
+    pkg().track(prior, next, {type: 'quality.driver', payload: {id: other.id}}, LATER); p = withFinalReview(next);
+    assert.deepEqual(earlier(p), ['error'], 'the earlier path\'s finding for DES-003 stands'); assert.equal(read(p).changed.required, false, 'the tracker flagged nothing: the adoption does not rest on that record by id');
+    assert.equal(D.adoptionAccepted(p, byId(p, id)), false, 'an acceptance is not read while the earlier path\'s finding for the same design stands (it was, before this case)');
+    { const g = read(p); assert.equal(g.accepted, false); assert.equal(g.label, 'applied · not accepted by a second person'); assert.deepEqual(g.basis, {state: 'changed', findingId: 'design-source:DES-003'}); assert.match(g.acceptance.next, /^ADP-003 rests on DES-003, whose sources changed: that design is reviewed first/); assert.equal(byId(p, id).review.actor, B, 'the step stays on record'); }
+    assert.throws(() => acceptAs(p, C, LATER), /ADP-003 rests on DES-003, whose sources changed \(design-source:DES-003 stands\): review that design first/, 'nor is another acceptance taken meanwhile');
+    // the earlier path's step re-reads the sources; the acceptance given before that does not stand again: a second person accepts the design as re-read
+    const REREAD = '2026-10-07T10:00:00.000Z', t = p.coauthoring.designTasks.find(x => x.id === 'DES-003');
+    p = step(p, 'architecture.refresh', {id: t.id, taskRevision: t.revision, reviewed: true, reviewer: 'Synthetic architect', reason: 'Reviewed the current sources of DES-003.', stamp: architectureSourceStamp(p, t)}, A, REREAD);
+    assert.deepEqual(earlier(p), [], 'architecture.refresh clears the earlier path\'s finding'); assert.deepEqual(read(p).basis, {state: 'current', findingId: null});
+    assert.equal(D.adoptionAccepted(p, byId(p, id)), false, 'an acceptance given before the design\'s sources were re-read does not stand again');
+    assert.match(read(p).acceptance.next, /a second signed-in person, who neither applied ADP-003 nor changed its facts, bindings, parameters or deviations, accepts it\.$/i);
+    p = acceptAs(p, B, '2026-10-08T10:00:00.000Z'); assert.equal(D.adoptionAccepted(p, byId(p, id)), true, 'accepted again, of the design as re-read'); assert.equal(read(p).label, 'applied · accepted by ' + B);
+    // an acceptance and a source review of the same instant: the acceptance is of the design as re-read
+    { const d = structuredClone(p); byId(d, id).review.at = REREAD; assert.equal(D.adoptionAccepted(d, byId(d, id)), true); byId(d, id).review.at = '2026-10-07T09:59:59.999Z'; assert.equal(D.adoptionAccepted(d, byId(d, id)), false); }
+    pass('J6, after the acceptance: an adoption is not read as accepted while the earlier path\'s finding for the same design stands (a source changed that the tracker does not watch), no acceptance is taken meanwhile, and an acceptance given before architecture.refresh re-read the design does not stand again: a second person accepts the design as re-read');
+  });
+
   // ------------------------------------------------------------ J9, J12: who wrote the records
   await block('J9 SDD provenance', async () => {
     pkg(); const {provenanceReading, architectureMarkdown} = await import('../public/sdd-architecture.js');
