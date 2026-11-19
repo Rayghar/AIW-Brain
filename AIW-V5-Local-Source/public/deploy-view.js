@@ -23,6 +23,10 @@ import {chapterLenses} from './lens-vocabulary.js';
 import {esc} from './html-escape.js';
 import {readStoredObject} from './util.js';
 import {scaleReadings, fmtN} from './desk-capacity.js';
+// The design package of the typed deployment topology is held in this lazy entry (rc44, wp9a slice 1; the lead's
+// ruling A3): it registers when this module arrives, and its route stub loads this entry for a document that holds
+// the marker runtime.topology.
+import './topology.js';
 // Round 24 (D-24-08): the model and its pictures read the shell's module scope (project-context.js scopedProject: the saved
 // document without one); Sol, proposals and editors keep the saved document.
 // A model change previewed in this chapter shows its banner above the model (as in Chapters 4–8); without

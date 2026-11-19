@@ -13,4 +13,7 @@
 // (entry.js), whose own dynamic imports are measured as the route (client-bundle.mjs sizeReport), or the package
 // would be counted there.
 //
-// No package exists yet. A slice that adds one adds its line below, and nothing else in the shared machinery.
+// A slice that adds a package adds its line below, and nothing else in the shared machinery.
+import {registerExtension} from './design-extensions.js';
+// p30-deployment (wp9a): held in the lazy entry of the Chapter 10 Model view (ruling A3), which imports topology.js.
+registerExtension({id:'p30-deployment-route',needs:p=>p.runtime?.topology,load:()=>import('./deploy-view.js')});
