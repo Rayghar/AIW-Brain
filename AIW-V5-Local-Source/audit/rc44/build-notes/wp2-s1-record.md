@@ -201,7 +201,7 @@ this machine at the baseline.
 | Script files | 148 | 148 |
 | Files under 10 KB | 53 | 53 |
 | Stylesheet | 901,873 B | 901,873 B |
-| **Opens with records** (ruling D10) | 3,308,964 B as S0 measured it (79,189 B beside the route, 2 scripts) | **3,324,977 B** (94,821 B beside the route, 2 scripts); the first build measured 3,327,437 B (97,372 B), with the upgrade in the browser's entry |
+| **Opens with records** (ruling D10) | 3,308,964 B as S0 measured it (79,189 B beside the route, 2 scripts) | **3,325,174 B** (95,018 B beside the route, 2 scripts); the first build measured 3,327,437 B (97,372 B), with the upgrade in the browser's entry |
 
 The base figure is the lead's (`audit/rc44/evidence/merge-s0-wp1-2026-11-19.json`: 3,229,840 B). The 316 B hold the
 route stub and the first use of `registerExtension` on the route, the emitter's skip of a task that has an adoption,
@@ -228,8 +228,9 @@ measured 304 B against S0 before its second round. No gate was changed.
   earlier failures in the same blocks: "ADP is free" (block "SF start check") and the `designKeys` probe that named
   `adoptions` (block "D3 workbench keys"). Both failed because of how the package was built, not because a package
   exists. Rulings J10 and J3 gave the rows that settle them.
-- The first build said a baseline could not be frozen in the fixture because of its blockers. A working-draft freeze
-  needs only current checks; the suite now freezes one before the upgrade (block "J3 design statement").
+- The first build held e.3 rule 2 for a frozen baseline only indirectly (the review cites the fixture's blockers as
+  the reason it gave; I did not find that sentence in the notes as committed). A working-draft freeze needs only
+  current checks; the suite now freezes a baseline before the upgrade (block "J3 design statement").
 - The base of the first build was `8e8240e`, not `72204ff` as its task text said: ruling F3's helper exists only from
   there.
 
