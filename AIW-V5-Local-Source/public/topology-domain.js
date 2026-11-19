@@ -20,9 +20,9 @@
 //                 draft by Sol or an agent account sends a node or a domain as its proposal (origin sol-draft). A
 //                 proposal is named by no zone, placement or node and is read by nothing until a person keeps it or
 //                 saves a change to it; only the tree link (parentId) may name one, so that a drafted tree can stand.
-import {withRuntime} from './runtime-domain.js';
 import {failureDomainKey,hostingZone,statedField} from './runtime-model.js';
-import {NOT_STATED,SEEDED,PROPOSED,isProposed,authoredOrigin,authored,patchFields,patchLinks,patchOpen,sameRecord,retiredOf,fitText} from './technology-domain.js';
+import {NOT_STATED,SEEDED,PROPOSED,authoredOrigin,authored,patchFields,patchLinks,patchOpen,sameRecord,retiredOf,fitText} from './technology-domain.js';
+import {isProposed} from './record-lifecycle.js';
 import {withChanges} from './changes-domain.js';
 import {list} from './util.js';
 
@@ -186,10 +186,12 @@ function locate(p,raw){
 // ---------------------------------------------------------------- the commands
 export const UNTYPED='This project\'s topology is not typed yet. A signed-in person chooses that first (runtime.topology-start).';
 // (document, command, at, actor, {author}) as every handler is called; inside a reviewed batch with the first four.
-// A change of Chapter 10 moves its version and clears its check and handoff, as its own commands do, and a change of
-// Chapter 6 its own; AIW's proposals and a step taken again move neither.
-export function applyTopologyCommand(input,command,at,actor,options){
- const p=withRuntime(input),m=p.runtime,t=p.technology,raw=command.payload||{},type=command.type,touch=s=>{s.version++;s.review=null;s.handoff=null;};
+// It works on the copy it is handed (the server's boundary and the staged path each hand it one), a settled document:
+// one that holds its chapters. A change of Chapter 10 moves its version and clears its check and handoff, as its own
+// commands do, and a change of Chapter 6 its own; AIW's proposals and a step taken again move neither.
+export function applyTopologyCommand(p,command,at,actor,options){
+ const m=p.runtime,t=p.technology,raw=command.payload||{},type=command.type,touch=s=>{s.version++;s.review=null;s.handoff=null;};
+ if(!m||!t)throw Error('Open the project before changing its topology.');
  if(type==='runtime.topology-start'){
   // Idempotent: once a person here has chosen it, the step is on record and a second request changes nothing. In a
   // project copied from a template the topology is typed and the step is nobody's yet: a person takes it again there.

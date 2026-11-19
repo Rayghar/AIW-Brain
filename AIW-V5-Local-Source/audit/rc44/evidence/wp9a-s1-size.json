@@ -1,0 +1,57 @@
+{
+ "schema": "aiw.rc44.slice-size.v1",
+ "name": "wp9a slice 1: typed failure domains, nodes and registration (p30-deployment)",
+ "measuredWith": "client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)",
+ "allowance": {
+  "chapters": 500,
+  "scripts": 148,
+  "ruling": "A4 of 2026-11-18: 500 B on the chapters route for all of wp9a; slice 1 well under half"
+ },
+ "caps": {
+  "chapters": 3233792,
+  "projects": 1242112,
+  "scripts": 148,
+  "under10k": 61,
+  "css": 902144
+ },
+ "baseline": {
+  "commit": "9673661",
+  "chapters": 3229840,
+  "projects": 506829,
+  "scripts": 148,
+  "under10k": 53,
+  "css": 901873
+ },
+ "slice": {
+  "chapters": 3230089,
+  "projects": 507062,
+  "scripts": 148,
+  "under10k": 53,
+  "css": 901873
+ },
+ "delta": 249,
+ "projectsDelta": 233,
+ "headroomAfter": 3703,
+ "onRoute": "Read from the metafiles of the two builds, output by output. The package's own: its route stub in public/design-package-routes.js with the import of registerExtension there (118 B), and the typed-domain reading in public/runtime-model.js failureDomainKey (design hook H1, 21 B). The first package to register a stub also brings registerExtension itself onto the route: 94 B in the registry's chunk and 16 B in the import lists of two route chunks whose aliases move with the new export. That part is paid once, by whichever package merges first (wp2's first slice measures it too). The package's modules import only what the route already exports, so they add no export.",
+ "itemised": {
+  "stubWithItsImport": 118,
+  "failureDomainKey": 21,
+  "registerExtensionOnTheRouteOnce": 94,
+  "aliasShiftsOfThatExport": 16
+ },
+ "opens with records": {
+  "gate": "The chapters-route gate is unchanged and measures opening a document that holds no package records (ruling D10 of 2026-11-18).",
+  "host": "public/deploy-view.js",
+  "route": 3230089,
+  "added": 849271,
+  "total": 4079360,
+  "files": 12,
+  "beforeThePackage": {
+   "route": 3229840,
+   "added": 833044,
+   "total": 4062884,
+   "files": 12
+  },
+  "note": "A document that holds the marker runtime.topology also loads the lazy entry of the Chapter 10 Model view, which holds the package, before it is first drawn: the route and the static closure of that entry, each script counted once."
+ }
+}
