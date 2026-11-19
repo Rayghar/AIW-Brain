@@ -6,7 +6,24 @@ Branch `rc44/wp2-s1-record`, from `8e8240e` (S0's fix-up head `72204ff` plus the
 `productionAccepted` stays false. No external authority is impersonated: nothing here approves, releases or accepts
 anything for a person.
 
-## State
+## Fix-up (after the adversarial review; rulings of 2026-11-19, section J)
+
+Branch `rc44/wp2-s1-record-fix`, from the builder's head `13a72c2`, merged with `rc44/integration` (`b59bc88`: the
+final S0, wp1 S1, the rulings to section I). Review: `/home/user/hb-review/rc44-build/wp2-s1-record.review.json`.
+Rulings: section J of `RULINGS-2026-11-18.md` (in the main checkout; not on this branch).
+
+**State of the fix-up (kept current; a session can be cut off):**
+
+- Item 0, the merge: done (`a2403ab`, no conflict). The three rc44 suites on the merged head, before any change:
+  `rc44-wp1-knowledge` 34 passed; `rc44-wp2-adoption` 11 of 12 (block `size`: the evidence file was measured against
+  the S0 figure before S0's second round, `304 !== 290`); `rc44-s0-extensions` 13 of 22. The nine S0 blocks that fail
+  because a real package is registered: `6a no extension registered`, `registration`, `D2 packages a document names`,
+  `D3 workbench keys`, `D5 SDD provenance`, `SF start check`, `needs and load`, `7 idempotent and order-free`,
+  `8 client build`.
+- Item 1 (J11): in progress.
+- Items 2 to 5: next, in the order of the task.
+
+## State (of the first build)
 
 - **Done:** the package `p40-adoption` (record, reading and findings, emitter, layer `mechanism`, five steps, tracker,
   upgrade, built-in skeletons, definition shape), its two lines, its host entry, three edits of built-in code, the
