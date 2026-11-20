@@ -40,7 +40,7 @@ import {decisionFindings} from './public/decisions-domain.js';
 import {chapterChecks, sddBoard} from './public/readiness-model.js';
 import * as canonical from './public/canonical-command.js';
 import {COLLECTIONS, retiredRecords, retirable, referencesTo} from './public/record-lifecycle.js';
-import {eachRecord, findRecord, RECORD_NOUNS, RECORD_PATHS} from './public/provenance.js';
+import {eachRecord, findRecord, RECORD_NOUNS, RECORD_PATHS, authorship} from './public/provenance.js';
 import {architectureMarkdown, provenanceReading} from './public/sdd-architecture.js';
 import {isReviewCommand} from './authorship.js';
 import {documentCopy, isSettled} from './public/document-memo.js';
@@ -1431,6 +1431,45 @@ await block('8 client build', async () => {
   assert.ok(measured.chapters >= size.slice.chapters - 700, 'the route as built now is the slice\'s or a later one\'s: ' + measured.chapters);
   if (process.env.AIW_S0_MEASURE || process.argv.includes('--measure')) assert.deepEqual(measured, size.slice, 'at the slice\'s commit the build measures what the evidence says');
   pass('8: the client build passes every gate with the caps unchanged; S0 measured ' + size.delta + ' B on the chapters route (' + size.baseline.chapters + ' → ' + size.slice.chapters + ' of ' + BUDGET.routes.chapters + '), 148 script files; the registry is ' + on[0][1].bytesInOutput + ' B; this build: ' + measured.chapters + ' B');
+});
+
+// ---------------------------------------------------------------- L1. keeping a proposal is a signed-in person's step
+// (the lead's ruling L1 of 2026-11-20) record.keep makes AIW's proposal a person's record. An agent account, a draft by
+// Sol and an import keep nothing: refused alone and as an inner command of a reviewed batch or of a saved alternative,
+// at any depth. A person's keep is taken as on rc.10.73.42 and stamped as kept by them. Built-in records first (the gap
+// is there on 94dbd4f for AIW's own proposals); every package's records ride the same rule.
+await block('L1 keep is a person\'s step', async () => {
+  const {refuseUnreviewable} = await import('./authorship.js');
+  const h = await harness(), d = () => h.state.document, SOL = {authorKind: 'sol-draft', reason: 'Drafted.'}, IMPORT = {authorKind: 'import', reason: 'Imported.'};
+  try {
+    // a blank project of A's, where AIW proposes the needs a component states (the reference project holds its needs already)
+    { const made = await h.api('/api/projects', 'POST', {name: 'Keep probe', template: 'blank'}); assert.equal(made.status, 201); h.pid = (await made.json()).document.id; h.q = '?project=' + encodeURIComponent(h.pid);
+      for (const actorId of [B, C, AGENT]) assert.equal((await h.api('/api/access' + h.q, 'POST', {actorId, role: 'editor'})).status, 200); }
+    assert.equal((await h.send('realisation.component', {title: 'Keep probe service', kind: 'service', purpose: 'Takes probes.', technologyNeeds: 'Persist each probe record and authenticate the caller.'})).status, 200);
+    const seeds = d().technology.needs.filter(n => n.state === 'proposed' && n.origin === 'seeded').map(n => n.id); assert.ok(seeds.length >= 2, 'AIW proposed needs');
+    const [one, two] = seeds, keep = id => ({type: 'record.keep', payload: {ids: [id], chapter: 6}}), still = id => assert.equal(d().technology.needs.find(n => n.id === id)?.state, 'proposed', id + ' is still a proposal');
+    const batch = async (commands, as, extra) => { await h.read(as); return h.send('workspace.apply', {commands, stamp: previewWorkingChange(d(), commands).stamp, reason: 'A batch.', reviewed: !extra?.authorKind}, as, extra); };
+    const alternative = async (commands, as, extra) => { await h.read(as); return h.send('workspace.alternative', {commands, stamp: previewScenarioAlternative(d(), commands, undefined).stamp, title: 'A kept proposal', reason: 'An alternative.'}, as, extra); };
+    for (const [as, extra, who] of [[AGENT, {}, 'an agent account'], [A, SOL, 'a draft by Sol'], [A, IMPORT, 'an import']]) {
+      for (const [how, send] of [['alone', () => h.send('record.keep', keep(one).payload, as, extra)], ['in a reviewed batch', () => batch([keep(one)], as, extra)], ['in a saved alternative', () => alternative([keep(one)], as, extra)]]) {
+        const r = await send();
+        assert.equal(r.status, 400, who + ' keeps nothing ' + how + ': ' + JSON.stringify(r.body).slice(0, 200)); assert.equal(r.body.code, 'authorship', who + ' ' + how);
+        assert.match(r.error, /A signed-in person keeps a proposal/, who + ' ' + how + ': ' + r.error); assert.ok(!/record\.keep/.test(r.error), 'the refusal names no command type');
+        await h.read(); still(one);
+      }
+    }
+    // at any depth: a keep inside an applied impact inside a batch
+    { const deep = {type: 'workspace.apply', payload: {commands: [{type: 'model.apply-impact', payload: {command: keep(one)}}]}};
+      for (const author of [{kind: 'sol-draft', account: 'agent'}, {kind: 'sol-draft', account: 'person'}, {kind: 'import', account: 'person'}]) assert.throws(() => refuseUnreviewable(deep, author), /A signed-in person keeps a proposal/, JSON.stringify(author));
+      assert.doesNotThrow(() => refuseUnreviewable(deep, {kind: 'person', account: 'person'}), 'a person\'s keep at any depth is taken'); }
+    // a person's keep: alone and in a batch, as today, stamped as kept by them
+    assert.equal((await h.send('record.keep', keep(one).payload, B)).status, 200);
+    // (a need's keep dates it, keptAt, so the person's stamp is the author stamp from AIW's words, as on rc.10.73.42)
+    const theirs = n => [n.state, n.origin, n.provenance?.author?.kind, n.provenance?.author?.by, n.provenance?.author?.from, authorship(n)];
+    let n = d().technology.needs.find(x => x.id === one); assert.deepEqual(theirs(n), [undefined, 'suggestion', 'person', B, 'seeded', {kind: 'person', from: 'seeded'}]);
+    { const r = await batch([keep(two)], B); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); n = d().technology.needs.find(x => x.id === two); assert.deepEqual(theirs(n), [undefined, 'suggestion', 'person', B, 'seeded', {kind: 'person', from: 'seeded'}]); }
+  } finally { h.close(); }
+  pass('L1: record.keep from an agent account, a draft by Sol or an import is refused alone, in a reviewed batch, in a saved alternative and at any depth, and AIW\'s proposal stays one; a person\'s keep is taken alone and in a batch and stamped as kept by them');
 });
 
 assert.deepEqual(failed, [], 'every rc44 S0 block passes');

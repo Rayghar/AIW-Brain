@@ -34,6 +34,25 @@ fail on the head the item started from, then the change. One line per item; deta
   order with `upgradeNote` one part's; case S1.11 (seen to fail: "a part states “design”, which the assembly does not
   carry"; old -> new: "a part that states `upgrade` is refused" -> "`upgrade` is carried, `needs` is refused").
 
+- **Item 2, L1 (must-fix 1; concern 1):** done. `authorship.js` `refuseUnreviewable`: record.keep from an agent
+  account, a draft by Sol or an import is refused (400, code `authorship`, "A signed-in person keeps a proposal: …";
+  no command type named), alone and as a command any change carries (`payload.commands`, `payload.command`), at any
+  depth up to 8, for every record, built in or a package's. A person's keep is taken as today (a built-in need is
+  stamped as the person's author from AIW's words, as on rc.10.73.42; a package's record `reviewed.how 'kept'`).
+  The package binds a record of AIW's or Sol's words that is no proposal only with a person's stamp behind it
+  (`authoredRecord`): a keep that stamps nobody (inside a merged alternative, ruling D12) binds nothing. Cases: S0's
+  new block `L1 keep is a person's step` (built-in seeded needs; seen to fail: the agent's keep answered 200) and
+  S1.12 (a node Sol drafted and a domain AIW proposed; seen to fail: 200). Replaced: S1.5 "the handler's keep alone
+  binds" -> "it binds once the person's stamp the server writes stands; unstamped it is refused". Suites that send
+  record.keep through the server were run: see "Suites" under the fix-up.
+- **Item 3, L2 (must-fix 2 and 4; concern 4):** done. One reader `hostingComparison(p, environmentId)` in
+  `public/topology-domain.js` (`mixed`, `nested`, `not-standing`), and Chapter 10's error `topology-incomparable:<env>`
+  (`hard`, a `checks` row of the package: no route bytes) naming the zones and what a person does. Case S1.13 (seen to
+  fail: with zone 1 typed and zone 2 named, neither the six findings nor an error stood): the reviewer's walk holds
+  in every state; (b) and four forms of (c); an untyped project gains nothing; a shared stated cause still reads as
+  independent, marked for slice 2 to flip. Retirement list: two rows added (shared cause: slice 2; parent and child:
+  slice 2 extends the reader). Replaced: S1.11 "the package states no check" -> "one check, Chapter 10's".
+
 ## What was built
 
 | File | Where it runs | What it is |
@@ -157,6 +176,9 @@ D8's key and read a zone's failure domain by its name until their slice moves th
 | The desk's region guess from words in the name | `public/desk-capacity.js` | slice 6 (H13, R2) |
 | Chapter 6's three string comparisons of a capability's domains | `public/technology-domain.js` | slice 5 (H14, R3, R4); no capability is typed before it |
 | The zone's attribute "Domain" in the model projection (the name as words) | `public/runtime-model.js` `runtimeProjection` | slice 6 with the surface |
+| Two zones that share a stated cause (`domainIds` after the first) read as independent in the built-in checks (`single-domain`, `standby`, `backup-domain`), `planFacts` and the desk: they compare the hosting domain only | `public/runtime-domain.js`, `public/design-reasoning.js`, the desk | slice 2 (the finding for a shared cause, evaluated over the ancestors); case S1.13 holds today's reading, marked "SLICE 2 FLIPS THIS" (ruling L2) |
+| A zone in a domain inside another zone's hosting domain (parent and child) is not compared at all: the package's error `topology-incomparable` stands instead (ruling L2 (b)) until a reader evaluates over the ancestors | `public/topology-domain.js` `hostingComparison` | slice 2 extends `hostingComparison` to compare over the ancestors; the error stays until then |
+| The Chapter 10 register prints the zones by name ("AZ-1", "AZ-2") beside the finding that they share one failure domain; no register, SDD or ARS prints an FD or DN reference (ruling L9) | `public/runtime-domain.js` register, `public/sdd-architecture.js` | slice 6 (H12, the typed location printed) |
 
 Until slice 6 no surface offers the topology commands, so a document is typed only through the command route.
 Between this slice and slices 2 and 6 such a document reads a typed zone as its typed domain in the checks and at

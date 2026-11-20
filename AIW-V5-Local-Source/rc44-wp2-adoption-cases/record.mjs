@@ -779,10 +779,14 @@ export default async function ({block, pass, load}) {
       + 'console.log(JSON.stringify({before, needs, plain, early, after: EXTENSIONS.map(x => x.id), parts: e ? Object.keys(e).sort() : null, digests: R.digests(read()), old: R.digests(R.reference("bank-payment"))}));';
     const r = spawnSync(process.execPath, ['--input-type=module', '-e', script], {encoding: 'utf8', maxBuffer: 1 << 26}); assert.equal(r.status, 0, 'the browser-like process: ' + r.stderr.slice(0, 500));
     const out = JSON.parse(r.stdout.trim().split('\n').at(-1));
-    assert.deepEqual(out.before, [PACKAGE + '-route'], 'before any document is read the route holds the stub and no package');
+    // (with wp9a merged; was: out.before equals [PACKAGE + '-route']) The route holds the stub of every package of the
+    // build, read from the browser's list, and no package; ensureExtensions adds this package and no other.
+    const stubs = [...readFileSync('public/design-package-routes.js', 'utf8').matchAll(/^registerExtension\(\{id:'([a-z0-9-]+)'/gm)].map(m => m[1]).sort();
+    assert.ok(stubs.includes(PACKAGE + '-route') && stubs.every(id => id.endsWith('-route')), 'the browser\'s list names this package\'s stub: ' + stubs.join(', '));
+    assert.deepEqual(out.before, stubs, 'before any document is read the route holds the stubs and no package');
     assert.equal(out.needs, true, 'the stub asks for the lazy entry for a document that holds adoptions'); assert.equal(out.plain, false, 'and for none without');
     assert.equal(out.early, false, 'until the entry has arrived no reader knows the adoption (the built-in emitter skips its task): the store loads it before the first draw');
-    assert.deepEqual(out.after, [PACKAGE, PACKAGE + '-route'], 'ensureExtensions loads the entry, and the package registers when it arrives');
+    assert.deepEqual(out.after, [...stubs, PACKAGE].sort(), 'ensureExtensions loads the entry, and the package registers when it arrives (was: [PACKAGE, PACKAGE + \'-route\'])');
     assert.deepEqual(out.parts, ['checks', 'commands', 'design', 'hops', 'id', 'layers', 'prefixes', 'provenance', 'records', 'track'], 'the browser\'s package has no upgrade step (ruling J12): the browser reads no old document with it');
     assert.deepEqual(Object.keys(pkg()).sort(), [...out.parts, 'upgrade', 'upgradeNote'].sort(), 'the server\'s is the same package with its upgrade');
     assert.deepEqual(out.digests, digests(asWritten(structuredClone(doc))), 'and the document reads there as the server reads it: graph, model, trails, findings, stamps, readiness, provenance, registers, SDD, ARS');

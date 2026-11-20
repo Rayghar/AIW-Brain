@@ -79,8 +79,11 @@ function patchParent(xs,old,raw,noun,max){
 // A link list as every save takes one (whole, or {add, remove}; null clears it; each id exists), bounded here in the
 // record's own words.
 function patchBounded(old,raw,f,exists,noun,max,owner){const ids=patchLinks(old,raw,f,exists,noun,Infinity);if(ids.length>max)throw Error(owner+' names up to '+max+' '+noun+'; '+fmt(ids.length)+' were sent.');return ids;}
-// A record a zone, a placement or a node may name: there, and a person's (written or kept).
-function authoredRecord(xs,id,noun){const r=find(xs,id);if(!r)throw Error('Choose an existing '+noun+'.');if(isProposed(r))throw Error(refOf(r)+' is still a proposal: keep it first.');return r;}
+// A record a zone, a placement or a node may name: there, and a person's (written or kept). A record of AIW's or Sol's
+// words that is no proposal is a person's only with a person's stamp behind it (ruling L1: a keep that stamps nobody,
+// as inside a merged alternative, makes nobody's record).
+const PROPOSER=new Set([DRAFT,'suggestion']),stood=r=>{const v=r.provenance||{};return v.author?.kind==='person'||['kept','confirmed'].includes(v.reviewed?.how);};
+function authoredRecord(xs,id,noun){const r=find(xs,id);if(!r)throw Error('Choose an existing '+noun+'.');if(isProposed(r))throw Error(refOf(r)+' is still a proposal: keep it first.');if(PROPOSER.has(r.origin)&&!stood(r))throw Error(refOf(r)+' is no person\'s record yet: a person keeps it first.');return r;}
 function revise(r,at,origin){r.history=[...list(r.history),{at,revision:r.revision,title:r.title,...(origin&&origin!==r.origin?{origin:r.origin}:{})}];if(r.history.length>24)r.history=[r.history[0],...r.history.slice(-23)];r.revision++;}
 // Stores a save. A new record is its author's, or Sol's proposal when the save says it is a draft (origin sol-draft).
 // A person's save of a proposal makes it authored; a draft's save of a proposal leaves it one, and its save of an
@@ -181,6 +184,43 @@ function locate(p,raw){
  if(nodeId===(z.nodeId||'')&&reason===(z.reason||'')&&JSON.stringify(domainIds)===JSON.stringify(list(z.domainIds)))return {selected:z.id,changed:false};
  const next={...z,revision:(z.revision||0)+1};put(next,'nodeId',nodeId);put(next,'domainIds',domainIds);put(next,'reason',reason);m.zones[m.zones.indexOf(z)]=next;
  return {selected:z.id,changed:true};
+}
+
+// ---------------------------------------------------------------- whether zones can be compared
+// (ruling L2) The one reader of whether the hosting zones of an environment can be compared for independence, which
+// every comparison the package makes and every later slice reads (slices 2 and 6 extend it; none writes a second one).
+// They cannot when some stand in a typed failure domain and others are only named (a typed domain and a name are never
+// compared: 'mixed'), when the hosting domain of one lies inside the hosting domain of another ('nested'), or when a
+// zone names a hosting domain, a cause or a node that is not standing: not there, retired, a proposal, or no person's
+// ('not-standing'). Answers {comparable, zones, issues: [{kind, zones, ids}]}; an untyped project's zones are compared
+// by name as on rc.10.73.42.
+const standing=(xs,id)=>{const x=find(xs,id);return x&&!isProposed(x)&&(!PROPOSER.has(x.origin)||stood(x))?x:null;};
+export function hostingComparison(p,environmentId){
+ const zs=list(p?.runtime?.zones).filter(z=>z?.environmentId===environmentId&&hostingZone(z)&&!isProposed(z)),issues=[];
+ if(!topologyTyped(p))return {comparable:true,zones:zs.map(z=>z.id),issues};
+ const domains=failureDomains(p),nodes=deploymentNodes(p);
+ for(const z of zs){const gone=[...list(z.domainIds).filter(id=>!standing(domains,id)),...(z.nodeId&&!standing(nodes,z.nodeId)?[z.nodeId]:[])];if(gone.length)issues.push({kind:'not-standing',zones:[z.id],ids:gone});}
+ const typed=zs.filter(z=>list(z.domainIds).length),named=zs.filter(z=>!list(z.domainIds).length&&statedField(z,'failureDomain'));
+ if(typed.length&&named.length)issues.push({kind:'mixed',zones:[...typed,...named].map(z=>z.id),ids:[]});
+ for(const a of typed)for(const b of typed){const da=standing(domains,a.domainIds[0]),db=standing(domains,b.domainIds[0]);if(a!==b&&da&&db&&da.id!==db.id&&above(domains,db).some(x=>x.id===da.id))issues.push({kind:'nested',zones:[a.id,b.id],ids:[da.id,db.id]});}
+ return {comparable:!issues.length,zones:zs.map(z=>z.id),issues};
+}
+// Chapter 10's finding for it: one error for each environment whose hosting zones cannot be compared, which no
+// treatment waives (hard): while it stands the chapter is not ready and the review is blocked. It names the zones and
+// what a person does.
+export function topologyFindings(p){
+ if(!topologyTyped(p))return [];
+ const zone=id=>refOf(find(p.runtime.zones,id))||id,dom=id=>refOf(find(failureDomains(p),id))||refOf(find(deploymentNodes(p),id))||id,out=[];
+ for(const env of list(p.runtime.environments)){
+  const {issues}=hostingComparison(p,env.id);if(!issues.length)continue;
+  const say=issues.map(x=>{
+   if(x.kind==='mixed'){const typed=x.zones.filter(id=>list(find(p.runtime.zones,id).domainIds).length).map(zone),named=x.zones.filter(id=>!list(find(p.runtime.zones,id).domainIds).length).map(zone);return and(typed)+(typed.length>1?' stand':' stands')+' in a typed failure domain and '+and(named)+(named.length>1?' are':' is')+' only named: a typed domain and a name are never compared. Locate '+and(named)+' in '+(named.length>1?'their':'its')+' failure domain, or clear where '+and(typed)+(typed.length>1?' stand.':' stands.');}
+   if(x.kind==='nested')return dom(x.ids[1])+', where '+zone(x.zones[1])+' stands, lies inside '+dom(x.ids[0])+', where '+zone(x.zones[0])+' stands: what loses '+dom(x.ids[0])+' loses both. Locate each zone in the failure domain it stands in on its own.';
+   return zone(x.zones[0])+' names '+and(x.ids.map(dom))+', which '+(x.ids.length>1?'are':'is')+' not standing in the design (retired, a proposal or not there). Locate '+zone(x.zones[0])+' anew.';
+  });
+  out.push({id:'topology-incomparable:'+env.id,code:'topology-incomparable',level:'error',hard:true,objectId:env.id,title:'The zones of '+(env.ref||env.title||env.id)+' cannot be compared for independence',detail:say.join(' ')});
+ }
+ return out;
 }
 
 // ---------------------------------------------------------------- the commands
@@ -290,6 +330,7 @@ export const TOPOLOGY_PART={
  layers:{node:'node',domain:'failureDomain'},
  hops:[{layer:'node',types:['sitsIn'],from:['zone','placement'],dir:'out',ctx:false},{layer:'domain',types:['failsWith'],from:['zone','node'],dir:'out',ctx:false}],
  commands:{'runtime.topology-start':{apply:applyTopologyCommand,person:true},'technology.domain':record,'technology.domain-proposals':{apply:applyTopologyCommand},'runtime.node':record,'runtime.locate':edit},
+ checks:{10:topologyFindings},
  track:trackTopology,
  lifecycle:{'technology.domains':6,'runtime.nodes':10},
  provenance:{nouns:{'technology.domains':'failure domain','runtime.nodes':'deployment node'},paths:{'technology.domain':['technology.domains'],'technology.domain-proposals':['technology.domains'],'runtime.node':['runtime.nodes']}},

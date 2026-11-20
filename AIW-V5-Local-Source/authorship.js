@@ -62,8 +62,15 @@ export function claimsReview(value,depth=0){
  }
  return null;
 }
+// (rc44, the lead's ruling L1 of 2026-11-20) Keeping a proposal (record-lifecycle.js record.keep) makes AIW's or Sol's
+// words a person's record: a signed-in person's step, for every record, built in or a design package's. An agent account,
+// a draft by Sol and an import keep nothing, alone or as a command any change carries (a reviewed batch, a saved
+// alternative, an applied impact), at any depth.
+const carried=c=>{const x=c?.payload;return !x||typeof x!=='object'?[]:[...(Array.isArray(x.commands)?x.commands:[]),...(x.command&&typeof x.command==='object'?[x.command]:[])];};
+const keeps=(c,depth=0)=>!!c&&typeof c==='object'&&depth<=8&&(c.type==='record.keep'||carried(c).some(x=>keeps(x,depth+1)));
 // Refuses what the author may not do (above), before anything is applied.
 export function refuseUnreviewable(command,author){
+ if((author.kind!=='person'||author.account==='agent')&&keeps(command))throw Error('A signed-in person keeps a proposal: '+(author.account==='agent'?'an agent or service account':author.kind==='import'?'an import':'a draft by Sol')+' sends it as it is, and a person keeps it from the review plan.');
  if(author.kind!=='sol-draft'&&author.account!=='agent')return;
  const who=author.account==='agent'?'An agent or service account':'A draft by Sol';
  if(isReviewCommand(command?.type))throw Error(who+' does not review, confirm, accept or approve ('+command.type+'). A person signs in to do that.');
