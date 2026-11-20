@@ -423,6 +423,14 @@ export default async function ({block, pass, load}) {
     // (rulings J1 and should-fix 1; was: the projection equals {id, actor: null, history: []}: it now carries the owner)
     assert.deepEqual(D.acceptanceSubject(x, copy), {id, actor: null, owner: x.owner, history: []}, 'nobody applied or confirmed it here: the applier named in the template is history from elsewhere'); assert.match(verifierRefusal(D.acceptanceSubject(x, copy), B, 'person'), /names no author/);
     assertFindingIdsUnique(copy); R.assertStepsMoveNoStamp(copy, records);
+    // ruling K2 (the fix-up's open question): a copy is the same whether or not anyone opened the template on this build. A template row an earlier build
+    // stored (applied designs, no adoption) gives a copy with the adoptions the read would have stored, each without the steps taken in the template.
+    { const older = {...beforeAdoptions(structuredClone(h.doc())), workspace: {...beforeAdoptions(structuredClone(h.doc())).workspace, reusableTemplate: true}}; assert.ok(!('adoptions' in older) && older.coauthoring.designTasks.some(t => t.status === 'applied'));
+      const opened = instantiateTemplate(withFinalReview(older), 'template-copy', 'A copy', LATER), unopened = instantiateTemplate(structuredClone(older), 'template-copy', 'A copy', LATER);
+      assert.deepEqual(records(opened).map(a => a.id), ['ADP-001', 'ADP-002', 'ADP-003']); assert.deepEqual(records(unopened), records(opened), 'the copy of a template row no read of this build has upgraded holds the same adoptions');
+      assert.deepEqual(unopened.workspace.packages, opened.workspace.packages); assert.deepEqual(unopened.workspace.packages, [PACKAGE], 'and names the package');
+      for (const a of records(unopened)) { assert.deepEqual([a.review ?? null, a.applied, a.confirmed ?? false, a.history], [null, null, false, []], a.id + ': without the steps taken in the template'); assert.equal(D.adoptionAccepted(unopened, a), false); assert.match(D.adoptionReading(unopened, a).label, /not applied or accepted in this project/); }
+      { const plain = instantiateTemplate({...R.reference('bank-payment'), workspace: {...R.reference('bank-payment').workspace, reusableTemplate: true}}, 'c', 'C', LATER); assert.ok(!('adoptions' in plain) && !plain.workspace.packages, 'a template without applied designs gives a copy without the key, naming no package'); } }
     pass('template copy (ruling F3): the acceptance is kept under review, which a project made from a template clears (assertTemplateCopyClearsSteps); in the copy the adoption reads "not applied or accepted in this project", says who must act, and nobody stands behind it until a person confirms it there');
   });
 
