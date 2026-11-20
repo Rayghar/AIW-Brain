@@ -52,7 +52,7 @@ import {previewWorkingChange, previewScenarioAlternative, rebaseWorkingAlternati
 import {reviewPlan} from './public/review-plan.js';
 import {instantiateTemplate} from './project-lifecycle.js';
 
-const {A, B, AGENT} = F, PACKAGE = 'p30-deployment', AT = '2026-11-19T10:00:00.000Z';
+const {A, B, C, AGENT} = F, PACKAGE = 'p30-deployment', AT = '2026-11-19T10:00:00.000Z';
 const checks = [], failed = [], pass = n => { checks.push(n); console.log('PASS ' + n); };
 const ONLY = process.env.AIW_WP9A_ONLY ? process.env.AIW_WP9A_ONLY.split(',') : null; // while working on one case: AIW_WP9A_ONLY=S1.2,S1.7
 const block = async (name, fn) => { if (ONLY && !ONLY.some(x => name.startsWith(x + ' '))) return; try { await fn(); } catch (e) { failed.push(name); console.log('FAIL ' + name + ': ' + (e?.stack || e?.message || e).split('\n').slice(0, process.env.AIW_WP9A_VERBOSE ? 40 : 4).join(' | ')); } };
@@ -234,7 +234,8 @@ await block('S1.2 one typed failure domain is one hosting failure domain', () =>
   refuses(p, 'runtime.locate', {placementId: placement.id, nodeId: 'dn-002'}, /does not lie under DN-002/, 'the zone\'s own node is not under it');
   refuses(p, 'runtime.locate', {placementId: 'PL-404', nodeId: 'dn-003'}, /Choose an existing zone or placement/);
   { const r = run(p, 'runtime.locate', {placementId: placement.id, nodeId: 'dn-003'}); p = r.document; const l = p.runtime.placements.find(x => x.id === placement.id);
-    assert.deepEqual([l.nodeId, l.revision, r.selected, r.selectedIds], ['dn-003', placement.revision + 1, I.apiPlan, [placement.id]]); }
+    // (ruling L4; was: r.selected is the plan, I.apiPlan) the command answers the record it wrote, the placement
+    assert.deepEqual([l.nodeId, l.revision, r.selected, r.selectedIds], ['dn-003', placement.revision + 1, placement.id, [placement.id]]); }
   refuses(p, 'runtime.locate', {zoneId: I.zone1, nodeId: 'dn-004'}, new RegExp(placement.id + ' stands in DN-003, which does not lie under DN-004'), 'a zone does not move from under its placements');
   refuses(p, 'runtime.locate', {zoneId: I.zone1, nodeId: null}, new RegExp(placement.id + ' stands in DN-003'), 'nor lose its node while a placement stands under it');
   // clearing gives the records back the shape they had
@@ -397,7 +398,8 @@ await block('S1.6 journalled and stamped by the server', async () => {
     // a placement located under its zone's node is journalled under the placement
     { ok(await h.send('runtime.node', {title: 'Reservation cluster', kind: 'cluster', parentId: 'dn-001'})); const cluster = h.state.selected, placement = d().runtime.placements.find(l => l.planId === I.apiPlan && l.zoneId === I.zone1);
       const r = await h.send('runtime.locate', {placementId: placement.id, nodeId: cluster}, B); ok(r); event = events().at(-1);
-      assert.deepEqual([r.body.selected, event.source, event.fields.map(f => [f.key, f.before, f.after]), event.actor], [I.apiPlan, {chapter: 10, id: placement.id, ref: placement.id, kind: 'placement', title: placement.id}, [['nodeId', '', cluster]], B]);
+      // (ruling L4; was: r.body.selected is the plan, I.apiPlan) the placement, the record the command wrote
+      assert.deepEqual([r.body.selected, event.source, event.fields.map(f => [f.key, f.before, f.after]), event.actor], [placement.id, {chapter: 10, id: placement.id, ref: placement.id, kind: 'placement', title: placement.id}, [['nodeId', '', cluster]], B]);
       assert.equal(d().runtime.placements.find(l => l.id === placement.id).provenance.author.by, B, 'and the placement is stamped as the commit\'s (selectedIds)'); }
     // what is no change of what a record says is not journalled: a keep, a retirement, a restore, and the zone's own save
     { ok(await h.send('runtime.node', {title: 'Spare site', kind: 'site'})); const spare = h.state.selected, last = events().at(-1).id, same = why => assert.equal(events().at(-1).id, last, why);
@@ -673,6 +675,34 @@ await block('S1.14 nothing left naming what is not there', async () => {
     e = doc(doc(e, 'record.retire', {id: room, chapter: 6, reason: 'Moved out for a while.'}), 'record.retire', {id: top, chapter: 6, reason: 'Moved out for a while.'});
     refuses(e, 'record.restore', {id: room, chapter: 6}, new RegExp(domainOf(p, top)?.ref || 'FD-', 'i'), 'a domain is not restored under a domain that is not there'); }
   pass('S1.14: after a batch that retires the plans, the zone, the node and the domain only it names and restores the zone and the plans, by a person and by an agent account, no zone or placement names a record that is not there and what was dropped is journalled; a zone made and located in one commit has its location journalled; a node is not restored while its parent or its failure domain is not standing, nor into a ninth level, and a domain not under a domain that is not there');
+});
+
+// (the lead's ruling L4; the review's must-fix 5) A command answers the record it wrote: runtime.locate on a placement
+// answers the placement, so that a batch restamps it as the commit's. A zone or a placement a merged alternative
+// relocates keeps its earlier stamp until the lead's slice for ruling D12 (a merge stamps no author).
+await block('S1.15 a locate answers what it wrote', async () => {
+  need();
+  const I = F.ids(), h = await F.server(worker), d = () => h.state.document, ok = (r, why) => assert.equal(r.status, 200, (why || 'accepted') + ': ' + JSON.stringify(r.body).slice(0, 300));
+  const batch = async (commands, as) => { await h.read(as); return h.send('workspace.apply', {commands, stamp: previewWorkingChange(d(), commands).stamp, reason: 'Located.', reviewed: as !== AGENT}, as); };
+  try {
+    ok(await h.send('runtime.topology-start', {})); ok(await h.send('runtime.node', {title: 'Bergen AZ 1', kind: 'availability-zone'})); const az = h.state.selected;
+    ok(await h.send('runtime.node', {title: 'Cluster A', kind: 'cluster', parentId: az})); const a = h.state.selected; ok(await h.send('runtime.node', {title: 'Cluster B', kind: 'cluster', parentId: az})); const b = h.state.selected;
+    ok(await h.send('runtime.locate', {zoneId: I.zone1, nodeId: az})); const placement = d().runtime.placements.find(l => l.planId === I.apiPlan && l.zoneId === I.zone1);
+    { const r = await h.send('runtime.locate', {placementId: placement.id, nodeId: a}); ok(r); assert.equal(r.body.selected, placement.id, 'alone, the placement is the record it wrote'); }
+    assert.deepEqual(d().runtime.placements.find(l => l.id === placement.id).provenance?.author?.by, A);
+    // the agent's batch: the placement is restamped as the draft it is
+    ok(await batch([{type: 'runtime.locate', payload: {placementId: placement.id, nodeId: b}}], AGENT), 'the agent\'s batch');
+    { const l = d().runtime.placements.find(x => x.id === placement.id); assert.deepEqual([l.nodeId, l.provenance?.author?.kind, authorship(l).kind], [b, 'sol-draft', 'sol-draft'], 'restamped as the commit\'s, in a batch too'); }
+    // a zone in a batch likewise
+    ok(await batch([{type: 'runtime.locate', payload: {zoneId: I.zone1, reason: 'Drafted reason.'}}], AGENT)); assert.equal(zoneOf(d(), I.zone1).provenance?.author?.kind, 'sol-draft');
+    // a merged alternative (ruling D12): the placement and the zone it relocates keep their earlier stamps; the case says so
+    { const commands = [{type: 'runtime.locate', payload: {placementId: placement.id, nodeId: a}}, {type: 'runtime.locate', payload: {zoneId: I.zone1, reason: 'Merged reason.'}}];
+      ok(await h.send('workspace.alternative', {commands, stamp: previewScenarioAlternative(d(), commands, undefined).stamp, title: 'Back to A', reason: 'Back.'}, B)); const alt = d().workbench.alternatives.at(-1);
+      ok(await h.send('workspace.merge', {id: alt.id, stamp: rebaseWorkingAlternative(d(), alt).stamp, reviewed: true, reason: 'Merged.'}, C));
+      const l = d().runtime.placements.find(x => x.id === placement.id); assert.equal(l.nodeId, a);
+      assert.deepEqual([l.provenance?.author?.kind, zoneOf(d(), I.zone1).provenance?.author?.kind], ['sol-draft', 'sol-draft'], 'KNOWN LIMIT (ruling D12): a merge stamps no author, so the relocated placement and zone keep the stamp they had'); }
+  } finally { h.close(); }
+  pass('S1.15: runtime.locate on a placement answers the placement as the record it wrote, alone and in a batch, so the agent\'s batch restamps it as the draft it is (a zone likewise); a placement and a zone a merged alternative relocates keep their earlier stamps until the slice of ruling D12');
 });
 
 await block('S1.9 staging; candidate knowledge reaches no topology reading', () => {

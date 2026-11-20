@@ -160,14 +160,15 @@ function locate(p,raw){
  if(raw.placementId!==undefined){
   const l=m.placements.find(x=>x.id===raw.placementId);if(!l)throw Error('Choose an existing zone or placement.');
   const z=m.zones.find(x=>x.id===l.zoneId),nodeId=raw.nodeId===undefined?l.nodeId||'':raw.nodeId||'';
-  if(nodeId===(l.nodeId||''))return {selected:l.planId,selectedIds:[l.id],changed:false};
+  // (ruling L4) the answer is the record the command wrote, the placement, so that a batch restamps it as the commit's
+  if(nodeId===(l.nodeId||''))return {selected:l.id,selectedIds:[l.id],changed:false};
   if(nodeId){
    authoredRecord(nodes,nodeId,'deployment node');
    if(!z?.nodeId)throw Error('Locate '+(refOf(z)||l.zoneId)+' in a node first: a placement stands in a node under its zone\'s node.');
    if(!nodeUnder(p,nodeId,z.nodeId))throw Error(node(nodeId)+' does not lie under '+node(z.nodeId)+', the node of '+refOf(z)+'.');
   }
   const next={...l,revision:(l.revision||0)+1};put(next,'nodeId',nodeId);m.placements[m.placements.indexOf(l)]=next;
-  return {selected:l.planId,selectedIds:[l.id],changed:true};
+  return {selected:l.id,selectedIds:[l.id],changed:true};
  }
  const z=m.zones.find(x=>x.id===raw.zoneId);if(!z)throw Error('Choose an existing zone or placement.');
  const nodeId=raw.nodeId===undefined?z.nodeId||'':raw.nodeId||'',reason=raw.reason===undefined?z.reason||'':fitText(raw.reason,600,'The reason');

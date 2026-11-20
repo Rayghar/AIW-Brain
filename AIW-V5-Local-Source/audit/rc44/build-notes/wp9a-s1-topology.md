@@ -52,6 +52,20 @@ fail on the head the item started from, then the change. One line per item; deta
   in every state; (b) and four forms of (c); an untyped project gains nothing; a shared stated cause still reads as
   independent, marked for slice 2 to flip. Retirement list: two rows added (shared cause: slice 2; parent and child:
   slice 2 extends the reader). Replaced: S1.11 "the package states no check" -> "one check, Chapter 10's".
+- **Item 4, L3 (must-fix 3; should-fix 3 and 4):** done. The tracker mends, at the end of every commit, every zone
+  and placement of the document that names a node or a failure domain that is not standing (absent, retired, a
+  proposal, no person's) and journals what it drops each time; the version gate before it is gone. A zone or
+  placement the commit made has its location journalled. For the package's own collections the lifecycle refuses:
+  S0 gains the row `canRestore {path: (p, record) => void}` (own lifecycle collections only; start-checked; read in
+  `record-lifecycle.js` beside a chapter's own rule); a node is not restored while its parent or its failure domain
+  is not standing, nor deeper than 8, a domain not while its parent is not there, nor deeper than 6. Case S1.14 (seen
+  to fail: after the reviewer's batch zone 2 still named `dn-001` and `fd-001`), by a person and by an agent account;
+  S0's block "L3 restore rule". Replaced: S1.11's key list gains `canRestore`.
+- **Item 5, L4 (must-fix 5; concern 2):** done. `runtime.locate` on a placement answers the placement as `selected`
+  (the record it wrote), so a batch restamps it as the commit's. Case S1.15 (seen to fail: alone the answer was the
+  plan `run-001`): alone, in the agent's batch (placement and zone restamped `sol-draft`), and a merged alternative
+  that relocates both leaves their earlier stamps, held as the known limit of ruling D12. Replaced: S1.2 and S1.6
+  "selected is the plan (I.apiPlan)" -> "selected is the placement".
 
 ## What was built
 
