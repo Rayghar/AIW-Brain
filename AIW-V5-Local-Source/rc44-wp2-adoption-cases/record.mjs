@@ -454,6 +454,24 @@ export default async function ({block, pass, load}) {
     // The change of the bound component also changed what the earlier path developed DES-003 from: its finding stands, and accept waits for its step (ruling J6).
     assert.deepEqual(g.basis, {state: 'changed', findingId: 'design-source:DES-003'}); { const r = await accept(id, B); assert.equal(r.status, 400); assert.match(r.error, /ADP-003 rests on DES-003, whose sources changed/); }
     await refresh('DES-003'); { const r = await accept(id, B); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); }
+    // The verifier's finding (ruling K7): a component an applied design created is kept twice, under logical.assets and under realisation.components, and the
+    // tracker compared the first alone: a field only the second carries (its inputs, its technology needs) changed unseen, and the acceptance kept standing.
+    for (const key of ['inputs', 'technologyNeeds']) {
+      const c = h.doc().realisation.components.find(x => x.id === store), before = naming(h.doc()).length; assert.equal(D.adoptionAccepted(h.doc(), adp(id)), true, key + ': accepted before the change');
+      const r = await h.ok('realisation.component', {...c, [key]: c[key] + ' (changed after the acceptance)'}, C);
+      a = adp(id); g = D.adoptionReading(h.doc(), a);
+      assert.equal(g.changed.required, true, 'a change of ' + key + ' of the bound store flags the adoption in its commit'); assert.ok(g.changed.causes.some(x => x.kind === 'binding' && x.id === store && x.detail === 'changed')); assert.equal(g.accepted, false, 'and the acceptance no longer stands');
+      assert.equal(naming(r.document).length, before + 1, 'one journal event of that commit names the adoption'); assert.deepEqual([naming(r.document).at(-1).actor, naming(r.document).at(-1).authorKind], [C, 'person']);
+      await reassess(id, A); if (D.adoptionReading(h.doc(), adp(id)).basis.state === 'changed') await refresh('DES-003'); { const r = await accept(id, B); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); }
+    }
+    // the same in a project copied from a template, where no earlier task stands beside the adoption: the tracker alone tells
+    { const src = withFinalReview(structuredClone(h.doc())), copy = instantiateTemplate(withFinalReview({...src, workspace: {...src.workspace, reusableTemplate: true}}), 'template-copy', 'A copy', LATER), x = byId(copy, id), t1 = '2026-10-06T11:00:00.000Z';
+      x.applied = {at: t1, actor: A}; x.history.push({n: 1, at: t1, event: 'apply', actor: A, revision: x.revision}); x.confirmed = true; x.provenance = {author: {kind: 'person', by: A, at: t1}};
+      x.review = {actor: B, at: '2026-10-07T10:00:00.000Z', account: 'person', revision: x.revision, seq: 1, note: '', deviationIds: list(x.deviations).filter(d => !d.withdrawn).map(d => d.id)};
+      const prior = withFinalReview(structuredClone(copy)); assert.equal(D.adoptionAccepted(prior, byId(prior, id)), true, 'the copy\'s adoption, confirmed and accepted there, stands');
+      for (const key of ['inputs', 'technologyNeeds']) { const next = structuredClone(prior), c = next.realisation.components.find(y => y.id === store); c[key] += ' (changed)';
+        pkg().track(prior, next, {type: 'realisation.component', payload: {id: store}}, '2026-10-08T10:00:00.000Z'); const q = withFinalReview(next), r = D.adoptionReading(q, byId(q, id));
+        assert.equal(r.changed.required, true, 'copy: a change of ' + key + ' flags the adoption'); assert.equal(r.accepted, false, 'copy: and the acceptance no longer stands'); assert.equal(list(next.changes?.events).filter(e => e.source?.id === id).length, list(prior.changes?.events).filter(e => e.source?.id === id).length + 1, 'copy: journalled'); } }
     // the case that fails today: retire the store; a finding names the applied mechanism — in the commit that retires it
     const names = (d, x) => COLLECTIONS.flatMap(([path]) => { const [k, l] = path.split('.'), v = l ? d?.[k]?.[l] : d?.[k]; return list(v).filter(r => r && r.id !== x && JSON.stringify({...r, history: 0, provenance: 0, sourceSnapshot: 0}).includes('"' + x + '"')).map(r => r.id); });
     let commits = 0, last = null;

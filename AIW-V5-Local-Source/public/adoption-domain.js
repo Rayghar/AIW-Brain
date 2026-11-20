@@ -141,6 +141,10 @@ const listAt=(p,path)=>{const [a,b]=path.split('.'),v=b?p?.[a]?.[b]:p?.[a];retur
 // The document's records by id, across the lifecycle collections (a component's twin under the first path that has it).
 const recordIndex=p=>remember(p,'adoption:index','',()=>{const m=new Map();for(const [path,chapter] of COLLECTIONS)for(const r of listAt(p,path))if(r?.id!=null&&!m.has(r.id))m.set(r.id,{record:r,path,chapter});return m;});
 const TYPE_PATHS={component:['realisation.components','logical.assets']};
+// Everything the document keeps under an id, as the tracker compares it (ruling K7): a component an applied design
+// created is kept twice, under logical.assets and under realisation.components, and a change of either is a change of
+// the bound record. Each record with the path that holds it, so that a twin that left one list is a change too.
+const recordSays=(p,id)=>COLLECTIONS.flatMap(([path])=>listAt(p,path).filter(r=>r?.id===id).map(r=>path+content(r))).join('\n');
 const CONSIDERED=Object.freeze(['recorded facts','bound records and their relations','declared parameters']),NOT_CONSIDERED=Object.freeze(['runtime behaviour','implementation code','measured load','observed operation']);
 function read(p,a){
  const snapshot=a.definition?.snapshot||{},index=recordIndex(p),retired=new Set(list(p?.retired?.records).map(x=>x?.id)),live=applied(a),definition=definitionOf(p,a),source=live?basisFinding(p,a):null;
@@ -301,7 +305,7 @@ export function trackAdoptionChange(prior,next,command,at){
    const old=before.get(id),now=after.get(id);
    if(old&&!now)causes.push({kind,id,detail:retired.has(id)?'retired':'removed'});
    else if(!old&&now&&list(prior?.retired?.records).some(x=>x?.id===id))causes.push({kind,id,detail:'restored'});
-   else if(old&&now&&content(old.record)!==content(now.record))causes.push({kind,id,detail:'changed'});
+   else if(old&&now&&recordSays(prior,id)!==recordSays(next,id))causes.push({kind,id,detail:'changed'});
   }
   // The knowledge the definition pins (design §c.3), read where a knowledge command could have moved it.
   if(knowledge){const now=definitionOf(next,a).state;if(now!=='current'&&definitionOf(prior,was).state!==now)causes.push({kind:'definition',id:a.definition?.definitionId||a.id,detail:now==='withdrawn'?'rests on knowledge that is no longer current':'has an interpretation that changed'});}
