@@ -17,3 +17,5 @@
 import {registerExtension} from './design-extensions.js';
 // p30-deployment (wp9a): held in the lazy entry of the Chapter 10 Model view (ruling A3), which imports topology.js.
 registerExtension({id:'p30-deployment-route',needs:p=>p.runtime?.topology,load:()=>import('./deploy-view.js')});
+// p40-adoption (wp2): held in the lazy entry of the comparison tools (ruling D7.6), which imports adoption-package.js.
+registerExtension({id:'p40-adoption-route',needs:p=>p.adoptions,load:()=>import('./architecture-task-ui.js')});

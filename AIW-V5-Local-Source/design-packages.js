@@ -7,3 +7,4 @@
 //
 // A slice that adds a package adds its line below, and nothing else in the shared machinery.
 import './public/topology.js'; // p30-deployment: the typed deployment topology (wp9a)
+import './adoption-server.js'; // p40-adoption: applied mechanisms bound to the model (wp2)

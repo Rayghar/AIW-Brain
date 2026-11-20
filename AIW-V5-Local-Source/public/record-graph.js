@@ -189,7 +189,8 @@ export function recordRelations(p,{add,rel,objects,root,issues=[],upto=null}){
  for(const [rows,source] of [[p.technology?.needs,'technology.needs'],[p.technologyRealisation?.records,'technologyRealisation.records'],[p.interfaces?.data,'interfaces.data'],[p.interfaces?.parties,'interfaces.parties'],[p.runtime?.plans,'runtime.plans'],[p.runtime?.paths,'runtime.paths']])for(const r of list(rows))if(list(r.requirementIds).length||list(r.requirementGroupIds).length)for(const id of linkedRequirementIds(p,r))rel('fulfils',id,r.id,{source:source+'.'+(list(r.requirementIds).includes(id)?'requirementIds':'requirementGroupIds')});
  for(const e of list(p.coauthoring?.links))if(e.sourceId&&e.objectId)rel('supports',e.sourceId,e.objectId,{id:e.id,source:'coauthoring.links',attributes:e});
  for(const name of ['security','runtime'])for(const e of list(p[name]?.evidence))for(const field of ['controlId','threatId','planId','objectId','targetId'])if(e[field])rel('evidences',e.id,e[field],{source:name+'.evidence.'+field});
- for(const t of list(p.coauthoring?.designTasks)){if(t.kind!=='architecture')continue;add({...t,title:t.title||t.topic||t.id},'pattern','coauthoring.designTasks.'+t.id);if(t.requirementId)rel('addresses',t.id,t.requirementId,{source:'coauthoring.designTasks'});if(t.driverId)rel('assesses',t.id,t.driverId,{source:'coauthoring.designTasks'});for(const id of [...new Set([...(t.applied?.recordIds||[]),...(t.applied?.records||[]).map(r=>r.id),...['caller','processor','store','queue','relay','consumer'].map(role=>t.answers?.[role+'Id']),t.answers?.dataId,t.applied?.decisionId].filter(Boolean))])if(objects.has(id))rel('scopes',t.id,id,{source:'coauthoring.designTasks'});}
+ // (rc44, wp2: a task that has an adoption is emitted as that adoption by its package, not a second time here)
+ for(const t of list(p.coauthoring?.designTasks)){if(t.kind!=='architecture'||t.adoptionId)continue;add({...t,title:t.title||t.topic||t.id},'pattern','coauthoring.designTasks.'+t.id);if(t.requirementId)rel('addresses',t.id,t.requirementId,{source:'coauthoring.designTasks'});if(t.driverId)rel('assesses',t.id,t.driverId,{source:'coauthoring.designTasks'});for(const id of [...new Set([...(t.applied?.recordIds||[]),...(t.applied?.records||[]).map(r=>r.id),...['caller','processor','store','queue','relay','consumer'].map(role=>t.answers?.[role+'Id']),t.answers?.dataId,t.applied?.decisionId].filter(Boolean))])if(objects.has(id))rel('scopes',t.id,id,{source:'coauthoring.designTasks'});}
  for(const v of list(p.workbench?.views)){if(v.exploration?.baselineId)rel('framesBaseline',v.id,'baseline:'+v.exploration.baselineId,{source:'workbench.views',attributes:{objectId:v.objectId,exploration:v.exploration}});else if(v.objectId)rel('frames',v.id,v.objectId,{source:'workbench.views'});}
  const sharedDependencies=new Map();for(const use of enterpriseReferences(p)){const group=sharedDependencies.get(use.identity)||[];group.push(use);sharedDependencies.set(use.identity,group);}
  for(const [identity,uses] of sharedDependencies){
@@ -204,8 +205,9 @@ export function recordRelations(p,{add,rel,objects,root,issues=[],upto=null}){
  for(const e of list(p.modelContext?.relationships))rel(e.type,e.from,e.to,e);
  // The records and typed relations each design package states from the document, in the packages' id order (rc44, slice
  // S0). A package's record is registered only under an id nothing holds yet, and `rel` never replaces a relation, so a
- // package only adds.
- for(const e of EXTENSIONS)e.records?.(p,(r,type,source)=>objects.has(r.id)||add(r,type,source),rel);
+ // package only adds. It is handed has(id), whether the graph holds an object under an id (the lead's ruling J2 of
+ // 2026-11-19): a relation is stated only between objects, and many records the lifecycle keeps are relations here.
+ for(const e of EXTENSIONS)e.records?.(p,(r,type,source)=>objects.has(r.id)||add(r,type,source),rel,id=>objects.has(id));
 }
 
 // The records in registration order, as the connected model (architecture-model.js) and the record graph register them

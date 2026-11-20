@@ -1,5 +1,5 @@
 import {readStoredProject,saveStoredProject} from './project-storage.js';
-import {missingPackages} from './public/design-extension-parts.js';
+import {missingPackages,extensionUpgradeNeeded} from './public/design-extension-parts.js';
 import {errorResponse} from './error-message.js';
 import {withFinalReview} from './public/review-domain.js';
 import {json} from './http.js';
@@ -8,6 +8,10 @@ export function instantiateTemplate(source,id,name,at){
  // The copy holds the template's records, a design package's among them, so it names the packages the template names
  // (rc44, slice S0; the lead's ruling D2: workspace.packages, public/design-extension-parts.js); a template that names
  // none gives a copy without the key.
+ // A template row an earlier build stored, whose design package upgrade is due, is copied as the read that opens it
+ // would store it (the lead's ruling K2 of 2026-11-20): a copy is the same whether or not anyone opened the template
+ // on this build first. A template no package must upgrade is copied as it is stored, as on rc.10.73.42.
+ if(extensionUpgradeNeeded(source))source=withFinalReview(source);
  const p=structuredClone(source),packages=source.workspace?.packages;p.id=id;p.name=name;p.workspace={template:'custom',createdAt:at,templateOrigin:{projectId:source.id,name:source.name,at},status:'active',...(Array.isArray(packages)&&packages.length?{packages:[...packages]}:{})};
  for(const key of ['intake','assurance','guidance','knowledge','changes','modelAlternatives','coauthoring','requirementsStorage','collaborationEvidence'])delete p[key];
  // Every review, confirmation and person's declaration is reset, a retired copy's too: a contract's 'read-only, safe to
@@ -23,9 +27,11 @@ export function instantiateTemplate(source,id,name,at){
 // A project that names a design package this build does not register (rc44, slice S0; the lead's rulings D2 and F2) is
 // renamed, archived and restored as it is stored: the name, the status and this log change, and no read upgrade of a
 // design this build cannot read in full is stored with them.
+// So is a project whose design package upgrade is due (the lead's ruling K1): the read that opens it stores that upgrade,
+// with its recovery point; a rename from the project list does not.
 export async function handleLifecycle(request,env,identity,project){
  const {owner,actor,role}=identity,url=new URL(request.url);if(role!=='owner')return json({error:'Only the project owner can manage its lifecycle.'},403);if(request.headers.get('Origin')!==url.origin)return json({error:'Use lifecycle actions from the project workspace.'},403);
- try{const raw=await request.json(),row=await env.DB.prepare('SELECT document,revision FROM projects WHERE owner_id=? AND id=?').bind(owner,project).first();if(!row)return json({error:'Project unavailable.'},404);if(raw.revision!==row.revision)return json({error:'The project changed. Reload its latest revision.',conflict:true},409);const stored=await readStoredProject(env,owner,row.document),missing=missingPackages(stored.document).length>0,p=missing?structuredClone(stored.document):withFinalReview(stored.document),at=new Date().toISOString();p.workspace??={};
+ try{const raw=await request.json(),row=await env.DB.prepare('SELECT document,revision FROM projects WHERE owner_id=? AND id=?').bind(owner,project).first();if(!row)return json({error:'Project unavailable.'},404);if(raw.revision!==row.revision)return json({error:'The project changed. Reload its latest revision.',conflict:true},409);const stored=await readStoredProject(env,owner,row.document),missing=missingPackages(stored.document).length>0||!!env.FILES&&extensionUpgradeNeeded(stored.document),p=missing?structuredClone(stored.document):withFinalReview(stored.document),at=new Date().toISOString();p.workspace??={};
  if(raw.action==='rename'){if(typeof raw.name!=='string'||!raw.name.trim()||raw.name.length>100)throw Error('Use a project name of 1–100 characters.');p.name=raw.name.trim();}
  else if(raw.action==='archive')p.workspace.status='archived';else if(raw.action==='restore')p.workspace.status='active';else if(raw.action==='template')p.workspace.reusableTemplate=raw.enabled===true;else throw Error('Unknown project lifecycle action.');
  p.workspace.lifecycle??=[];p.workspace.lifecycle.push({action:raw.action,at,actor});const result=await saveStoredProject(env,owner,project,p,row.revision,at,stored.keys,()=>[],{allowMissing:true});if(!result.meta?.changes)return json({error:'The project changed while saving.',conflict:true},409);return json({document:missing?withFinalReview(p):p,revision:row.revision+1,updatedAt:at});
