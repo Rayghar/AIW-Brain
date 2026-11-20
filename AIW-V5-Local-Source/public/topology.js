@@ -17,7 +17,7 @@ import {BLUEPRINTS_PART} from './topology-blueprints.js';
 import {FALLBACK_PART} from './topology-fallback.js';
 export * from './topology-domain.js';
 
-const TABLES=['objectTypes','prefixes','layers','commands','lifecycle','design'],LISTS=['hops','designKeys','evidenceKeys','sections'],CALLED=['records','track'],STATED=new Set([...TABLES,...LISTS,...CALLED,'checks','provenance','upgrade','upgradeNote']);
+const TABLES=['objectTypes','prefixes','layers','commands','lifecycle','canRestore','design'],LISTS=['hops','designKeys','evidenceKeys','sections'],CALLED=['records','track'],STATED=new Set([...TABLES,...LISTS,...CALLED,'checks','provenance','upgrade','upgradeNote']);
 // One registration from the parts, in their order: the tables and the provenance rows joined (a row two parts state is
 // refused, but for the collections of a command, which are joined), the lists one after another, the emitters and the
 // trackers each called in turn, a chapter's findings those of every part that states them, and the upgrade steps

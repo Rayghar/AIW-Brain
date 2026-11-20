@@ -56,6 +56,9 @@ export const PATH_CHAPTERS = {artefacts: 1, relationships: 1, 'requirementGroups
 // COLLECTIONS is the table as the list of [path, chapter] its readers walk, rebuilt when a package registers.
 export const COLLECTIONS = [];
 extendTable(PATH_CHAPTERS, e => e.lifecycle, () => { COLLECTIONS.splice(0, Infinity, ...Object.entries(PATH_CHAPTERS)); });
+// (rc44, ruling L3) A package's rule that refuses the restore of a record of its own collection (canRestore), read
+// where a chapter's own rule is; the start check keeps it to the package's own lifecycle collections.
+const PACKAGE_RESTORE = {}; extendTable(PACKAGE_RESTORE, e => e.canRestore);
 // A first-class record leaves the design only through the one retire path (round 12, GR-GOV-24): the hard deletes that
 // stood beside it (deleteArtefact, quality.delete, process.remove of an element or a claim) are refused with these words.
 export const RETIRE_ONLY = 'A record leaves the design through Retire, with your reason: it is kept with who and when, and can be restored (record.retire).';
@@ -173,7 +176,7 @@ function restoreOne(p, id, raw, rules) {
     if (!list) throw Error('The chapter that held ' + x.id + ' has no list for it now.');
     if (list.some(r => r?.id === x.id)) throw Error(`Another record now has the id ${x.id}. Restore is refused so that neither is lost.`);
   }
-  for (const x of group.filter(x => !x.with)) rules[x.path]?.canRestore?.(p, x.record);
+  for (const x of group.filter(x => !x.with)) (rules[x.path]?.canRestore || PACKAGE_RESTORE[x.path])?.(p, x.record);
   for (const x of [...group].sort((a, b) => a.index - b.index)) {
     const record = {...x.record}; if (x.priorState === 'proposed') record.state = 'proposed'; else delete record.state;
     const list = listAt(p, x.path); list.splice(Math.min(x.index, list.length), 0, record);

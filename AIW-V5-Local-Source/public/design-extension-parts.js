@@ -149,7 +149,7 @@ export function packageCollections() {
 // An id is a key of the registry's own table, so the one lower-case name every object carries is no id.
 const ID = /^(?!constructor$)[a-z][a-z0-9-]{1,60}$/, TYPE = /^[A-Za-z][A-Za-z0-9]{0,40}$/, PATH = /^[a-z][A-Za-z]{0,40}(\.[a-z][A-Za-z]{0,40})?$/;
 export const COMMAND_TYPE = /^[a-z][A-Za-z0-9-]{0,60}\.[A-Za-z][A-Za-z0-9-]{0,60}$/;
-const PARTS = new Set(['id', 'objectTypes', 'prefixes', 'records', 'layers', 'hops', 'checks', 'commands', 'track', 'lifecycle', 'provenance', 'designKeys', 'evidenceKeys', 'design', 'upgrade', 'upgradeNote', 'sections', 'needs', 'load']);
+const PARTS = new Set(['id', 'objectTypes', 'prefixes', 'records', 'layers', 'hops', 'checks', 'commands', 'track', 'lifecycle', 'canRestore', 'provenance', 'designKeys', 'evidenceKeys', 'design', 'upgrade', 'upgradeNote', 'sections', 'needs', 'load']);
 const HOP_PARTS = new Set(['layer', 'types', 'from', 'dir', 'ctx', 'only']);
 const COMMAND_PARTS = new Set(['apply', 'staged', 'person', 'second', 'validate', 'undo', 'large']);
 const LEVELS = new Set(Object.values(OBJECT_TYPES).map(t => t.level));
@@ -271,6 +271,14 @@ export function extensionIssues(e) {
     if (workbenchKey(path)) say('collection “' + path + '” is on a key the workbench itself writes: a package\'s records retire from the package\'s own collection.');
     // record-lifecycle.js keeps the owning container's version, review and handoff: a list that is a key of the document has none (ruling D6.11).
     else if (PATH.test(path) && !path.includes('.')) say('collection “' + path + '” is a list inside a container (container.list): a retirement moves the container\'s version and clears its review and handoff.');
+  }
+  // (the lead's ruling L3 of 2026-11-20) canRestore {path: (p, record) => void}: a package refuses the restore of a record
+  // of its own lifecycle collection (it throws, in a reader's words) where the record would name what is not there.
+  // Only on the package's own collections: whether a package gets a rule on a built-in collection is ruled at wp9a slice 2.
+  if (e.canRestore !== undefined && !plain(e.canRestore)) say('canRestore is {path: (p, record) => void}, on the package\'s own lifecycle collections.');
+  for (const [path, f] of Object.entries(plain(e.canRestore) ? e.canRestore : {})) {
+    if (!fn(f)) say('the restore rule of “' + path + '” is a function (p, record) that refuses in words, or answers nothing.');
+    if (!(plain(e.lifecycle) && Object.hasOwn(e.lifecycle, path))) say('the restore rule of “' + path + '” is on a collection the package does not state in lifecycle: a package rules on its own collections only.');
   }
   const pv = e.provenance;
   if (pv !== undefined && !(plain(pv) && Object.keys(pv).every(k => k === 'nouns' || k === 'paths' || k === 'records') && ['nouns', 'paths', 'records'].every(k => pv[k] === undefined || plain(pv[k])))) say('provenance is {nouns: {path: noun}, paths: {command type or prefix: [path]}, records: {path: chapter}}.');

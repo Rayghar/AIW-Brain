@@ -1472,5 +1472,14 @@ await block('L1 keep is a person\'s step', async () => {
   pass('L1: record.keep from an agent account, a draft by Sol or an import is refused alone, in a reviewed batch, in a saved alternative and at any depth, and AIW\'s proposal stays one; a person\'s keep is taken alone and in a batch and stamped as kept by them');
 });
 
+// ---------------------------------------------------------------- L3. a package's restore rule, on its own collections only
+await block('L3 restore rule', () => {
+  assert.deepEqual(boundary.extensionIssues({id: 'xy', lifecycle: {'journals.records': 3}, canRestore: {'journals.records': () => {}}}), [], 'a rule on the package\'s own collection');
+  assert.ok(boundary.extensionIssues({id: 'xy', canRestore: {'runtime.zones': () => {}}}).some(i => /restore rule of “runtime\.zones” is on a collection the package does not state in lifecycle/.test(i)), 'never on a built-in collection');
+  assert.ok(boundary.extensionIssues({id: 'xy', lifecycle: {'journals.records': 3}, canRestore: {'journals.records': 1}}).some(i => /restore rule of “journals\.records” is a function/.test(i)));
+  assert.ok(boundary.extensionIssues({id: 'xy', canRestore: []}).some(i => /canRestore is \{path/.test(i)));
+  pass('L3: a package states a restore rule (canRestore) for its own lifecycle collections only, as a function');
+});
+
 assert.deepEqual(failed, [], 'every rc44 S0 block passes');
 console.log(`rc44 S0 design extensions: ${checks.length} checks passed`);

@@ -618,6 +618,63 @@ await block('S1.13 zones compared only when they can be', () => {
   pass('S1.13: the hosting zones of an environment are compared only when they can be (hostingComparison): partly typed, one hosting domain inside another\'s, or naming a domain, a cause or a node that is not standing, they raise one error of Chapter 10 that no treatment waives, names the zones and says what a person does; in every state of the reviewer\'s walk the six findings or the error stand; a shared stated cause still reads as independent (held for slice 2 to flip)');
 });
 
+// (the lead's ruling L3; the review's must-fix 3, should-fix 3 and 4) No zone or placement is left naming a record that
+// is not there: the tracker mends every zone and placement at the end of every commit and journals what it drops; a
+// zone made and located in one commit has its location journalled; a node or a domain is not restored while its parent
+// or its failure domain is not standing, nor deeper than its tree goes.
+await block('S1.14 nothing left naming what is not there', async () => {
+  need();
+  const I = F.ids();
+  for (const as of [A, AGENT]) {
+    const h = await F.server(worker), d = () => h.state.document, events = () => d().changes?.events || [], ok = (r, why) => assert.equal(r.status, 200, (why || 'accepted') + ': ' + JSON.stringify(r.body).slice(0, 300));
+    const batch = async (commands, who = as) => { await h.read(who); return h.send('workspace.apply', {commands, stamp: previewWorkingChange(d(), commands).stamp, reason: 'Moved out and back.', ...(who === AGENT ? {reviewed: false} : {reviewed: true})}, who); };
+    try {
+      // a typed zone 2 on the server, through its commands: its domain, its node and a cluster its placement stands in
+      const sent = {}; for (const [type, payload, key] of [['runtime.topology-start', {}], ['technology.domain', {title: 'Bergen availability zone 2', scope: 'zone', cause: 'location'}, 'fd'], ['runtime.node', {title: 'Bergen AZ 2', kind: 'availability-zone'}, 'az'], ['runtime.node', {title: 'Cluster 2', kind: 'cluster', parentId: 'dn-001'}, 'cluster']]) { const r = await h.send(type, payload); ok(r, type); if (key) sent[key] = r.body.selected; }
+      ok(await h.send('runtime.locate', {zoneId: I.zone2, nodeId: sent.az, domainIds: [sent.fd]}));
+      const placement = d().runtime.placements.find(l => l.planId === I.apiPlan && l.zoneId === I.zone2); ok(await h.send('runtime.locate', {placementId: placement.id, nodeId: sent.cluster}));
+      const plans = [...new Set(d().runtime.placements.filter(l => l.zoneId === I.zone2).map(l => l.planId))], n = events().length, retire = (id, chapter) => ({type: 'record.retire', payload: {id, chapter, reason: 'Moved out for a while.'}});
+      // one batch: the plans with copies in the zone, the zone, the node and the domain only it names, then the zone and the plans back
+      const r = await batch([...plans.map(id => retire(id, 10)), retire(I.zone2, 10), retire(sent.cluster, 10), retire(sent.az, 10), retire(sent.fd, 6), {type: 'record.restore', payload: {id: I.zone2, chapter: 10}}, ...plans.map(id => ({type: 'record.restore', payload: {id, chapter: 10}}))]);
+      if (r.status === 200) {
+        const z = zoneOf(d(), I.zone2), l = d().runtime.placements.find(x => x.id === placement.id);
+        assert.ok(!('domainIds' in z) && !('nodeId' in z), as + ': the zone names no record that is not there: ' + JSON.stringify([z.nodeId, z.domainIds]));
+        assert.ok(l && !('nodeId' in l), as + ': nor the placement: ' + JSON.stringify(l));
+        assert.equal(runtimeModel.failureDomainKey(z), 'az-2', 'it reads by its name again');
+        const added = events().slice(n); assert.ok(added.some(e => e.source.id === I.zone2 && e.fields.some(f => f.key === 'domainIds' && sameText(f.before, [sent.fd]) && sameText(f.after, []))), as + ': what was dropped of the zone is journalled');
+        assert.ok(added.some(e => e.source.id === placement.id && e.fields.some(f => f.key === 'nodeId' && f.before === sent.cluster && f.after === '')), as + ': and of the placement');
+      } else assert.equal(r.status, 400, as + ': or the batch is refused');
+      // a zone made and located in one commit: its location is journalled
+      { const id = 'zon-' + String(d().runtime.counters.zone + 1).padStart(3, '0'), m = events().length; ok(await h.send('technology.domain', {title: 'Bergen availability zone 3', scope: 'zone', cause: 'location'}, A));
+        const r2 = await batch([{type: 'runtime.zone', payload: {environmentId: I.production, title: 'Bergen zone 3', kind: 'hosting', failureDomain: 'AZ-3', isolation: 'Separate power (synthetic).', owner: 'Reservations team (synthetic)'}}, {type: 'runtime.locate', payload: {zoneId: id, domainIds: [d().technology.domains.at(-1).id]}}], A); ok(r2, 'made and located');
+        assert.deepEqual(zoneOf(d(), id)?.domainIds, [d().technology.domains.at(-1).id]);
+        assert.ok(events().slice(m).some(e => e.source.id === id && e.source.kind === 'zone' && e.fields.some(f => f.key === 'domainIds')), 'the location of a zone made in the same commit is journalled'); }
+    } finally { h.close(); }
+  }
+  // the package's own collections: a node is not restored while its parent or its failure domain is not standing, nor into a ninth level
+  { let {p} = typedTidewater();
+    p = doc(p, 'technology.domain', {title: 'Rack 9', scope: 'node', cause: 'location'}); const fd = p.technology.domains.at(-1).id;
+    p = doc(p, 'runtime.node', {title: 'Spare site', kind: 'site'}); const parent = p.runtime.nodes.at(-1).id;
+    p = doc(p, 'runtime.node', {title: 'Spare rack', kind: 'node-pool', parentId: parent, domainId: fd}); const leaf = p.runtime.nodes.at(-1).id;
+    p = doc(p, 'record.retire', {id: leaf, chapter: 10, reason: 'Not built yet.'});
+    let q = doc(p, 'record.retire', {id: parent, chapter: 10, reason: 'Not built yet.'});
+    refuses(q, 'record.restore', {id: leaf, chapter: 10}, new RegExp(nodeOf(p, parent).ref + ', which it lies in, is not standing in the design'), 'not while its parent is retired');
+    q = doc(p, 'record.retire', {id: fd, chapter: 6, reason: 'Not a domain of its own.'});
+    refuses(q, 'record.restore', {id: leaf, chapter: 10}, new RegExp(domainOf(p, fd).ref + ', the failure domain it is, is not standing in the design'), 'nor while its failure domain is');
+    // the depth bound through the lifecycle: retire the leaf of an eight-level chain, put the chain under a new root, restore the leaf
+    let c = doc(p, 'runtime.node', {title: 'L1', kind: 'site'}); const ids8 = [c.runtime.nodes.at(-1).id];
+    for (let i = 2; i <= 8; i++) { c = doc(c, 'runtime.node', {title: 'L' + i, kind: 'network', parentId: ids8.at(-1)}); ids8.push(c.runtime.nodes.at(-1).id); }
+    const leaf8 = ids8.at(-1); c = doc(c, 'record.retire', {id: leaf8, chapter: 10, reason: 'Moved out for a while.'});
+    c = doc(c, 'runtime.node', {title: 'Root', kind: 'account'}); c = doc(c, 'runtime.node', {id: ids8[0], parentId: c.runtime.nodes.at(-1).id});
+    refuses(c, 'record.restore', {id: leaf8, chapter: 10}, /Deployment nodes nest at most 8 deep/, 'nor into a ninth level');
+    // failure domains likewise: not under a domain that is not standing, nor deeper than six
+    let e = doc(p, 'technology.domain', {title: 'Site D', scope: 'site', cause: 'location'}); const top = e.technology.domains.at(-1).id;
+    e = doc(e, 'technology.domain', {title: 'Room D', scope: 'node', cause: 'location', parentId: top}); const room = e.technology.domains.at(-1).id;
+    e = doc(doc(e, 'record.retire', {id: room, chapter: 6, reason: 'Moved out for a while.'}), 'record.retire', {id: top, chapter: 6, reason: 'Moved out for a while.'});
+    refuses(e, 'record.restore', {id: room, chapter: 6}, new RegExp(domainOf(p, top)?.ref || 'FD-', 'i'), 'a domain is not restored under a domain that is not there'); }
+  pass('S1.14: after a batch that retires the plans, the zone, the node and the domain only it names and restores the zone and the plans, by a person and by an agent account, no zone or placement names a record that is not there and what was dropped is journalled; a zone made and located in one commit has its location journalled; a node is not restored while its parent or its failure domain is not standing, nor into a ninth level, and a domain not under a domain that is not there');
+});
+
 await block('S1.9 staging; candidate knowledge reaches no topology reading', () => {
   need();
   const I = F.ids();
@@ -669,7 +726,9 @@ await block('S1.11 the parts of the package', async () => {
   for (const [file, name] of [['failures', 'FAILURES_PART'], ['gates', 'GATES_PART'], ['blueprints', 'BLUEPRINTS_PART'], ['fallback', 'FALLBACK_PART']]) assert.deepEqual((await import('./public/topology-' + file + '.js'))[name], {}, name + ' waits for its slice');
   // (ruling L2; was: the keys without `checks`, "slice 1 states no check") slice 1 states one check, Chapter 10's error
   // for zones that cannot be compared, and no upgrade step and no section (rulings J7 and J3; design b.4)
-  assert.deepEqual(Object.keys(mine()).sort(), ['checks', 'commands', 'designKeys', 'evidenceKeys', 'hops', 'id', 'layers', 'lifecycle', 'objectTypes', 'provenance', 'records', 'track'], 'slice 1 states one check, no upgrade step and no section');
+  // (ruling L3) and the restore rules of its own two collections
+  assert.deepEqual(Object.keys(mine().canRestore).sort(), ['runtime.nodes', 'technology.domains']);
+  assert.deepEqual(Object.keys(mine()).sort(), ['canRestore', 'checks', 'commands', 'designKeys', 'evidenceKeys', 'hops', 'id', 'layers', 'lifecycle', 'objectTypes', 'provenance', 'records', 'track'], 'slice 1 states one check, no upgrade step and no section');
   assert.deepEqual(Object.keys(mine().checks), ['10'], 'the check is Chapter 10\'s');
   pass('S1.11: the package is one registration assembled from five parts, of which slice 1 fills one: tables joined, lists in order, emitters, trackers and a chapter\'s findings of every part; a row two parts state and a part the assembly does not carry are refused');
 });

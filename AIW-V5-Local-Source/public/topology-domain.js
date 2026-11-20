@@ -272,6 +272,19 @@ export function emitTopology(p,add,rel){
  for(const d of domains.values())if(domains.has(d.parentId))rel('partOf',d.id,d.parentId,{source:'technology.domains.parentId'});
 }
 
+// ---------------------------------------------------------------- what the lifecycle refuses (ruling L3)
+// A node or a failure domain comes back only into a tree that still holds it: its parent there, its failure domain
+// standing (a node), and no deeper than its tree goes. Refused in words; the record stays retired.
+function canRestoreIn(xs,r,noun,max,refs){
+ if(r.parentId&&!find(xs,r.parentId))throw Error(refOf(r)+' cannot come back yet: '+(refs(r.parentId)||r.parentId)+', which it lies in, is not standing in the design. Restore it first, or bring '+refOf(r)+' back elsewhere.');
+ const level=1+above(xs,r).length;if(level>max)throw Error((noun==='node'?'Deployment nodes nest':'Failure domains nest')+' at most '+max+' deep: '+refOf(r)+' would come back at level '+level+'.');
+}
+const retiredRef=(p,path,id)=>refOf(retiredOf(p,path).find(x=>x.record?.id===id)?.record);
+const RESTORE={
+ 'runtime.nodes':(p,r)=>{canRestoreIn(deploymentNodes(p),r,'node',TOPOLOGY_LIMITS.nodeDepth,id=>retiredRef(p,'runtime.nodes',id));if(r.domainId&&!standing(failureDomains(p),r.domainId))throw Error(refOf(r)+' cannot come back yet: '+(refOf(find(failureDomains(p),r.domainId))||retiredRef(p,'technology.domains',r.domainId)||r.domainId)+', the failure domain it is, is not standing in the design. Restore it first.');},
+ 'technology.domains':(p,r)=>canRestoreIn(failureDomains(p),r,'domain',TOPOLOGY_LIMITS.domainDepth,id=>retiredRef(p,'technology.domains',id))
+};
+
 // ---------------------------------------------------------------- the journal
 // The package's tracker (design-extensions.js track: called for every command of every commit, and again for each
 // command a batch carries): what a commit changed of the typed topology is one change of the journal for each record,
@@ -279,12 +292,14 @@ export function emitTopology(p,add,rel){
 // kind and why. Journalled: the step that types the project; a node or a failure domain made or changed (AIW's own
 // proposals are not changes of the design, and a record a restore brought back was not made by the commit); where a
 // zone or a placement stands. A change of the typed topology opens no review of other records, and says so.
-// One thing the tracker changes itself, and journals: a zone or a placement that a commit brings back (a restore; a
-// placement comes back with its plan) may name a node or a failure domain that left the design while it was retired,
-// when nothing held them. Those names are dropped (mend), so that a zone never reads as standing in a domain that is
-// not there: it reads by its own name again, and a person locates it anew.
+// One thing the tracker changes itself, and journals (ruling L3): at the end of every commit, every zone and placement of
+// the document that names a node or a failure domain that is not standing (left the design, a proposal, no person's)
+// loses that name (mend), however the commit got there (a restore of a zone or of the plan a placement left with, a
+// batch that retires and restores in one go). So a zone never reads as standing in a domain that is not there: it reads
+// by its own name again, and a person locates it anew. A zone or a placement the commit made has where it stands
+// journalled with it.
 function mend(p,r,path){
- const nodes=deploymentNodes(p),domains=failureDomains(p),there=(xs,id)=>{const x=find(xs,id);return x&&!isProposed(x)?x:null;},was=JSON.stringify([r.nodeId,r.domainIds]);
+ const nodes=deploymentNodes(p),domains=failureDomains(p),there=standing,was=JSON.stringify([r.nodeId,r.domainIds]);
  if(path==='runtime.zones'){
   if(r.nodeId&&!there(nodes,r.nodeId))delete r.nodeId;
   if(r.domainIds){const ds=list(r.domainIds).map(id=>there(domains,id));put(r,'domainIds',ds[0]&&!sharedCause(ds[0])?ds.filter((d,i)=>d&&(!i||sharedCause(d))).map(d=>d.id):[]);}
@@ -300,7 +315,6 @@ const rows=(p,path)=>{const [a,b]=path.split('.');return list(p?.[a]?.[b]);};
 export function trackTopology(prior,next,command,at){
  const m=next?.runtime,was=prior?.runtime;if(!m?.topology)return;
  const started=!!m.topology.review&&!was?.topology?.review;
- if(!started&&m.version===was?.version&&next.technology?.version===prior?.technology?.version)return;
  // What this commit has journalled already: a second call for the same commit (a batch's inner command) adds nothing.
  const done=new Set(list(next.changes?.events).slice(list(prior?.changes?.events).length).map(e=>e?.source?.chapter+':'+e?.source?.id));
  const journal=(chapter,id,ref,kind,title,before,after,fields)=>{
@@ -313,8 +327,9 @@ export function trackTopology(prior,next,command,at){
   const old=new Map(rows(prior,path).map(r=>[r?.id,r]));
   for(const r of rows(next,path)){
    // (every save of these records moves the revision, so a record at its earlier revision says what it said)
-   let o=old.get(r?.id);if(!r?.id||(o?o.revision===r.revision:own&&(isProposed(r)&&r.origin===SEEDED||restored.has(path+'|'+r.id))))continue;
-   if(!o&&!own){o=structuredClone(r);if(!mend(next,r,path))continue;}
+   let o=old.get(r?.id);if(!r?.id)continue;
+   if(!own){const back=!o&&restored.has(path+'|'+r.id),as=structuredClone(r),dropped=mend(next,r,path);if(!dropped&&(back||o&&o.revision===as.revision))continue;if(back)o=as;}
+   else if(o?o.revision===r.revision:isProposed(r)&&r.origin===SEEDED||restored.has(path+'|'+r.id))continue;
    const before=said(o,keys),after=said(r,keys),fields=keys.filter(k=>JSON.stringify(before[k])!==JSON.stringify(after[k])).map(k=>({key:k,label:LABELS[k],before:before[k],after:after[k]}));
    if(fields.length)journal(chapter,r.id,refOf(r),kind,r.title||r.id,o?before:null,after,fields);
   }
@@ -333,6 +348,7 @@ export const TOPOLOGY_PART={
  checks:{10:topologyFindings},
  track:trackTopology,
  lifecycle:{'technology.domains':6,'runtime.nodes':10},
+ canRestore:RESTORE,
  provenance:{nouns:{'technology.domains':'failure domain','runtime.nodes':'deployment node'},paths:{'technology.domain':['technology.domains'],'technology.domain-proposals':['technology.domains'],'runtime.node':['runtime.nodes']}},
  designKeys:['technology.domains','runtime.nodes'],
  evidenceKeys:['runtime.topology']

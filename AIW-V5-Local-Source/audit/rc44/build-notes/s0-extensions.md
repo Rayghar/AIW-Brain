@@ -231,7 +231,17 @@ line numbers of `rc44-s0-extensions-validate.mjs` at this head):
     same code; the first route stub keeps `registerExtension` on the route, which is wp2's route bytes (ruling F5: the
     route gate binds).
 
-## What was built
+## With wp9a slice 1's fix-up (rulings L1, L3, L5, L10; 2026-11-20)
+
+Done on `rc44/wp9a-s1-topology-fix-c2`, each case first. Route bytes of these rows are booked as the rulings say
+(the notes of wp9a slice 1, "Fix-up", say where each byte went).
+
+| Ruling | What S0 gained | Where | Case |
+|---|---|---|---|
+| L1 | record.keep is a signed-in person's step for every record: refused from an agent account, a draft by Sol and an import, alone and carried at any depth | `authorship.js` `refuseUnreviewable` (server) | block "L1 keep is a person's step" |
+| L3 | The row `canRestore {path: (p, record) => void}` on a package's own lifecycle collections | `public/record-lifecycle.js`, `public/design-extension-parts.js` | block "L3 restore rule" |
+| L10 | The suite holds with both packages registered: D3's allowed-keys example uses keys no package states | the suite | block "D3 workbench keys" |
+
 
 | File | Where it runs | What it is |
 |---|---|---|
@@ -319,6 +329,7 @@ Every part is optional.
 | `commands` | `{type: {apply, staged?, person?, second?, validate?, undo?, large?}}` | `design-extension-boundary.js` (server), `canonical-command.js` `stagedBy` |
 | `track` | `(prior, next, command, at) => void` | `design-extension-boundary.js` `trackExtensions` (server), for every commit |
 | `lifecycle` | `{path: chapter}` | `record-lifecycle.js` `COLLECTIONS` |
+| `canRestore` | `{path: (p, record) => void}`, on the package's own `lifecycle` collections only; throws in a reader's words to refuse a restore | `record-lifecycle.js` restore, beside a chapter's own rule; ruling L3 (wp9a slice 1 fix-up); block "L3 restore rule" |
 | `provenance` | `{nouns: {path: noun}, paths: {type or prefix: [path]}, records: {path: chapter}}` | `provenance.js`, `sdd-architecture.js` |
 | `designKeys`, `evidenceKeys` | `[key]` | `review-domain.js` `designOf` |
 | `design` | `{key: p => what the key says}` | `review-domain.js` `reviewSource`, in place of the raw key; ruling J3 |

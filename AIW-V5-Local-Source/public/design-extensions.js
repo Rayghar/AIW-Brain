@@ -12,6 +12,7 @@
 //                                                               the server's boundary (design-extension-boundary.js); canonical-command.js stagedBy
 //   track(prior, next, command, at)                             the server's boundary: the package's tracker, called for every commit
 //   lifecycle {path: chapter}                                   record-lifecycle.js COLLECTIONS (and so provenance.js RECORD_PATHS)
+//   canRestore {path: (p, record) => void}                      record-lifecycle.js restore (the package's own collections; ruling L3)
 //   provenance {nouns: {path: noun}, paths: {type or prefix: [path]}, records: {path: chapter}}
 //                                                               provenance.js RECORD_NOUNS, pathsOf, RECORD_PATHS
 //   designKeys [key], evidenceKeys [key]                        review-domain.js designOf
