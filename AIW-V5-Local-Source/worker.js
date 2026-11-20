@@ -1,5 +1,5 @@
 import {prepareRepositoryPacket} from './repository-packet.js';
-import {publicMessage,isIntegrityError,isInternalError,isMissingPackage} from './error-message.js';
+import {publicMessage,isIntegrityError,isInternalError,isMissingPackage,isUpgradeDue} from './error-message.js';
 import {handleRepositorySync,repositorySyncRequest,refreshRepositoryAssurance} from './repository-sync.js';
 import {handleOperations} from './operation-service.js';
 import {handleRecovery} from './recovery-service.js';
@@ -714,6 +714,7 @@ async function route(request,env,ctx){
     // could not be reached is the transient outage the client may retry.
     const base={owner,project:projectId,route:url.pathname,method:request.method,message:String(e?.message||e)};
     if(isMissingPackage(e))return json({error:e.message,code:'missing_package',packages:e.packages},409);
+    if(isUpgradeDue(e))return json({error:e.message,conflict:true,code:'conflict'},409);
     if(isIntegrityError(e)){log('integrity-fault',{...base,key:e.key||null});return json({error:e.message,code:'integrity'},422);}
     if(isInternalError(e)){log('fault',{...base,stack:typeof e?.stack==='string'?e.stack.split('\n').slice(0,6).join(' | '):null});return json({error:'This action could not be completed. Your input is kept; reload the project and try again.',code:'fault'},500);}
     log('storage-unavailable',base);return json({error:'We could not reach project storage. Your input is still here; please retry.',code:'storage_unavailable'},503);

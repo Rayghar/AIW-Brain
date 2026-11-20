@@ -39,6 +39,7 @@ import {isRetiredCommand} from './public/canonical-command.js';
 import {inheritedFindings, findingCause} from './public/review-domain.js';
 import {createProject} from './shared/projects-domain.js';
 import {withFinalReview} from './public/review-domain.js';
+import {UPGRADE_DUE} from './error-message.js';
 import {extensionIssues as partIssues, extensionConflicts, COMMAND_TYPE, notePackages, extensionUpgradeNeeded} from './public/design-extension-parts.js';
 export {upgradeExtensions, extensionUpgradeNeeded, extensionUpgradeNotes, placeSections, extensionConflicts, WORKBENCH_KEYS, WORKBENCH_PREFIXES, workbenchKey, packageCollections, PACKAGES_KEY, documentPackages, missingPackages, missingPackagesRefusal, UNREADABLE_PACKAGES} from './public/design-extension-parts.js';
 
@@ -210,7 +211,7 @@ export function extensionIssues(e) {
 // row first (a tab left open across the deploy) would write the upgrade into its own commit, as a design change and
 // with no recovery point: worker.js asks this before it applies a command and answers the words with a reload (409, a
 // conflict to the browser, which offers the latest project). The built-in read upgrades are as on rc.10.73.42.
-export const upgradeDueRefusal = document => (extensionUpgradeNeeded(document) ? 'This project was last saved by an earlier build of AIW and is brought up to date when it is opened. Reload the latest project, then apply your preserved changes.' : null);
+export const upgradeDueRefusal = document => (extensionUpgradeNeeded(document) ? UPGRADE_DUE : null);
 export function assertExtensions() {
   if (!builtInHandler) throw Error('The design packages cannot be checked: the built-in commands are not installed (worker.js installBuiltInCommands), so no command type is known to be free.');
   const problems = [...EXTENSIONS.flatMap(extensionIssues), ...extensionConflicts()];

@@ -281,7 +281,18 @@ export default async function ({block, pass, load}) {
         const res = await h.api('/api/commands' + h.q, 'POST', {revision: before.revision, command: {type, payload}}, as), body = await res.json();
         assert.equal(res.status, 409, type + ' on a row whose package upgrade is due is answered with a reload: ' + res.status + ' ' + JSON.stringify(body).slice(0, 200)); assert.equal(body.conflict, true); assert.match(body.error, /earlier build of AIW.*Reload the latest project, then apply your preserved changes\./);
       }
-      const still = await row(); assert.equal(still.revision, before.revision, 'nothing was stored'); assert.equal(still.document, before.document, 'the row is byte for byte what it was'); assert.equal(points(), pointsBefore, 'no recovery point'); assert.equal(await storageRows(), rowsBefore, 'no activity row'); }
+      const still = await row(); assert.equal(still.revision, before.revision, 'nothing was stored'); assert.equal(still.document, before.document, 'the row is byte for byte what it was'); assert.equal(points(), pointsBefore, 'no recovery point'); assert.equal(await storageRows(), rowsBefore, 'no activity row');
+      // ruling K1 (the fix-up's open question, closed by the lead): nor does any other save store it. A writing route that is not a command is answered
+      // with the same reload; a rename from the project list is taken and stores the row as it was, so the upgrade stays due for the read that keeps its recovery point.
+      { const res = await h.api('/api/operations' + h.q, 'POST', {action: 'policy', revision: before.revision, enabled: true, hourlyRequests: 10, dailyTokens: 1000, excludedObjectIds: [], reason: 'Budget for the pilot.'}, A), body = await res.json();
+        assert.equal(res.status, 409, 'POST /api/operations on a row whose package upgrade is due: ' + res.status + ' ' + JSON.stringify(body).slice(0, 200)); assert.equal(body.conflict, true); assert.match(body.error, /earlier build of AIW.*Reload the latest project/);
+        const now = await row(); assert.equal(now.revision, before.revision); assert.equal(now.document, before.document); assert.equal(points(), pointsBefore); assert.equal(await storageRows(), rowsBefore); }
+      { const res = await h.api('/api/lifecycle' + h.q, 'POST', {action: 'rename', name: kept.document.name, revision: before.revision}, A), body = await res.json(); assert.equal(res.status, 200, 'a rename is taken: ' + JSON.stringify(body).slice(0, 200));
+        const now = await row(), again = await readStoredProject(env, A, now.document); assert.equal(now.revision, before.revision + 1);
+        assert.ok(!('adoptions' in again.document) && !again.document.workspace.packages && again.document.coauthoring.designTasks.every(t => !t.adoptionId), 'the rename stores no adoption: the row is as it was but for the lifecycle log');
+        assert.equal(storageUpgradeNeeded(again), true, 'the upgrade is still due'); assert.equal(points(), pointsBefore, 'no recovery point is owed'); assert.equal(await storageRows(), rowsBefore, 'no storage upgrade is recorded');
+        assert.deepEqual(records(body.document).map(a => a.id), ['ADP-001', 'ADP-002', 'ADP-003'], 'the answer shows the project as this build reads it');
+        Object.assign(before, now); } }
     const read = await h.read(B);
     assert.equal(read.revision, before.revision + 1, 'the first read stores the upgrade'); assert.deepEqual(records(read.document).map(a => [a.id, a.origin, a.status]), [['ADP-001', 'upgrade', 'applied'], ['ADP-002', 'upgrade', 'applied'], ['ADP-003', 'upgrade', 'applied']]);
     assert.deepEqual(read.document.workspace.packages, [PACKAGE]); assert.deepEqual(read.document.coauthoring.designTasks.map(t => t.adoptionId), ['ADP-001', 'ADP-002', 'ADP-003']);
