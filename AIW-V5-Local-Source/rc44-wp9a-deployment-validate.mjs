@@ -568,7 +568,15 @@ await block('S1.11 the parts of the package', async () => {
   assert.deepEqual(Object.keys(P.assembleParts('p-test', [{}, {}])), ['id'], 'a part that states nothing adds no row');
   assert.throws(() => P.assembleParts('p-test', [a, {commands: {'x.one': {apply: () => 3}}}]), /p-test: two parts state commands “x\.one”/, 'a row is one part\'s');
   assert.throws(() => P.assembleParts('p-test', [a, {provenance: {nouns: {'x.ones': 'other'}}}]), /two parts state provenance\.nouns “x\.ones”/);
-  assert.throws(() => P.assembleParts('p-test', [{upgrade: p => p}]), /a part states “upgrade”, which the assembly does not carry/, 'what the assembly does not carry is refused, never dropped');
+  // (ruling L10; was: a part that states `upgrade` is refused as a row the assembly does not carry) The rows design,
+  // prefixes and upgrade are carried: design and prefixes as tables (a key one part's), the upgrade steps chained in the
+  // parts' order (the document itself when no step changes it), its note one part's; what is still not carried is refused.
+  { const one = p => p.n === 1 ? {...p, n: 2} : p, two = p => p.n === 2 ? {...p, n: 3, by: 'b'} : p, u = P.assembleParts('p-test', [{design: {xOnes: p => p.n}, prefixes: {risk: 'XR'}, upgrade: one, upgradeNote: 'One sentence.'}, {design: {xTwos: () => 2}, prefixes: {pattern: 'XP'}, upgrade: two}]), same = {n: 0};
+    assert.deepEqual([Object.keys(u.design), u.design.xOnes({n: 7}), u.prefixes, u.upgradeNote, u.upgrade({n: 1}), u.upgrade(same) === same], [['xOnes', 'xTwos'], 7, {risk: 'XR', pattern: 'XP'}, 'One sentence.', {n: 3, by: 'b'}, true], 'the rows design, prefixes and upgrade are carried');
+    assert.throws(() => P.assembleParts('p-test', [{design: {xOnes: () => 1}}, {design: {xOnes: () => 2}}]), /two parts state design “xOnes”/);
+    assert.throws(() => P.assembleParts('p-test', [{prefixes: {risk: 'XR'}}, {prefixes: {risk: 'XS'}}]), /two parts state prefixes “risk”/);
+    assert.throws(() => P.assembleParts('p-test', [{upgrade: one, upgradeNote: 'One.'}, {upgrade: two, upgradeNote: 'Two.'}]), /two parts state upgradeNote/);
+    assert.throws(() => P.assembleParts('p-test', [{needs: () => true}]), /a part states “needs”, which the assembly does not carry/, 'what the assembly does not carry is refused, never dropped'); }
   // Slice 1 states one part; the other four are in place and state nothing yet.
   for (const [file, name] of [['failures', 'FAILURES_PART'], ['gates', 'GATES_PART'], ['blueprints', 'BLUEPRINTS_PART'], ['fallback', 'FALLBACK_PART']]) assert.deepEqual((await import('./public/topology-' + file + '.js'))[name], {}, name + ' waits for its slice');
   assert.deepEqual(Object.keys(mine()).sort(), ['commands', 'designKeys', 'evidenceKeys', 'hops', 'id', 'layers', 'lifecycle', 'objectTypes', 'provenance', 'records', 'track'], 'slice 1 states no check, no upgrade step and no section (rulings J7 and J3; design b.4)');

@@ -15,6 +15,25 @@ here is approved, accepted, released or promoted.
 - **In progress:** nothing.
 - **Next:** see "Next, by slice" and "Open questions (for the lead)".
 
+## Fix-up (after the adversarial review; the lead's rulings L1 to L11, K1, K2 and K6)
+
+Branch `rc44/wp9a-s1-topology-fix-c2` (continues `rc44/wp9a-s1-topology-fix`, cut off after item 0), from the slice's
+head `1acb341`. Review: `/home/user/hb-review/rc44-build/wp9a-s1-topology.review.json`. Each item: case first, seen to
+fail on the head the item started from, then the change. One line per item; details under the item's heading below.
+
+**In progress / next:** see the item list; an item not marked done is not started.
+
+- **Item 0, merge `rc44/wp2-s1-lead`:** done (`317fd8f`; conflicts in `design-packages.js`, `public/design-package-routes.js`
+  and `package.json` kept both packages' lines in id order with one import of `registerExtension`, every test script).
+  The four rc44 suites on the merged head: S0 23 of 24 (block `D3 workbench keys`, the assertion L10 names), wp1 34 of
+  34, wp2 green, wp9a 12 of 12 (S1.11 holds `upgrade` refused, which L10 reverses: item 1).
+- **Item 1, L10 first part:** done. S0's suite: block `D3 workbench keys`, the allowed-keys example uses
+  `runtime.stations` and `technology.vaults` (old: `runtime.nodes`, `technology.domains`, now p30's collections) and
+  asserts first that no package of the build states them; the loop after it still refuses every build collection to
+  another package. `assembleParts` carries `design` and `prefixes` as tables and `upgrade` chained in the parts'
+  order with `upgradeNote` one part's; case S1.11 (seen to fail: "a part states “design”, which the assembly does not
+  carry"; old -> new: "a part that states `upgrade` is refused" -> "`upgrade` is carried, `needs` is refused").
+
 ## What was built
 
 | File | Where it runs | What it is |
