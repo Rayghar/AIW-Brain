@@ -467,14 +467,14 @@ add('S2.12 (size, ruling A4 and M4): the client build passes every gate with the
   // The integrated base of ruling M4 (S0 and wp1 S1, 3,229,840 B), the other packages' own bytes and the shared pool's: what is left is wp1 S2's.
   assert.equal(3229840 + booked.othersTotal + booked.poolTotal, size.base.chapters, 'the start commit is the integrated base and what the other packages and the pool booked');
   assert.equal(size.slice.chapters - 3229840 - booked.othersTotal - booked.poolTotal, size.ownBytes, 'the route at the slice\'s head, less the base and the others, is what S2 books');
-  assert.ok(size.slice.chapters <= BUDGET.routes.chapters); assert.deepEqual([size.slice.scripts, size.slice.under10k, size.slice.css], [148, size.base.under10k, size.base.css]);
+  assert.ok(size.slice.chapters <= BUDGET.routes.chapters); assert.deepEqual([size.slice.scripts, size.slice.css], [148, size.base.css]); assert.ok(size.slice.under10k <= size.base.under10k, 'no new file under 10 KB');
   { const w = size['opens with records']; assert.ok(w && w.host === 'public/knowledge-workspace-ui.js' && w.total === w.route + w.added && w.route === size.slice.chapters && w.files >= 1, 'opens with records'); }
   if (existsSync('dist/client-size-report.json') && existsSync('dist/client-metafile.json')) {
     const report = JSON.parse(readFileSync('dist/client-size-report.json', 'utf8')), meta = JSON.parse(readFileSync('dist/client-metafile.json', 'utf8'));
     const measured = {chapters: report.routes.chapters.code, scripts: report.scripts, under10k: report.buckets.under10k, css: report.css};
     assert.deepEqual(report.violations || [], [], 'no gate is broken');
     const mine = measured.chapters - 3229840 - booked.othersTotal - booked.poolTotal; assert.ok(mine <= 250, 'this build: S2 is ' + mine + ' B of its 250 B');
-    assert.equal(measured.scripts, 148); const opens = R.opensWithRecords(meta, 'public/knowledge-workspace-ui.js', Object.keys(BUDGET.data)); assert.equal(opens.route, measured.chapters);
+    assert.equal(measured.scripts, 148); assert.ok(measured.under10k <= size.base.under10k); assert.equal(measured.css, size.base.css); const opens = R.opensWithRecords(meta, 'public/knowledge-workspace-ui.js', Object.keys(BUDGET.data)); assert.equal(opens.route, measured.chapters);
     if (process.argv.includes('--measure') || process.env.AIW_RC44_WP1_MEASURE === '1') { assert.deepEqual({chapters: measured.chapters, scripts: measured.scripts, under10k: measured.under10k}, {chapters: size.slice.chapters, scripts: size.slice.scripts, under10k: size.slice.under10k}, 'at the slice\'s commit the build measures what the evidence says'); assert.deepEqual(opens, {route: size['opens with records'].route, added: size['opens with records'].added, total: size['opens with records'].total, files: size['opens with records'].files}); }
   }
 });
