@@ -109,7 +109,7 @@ const BASELINE = {bank: {findings: 'e188b2ccd284a1ab6d7be71b78f989075419b7dfcdcb
 // reasoning packet of a decision (26) and the chapter stamps (27).
 const PROMPT = 'Explain the transactional outbox and when a relay may repeat a notice.';
 const plainJSON = v => JSON.parse(JSON.stringify(v, (_k, x) => x instanceof Map || x instanceof Set ? [...x] : x));
-function designReadings(p) {
+export function designReadings(p) {
   const requirement = p.artefacts.find(a => a.type === 'requirement').id, packet = mode => intelligencePacket(p, {chapter: 1, objectId: requirement, mode, prompt: PROMPT}), context = brainContext(p, {id: requirement, chapter: 1});
   return plainJSON({
     findings: rv.inheritedFindings(p).map(({stamp: _stamp, ...f}) => f), summaries: rv.chapterSummaries(p), blockers: rv.reviewBlockerCount(p), readiness: sddReadiness(p), coverage: rv.traceCoverage(p), capacity: rv.reviewCapacity(p),
@@ -124,7 +124,7 @@ function designReadings(p) {
 // The knowledge workspace's own lists: what a person who curates knowledge is shown there. They are expected to move.
 const workspaceReadings = p => plainJSON({graph: knowledgeGraph(p), coverage: knowledgeConceptCoverage(p, 'SYN-P001'), history: K.knowledgeMarkdown(p)});
 // Every path at which two readings differ (a list that changed length is one path).
-function moved(a, b, path = '', out = []) {
+export function moved(a, b, path = '', out = []) {
   if (JSON.stringify(a) === JSON.stringify(b)) return out;
   if (a && b && typeof a === 'object' && typeof b === 'object' && Array.isArray(a) === Array.isArray(b) && (!Array.isArray(a) || a.length === b.length)) for (const k of new Set([...Object.keys(a), ...Object.keys(b)])) moved(a[k], b[k], path + '.' + k, out);
   else out.push(path.slice(1));
@@ -132,7 +132,7 @@ function moved(a, b, path = '', out = []) {
 }
 // A design document that holds a library's knowledge anyway, as a recovery or an older library might leave it: written
 // into the document, the library mark not carried over.
-const graft = (design, library) => { const q = clone(design), {library: _mark, ...knowledge} = clone(library.knowledge); q.knowledge = knowledge; return q; };
+export const graft = (design, library) => { const q = clone(design), {library: _mark, ...knowledge} = clone(library.knowledge); q.knowledge = knowledge; return q; };
 
 export const cases = [];
 const add = (name, run) => cases.push({name, run});
