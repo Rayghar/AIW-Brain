@@ -1039,10 +1039,12 @@ add('S1.23 (should-fix 8): a run of this suite that executed no case fails, and 
   const {spawnSync} = await import('node:child_process'), {mkdirSync, writeFileSync} = await import('node:fs');
   const run = args => { const r = spawnSync(process.execPath, ['rc44-wp1-knowledge-validate.mjs', ...args], {encoding: 'utf8', env: {...process.env, AIW_RC44_WP1_ALL: ''}}); return {status: r.status, out: r.stdout + r.stderr}; };
   const nothing = run(['--only', 'NO-CASE-HAS-THIS-NAME']); assert.equal(nothing.status, 1, 'a filter that matches nothing is not a pass'); assert.match(nothing.out, /No case was executed/); assert(!/PASS rc44 wp1 knowledge/.test(nothing.out));
-  // A pending case alone is not an executed case.
-  const pending = run(['--only', 'S2: not yet implemented']); assert.equal(pending.status, 1); assert.match(pending.out, /PENDING S2/); assert.match(pending.out, /No case was executed/);
   // A case file that exports no case fails the run, whatever the other files do.
   const dir = '.aiw-local/scratch/wp1-suite'; mkdirSync(dir, {recursive: true});
+  // A pending case alone is not an executed case. (rc44 wp1 S2 replaced its own pending case with its cases, so the probe
+  // is a pending case of its own here: was the S2 placeholder, '--only S2: not yet implemented' and /PENDING S2/.)
+  writeFileSync(dir + '/pending-case.mjs', 'export const cases = [{name: \'T2: a synthetic pending case\', pending: true, run() { throw Error(\'not yet implemented\'); }}];\n');
+  const pending = run(['--files', './' + dir + '/pending-case.mjs']); assert.equal(pending.status, 1); assert.match(pending.out, /PENDING T2: a synthetic pending case/); assert.match(pending.out, /No case was executed/);
   writeFileSync(dir + '/empty-cases.mjs', 'export const cases = [];\n'); writeFileSync(dir + '/no-export.mjs', 'export const other = 1;\n'); writeFileSync(dir + '/one-case.mjs', 'export const cases = [{name: \'T1: a synthetic case\', run() {}}];\n');
   for (const file of ['empty-cases.mjs', 'no-export.mjs']) { const r = run(['--files', './' + dir + '/one-case.mjs,./' + dir + '/' + file]); assert.equal(r.status, 1, file); assert.match(r.out, /exports no case/); assert.match(r.out, /PASS T1: a synthetic case/); }
   const one = run(['--files', './' + dir + '/one-case.mjs']); assert.equal(one.status, 0, one.out); assert.match(one.out, /PASS rc44 wp1 knowledge: 1 cases/);

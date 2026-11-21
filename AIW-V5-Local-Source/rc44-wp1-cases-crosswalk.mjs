@@ -14,7 +14,7 @@
 //   - a document with no crosswalk row reads as it did (findings, stamps, fingerprint, SDD, release checksums).
 // Synthetic fixtures only. Nothing here is knowledge; productionAccepted stays false.
 import assert from 'node:assert/strict';
-import {readFileSync, readdirSync, existsSync, writeFileSync} from 'node:fs';
+import {readFileSync, readdirSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import * as F from './rc44-wp1-knowledge-fixtures.mjs';
 import * as R from './rc44-s0-readings.mjs';
@@ -306,7 +306,7 @@ add('S2.5 (a second person, ruling D1 and D7.1): the review of a row is a second
 
 // ------------------------------------------------------------------------------------------------ 6
 add('S2.6 (targetContent): what a crosswalk row\'s catalogue target holds is the server\'s reading, never the client\'s: a value sent is ignored and recomputed; PAT-CIRCUIT-BREAKER reads authored, a template record template, a marked record marked, a stub stub, a target outside the catalogue nothing', async () => {
-  const {KC} = await mods(), S = await service();
+  const S = await service();
   try {
     await S.ok('knowledge.library', LIBRARY_MARK, 'importer');
     for (const conceptId of ['CON-PATTERN-PROTECTED-CALL', 'PAT-STRANGLER-FIG', 'PAT-ACTIVE-PASSIVE', 'CON-PATTERN-OWN-WORDS']) await S.ok('knowledge.concept', {...STRANGLER, conceptId, title: conceptId}, 'importer');
