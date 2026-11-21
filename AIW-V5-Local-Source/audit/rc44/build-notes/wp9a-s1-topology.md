@@ -13,7 +13,8 @@ here is approved, accepted, released or promoted.
 - **Done:** the slice (the package, one part of five filled, its registration lines, the route stub, hook H1, the
   suite, the fixture, a browser case, the size evidence) and its fix-up: every item 0 to 8 below, the suite at 21
   blocks, green.
-- **In progress:** the second fix-up (rulings M1 to M9), section "Second fix-up" below.
+- **Done since:** the second fix-up (rulings M1 to M9), section "Second fix-up" below; the suite at 24 blocks, green.
+- **In progress:** nothing.
 - **Next:** the lead's merge; see "What later slices inherit" and "Open questions (for the lead)".
 
 ## Second fix-up (after the verifier; the lead's rulings M1 to M9, with K and L)
@@ -667,6 +668,23 @@ Measured with scratch builds: with a second package's stub beside this one the r
 import of `topology.js` in `deploy-view.js` the route is the same 3,230,089 B (the package's modules add no export).
 
 ## Suites
+
+**After the second fix-up** (the final head; the machine shared, so times are long): `rc44-wp9a-deployment-validate.mjs`
+24 of 24 (S1.10 with `--measure` at item 6, the last code change); `rc44-s0-extensions-validate.mjs` 26 of 26;
+`rc44-wp1-knowledge` 34 of 34 (4 pending); `rc44-wp2-adoption-validate.mjs` 20 of 20 (its block `size` green under
+M4); `rc44-wp9a-deployment-browser-validate.mjs` green against the client built by `node build.mjs` on this code (port
+from 4100, its own `.aiw-local` database, no server left running). For the files changed: `recovery-service.js`
+(M2): `recovery-authority`, `recovery-size` (407 s under load; 57 s at the baseline), `rc42-g2-library`, `rc42-g3a-risk-
+and-limits`, `rc42-g3b-trace-and-delivery`, `intake`, `knowledge-retrieval`, `operations`, `service-routes`;
+`record-lifecycle.js`, `design-extension-parts.js`, the boundary and `worker.js` (M1, M6): `changes`, `provenance`,
+`seeded-proposals`, `review-plan` (392 s under load), `technology`, `runtime`, `sdd-architecture`,
+`validation-confirmation`, `model-lifecycle`, `action-undo`, `action-undo-api`, `rc42-g7-data-contracts`,
+`design-records`, `deploy`, `rc42-g5-runtime`, `fingerprint`, `review`, `rc42-g3c-evidence-fingerprint`, `workspace`,
+`model-alternatives`, `interfaces`, `technology-realisation`, `journal-archive`, `readiness`, `reference-projects`,
+`not-stated`, `wire-merge`, `chapter-lines`, `security`, `rc42-g1-tech-approval`, `rc42-g4-trace-kernel`, `platform`,
+`component-needs`: all green, none edited. `node check-syntax.mjs`: 938 modules pass. `node scripts/lint.mjs --summary`:
+162 problems, baseline 162, 0 new. `node build.mjs`: built, no size violation. None of the 37 suites red at the baseline
+was run, and no full regression (the lead runs it).
 
 **After the first fix-up** (head `1372785`, the adoption record of `25cc426`): `rc44-wp9a-deployment-validate.mjs` 21 blocks green
 (S1.10 with `--measure`); `rc44-s0-extensions-validate.mjs` 26 of 26; `rc44-wp1-knowledge` 34 of 34 (4 pending, as
