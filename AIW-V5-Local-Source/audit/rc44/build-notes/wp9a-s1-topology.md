@@ -20,7 +20,55 @@ here is approved, accepted, released or promoted.
 
 Branch `rc44/wp9a-s1-topology-fix-c5`, from `rc44/wp9a-s1-topology-fix-c4` (`1372785`). Verifier:
 `/home/user/hb-review/rc44-build/wp9a-s1-topology.verify.json`. Each item: case first, seen to fail on the head the
-item started from, then the change. (Work in progress; this section is completed with item 8.)
+item started from, then the change. Commits: `1efbecc` (item 0), `88a4468`/`d66c269` (1), `df4ff65` (2), `fd79252`
+(3), `ee75ae6` (4), `81879af` (5), `5d4e02c`/`46cbd47` (6), `f45cb4c` (7), the final commit (8).
+
+### One line each
+
+| Item | State | Case (suite `rc44-wp9a-deployment-validate.mjs` unless named) |
+|---|---|---|
+| New problem 1: the mend un-types zones standing in a domain that is there but no person's | done (M1): the mend and the comparison read one predicate, there and no proposal; a mended zone or placement is stamped as the commit's | S1.21 (both of the verifier's paths, an AIW and a Sol domain; seen to fail) |
+| New problem 2: a hand-made recovery package bypasses L5 | done (M2): the import moves the step aside before its early return; no date compared | S1.16 (a later review.at, no finalReview, both; seen to fail) |
+| New problem 3: the chapter can be checked and handed off while the error stands | done as ruled (M3): the reading is the non-waivable class; no code change but the comment | S1.22 (through the server, beside the built-in state-protection error) |
+| New problem 4: wp2's block `size` red | done (M4): each package's size case measures its own bytes | wp2 block `size`; S1.10 (both seen to fail) |
+| New problem 5: the lazy-entry bound loosened without record | done (M5): set from the measurement, itemised by module | S1.10 |
+| New problem 6: S1.7's K8 call guarded | done (M5): unconditional | S1.7 |
+| New problem 7: two refusals name the type; the notes misattribute one | done (M7): the notes say which comes from where; wp9b rewords them | S1.0 (each sentence exact) |
+| New problem 8: S1.14's weak match | done (M5): the exact sentence, refs read from the document that holds them | S1.14 |
+| New problem 9: dismissing a proposal moves the version and clears the checks | done (M6): row `quietProposals`; built-in seeds unchanged (wp9b); the design stamp still moves by the retirement list (known limit (e)) | S1.23 (seen to fail) |
+| Weakened: S1.10 `< 20000` -> `< 25000` without record | done (M5): replaced by the measured, itemised bound, recorded old -> new | S1.10 |
+| Partly, should-fix 2: a recovery import kept who chose it | done with M2 | S1.16 |
+| Partly, L2: compared only when they can be | done with M1 (the invariant holds again) and M3 (the reading of "cannot be checked") | S1.13, S1.21, S1.22 |
+| Partly, L3: no zone or placement left naming a record that is not there | done with M1: the mend no longer over-reaches; it stamps what it changes | S1.14, S1.21 |
+| Partly, L5: typed or not is design; who chose it is not | done with M2 (no bypass) and M1 (the copy's readings stay typed after its first commit) | S1.16, S1.21, S1.0 |
+| Partly, L9: words and notes | done with M7: the shared sentences recorded where they come from, for wp9b | S1.0, S1.19 |
+| M1 | done | S1.21 |
+| M2 | done (`recovery-service.js`, exactly this) | S1.16 |
+| M3 | done: recorded as the reading of L2 | S1.22 |
+| M4 | done: `rc44-s0-readings.mjs routeBookings`, wp2's block and S1.10; the four rc44 suites green on the merged head | wp2 `size`; S1.10 |
+| M5 | done | S1.10, S1.7, S1.14 |
+| M6 | done: S0's row `quietProposals`, beside `lifecycle` | S1.23; S0 "L3 restore rule" |
+| M7 | done: in the notes; S1.0 pins the sentences | S1.0 |
+| M8 | done: the 64 B booked to the shared pool; wp9a's own 342 B, 158 B left | S1.10 |
+| M9 | done: (e) and (f) recorded | — |
+
+Where I read a ruling otherwise, or did a little more, plainly:
+- M1: the mend's stamp needs the commit's author, which a tracker is not handed. Following H2 (the boundary keeps the
+  stamp current, not the package), S0's `track` row may now answer `[[as it was, as it is]]` for records of other
+  collections the tracker changed, and `trackExtensions` stamps each as the commit's (`provenance.js stampTracked`,
+  server only; `worker.js` hands the author over). That is an edit of S0's boundary and contract, which M1 does not name.
+  The restore rule (L3) reads the same predicate as the mend and the comparison, so a node's restore is no longer
+  refused because its domain is a person-kept record a draft changed since.
+- M3: L2's words "the chapter cannot be checked, frozen as checked or handed off" are not built: as M3 rules, they mean
+  the non-waivable class of rc.10.73.42. I agree with the ruling.
+- M6: the statement is a row of its own (`quietProposals`), as `canRestore` is, not a new shape of `lifecycle`; it covers
+  a proposal's restore too. The design stamp still moves by the retirement list (known limit (e)); M6 names version and
+  check only, and closing the stamp too costs route bytes in `reviewSource` (not measured), so I left it to the lead.
+- M7: pinning the shared sentences exactly in S1.0 means wp9b's rewording changes this suite too (recorded there as a
+  known limit, old -> new to be recorded by wp9b).
+
+### By item
+
 
 - **Item 0, merge `rc44/integration` (`a4c1690`):** done (`1efbecc`), no conflict. The four rc44 suites on the merged
   head: S0 26 of 26, wp1 34 of 34 (4 pending), wp9a 21 of 21 (S1.7 now runs K8's helper: it exists), wp2 19 of 20, its
@@ -98,6 +146,26 @@ item started from, then the change. (Work in progress; this section is completed
   - M8, the size evidence restated on this head after the merge with the adoption record (`node build.mjs`; S1.10
     `--measure`; `audit/rc44/evidence/wp9a-s1-size.json` schema v3): see "Measurements" (second fix-up).
   - M9, known limits added: (e) and (f), in "Known limits (rulings L11 and M9)" below.
+- **Item 8, notes and the final commit:** done: this section; "Known limits (rulings L11 and M9)"; "Measurements"
+  (second fix-up); "What later slices inherit" (second fix-up). Suites on the final head: see "Suites (second fix-up)".
+
+### What later slices inherit (second fix-up)
+
+- **Every package:** S0's `track` may answer `[[as it was, as it is]]` for records of other collections it changed
+  itself; the boundary stamps each as the commit's (M1). S0's row `quietProposals {path: true}` says that a proposal of
+  a package's own lifecycle collection is no design change when it is dismissed or restored (M6). A package's size case
+  follows one rule (M4): its evidence states `ownBytes` and, for anything booked to the shared pool, `sharedPoolBytes`
+  by item; its suite asserts the recorded figure at its own head and this build's growth less every other package's
+  own bytes and the pool's (`rc44-s0-readings.mjs routeBookings`), each inside its allowance. A file with only `delta`
+  (wp2's v1) books its whole growth to its package.
+- **Slice 2:** `hostingComparison` reads "standing" as there and no proposal, whoever changed the record last (M1); the
+  tracker's mend reads the same predicate and stamps what it changes; L2's error is the non-waivable class (M3), and
+  any finding slice 2 adds that "cannot be checked" means the same.
+- **wp9b:** the shared sentences of a person-only step (M7, ruling A5); a built-in seed's dismissal, which moves its
+  chapter's version and clears its check (M6, rc.10.73.42's rule, held in S1.23); the design stamp that moves by a
+  batch's receipt and by the retirement list (M9 (e)); L11 (b).
+- **The lead:** wp2's `--measure` writes the whole growth as wp2's `delta`, to be run at wp2's own head only; the
+  registry's one-time cost (K6) is inside wp2's recorded `delta` until it is re-booked to the shared pool.
 
 ## Fix-up (after the adversarial review; the lead's rulings L1 to L11, K1, K2, K6, and K7 to K9 since)
 
