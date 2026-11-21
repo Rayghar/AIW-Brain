@@ -9,7 +9,8 @@ import {createProject} from './shared/projects-domain.js';
 import {withFinalReview, reviewRequirements, inheritedFindings, finalFindings, chapterSummaries, reviewSourceStamp, reviewDesignStamp, evidenceStamp, traceStamp, assembleSDD, reviewBlockerCount, CHAPTERS} from './public/review-domain.js';
 import {recordGraph} from './public/record-graph.js';
 import {architectureModel} from './public/architecture-model.js';
-import {requirementTrace, requirementSpine} from './public/trace-kernel.js';
+import {requirementTrace, requirementSpine, BUILT_IN_LAYERS} from './public/trace-kernel.js';
+import {recordTrace, tracePath} from './public/trace-record.js';
 import {chapterChecks, sddBoard, sddOpenCounts} from './public/readiness-model.js';
 import {architectureMarkdown, provenanceReading} from './public/sdd-architecture.js';
 import {arsMarkdown} from './public/ars-document.js';
@@ -69,6 +70,23 @@ export function assertBuiltInTrailsUnchanged(base, withRecords) {
   }
   return layers;
 }
+// assertBuiltInChainsUnchanged(base, withRecords) (the lead's ruling K8 of 2026-11-20): the chain that explains a pair
+// of built-in records (trace-record.js tracePath, read by the Matrix, the Model trace and the SDD journey line) is the
+// chain `base` gives, for every record of `base` as the start and every record on its trace. A package's record on a
+// layer of its own may be a shorter way between two built-in records; it explains a pair only when no built-in chain
+// does; and the records of every such record's trace on the built-in layers are the ones `base` gives (the Model
+// trace and the SDD journey line read them). Answers how many chains it compared.
+export function assertBuiltInChainsUnchanged(base, withRecords) {
+  let chains = 0;
+  for (const start of recordGraph(base).objects.keys()) {
+    const a = recordTrace(base, start); if (!a) continue; const b = recordTrace(withRecords, start);
+    { const onBuiltIn = T => [...(T ? T.ids : [])].filter(x => BUILT_IN_LAYERS.includes(T.layerOf(x))).sort(), was = JSON.stringify(onBuiltIn(a)), now = JSON.stringify(onBuiltIn(b));
+      if (was !== now) throw Error('The trace of ' + start + ' moved on the built-in layers: ' + was + ' became ' + now + '. A package\'s records join a package\'s layers only.'); }
+    for (const id of a.ids) { if (id === start) continue; chains++; const was = JSON.stringify(tracePath(a, id)), now = JSON.stringify(b ? tracePath(b, id) : null);
+      if (was !== now) throw Error('The chain from ' + start + ' to ' + id + ' moved: ' + was + ' became ' + now + '. A package\'s record explains a pair only when no built-in chain does.'); }
+  }
+  return chains;
+}
 export function assertFindingIdsUnique(p) {
   const seen = new Set(), all = inheritedFindings(p);
   for (const f of all) { if (seen.has(f.id)) throw Error('Two findings share the id “' + f.id + '”: a treatment of one would cover the other. A package\'s finding id is its own (by convention code:record id, with a code no other package or chapter uses).'); seen.add(f.id); }
@@ -110,4 +128,19 @@ export function assertTemplateCopyClearsSteps(p, records) {
   if (!records(source).some(r => Object.values(r || {}).some(step))) throw Error('assertTemplateCopyClearsSteps: the document holds no record with a step taken');
   for (const r of records(instantiateTemplate(source, 'template-copy', 'A copy', AT))) for (const [key, value] of Object.entries(r || {}))
     if (step(value)) throw Error('A step taken in a template is carried into a project copied from it: ' + (r.id || '(record)') + '.' + key + ' (keep a person\'s step under the record\'s key review, which the copy clears)');
+}
+
+// No person's and no second person's step moves a design stamp (the lead's ruling J3 of 2026-11-19): the design
+// fingerprint never reads the history, review, confirmed or provenance of a package's record. A package whose records
+// keep any of them states what its records say to the fingerprint (design {key: p => …}), and its suite calls this with
+// a document that holds its records and `records`, which reads them from a document: each of the four keys is written
+// on every record, as a step, a confirmation and the boundary's stamps write them, and the design fingerprint and the
+// design version stamp must stay where they were. It throws with the key and the record named; it answers how many
+// records it read.
+export function assertStepsMoveNoStamp(p, records) {
+  const stamp = d => { const q = withFinalReview(d, {upgrade: false}); return reviewSourceStamp(q) + ' ' + reviewDesignStamp(q); }, was = stamp(structuredClone(p)), rows = records(p);
+  if (!rows.length) throw Error('assertStepsMoveNoStamp: the document holds no record of the package');
+  const STEPS = {history: r => [...(Array.isArray(r.history) ? r.history : []), {revision: r.revision ?? 1, actor: 'a-second-person', at: AT, event: 'step'}], review: () => ({actor: 'a-second-person', at: AT, account: 'person', note: 'A step taken.'}), confirmed: r => !r.confirmed, provenance: () => ({author: {kind: 'person', by: 'a-person', at: AT}, reviewed: {by: 'a-second-person', at: AT, how: 'confirmed'}})};
+  for (const [key, value] of Object.entries(STEPS)) { const q = structuredClone(p); for (const r of records(q)) r[key] = value(r); if (stamp(q) !== was) throw Error('A person\'s step moves the design stamp: the design fingerprint reads “' + key + '” of ' + (rows[0].id || 'a record') + '. State what the package\'s records say to the fingerprint (design {key: p => …}): all but their history, review, confirmed and provenance.'); }
+  return rows.length;
 }

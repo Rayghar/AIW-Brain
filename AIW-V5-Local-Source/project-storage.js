@@ -1,7 +1,7 @@
 import {digest,sha256} from './public/brain-integrity.js';
 import {readRequirements,writeRequirements,requirementIndexStatements} from './requirement-storage.js';
-import {integrityError,missingPackageError} from './error-message.js';
-import {missingPackages,missingPackagesRefusal} from './public/design-extension-parts.js';
+import {integrityError,missingPackageError,upgradeDueError} from './error-message.js';
+import {missingPackages,missingPackagesRefusal,extensionUpgradeNeeded} from './public/design-extension-parts.js';
 import {projectSummary,projectSummaryOf,projectReadiness} from './shared/projects-domain.js';
 // Baselines are immutable documents. Keep their bytes in private object storage
 // and only their references in the revision-controlled working project row.
@@ -102,6 +102,9 @@ export async function readStoredProject(env,owner,serialized){
     }));
     keys.set('__baseline_parts',parts);
   }
+  // A row a design package must upgrade (rc44; the lead's ruling K1): marked in its keys, which every save hands back
+  // (a copy of them too), so that the writer knows the row it replaces (saveStoredProject). The mark is no object.
+  if(extensionUpgradeNeeded(document))keys.set('__upgrade_due',true);
   return {document,keys};
 }
 
@@ -307,7 +310,7 @@ export function priorKeys(keys){
   for(const [name,value] of keys){
     // A frozen baseline's entry as read ('baseline:'+id) and the parts it names are no objects a save replaces: parts are
     // shared by their SHA-256 and never swept.
-    if(name==='__sweep'||name==='__requirement_index'||name==='__retained'||name==='__baseline_parts'||name.startsWith('baseline:'))continue;
+    if(name==='__sweep'||name==='__upgrade_due'||name==='__requirement_index'||name==='__retained'||name==='__baseline_parts'||name.startsWith('baseline:'))continue;
     if(typeof value==='string')out.add(value);
     else if(name==='__requirement_parts')for(const kind of ['artefacts','relationships'])for(const part of value[kind]||[])out.add(part.key);
     else if(value?.segments){for(const s of value.segments)out.add(s.key);if(value.head)out.add(value.head.key);for(const a of value.archive||[])out.add(a.key);}
@@ -349,6 +352,13 @@ export const listedProject=row=>row.summary?{...JSON.parse(row.summary),updatedA
 // project (which is then read and not changed here).
 export async function saveStoredProject(env,owner,projectId,document,revision,at,keys,extraStatements=()=>[],{keepPrior=false,jobGuard=null,allowMissing=false}={}){
   if(!allowMissing){const missing=missingPackages(document);if(missing.length)throw missingPackageError(missingPackagesRefusal(missing),missing);}
+  // Nor is a design package's upgrade of an older row stored by a save that is not the storage upgrade (the lead's
+  // rulings J8 and K1): that one keeps the row it replaces as a recovery point and says so in the activity
+  // (storage-upgrade.js, keepPrior). Any other save of the upgraded document over a row whose upgrade is due is
+  // refused with a reload, whichever route asks; a save that leaves the upgrade due (a rename, a signed notice applied
+  // before the read) is taken, and the read that follows stores the upgrade. Without object storage a read stores no
+  // upgrade and no recovery point exists, so there the save goes on as it did on rc.10.73.42.
+  if(env.FILES&&!keepPrior&&keys?.get?.('__upgrade_due')===true&&!extensionUpgradeNeeded(document))throw upgradeDueError();
   const stored={...document,finalReview:{...document.finalReview}},created=[];delete stored.storageSweep;delete stored.storageRetained;
   await writeRequirements(env,owner,projectId,document,stored,keys,created);
   const extensions={...Object.fromEntries(['workbench','assurance','guidance','intake'].filter(k=>document[k]).map(k=>[k,document[k]]))};

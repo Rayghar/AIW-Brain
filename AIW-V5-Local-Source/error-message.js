@@ -29,10 +29,19 @@ export const MISSING_PACKAGE = 'missing_package';
 export const missingPackageError = (message, packages) => Object.assign(Error(message), {code: MISSING_PACKAGE, packages});
 export const isMissingPackage = (error) => error?.code === MISSING_PACKAGE;
 
+// A design package's upgrade of a row an earlier build stored is stored by the read that finds it, as a storage upgrade
+// with its recovery point (rc44; the lead's rulings J8 and K1), and by no other save: the one writer of a project
+// throws this when a route would store the upgraded document over such a row, and every final catch answers it as the
+// browser's conflict (409, code "conflict"), which offers the latest project: the read that follows stores the upgrade.
+export const UPGRADE_DUE = 'This project was last saved by an earlier build of AIW and is brought up to date when it is opened. Reload the latest project, then apply your preserved changes.';
+export const upgradeDueError = () => Object.assign(Error(UPGRADE_DUE), {code: 'conflict', conflict: true, upgradeDue: true});
+export const isUpgradeDue = (error) => error?.upgradeDue === true;
+
 // One answer for a service's final catch: an integrity fault is 422 with code "integrity" and one JSON log line
 // naming the key; anything else is the person-readable message (or the general one for a fault) at `status`.
 export function errorResponse(error, status = 400, context = {}) {
   if (isMissingPackage(error)) return new Response(JSON.stringify({error: error.message, code: MISSING_PACKAGE, packages: error.packages}), {status: 409, headers: JSON_HEADERS});
+  if (isUpgradeDue(error)) return new Response(JSON.stringify({error: error.message, conflict: true, code: 'conflict'}), {status: 409, headers: JSON_HEADERS});
   if (isIntegrityError(error)) {
     console.error(JSON.stringify({at: new Date().toISOString(), event: 'integrity-fault', ...context, key: error.key || null, message: error.message}));
     return new Response(JSON.stringify({error: error.message, code: INTEGRITY}), {status: 422, headers: JSON_HEADERS});

@@ -9,8 +9,9 @@ D (`audit/rc44/RULINGS-2026-11-18.md`, on `rc44/integration`). `productionAccept
 
 - **Done:** the registry, the hooks in the shared machinery, the server boundary, the two lists a package adds its line
   to, the suite (22 blocks, green), the size evidence, the fix-up after the adversarial review (all eighteen items and
-  the rulings D1 to D12), this contract. No package exists: the only extensions are the synthetic ones inside
-  `rc44-s0-extensions-validate.mjs`.
+  the rulings D1 to D12), this contract. At S0 no package existed: the only extensions were the synthetic ones inside
+  `rc44-s0-extensions-validate.mjs`. Since wp2 S1 the build registers `p40-adoption`, and the suite holds with it
+  (ruling J11; section "With wp2 S1" below).
 - **In progress:** nothing.
 - **Next (for the lead):** merge. "Open questions" lists what the lead must decide; "What later slices must know"
   lists what the next engineers need.
@@ -170,6 +171,66 @@ Done by the lead on `rc44/s0-lead-f`, from the fix-up's head `72204ff`. Each cas
   person's step calls it; it fails for a step kept under a key of the package's own.
 - Route: 898 B, unchanged (server only). 22 checks pass; syntax, lint (0 new) and the build's gates pass.
 
+## With wp2 S1: three rows, two rules of the boundary and the suite with real packages (2026-11-19)
+
+Done by the fix-up of wp2 slice S1 on `rc44/wp2-s1-record-fix-c2`, as the lead's rulings J2, J3, J8, J9, J10 and J11
+say (section J of `RULINGS-2026-11-18.md`). Each case was written first and seen to fail. Every route byte of these
+rows is counted in wp2's allowance, not S0's.
+
+| Ruling | What S0 gained | Where | Case (in `rc44-s0-extensions-validate.mjs`) |
+|---|---|---|---|
+| J2 | The emitter is handed `has(id)`: whether the graph holds an object under that id | `record-graph.js` `recordRelations` (route) | "J2 emitter has" |
+| J3 | The row `design {key: p => what the key says}`, read by `reviewSource` in place of the raw key; one key has one statement; the helper `assertStepsMoveNoStamp` | `review-domain.js` (route), `design-extension-parts.js`, `rc44-s0-readings.mjs` | "J3 design statement", "7 idempotent and order-free" |
+| J10 | The row `prefixes {built-in type: id prefix}`, read by the start check and the clash check; the scan of workbench prefixes reads the workbench's own modules only | `design-extension-parts.js` (server) | "SF start check", "7 idempotent and order-free", "D3 workbench keys" |
+| J8 | `upgradeDueRefusal`: a command on a row whose package upgrade is due is answered with a reload | `design-extension-boundary.js`, `worker.js` (server) | wp2's block "storage upgrade" (a real stored row) |
+| J9 | The SDD counts an unstamped record of a package's collection as written by an upgrade or a merge | `sdd-architecture.js` (server) | "D5 SDD provenance" |
+| J11 | The suite holds with real packages registered | the suite | every block below |
+
+The contract text for each row is in "The parts, one by one" (`prefixes`, `records … has`, `design`, `upgrade`).
+The suite has 24 blocks (22, and the two new ones).
+
+**J11, how the suite reads the build's packages.** `BUILD_PACKAGES` is read from the route stubs of
+`public/design-package-routes.js`; no id of a real package is written in the suite. "Nothing registered" is proven in
+a child process that loads the registry and the readers without `worker.js` (0 registered; every reading equals the
+golden file of `94dbd4f`).
+
+**Replaced assertions, old -> new** (the suite does not exist on `94dbd4f`; each new assertion is at least as strict;
+line numbers of `rc44-s0-extensions-validate.mjs` at this head):
+
+1. l.273, block 6a: `EXTENSIONS` equals `[]` -> `EXTENSIONS` ids equal the build's packages and their route stubs,
+   **and** a process without the server's package list holds 0 and reads the three references and the document with a
+   review list byte for byte as the golden file.
+2. l.316, block "registration": ids equal the three synthetic ones -> the sorted union of the build's ids and the
+   three.
+3. l.771 and l.775, block "D2": `p40-adoption` as the package a build lacks -> `p98-absent`, an id no build
+   registers; added: a package this build registers is not missing; the unreadable forms are tried with both ids.
+4. l.854, block "D3": the prefix scan read every module -> it reads the workbench's own modules, **and** every prefix
+   literal in a package's own modules must be the workbench's or one the package states; a module of the workbench
+   is never counted as a package's.
+5. l.874, block "D3": the allowed rows used the key `adoptions` -> a key no package states (`journals`), **and** each
+   collection a package of the build states is refused to another package.
+6. l.955, block "D5": the packages' collections equal the three synthetic ones -> those and the ones the build's
+   packages state, and none is the workbench's own.
+7. l.1050, block "SF start check": `XY, ADP, WL, FD, DN, SLO` are each free -> `XY, WL, FD, DN, SLO` are free, and
+   `ADP` is held as taken by the clash check (l.1345: stated by another package it is a clash that names both).
+8. l.1072, block "SF start check": a layer over `pattern` is allowed -> a layer over a built-in type that stands on no
+   layer (`risk`) is allowed, the package that holds `pattern` conforms, and a second layer over `pattern` is refused
+   in words.
+9. l.1300, block "needs and load": neither list holds an import or a `registerExtension` line -> every code line of
+   the browser's list is the registry's import or one stub `{id: <id>-route, needs, load}`, the server's list holds
+   one import for each stub and names the same packages, each stub states only `id`, `needs` and `load` and asks for
+   nothing for a document without records.
+10. l.1321, block 7: `out.extensions` equals the three synthetic ids -> the sorted union with the build's ids.
+11. l.1337, block 7: at least 7 clashes, each naming `zzz-duplicate` and `zz-synthetic` or `mm-other` -> at least 7
+    plus one for each new row (a minted prefix of `zx-minter`, one of the build's package, a design statement of
+    `zw-stated`), each naming `zzz-duplicate` and the package that keeps the row; the seven of the synthetic packages
+    are still each counted.
+12. l.1382, block 8: the registry module in the client build is at most 420 B -> the registry as the route held it at
+    S0 (bundled apart with the build's options: its readers) is at most 420 B, `registerExtension` itself is under
+    120 B, and the module in the client build less `registerExtension` is at most 420 B. The bound is the same on the
+    same code; the first route stub keeps `registerExtension` on the route, which is wp2's route bytes (ruling F5: the
+    route gate binds).
+
 ## What was built
 
 | File | Where it runs | What it is |
@@ -251,7 +312,8 @@ Every part is optional.
 | Part | Shape | Read by |
 |---|---|---|
 | `objectTypes` | `{type: {label, chapter, level, prefix}}` | `record-graph.js` `OBJECT_TYPES` |
-| `records` | `(p, add, rel) => void` | `record-graph.js` `recordRelations`: the record graph and the connected model |
+| `prefixes` | `{built-in type: id prefix}` | the start check and the clash check (`design-extension-parts.js`); ruling J10 |
+| `records` | `(p, add, rel, has) => void` | `record-graph.js` `recordRelations`: the record graph and the connected model |
 | `layers`, `hops` | `{layer: type}`, `[{layer, types, from, dir, ctx, only?}]` | `trace-kernel.js` |
 | `checks` | `{chapter: p => [finding]}` | `document-memo.js` `sharedList`: the chapter's checks, the review, readiness |
 | `commands` | `{type: {apply, staged?, person?, second?, validate?, undo?, large?}}` | `design-extension-boundary.js` (server), `canonical-command.js` `stagedBy` |
@@ -259,6 +321,7 @@ Every part is optional.
 | `lifecycle` | `{path: chapter}` | `record-lifecycle.js` `COLLECTIONS` |
 | `provenance` | `{nouns: {path: noun}, paths: {type or prefix: [path]}, records: {path: chapter}}` | `provenance.js`, `sdd-architecture.js` |
 | `designKeys`, `evidenceKeys` | `[key]` | `review-domain.js` `designOf` |
+| `design` | `{key: p => what the key says}` | `review-domain.js` `reviewSource`, in place of the raw key; ruling J3 |
 | `upgrade`, `upgradeNote` | `p => p`, one sentence | `readings-upgrade.js`, `storage-upgrade.js` (server) |
 | `sections` | `[{document, after, markdown(p)}]` | the export routes of `worker.js`, `sdd-architecture.js` (server) |
 | `needs`, `load` | `p => boolean`, `() => Promise` | `project-store.js` through `ensureExtensions` |
@@ -272,7 +335,17 @@ the id prefix of the kind's records, 2 to 5 capitals. The start check refuses a 
 of the record graph) and one two packages both state. A type that is built in, or that a package earlier by id
 states, stays as it is.
 
-**`records(p, add, rel)`.** Called by the one emitter, after every built-in record and relation, for the record graph
+**`prefixes`** (ruling J10). `{built-in object type: id prefix}`: the prefix of the records a package adds under a
+built-in type from its own collection (ruling D7.2; `p40-adoption` states `{pattern: 'ADP'}`). The prefix is 2 to 5
+capitals and never the workbench's own. The type is built in, is not the package's own (a kind's prefix is stated with
+the kind), is not a type of Chapter 1 records and stands on no built-in layer: the same rule as for `add` with a
+built-in type. The clash check claims a minted prefix exactly as it claims a kind's prefix, so two packages that state
+one prefix, by either row, do not start. `WORKBENCH_PREFIXES` holds no package's prefix: the suite's scan of prefixes
+reads the workbench's own modules only (a package's modules are those only its own modules import, from the module
+its line of `design-packages.js` names), and asserts that every prefix literal in a package's modules is the
+workbench's or one the package states.
+
+**`records(p, add, rel, has)`.** Called by the one emitter, after every built-in record and relation, for the record graph
 and the connected model alike. It is not called for the driver-scope graph (`recordGraph(p, 'component')`).
 - `add(record, type, source)` registers the record as an object. `source` names where it lives, by convention
   `'<path>.<id>'` (`'notes.records.NOTE-001'`). A record whose id something already holds is not registered: a package
@@ -280,6 +353,14 @@ and the connected model alike. It is not called for the driver-scope graph (`rec
 - `rel(type, from, to, {source, id?, label?, attributes?, derived?, via?})` states a typed relation. It never replaces
   one. `source` names the field that states it (`'notes.records.componentId'`). State a relation only between records
   that exist: one with a missing end is left out of the record graph and is listed as unresolved in the connected model.
+- `has(id)` (ruling J2) says whether the graph holds an **object** under that id at the moment it is asked: every
+  built-in object, the objects of packages earlier by id, and the package's own once added. It is false for an id
+  nobody holds and for a record the graph keeps as a relation, not as an object (a Chapter 4 allocation, a lineage, a
+  connection): the lifecycle collections hold many of those, so an index of the document's records by id is not a test
+  of "is an object". **A package that binds records by id asks `has(id)` before each `rel`.** A relation stated to a
+  record that is no object is listed as `unresolved` in the connected model, and the model package of such a document
+  is refused ("Resolve duplicate identities and missing relationship endpoints …"). Case: block "J2 emitter has" (a
+  probe package that asks and one that does not, in a process of their own).
 - **With none of the package's records in the document the emitter states nothing.** That holds for relations between
   two built-in records too (wp9a's `recovers` between environments): they are read from fields that exist only once
   the package wrote them.
@@ -471,6 +552,26 @@ stamp); an **object** is bookkeeping beside the design, which neither fingerprin
 registry converts no stored stamp: an upgrade step that adds a design key to an old document moves that document's
 design stamps, and handling that is the package's (as D14 did in `readings-upgrade.js`).
 
+**`design`** (ruling J3). `{key: p => what the key says to the design fingerprint}`, for a key of the document that is
+the package's own (not a key inside a chapter's container, never a key the workbench writes). `reviewSource` puts what
+the function answers under the key, in place of the raw key; when it answers `undefined` or `null` the design source
+holds no key, so a document without the package's records, and a baseline frozen from one, read as they did. A key
+with a statement is design by that statement: the start check's probe of `designKeys` does not ask the fingerprint
+about it, and it may be listed in `designKeys` too. Two packages that state one key do not start.
+- **The rule for every package:** the design fingerprint never reads the `history`, `review`, `confirmed` or
+  `provenance` of a package's record. No person's and no second person's step moves a design stamp, at any revision.
+  A package whose records keep any of the four states the row and leaves them out of what it answers.
+- A package whose records restate what an earlier record still says to the fingerprint leaves that out too, until the
+  earlier record is retired (wp2: an adoption upgraded from a guided design task says only what its own steps wrote).
+  That is how an upgrade step moves no stamp of an old document without converting a stored stamp.
+- The package's suite calls `assertStepsMoveNoStamp(p, records)` (`rc44-s0-readings.mjs`) with a document that holds
+  its records: it writes each of the four keys on every record, as a step, a confirmation and the boundary's stamps
+  do, and throws, naming the key and the record, when the design fingerprint or the design version stamp moves. A
+  package that states the raw key and no statement fails it.
+- Cost: the loop in `reviewSource` is on the route (it is part of wp2's route bytes). A statement runs at every read
+  of the design source, so it must be cheap and must answer the same value for the same document.
+- Case: block "J3 design statement"; the clash in block "7 idempotent and order-free".
+
 **The packages a document names: `workspace.packages` (ruling D2).** A document says which packages have written into
 it: their ids, sorted, under `workspace.packages`. A package does not write the key; the boundary does, when a command
 of the package first writes (sent on its own, carried by a reviewed batch, applied by a merge) and when the package's
@@ -496,6 +597,24 @@ document as stored, which may lack any chapter, and also on the output of the bu
 changes is stored again on its next read, with a recovery point. `upgradeNote` is one sentence that says what the step
 did; it follows the storage upgrade's own words in the project's activity, only for a document the step changed. The
 records a step writes carry no author stamp.
+- **A package's upgrade is stored by a read, not inside a command** (ruling J8). `upgradeDueRefusal(document)`
+  (`design-extension-boundary.js`) answers the words for a row whose package upgrade is due; `worker.js` asks it on the
+  stored document before it applies a command and answers 409 (a conflict to the browser, which offers the latest
+  project). Nothing is stored; the read that follows stores the upgrade with its recovery point and its sentence in
+  the activity. It is asked only where a read can store an upgrade (object storage is bound); without it a command
+  goes on as before. **Known limits, as on rc.10.73.42:** the built-in read upgrades are still written by whichever
+  request first stores the row; and a writing route that is not a command (intake, a draft by Sol, a baseline, an
+  attachment, an operation, an organisation pin, a rename) still stores a due package upgrade with its own write
+  (probed for a rename: 200, the upgrade stored, no recovery point). One place for those would be the one writer
+  (`project-storage.js`), told by the reader that an upgrade was due; a blanket rule there also refuses writes that
+  store no upgrade, so it needs a decision per route and is left to the lead (wp2 S1's notes, point 2).
+- **A command that makes an upgrade due is not refused.** A design applied through the earlier path
+  (`alternative.apply`) is written as an adoption by the step in that same commit: the row was up to date when the
+  command arrived, and the commit is a design change with its journal.
+- **Unstamped records in the SDD** (ruling J9): a record of a package's collection that carries no author stamp was
+  written by an upgrade step or by a merge (ruling D12). The SDD counts it as that (`provenanceReading(p).by.upgrade`,
+  a column and a line of their own in Appendix E, only in a document that holds one), never as written by a person.
+  A built-in record without a stamp reads as it always did. Case: block "D5 SDD provenance".
 
 **`sections`.** `{document, after, markdown(p)}`. `document` is `'registers'` (the working registers), `'sdd'` (the
 architecture edition, every audience), `'ars'`, or `'chapter-1'` to `'chapter-10'` (that chapter's own register).

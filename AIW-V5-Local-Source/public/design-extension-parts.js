@@ -149,7 +149,7 @@ export function packageCollections() {
 // An id is a key of the registry's own table, so the one lower-case name every object carries is no id.
 const ID = /^(?!constructor$)[a-z][a-z0-9-]{1,60}$/, TYPE = /^[A-Za-z][A-Za-z0-9]{0,40}$/, PATH = /^[a-z][A-Za-z]{0,40}(\.[a-z][A-Za-z]{0,40})?$/;
 export const COMMAND_TYPE = /^[a-z][A-Za-z0-9-]{0,60}\.[A-Za-z][A-Za-z0-9-]{0,60}$/;
-const PARTS = new Set(['id', 'objectTypes', 'records', 'layers', 'hops', 'checks', 'commands', 'track', 'lifecycle', 'provenance', 'designKeys', 'evidenceKeys', 'upgrade', 'upgradeNote', 'sections', 'needs', 'load']);
+const PARTS = new Set(['id', 'objectTypes', 'prefixes', 'records', 'layers', 'hops', 'checks', 'commands', 'track', 'lifecycle', 'provenance', 'designKeys', 'evidenceKeys', 'design', 'upgrade', 'upgradeNote', 'sections', 'needs', 'load']);
 const HOP_PARTS = new Set(['layer', 'types', 'from', 'dir', 'ctx', 'only']);
 const COMMAND_PARTS = new Set(['apply', 'staged', 'person', 'second', 'validate', 'undo', 'large']);
 const LEVELS = new Set(Object.values(OBJECT_TYPES).map(t => t.level));
@@ -162,7 +162,7 @@ function fingerprintReads(key) {
 // The package as registered under the id, when `e` is that registration (its rows are then in the tables already).
 const registered = e => EXTENSIONS.find(x => x.id === e?.id) || null;
 // A built-in object type: in the table, and not as a registered package states it (the table keeps a package's entry itself).
-const builtInKind = type => type in OBJECT_TYPES && !EXTENSIONS.some(x => plain(x.objectTypes) && x.objectTypes[type] === OBJECT_TYPES[type]);
+const builtInKind = type => Object.hasOwn(OBJECT_TYPES, type) && !EXTENSIONS.some(x => plain(x.objectTypes) && x.objectTypes[type] === OBJECT_TYPES[type]);
 // Whether two keys (a key of the document, or container.key) are one key, or one is the container of the other.
 const overKey = (a, b) => a === b || !a.includes('.') && b.split('.')[0] === a || !b.includes('.') && a.split('.')[0] === b;
 // The id prefixes of the workbench's own records, journals and codes (2 to 5 capitals before the hyphen): one
@@ -183,7 +183,7 @@ export function extensionIssues(e) {
   // A key or a collection named after what every object carries (constructor, toString, …) reads, in a document that
   // has no such key, as the inherited value: stated as a design or an evidence key it moved the fingerprints of every
   // old document. No part of a package states one, in its first or its second segment.
-  { const part = v => (plain(v) ? v : {}), stated = [...list(e.designKeys), ...list(e.evidenceKeys), ...Object.keys(part(e.lifecycle)), ...Object.keys(part(e.provenance?.records)), ...Object.keys(part(e.provenance?.nouns)), ...Object.values(part(e.provenance?.paths)).flatMap(v => list(v))];
+  { const part = v => (plain(v) ? v : {}), stated = [...list(e.designKeys), ...list(e.evidenceKeys), ...Object.keys(part(e.design)), ...Object.keys(part(e.lifecycle)), ...Object.keys(part(e.provenance?.records)), ...Object.keys(part(e.provenance?.nouns)), ...Object.values(part(e.provenance?.paths)).flatMap(v => list(v))];
     for (const k of new Set(stated.filter(k => typeof k === 'string'))) if (k.split('.').some(seg => seg in {})) say('“' + k + '” names what every object carries: it is no key of a document.'); }
   // objectTypes
   if (e.objectTypes !== undefined && !plain(e.objectTypes)) say('objectTypes is {type: {label, chapter, level, prefix}}.');
@@ -192,7 +192,19 @@ export function extensionIssues(e) {
     if (type in OBJECT_TYPES && !(mine && same(OBJECT_TYPES[type], mine.objectTypes?.[type]))) say('object type “' + type + '” is built in or another package\'s; it stays as it is.');
     if (WORKBENCH_PREFIXES.has(t?.prefix)) say('id prefix “' + t.prefix + '” is the workbench\'s own: a package\'s record under an id a built-in record holds is left out of the record graph.');
   }
-  if (e.records !== undefined && !fn(e.records)) say('records is a function (p, add, rel).');
+  // The id prefixes a package mints for a built-in type (the lead's ruling J10 of 2026-11-19): the prefix of the records
+  // it adds under that type from its own collection, which ruling D7.2 allows only for a type that stands on no built-in
+  // layer. The clash check reads it as it reads a kind's prefix (extensionConflicts), so no other package takes it.
+  if (e.prefixes !== undefined && !plain(e.prefixes)) say('prefixes is {built-in object type: id prefix}.');
+  for (const [type, prefix] of Object.entries(plain(e.prefixes) ? e.prefixes : {})) {
+    if (typeof prefix !== 'string' || !/^[A-Z]{2,5}$/.test(prefix)) say('the id prefix of “' + type + '” is 2 to 5 capitals.');
+    else if (WORKBENCH_PREFIXES.has(prefix)) say('id prefix “' + prefix + '” is the workbench\'s own: a package\'s record under an id a built-in record holds is left out of the record graph.');
+    if (plain(e.objectTypes) && Object.hasOwn(e.objectTypes, type)) say('prefixes: “' + type + '” is the package\'s own type: its prefix is stated with the type.');
+    else if (!builtInKind(type)) say('prefixes: “' + type + '” is no built-in object type.');
+    else if (OBJECT_TYPES[type].chapter === 1) say('prefixes: “' + type + '” is a type of Chapter 1 records: a package adds none.');
+    else { const layer = BUILT_IN_LAYERS.find(l => TRACE_LAYER_TYPES[l] === type); if (layer) say('prefixes: “' + type + '” stands on the built-in layer “' + layer + '”: a package adds no record of that type (it would join a trail the governance checks read).'); }
+  }
+  if (e.records !== undefined && !fn(e.records)) say('records is a function (p, add, rel, has).');
   // layers and hops
   if (e.layers !== undefined && !plain(e.layers)) say('layers is {layer: object type}.');
   const layers = plain(e.layers) ? e.layers : {}, own = Object.keys(layers);
@@ -287,7 +299,18 @@ export function extensionIssues(e) {
   for (const k of list(e.designKeys)) if (typeof k === 'string' && PATH.test(k)) {
     if (list(e.evidenceKeys).includes(k)) say('“' + k + '” is stated as design and as evidence.');
     // (a key another package leaves out as its evidence is that package's clash, named by extensionConflicts, not this one's fault)
-    else if (!fingerprintReads(k) && !EXTENSIONS.some(x => x.id !== e.id && list(x.evidenceKeys).some(v => typeof v === 'string' && overKey(v, k)))) say('design key “' + k + '” lies where the design fingerprint does not read (review-domain.js reviewSource): it would not move the fingerprint.');
+    else if (!(plain(e.design) && Object.hasOwn(e.design, k)) && !fingerprintReads(k) && !EXTENSIONS.some(x => x.id !== e.id && list(x.evidenceKeys).some(v => typeof v === 'string' && overKey(v, k)))) say('design key “' + k + '” lies where the design fingerprint does not read (review-domain.js reviewSource): it would not move the fingerprint.');
+  }
+  // What a package's records say to the design fingerprint (the lead's ruling J3 of 2026-11-19; review-domain.js
+  // reviewSource reads the statement in place of the raw key): a function for a key of the document that is the
+  // package's own. Such a key is design by its statement, so the probe of designKeys above does not ask the
+  // fingerprint about it (a statement answers nothing for a document without the package's records).
+  if (e.design !== undefined && !plain(e.design)) say('design is {key: p => what the key says to the design fingerprint}.');
+  for (const [k, f] of Object.entries(plain(e.design) ? e.design : {})) {
+    if (!fn(f)) say('the design statement of “' + k + '” is a function (p) that answers what the key says, or nothing.');
+    if (!/^[a-z][A-Za-z]{0,40}$/.test(k)) say('the design statement of “' + k + '” names a key of the document (the row carries no key inside a chapter\'s container).');
+    else if (workbenchKey(k)) say('the design statement of “' + k + '” is on a key the workbench itself writes: a package states what its own key says.');
+    if (list(e.evidenceKeys).includes(k)) say('“' + k + '” is stated as design and as evidence.');
   }
   // upgrade, sections, needs and load
   if (e.upgrade !== undefined && !fn(e.upgrade)) say('upgrade is a function (p) that answers p itself when it has nothing to do.');
@@ -301,7 +324,7 @@ export function extensionIssues(e) {
 // that is built in is neither's, and is named by extensionIssues). Also a hop of one package that comes from a layer the
 // walk reads later (another package's, later by id).
 export function extensionConflicts() {
-  const out = [], seen = new Map(), later = [];
+  const out = [], seen = new Map(), later = [], stated = new Map();
   // Built in: in the table, and not as any registered package states it.
   const builtIn = (table, key, part) => key in table && !EXTENSIONS.some(e => plain(e[part]) && e[part][key] === table[key]);
   // A collection: the lifecycle family's rows first (a lifecycle collection is the provenance reader's too), then the
@@ -311,6 +334,10 @@ export function extensionConflicts() {
   const claim = (kind, key, id) => { const k = kind + ' “' + key + '”', first = seen.get(k); if (first && first !== id) out.push(k + ' is stated by ' + first + ' and by ' + id + ': ' + first + ' keeps it.'); else seen.set(k, id); };
   for (const e of EXTENSIONS) {
     for (const [k, t] of Object.entries(plain(e.objectTypes) ? e.objectTypes : {})) if (!builtIn(OBJECT_TYPES, k, 'objectTypes')) { claim('object type', k, e.id); if (typeof t?.prefix === 'string') claim('id prefix', t.prefix, e.id); }
+    // A prefix a package mints for a built-in type is its own as a kind's prefix is (ruling J10).
+    for (const prefix of Object.values(plain(e.prefixes) ? e.prefixes : {})) if (typeof prefix === 'string') claim('id prefix', prefix, e.id);
+    // One key has one statement of what it says to the design fingerprint (ruling J3): the fingerprint would read the later one.
+    for (const k of Object.keys(plain(e.design) ? e.design : {})) { const first = stated.get(k); if (first && first !== e.id) out.push('the design statement of “' + k + '” is stated by ' + first + ' and by ' + e.id + ': one key has one statement.'); else stated.set(k, e.id); }
     for (const [k, t] of Object.entries(plain(e.layers) ? e.layers : {})) if (!BUILT_IN_LAYERS.includes(k)) { claim('layer', k, e.id); claim('the layer of the type', t, e.id); }
     for (const k of Object.keys(plain(e.commands) ? e.commands : {})) claim('command', k, e.id);
     for (const k of Object.keys(plain(e.provenance?.nouns) ? e.provenance.nouns : {})) claim('the noun of', k, e.id);
@@ -319,7 +346,7 @@ export function extensionConflicts() {
   for (const [kind, key, id] of later) claim(kind, key, id);
   // An evidence key of one package on a key another package states (its design key, its collection, or the container of
   // either): it would leave the other's records out of the design, so the other keeps the key and the clash names both.
-  const statedKeys = e => [...list(e.designKeys), ...Object.keys(plain(e.lifecycle) ? e.lifecycle : {}), ...Object.keys(plain(e.provenance?.records) ? e.provenance.records : {})].filter(k => typeof k === 'string');
+  const statedKeys = e => [...list(e.designKeys), ...Object.keys(plain(e.design) ? e.design : {}), ...Object.keys(plain(e.lifecycle) ? e.lifecycle : {}), ...Object.keys(plain(e.provenance?.records) ? e.provenance.records : {})].filter(k => typeof k === 'string');
   for (const e of EXTENSIONS) for (const k of list(e.evidenceKeys)) if (typeof k === 'string') for (const x of EXTENSIONS) if (x.id !== e.id && statedKeys(x).some(s => overKey(s, k))) out.push('evidence key “' + k + '” of ' + e.id + ' leaves a key of ' + x.id + ' out of the design: ' + x.id + ' keeps it.');
   return out;
 }

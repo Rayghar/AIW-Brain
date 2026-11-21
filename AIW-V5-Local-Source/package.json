@@ -29,6 +29,7 @@
     "test:rc42-g5-runtime": "node rc42-g5-runtime-validate.mjs",
     "test:rc42-g4-trace-kernel": "node rc42-g4-trace-kernel-validate.mjs",
     "test:rc44-s0-extensions": "node rc44-s0-extensions-validate.mjs",
+    "test:rc44-wp2-adoption": "node rc44-wp2-adoption-validate.mjs",
     "test:decision-reading": "node decision-reading-validate.mjs",
     "test:decisions": "node decisions-validate.mjs",
     "test:logical": "node logical-validate.mjs",

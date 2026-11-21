@@ -5,4 +5,5 @@
 // assertExtensions). The browser does not read this file: there a package registers when its lazily loaded module
 // arrives, and its route stub {id, needs, load} says when that must be before a document is drawn.
 //
-// No package exists yet. A slice that adds one adds its line below, and nothing else in the shared machinery.
+// A slice that adds a package adds its line below, and nothing else in the shared machinery.
+import './adoption-server.js'; // p40-adoption: applied mechanisms bound to the model (wp2)
