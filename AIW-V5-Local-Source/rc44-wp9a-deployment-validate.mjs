@@ -1111,16 +1111,17 @@ await block('S1.11 the parts of the package', async () => {
 // The size evidence of the slice (audit/rc44/evidence/, ruling A7), written by `node rc44-wp9a-deployment-validate.mjs
 // --measure` from the build the case makes (ruling L9: the file says what was measured). Two bases, each built with node
 // build.mjs from an archive of its commit: BASE, the commit the slice started from (9673661: S0 and wp1 S1 merged), and
-// ADOPTION, the adoption record this branch merged (rc44/wp2-s1-lead at 25cc426: wp2 S1 after its fix-up and the lead's
-// follow-up of K1 and K2; its stub brought the registry's registerExtension onto the route). ITEMISED is read from the
-// metafiles of this build and of ADOPTION's, route output by route output.
+// ADOPTION, the adoption record as closed, which this branch merged (rc44/integration at a4c1690; ruling M8: the bytes
+// are restated after that merge). ITEMISED is read from the metafiles of this build and of ADOPTION's, route output by
+// route output.
 const EVIDENCE = 'audit/rc44/evidence/wp9a-s1-size.json', HOST = 'public/deploy-view.js';
 const BASE = {commit: '9673661', chapters: 3229840, projects: 506829, scripts: 148, under10k: 53, css: 901873};
-const ADOPTION = {commit: '25cc426 (rc44/wp2-s1-lead)', chapters: 3230156, projects: 507069, scripts: 148, under10k: 53, css: 901873};
+const ADOPTION = {commit: 'a4c1690 (rc44/integration: the adoption record as closed)', chapters: 3230165, projects: 507069, scripts: 148, under10k: 53, css: 901873};
 const ITEMISED = {stubWithItsImport: 105, failureDomainKeyH1: 21, restoreRuleReadL3: 47, designRowChapterKeysL5: 64, simulateRuntimeH4: -10, modelViewH15: -5, aliasAndImportShifts: 88, baselineDefectFmtL10: 34};
-// What is booked where (rulings K6 and L10): the registry's one-time cost is in ADOPTION's figure (wp2's stub paid it), the
-// fix of the baseline defect goes to the shared pool; every other byte is wp9a's, against its 500 B.
-const BOOKED = {registryOnceK6: 0, baselineDefectL10: ITEMISED.baselineDefectFmtL10};
+// What is booked where (rulings K6, L10 and M8): the registry's one-time cost is in ADOPTION's figure (wp2's stub paid it,
+// and wp2's evidence records it in its own delta); the fix of the baseline defect (L10) and S0's design row that L5 needed
+// (M8) are the shared pool's; every other byte is wp9a's own, against its 500 B.
+const SHARED_POOL = {baselineDefectFmtL10: ITEMISED.baselineDefectFmtL10, designRowChapterKeysL5: ITEMISED.designRowChapterKeysL5};
 // What the same lazy entry added to the route at the base, before it held the package (opensWithRecords on the base's build).
 const BASE_OPENS = {route: 3229840, added: 833044, total: 4062884, files: 12};
 await block('S1.10 the client build', async () => {
@@ -1139,14 +1140,14 @@ await block('S1.10 the client build', async () => {
   const opens = R.opensWithRecords(meta, HOST, Object.keys(BUDGET.data));
   assert.equal(opens.route, measured.chapters, 'the helper counts the chapters route as the gate does'); assert.ok(opens.added > 0 && opens.total === opens.route + opens.added);
   const stub = readFileSync('public/design-package-routes.js', 'utf8'); assert.match(stub, /registerExtension\(\{id:'p30-deployment-route',needs:[^\n]+load:\(\)=>import\('\.\/deploy-view\.js'\)\}\);/, 'the route stub loads the host entry');
-  if (process.argv.includes('--measure')) { mkdirSync('audit/rc44/evidence', {recursive: true}); const fromAdoption = measured.chapters - ADOPTION.chapters; writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v2', name: 'wp9a slice 1 after its fix-up: typed failure domains, nodes and registration (p30-deployment)',
+  if (process.argv.includes('--measure')) { mkdirSync('audit/rc44/evidence', {recursive: true}); const fromAdoption = measured.chapters - ADOPTION.chapters; writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v3', name: 'wp9a slice 1 after its second fix-up: typed failure domains, nodes and registration (p30-deployment)',
     measuredWith: 'client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code, scripts, buckets)',
     whatWasMeasured: 'The chapters route of this build, against two bases each built with node build.mjs from an archive of its commit: the integrated base the slice started from, and the adoption record the branch merged. The itemised bytes are read from the metafiles of this build and of the adoption record\'s, route output by route output (a module\'s bytes in its output, and the import and export lists of each output).',
-    allowance: {chapters: 500, of: 'all of wp9a on the chapters route', scripts: 148, rulings: 'A4 of 2026-11-18 (500 B for wp9a); K6 (the registry\'s one-time cost to the shared pool); L10 (the baseline defect\'s fix to the shared pool)'},
+    allowance: {chapters: 500, of: 'all of wp9a on the chapters route', scripts: 148, rulings: 'A4 of 2026-11-18 (500 B for wp9a); K6 (the registry\'s one-time cost to the shared pool); L10 (the baseline defect\'s fix to the shared pool); M4 (a package\'s size case: the route\'s growth less the integrated base, less every other package\'s own bytes and the shared pool\'s); M8 (S0\'s design row to the shared pool)'},
     caps: {chapters: BUDGET.routes.chapters, projects: BUDGET.routes.projects, scripts: BUDGET.scripts, under10k: BUDGET.tiny, css: BUDGET.css}, bases: {integrated: BASE, adoption: ADOPTION}, slice: measured,
     fromIntegrated: measured.chapters - BASE.chapters, fromAdoption, projectsFromAdoption: measured.projects - ADOPTION.projects, headroomAfter: BUDGET.routes.chapters - measured.chapters,
-    itemised: ITEMISED, booked: {wp9a: fromAdoption - BOOKED.registryOnceK6 - BOOKED.baselineDefectL10, ...BOOKED},
-    onRoute: 'Against the adoption record: the route stub with its import of registerExtension in design-package-routes.js (105 B); failureDomainKey reads the typed domain (runtime-model.js, H1, 21 B); the lifecycle reads a package\'s restore rule (record-lifecycle.js, L3, 47 B); the design row takes chapter.key (review-domain.js reviewSource, L5 and L6, 64 B); simulateRuntime reads the typed domain (runtime-domain.js, H4 of L7, -10 B) and the Chapter 10 Model view keys a zone by it (deploy-model.js, H15 of L7, -5 B); alias and import shifts of the route outputs whose imports and exports moved (88 B); the definition of fmt in technology-domain.js that patchLinks named and the module lacked since rc.10.73.42 (L10, 34 B). registerExtension itself reached the route with the adoption record\'s stub (K6: 110 to 123 B, measured by two reviewers; in the adoption record\'s figure).',
+    itemised: ITEMISED, ownBytes: fromAdoption - Object.values(SHARED_POOL).reduce((n, x) => n + x, 0), sharedPoolBytes: SHARED_POOL, registryOnceK6: 'in the adoption record\'s figure (its stub brought registerExtension onto the route; wp2\'s evidence records it in its delta)',
+    onRoute: 'Against the adoption record as closed (a4c1690): the route stub with its import of registerExtension in design-package-routes.js (105 B); failureDomainKey reads the typed domain (runtime-model.js, H1, 21 B); the lifecycle reads a package\'s restore rule (record-lifecycle.js, L3, 47 B); S0\'s design row takes chapter.key (review-domain.js reviewSource, L5 and L6, 64 B, the shared pool\'s by M8); simulateRuntime reads the typed domain (runtime-domain.js, H4 of L7, -10 B) and the Chapter 10 Model view keys a zone by it (deploy-model.js, H15 of L7, -5 B); alias and import shifts of the route outputs whose imports and exports moved (88 B: the outputs\' import and export lists, with +3, -1 and -2 B in composition-design.js, model-impact.js and architecture-design.js); the definition of fmt in technology-domain.js that patchLinks named and the module lacked since rc.10.73.42 (L10, 34 B, the shared pool\'s). registerExtension itself reached the route with the adoption record\'s stub (K6: 110 to 123 B, measured by two reviewers; in the adoption record\'s figure).',
     'opens with records': {gate: 'The chapters-route gate is unchanged and measures opening a document that holds no package records (ruling D10 of 2026-11-18).', host: HOST, ...opens, beforeThePackage: BASE_OPENS, note: 'A document that holds the marker runtime.topology also loads the lazy entry of the Chapter 10 Model view, which holds the package, before it is first drawn: the route and the static closure of that entry, each script counted once.'}}, null, 1) + '\n'); }
   assert.ok(existsSync(EVIDENCE), 'the slice\'s measurement is kept (node rc44-wp9a-deployment-validate.mjs --measure)');
   const size = JSON.parse(readFileSync(EVIDENCE, 'utf8'));
@@ -1154,15 +1155,24 @@ await block('S1.10 the client build', async () => {
   assert.match(size.whatWasMeasured, /against two bases/); assert.ok(!/well under half/.test(JSON.stringify(size)), 'the evidence claims nothing it did not measure (ruling L9)');
   // (ruling L9 with K6 and L10; was: "slice 1 uses under half of the 500 B of wp9a, measured against the base alone" (delta < 250) and "the package's own
   // are under 150 B") every byte against the adoption record is itemised; wp9a's own bytes are inside its 500 B; the registry's one-time cost and the
-  // baseline defect's fix are booked apart
+  // shared pool's bytes are booked apart
   assert.equal(Object.values(size.itemised).reduce((n, x) => n + x, 0), size.fromAdoption, 'the itemised bytes add up to the delta against the adoption record');
-  assert.equal(size.booked.wp9a, size.fromAdoption - size.booked.registryOnceK6 - size.booked.baselineDefectL10); assert.ok(size.booked.wp9a > 0 && size.booked.wp9a <= 500, 'wp9a\'s own bytes on the chapters route are inside its 500 B: ' + size.booked.wp9a + ' B');
+  // (rulings M4 and M8; was: booked.wp9a = fromAdoption - registryOnceK6 - baselineDefectL10, inside 500 B, the 64 B of S0's design row counted as wp9a's)
+  // the figure recorded at wp9a's own head: its own bytes are the delta against the adoption record less the shared pool's (the baseline defect's fix
+  // and S0's design row, each pinned to its itemised figure), inside its 500 B
+  assert.deepEqual(size.sharedPoolBytes, SHARED_POOL, 'the shared pool\'s bytes are the two items of rulings L10 and M8');
+  assert.equal(size.ownBytes, size.fromAdoption - Object.values(size.sharedPoolBytes).reduce((n, x) => n + x, 0)); assert.ok(size.ownBytes > 0 && size.ownBytes <= 500, 'wp9a\'s own bytes on the chapters route are inside its 500 B: ' + size.ownBytes + ' B');
+  // (ruling M4) and this build: the route's growth against the integrated base, less the bytes every other package's evidence records as its own and less
+  // the shared pool's, is inside wp9a's 500 B
+  const booked = R.routeBookings(EVIDENCE), mine = measured.chapters - BASE.chapters - booked.othersTotal - booked.poolTotal;
+  assert.ok(Object.keys(booked.others).length >= 1, 'the other packages\' evidence is read: ' + JSON.stringify(booked)); for (const [item, bytes] of Object.entries(SHARED_POOL)) assert.equal(booked.pool[EVIDENCE + ':' + item], bytes, 'and the shared pool\'s ' + item);
+  assert.ok(mine > 0 && mine <= 500, 'this build is inside the allowance of wp9a: ' + mine + ' B (the route grew ' + (measured.chapters - BASE.chapters) + ' B; other packages\' own ' + booked.othersTotal + ' B; the shared pool ' + booked.poolTotal + ' B)');
   assert.deepEqual([size.slice.scripts, size.slice.under10k, size.slice.css], [148, BASE.under10k, BASE.css], '148 script files, no new file under 10 KB, no stylesheet rule');
   assert.ok(size.slice.chapters <= BUDGET.routes.chapters); assert.equal(size.allowance.chapters, 500);
   { const w = size['opens with records']; assert.ok(w && w.host === HOST && w.total === w.route + w.added && w.route === size.slice.chapters && w.files > 0, 'the size file says what a document with the package\'s records opens with');
     assert.deepEqual(w.beforeThePackage, BASE_OPENS); assert.equal(w.files, BASE_OPENS.files, 'the package adds no script to what the entry loads'); assert.ok(w.added - BASE_OPENS.added < 25000, 'the package itself is ' + (w.added - BASE_OPENS.added) + ' B of what the entry adds'); }
   if (process.argv.includes('--measure')) assert.deepEqual(measured, size.slice, 'at the slice\'s commit the build measures what the evidence says');
-  pass('S1.10: the client build passes every gate with the caps unchanged; the chapters route is ' + size.slice.chapters + ' B of ' + BUDGET.routes.chapters + ' (+' + size.fromIntegrated + ' B against ' + BASE.commit + ', +' + size.fromAdoption + ' B against the adoption record ' + ADOPTION.commit + '); wp9a\'s own ' + size.booked.wp9a + ' B of its 500 B, the baseline defect\'s fix ' + size.booked.baselineDefectL10 + ' B and the registry\'s one-time cost ' + size.booked.registryOnceK6 + ' B here booked apart; 148 script files, ' + size.slice.under10k + ' under 10 KB; opens with records: ' + size['opens with records'].total + ' B (' + size['opens with records'].added + ' B in ' + size['opens with records'].files + ' more scripts); this build: ' + measured.chapters + ' B');
+  pass('S1.10: the client build passes every gate with the caps unchanged; the chapters route is ' + size.slice.chapters + ' B of ' + BUDGET.routes.chapters + ' (+' + size.fromIntegrated + ' B against ' + BASE.commit + ', +' + size.fromAdoption + ' B against the adoption record ' + ADOPTION.commit + '); wp9a\'s own ' + size.ownBytes + ' B of its 500 B (this build: ' + mine + ' B once the other packages\' own bytes and the shared pool\'s are taken out, ruling M4), the shared pool\'s ' + JSON.stringify(size.sharedPoolBytes) + ' booked apart; 148 script files, ' + size.slice.under10k + ' under 10 KB; opens with records: ' + size['opens with records'].total + ' B (' + size['opens with records'].added + ' B in ' + size['opens with records'].files + ' more scripts); this build: ' + measured.chapters + ' B');
 });
 
 // ================================================================ Slice 2: declared failure set, evaluation, acceptance

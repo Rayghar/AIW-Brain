@@ -38,7 +38,24 @@ item started from, then the change. (Work in progress; this section is completed
   `runtime.handoff` are taken while both stand, as their built-in rule reads no error; changing the design removes
   exactly this blocker. Deviation recorded: L2's words "the chapter cannot be checked ... or handed off" are not built;
   M3 rules that they mean this class.
-- **Item 4, M4:** in progress.
+- **Item 4, M4:** done. One rule for both size cases, in S0's helper for package suites:
+  `rc44-s0-readings.mjs routeBookings(ownFile)` reads every `audit/rc44/evidence/*-size.json`: a package's own bytes as
+  its evidence records them at its own head (`ownBytes`, or `delta` for a file that books its whole growth to its
+  package, as wp2's v1 does) and the shared pool's (`sharedPoolBytes`, by item). The adoption record's block `size`
+  (`rc44-wp2-adoption-cases/record.mjs`) and wp9a's S1.10 each hold: the build passes every gate with the caps
+  unchanged; the figure recorded at the package's own head is inside its allowance (wp2: `delta` 325 B of 600; wp9a:
+  `ownBytes` 246 B of 500); and this build's growth against the integrated base, less every other package's own bytes
+  and less the shared pool's, is inside the allowance (wp2: 669 - 246 - 98 = 325 B; wp9a: 669 - 325 - 98 = 246 B). Seen
+  to fail first: wp2's block red at 669 B (item 0), then "wp9a-s1-size.json states no route bytes of its own" until the
+  evidence was measured again; S1.10 failed on the old evidence file. Old -> new, at least as strict (with no other
+  package's evidence the new assertion is the old one): wp2 `measured.chapters - INTEGRATED.chapters <= 600` ->
+  `measured.chapters - INTEGRATED.chapters - othersTotal - poolTotal` in (0, 600]; wp9a `booked.wp9a = fromAdoption -
+  registryOnceK6 - baselineDefectL10 <= 500` -> `ownBytes = fromAdoption - sharedPoolBytes (pinned to the itemised
+  figures) <= 500`, plus the live build's growth less the other packages' own and the pool's in (0, 500]. The evidence
+  is schema v3 (`ownBytes`, `sharedPoolBytes`; `booked` gone). The four rc44 suites on this head: see the commit.
+  Not changed: wp2's `--measure` still writes the whole growth as wp2's `delta`, so it is to be run at wp2's own head
+  only (on a merged head its own check `measured == size.slice` fails, so it cannot pass unnoticed).
+- **Item 5, M5:** in progress.
 
 ## Fix-up (after the adversarial review; the lead's rulings L1 to L11, K1, K2, K6, and K7 to K9 since)
 

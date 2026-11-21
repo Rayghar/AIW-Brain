@@ -5,6 +5,7 @@
 // reads the baseline tree: `node rc44-s0-readings.mjs --capture` prints the SHA-256 of each reading per reference
 // (rc44-s0-extensions-baseline.json was captured so from an unchanged checkout of 94dbd4f).
 import {createHash} from 'node:crypto';
+import {readdirSync, readFileSync} from 'node:fs';
 import {createProject} from './shared/projects-domain.js';
 import {withFinalReview, reviewRequirements, inheritedFindings, finalFindings, chapterSummaries, reviewSourceStamp, reviewDesignStamp, evidenceStamp, traceStamp, assembleSDD, reviewBlockerCount, CHAPTERS} from './public/review-domain.js';
 import {recordGraph} from './public/record-graph.js';
@@ -102,6 +103,22 @@ export function assertFindingIdsUnique(p) {
 // stub loads ('public/architecture-task-ui.js'), `dataNames` the data modules the gate sets apart from code
 // (Object.keys(BUDGET.data) of client-bundle.mjs). It answers {route, added, total, files}: the route as the gate
 // counts it, what the lazy entry adds to it, their sum, and how many scripts the entry adds.
+// routeBookings(ownFile) (the lead's rulings K6 and M4 of 2026-11-21): the chapters-route bytes the rc44 size evidence
+// books, read from every audit/rc44/evidence/*-size.json: each package's own, as its evidence records it at its own head
+// (ownBytes, or the delta of a file that books the whole of its growth to its package), and the shared pool's
+// (sharedPoolBytes, {item: bytes}, in whichever file records the change). A package's size case holds that the route's
+// growth against the integrated base, less every other package's own bytes and less the shared pool's, is inside its
+// allowance. Answers {others: {file: bytes}, pool: {file:item: bytes}, othersTotal, poolTotal}.
+export function routeBookings(ownFile, dir = 'audit/rc44/evidence') {
+  const out = {others: {}, pool: {}, othersTotal: 0, poolTotal: 0};
+  for (const name of readdirSync(dir).filter(f => /-size\.json$/.test(f)).sort()) {
+    const file = dir + '/' + name, e = JSON.parse(readFileSync(file, 'utf8')), own = e.ownBytes ?? e.delta;
+    if (!Number.isInteger(own)) throw Error(file + ' states no route bytes of its own (ownBytes, or delta).');
+    if (file !== ownFile) { out.others[file] = own; out.othersTotal += own; }
+    for (const [item, bytes] of Object.entries(e.sharedPoolBytes || {})) { if (!Number.isInteger(bytes)) throw Error(file + ': the shared pool\'s ' + item + ' is no count of bytes.'); out.pool[file + ':' + item] = bytes; out.poolTotal += bytes; }
+  }
+  return out;
+}
 export function opensWithRecords(metafile, entry, dataNames = []) {
   const outputs = metafile.outputs, scripts = Object.keys(outputs).filter(f => f.endsWith('.js'));
   const isData = input => dataNames.some(name => input.endsWith('public/' + name + '.js'));
