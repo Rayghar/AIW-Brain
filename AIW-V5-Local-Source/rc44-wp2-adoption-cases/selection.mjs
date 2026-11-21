@@ -73,6 +73,11 @@ export default async function ({block, pass, load}) {
     for (const [kind, ref, title] of [['profile', released(p, 'inbox'), 'Inbox and deduplication component'], ['profile', released(p, 'relay'), 'Regional message relay'], ['library', library(p), 'Ticket consumer v2']]) p = doc(send(p, 'selection.candidate', {id, candidate: {kind, ref}, title}));
     return {p, id};
   };
+  // What Chapter 3 asks before the architect accepts a decision (decisions-domain.js decisionFindings), as a person
+  // states it through the chapter's own command: each alternative described, and the chosen one's effect on each driver
+  // with its reason and evidence. Then the decision is recorded and accepted, as every decision is.
+  const completion = d => d.alternatives.map(a => ({id: d.id, alternativeId: a.id, summary: a.summary || 'The candidate ' + a.title + '.', benefits: a.benefits || 'Stated by the architect.', costs: a.costs || 'Stated by the architect.', consequences: a.consequences || 'Stated by the architect.', ...(a.id === d.selectedAlternativeId ? {assessments: Object.fromEntries(d.driverIds.map(x => [x, {effect: 'neutral', reason: 'Read against the driver by the architect.', evidence: 'Architect review RV-1.'}]))} : {})}));
+  const acceptDecision = (p, id) => { for (const payload of completion(decision(p, id))) p = withFinalReview(applyDecisionCommand(p, {type: 'decision.alternative', payload}, AT).document, {upgrade: false}); for (const type of ['decision.record', 'decision.accept']) p = withFinalReview(applyDecisionCommand(p, {type, payload: {id, acknowledge: true}}, AT).document, {upgrade: false}); return p; };
 
   // ------------------------------------------------------------ the case that fails before the slice
   await block('S5 fails today', async () => {
@@ -83,7 +88,7 @@ export default async function ({block, pass, load}) {
     p = doc(send(p, 'selection.candidate', {id, candidate: {kind: 'library', ref: entry}, title: 'Ticket consumer v2'}));
     p = doc(send(p, 'selection.candidate', {id, candidate: {kind: 'existing', ref: {componentId: 'api-pod'}}, title: 'Keep the Payment service'}));
     const d0 = decision(p, id), lib = alt(d0, 'Ticket consumer v2'), keep = alt(d0, 'Keep the Payment service');
-    assert.deepEqual(lib.componentIds, [], 'the library candidate names no component'); assert.deepEqual([lib.candidate.kind, lib.candidate.ref.scope, lib.candidate.ref.entryId], ['library', 'project', entry.entryId], 'it names the library entry it is');
+    assert.deepEqual(list(lib.componentIds), [], 'the library candidate names no component'); assert.deepEqual([lib.candidate.kind, lib.candidate.ref.scope, lib.candidate.ref.entryId], ['library', 'project', entry.entryId], 'it names the library entry it is');
     p = doc(send(p, 'selection.choose', {id, alternativeId: keep.id, reason: 'The Payment service already consumes the notifications.', rejections: {[lib.id]: 'A second consumer duplicates the notification path.'}, unproven: ['QD-007', 'QD-008']}));
     const d = decision(p, id), rejected = alt(d, 'Ticket consumer v2');
     assert.equal(d.selectedAlternativeId, keep.id); assert.equal(rejected.candidate.outcome, 'rejected'); assert.equal(rejected.rejectionReason, 'A second consumer duplicates the notification path.');
@@ -114,8 +119,8 @@ export default async function ({block, pass, load}) {
   // ------------------------------------------------------------ eligibility
   await block('S5 eligibility', async () => {
     pkg(); let {p, id} = threeCandidates();
-    const d = decision(p, id), sel = d.selection;
-    assert.deepEqual(sel.constraints.map(c => [c.id, c.driverId, c.hard, c.source, c.predicate || null]), [['QD-007', 'QD-007', true, 'driver', PREDICATE], ['QD-008', 'QD-008', true, 'driver', null]], 'the two hard constraints that reach the responsibility, the first with the person\'s typed reading');
+    const d = decision(p, id);
+    assert.deepEqual(S.selectionConstraints(p, d).map(c => [c.id, c.driverId, c.hard, c.source, c.predicate || null]), [['QD-007', 'QD-007', true, 'driver', PREDICATE], ['QD-008', 'QD-008', true, 'driver', null]], 'the two hard constraints that reach the responsibility, the first with the person\'s typed reading');
     const rows = title => S.candidateEligibility(p, d, alt(d, title)).rows.map(r => [r.constraintId, r.state, r.basis]);
     assert.deepEqual(rows('Inbox and deduplication component'), [['QD-007', 'pass', 'evaluated'], ['QD-008', 'unknown', 'evaluated']]);
     assert.deepEqual(rows('Regional message relay'), [['QD-007', 'fail', 'evaluated'], ['QD-008', 'unknown', 'evaluated']]);
@@ -134,8 +139,7 @@ export default async function ({block, pass, load}) {
     assert.match(c.assumptions, /Unproven for Ticket consumer v2: Customer records stay in region North; Run only what the platform team operates\./, 'the unproven rows are written into the decision\'s assumptions');
     assert.deepEqual(c.alternatives.map(a => a.candidate.outcome), ['rejected', 'rejected', 'chosen']);
     // approval evidence is refused while the unproven rows are open (the existing rule of decision.governance)
-    p = withFinalReview(applyDecisionCommand(p, {type: 'decision.record', payload: {id}}, AT).document, {upgrade: false});
-    p = withFinalReview(applyDecisionCommand(p, {type: 'decision.accept', payload: {id, acknowledge: true}}, AT).document, {upgrade: false});
+    p = acceptDecision(p, id);
     assert.equal(decision(p, id).status, 'accepted');
     assert.throws(() => applyDecisionCommand(p, {type: 'decision.governance', payload: {id, status: 'approved', reviewer: 'Governance board', evidence: 'Minutes 12'}}, AT), /Resolve content gaps and decision assumptions before recording approval evidence/, 'approval evidence is refused while a row is unproven');
     pass('S5 eligibility: against "Customer records stay in region North" (with a person\'s typed reading) and "Run only what the platform team operates" the inbox profile reads pass and unknown, the relay profile fail and unknown, the library entry unknown twice; the failing candidate cannot be chosen; the library entry is chosen only once both its unknown rows are named unproven, which the decision\'s assumptions then carry, and approval evidence is refused while they are open');
@@ -232,7 +236,7 @@ export default async function ({block, pass, load}) {
     { const r = await h.send('selection.choose', choose, AGENT); assert.equal(r.status, 400); }
     { const r = await h.send('selection.choose', choose, A, {authorKind: 'sol-draft'}); assert.equal(r.status, 400); }
     await h.ok('selection.choose', choose);
-    for (const type of ['decision.record', 'decision.accept']) await h.ok(type, {id, acknowledge: true});
+    for (const payload of completion(decision(h.doc(), id))) await h.ok('decision.alternative', payload); for (const type of ['decision.record', 'decision.accept']) await h.ok(type, {id, acknowledge: true});
     const component = {title: 'Inbox and deduplication component', kind: 'service', purpose: 'Deduplicate payment notifications by message id.', boundary: 'The inbox owns its deduplication store.', owner: 'Payments platform'};
     { const r = await h.send('selection.instantiate', {id, reviewed: true, component}, AGENT); assert.equal(r.status, 400); }
     await h.ok('selection.instantiate', {id, reviewed: true, component});
@@ -255,7 +259,7 @@ export default async function ({block, pass, load}) {
     assert.throws(() => send(p, 'selection.instantiate', {id, reviewed: true, component}), /Choose a candidate first|accepted/i, 'nothing is instantiated before a choice is accepted');
     p = doc(send(p, 'selection.choose', {id, alternativeId: inbox.id, reason: 'The inbox deduplicates and stays in region North.', rejections: Object.fromEntries(d0.alternatives.slice(1).map(a => [a.id, 'Not this one.']))}));
     assert.throws(() => send(p, 'selection.instantiate', {id, reviewed: true, component}), /accept/i, 'the decision is accepted first');
-    for (const type of ['decision.record', 'decision.accept']) p = withFinalReview(applyDecisionCommand(p, {type, payload: {id, acknowledge: true}}, AT).document, {upgrade: false});
+    p = acceptDecision(p, id);
     assert.throws(() => send(p, 'selection.instantiate', {id, component}), /Review/, 'the reviewed proposal is stated');
     const before = p.realisation.components.length, r = send(p, 'selection.instantiate', {id, reviewed: true, component}); p = doc(r);
     const c = p.realisation.components.find(x => x.id === r.selected), receipt = alt(decision(p, id), 'Inbox and deduplication component').candidate.ref;
@@ -297,7 +301,7 @@ export default async function ({block, pass, load}) {
       p = withFinalReview((await import('../public/quality-domain.js')).applyQualityCommand(p, {type: 'quality.driver', payload: {kind: 'constraint', title: 'Stay on the shared platform', description: 'One platform.', impact: 'No second platform.', priority: 'High', requirementIds: ['REQ-001']}}, AT).document, {upgrade: false});
       const r = send(p, 'selection.start', {kind: 'option', concernId: 'schedule-ownership', requirementId: 'REQ-001', driverId: 'QD-001', owner: CONCERN_ANSWERS.owner, reason: CONCERN_ANSWERS.reason}), id = r.selected; p = doc(r);
       for (const optionId of ['local', 'separate']) p = doc(send(p, 'selection.candidate', {id, candidate: {kind: 'option', ref: {optionId}}, notes: CONCERN_NOTES[optionId]}));
-      const d = decision(p, id), local = d.alternatives[0], cid = d.selection.constraints[0]?.id;
+      const d = decision(p, id), local = d.alternatives[0], cid = S.selectionConstraints(p, d)[0]?.id;
       assert.ok(cid, 'the constraint reaches the selection'); assert.deepEqual(S.candidateEligibility(p, d, local).rows.map(x => x.state), ['unknown']);
       assert.throws(() => send(p, 'selection.choose', {id, alternativeId: local.id, reason: 'x', rejections: {[d.alternatives[1].id]: 'y'}}), /unproven/); }
     // a concern that is no longer released is not compared
@@ -339,7 +343,7 @@ export default async function ({block, pass, load}) {
     let {p, id} = threeCandidates(); const d0 = decision(p, id), inbox = alt(d0, 'Inbox and deduplication component');
     p = doc(send(p, 'selection.judge', {id, alternativeId: inbox.id, constraintId: 'QD-008', state: 'pass', evidence: 'Ticket OPS-12.', reason: 'Operated on the platform.'}, B));
     p = doc(send(p, 'selection.choose', {id, alternativeId: inbox.id, reason: 'Fits.', rejections: Object.fromEntries(d0.alternatives.slice(1).map(a => [a.id, 'Not this one.']))}));
-    for (const type of ['decision.record', 'decision.accept']) p = withFinalReview(applyDecisionCommand(p, {type, payload: {id, acknowledge: true}}, AT).document, {upgrade: false});
+    p = acceptDecision(p, id);
     p = doc(send(p, 'selection.instantiate', {id, reviewed: true, component: {title: 'Inbox and deduplication component', kind: 'service', purpose: 'Deduplicate.', boundary: 'Its store.', owner: 'Payments platform'}}));
     const without = structuredClone(p); delete without.adoptions;
     assert.ok(R.assertBuiltInTrailsUnchanged(withFinalReview(without, {upgrade: false}), p) > 0, 'the profile adoption joins the package\'s layer only');

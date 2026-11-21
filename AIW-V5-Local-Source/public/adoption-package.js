@@ -20,9 +20,14 @@
 //   provenance the collection is read by the provenance reader and the SDD's reading of who wrote the records, under
 //             the chapter of its object type (ruling J12); an adoption does not retire through the lifecycle family;
 //   design    what an adoption says to the design fingerprint, in place of the raw key (ruling J3).
+// Slice S5 adds the five steps of a component selection (adoption-selection.js): start and candidate may be a draft by
+// Sol's proposal; judge, choose and instantiate are a signed-in person's. A selection is a Chapter 3 decision, written
+// through the chapter's own handler; it has no accept step of its own: the profile it instantiates is an adoption,
+// which a second person accepts (adoption.accept).
 import {registerExtension} from './design-extensions.js';
 import {applyAdoptionCommand,acceptanceOf,adoptionFindings,adoptionDesign,emitAdoptions,adoptionRelation,trackAdoptionChange} from './adoption-domain.js';
-const step={apply:applyAdoptionCommand,person:true};
+import {applySelectionCommand} from './adoption-selection.js';
+const step={apply:applyAdoptionCommand,person:true},propose={apply:applySelectionCommand},choose={apply:applySelectionCommand,person:true};
 export const ADOPTION_PACKAGE={
  id:'p40-adoption',
  prefixes:{pattern:'ADP'},
@@ -31,7 +36,8 @@ export const ADOPTION_PACKAGE={
  hops:[{layer:'mechanism',types:['addresses'],from:['requirement'],dir:'in',ctx:true,only:adoptionRelation},
   {layer:'mechanism',types:['binds','scopes'],from:['responsibility','component','capability','realization','contract','data','plan','control'],dir:'in',ctx:true,only:adoptionRelation}],
  checks:{5:adoptionFindings},
- commands:{'adoption.reassess':step,'adoption.deviation':step,'adoption.accept':{apply:applyAdoptionCommand,second:acceptanceOf}},
+ commands:{'adoption.reassess':step,'adoption.deviation':step,'adoption.accept':{apply:applyAdoptionCommand,second:acceptanceOf},
+  'selection.start':propose,'selection.candidate':propose,'selection.judge':choose,'selection.choose':choose,'selection.instantiate':choose},
  track:trackAdoptionChange,
  provenance:{nouns:{'adoptions.records':'applied mechanism'},paths:{adoption:['adoptions.records']},records:{'adoptions.records':3}},
  design:{adoptions:adoptionDesign}

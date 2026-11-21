@@ -125,8 +125,9 @@ export function adoptionAccepted(p,a){
 // (architecture-obligation-basis.js). A built-in definition's own reading is its interpretation, as before. A
 // definition this build cannot identify (the upgrade wrote it under the id its receipt carries, authority
 // 'unrecognised') is never read as current: its interpretation was not evaluated.
+// (slice S5: a profile adoption's definition is the released claim itself, its receipt a claim receipt.)
 function definitionOf(p,a){
- const receipt=a?.definition?.receipt,claims=[...list(a?.legacy?.governedKnowledge),receipt?.governedConcern?.receipt].filter(r=>r&&r.claimId),reasons=[];
+ const receipt=a?.definition?.receipt,claims=[...list(a?.legacy?.governedKnowledge),receipt?.governedConcern?.receipt,receipt?.kind==='governed-claim'?receipt:null].filter(r=>r&&r.claimId),reasons=[];
  const sources=[...claims.flatMap(r=>[r.sourceId,r.claimId,r.releaseId]),receipt?.packId,receipt?.methodId,receipt?.sources?.method?.id,...list(receipt?.sources?.references).map(r=>r?.id),...(receipt?.sources?.method?.file||receipt?.sources?.file?['SA-PLAYBOOK',BRAIN_PLAYBOOK.id]:[])].filter(Boolean);
  if(claims.some(r=>!claimReceiptCurrent(p,r)))reasons.push('A reviewed source interpretation changed or is no longer eligible.');
  if(sources.length&&withdrawn(p,sources).length)reasons.push('A source supporting this definition was withdrawn.');
