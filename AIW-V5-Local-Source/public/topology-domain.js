@@ -217,10 +217,12 @@ function locate(p,raw){
 // every comparison the package makes and every later slice reads (slices 2 and 6 extend it; none writes a second one).
 // They cannot when some stand in a typed failure domain and others are only named (a typed domain and a name are never
 // compared: 'mixed'), when the hosting domain of one lies inside the hosting domain of another ('nested'), or when a
-// zone names a hosting domain, a cause or a node that is not standing: not there, retired, a proposal, or no person's
-// ('not-standing'). Answers {comparable, zones, issues: [{kind, zones, ids}]}; an untyped project's zones are compared
-// by name as on rc.10.73.42.
-const standing=(xs,id)=>{const x=find(xs,id);return x&&!isProposed(x)&&(!PROPOSER.has(x.origin)||stood(x))?x:null;};
+// zone names a hosting domain, a cause or a node that is not standing: not there, retired or a proposal
+// ('not-standing'). A record that is there and no proposal stands, whoever changed it last (ruling M1): one a person
+// kept and a draft then changed is the person's to review through the review plan, and one a template copy holds was
+// kept in the template. Answers {comparable, zones, issues: [{kind, zones, ids}]}; an untyped project's zones are
+// compared by name as on rc.10.73.42.
+const standing=(xs,id)=>{const x=find(xs,id);return x&&!isProposed(x)?x:null;};
 export function hostingComparison(p,environmentId){
  const zs=list(p?.runtime?.zones).filter(z=>z?.environmentId===environmentId&&hostingZone(z)&&!isProposed(z)),issues=[];
  if(!topologyTyped(p))return {comparable:true,zones:zs.map(z=>z.id),issues};
@@ -321,11 +323,12 @@ const RESTORE={
 // proposals are not changes of the design, and a record a restore brought back was not made by the commit); where a
 // zone or a placement stands. A change of the typed topology opens no review of other records, and says so.
 // One thing the tracker changes itself, and journals (ruling L3): at the end of every commit, every zone and placement of
-// the document that names a node or a failure domain that is not standing (left the design, a proposal, no person's)
-// loses that name (mend), however the commit got there (a restore of a zone or of the plan a placement left with, a
-// batch that retires and restores in one go). So a zone never reads as standing in a domain that is not there: it reads
-// by its own name again, and a person locates it anew. A zone or a placement the commit made has where it stands
-// journalled with it.
+// the document that names a node or a failure domain that is not standing (absent, retired or a proposal: ruling M1;
+// a record that is there and no proposal keeps its name, whoever changed it last) loses that name (mend), however the
+// commit got there (a restore of a zone or of the plan a placement left with, a batch that retires and restores in one
+// go). So a zone never reads as standing in a domain that is not there: it reads by its own name again, and a person
+// locates it anew. The tracker answers each zone and placement it mended, as it was and as it is, and the boundary
+// stamps it as the commit's (ruling M1). A zone or a placement the commit made has where it stands journalled with it.
 function mend(p,r,path){
  const nodes=deploymentNodes(p),domains=failureDomains(p),there=standing,was=JSON.stringify([r.nodeId,r.domainIds]);
  if(path==='runtime.zones'){
@@ -341,7 +344,7 @@ const said=(r,keys)=>Object.fromEntries(keys.map(k=>[k,structuredClone(r?.[k]??(
 const TRACKED=[['runtime.nodes',10,'node',NODE_KEYS.filter(k=>k!=='open'),true],['technology.domains',6,'failureDomain',DOMAIN_KEYS.filter(k=>k!=='open'),true],['runtime.zones',10,'zone',['nodeId','domainIds','reason'],false],['runtime.placements',10,'placement',['nodeId'],false]];
 const rows=(p,path)=>{const [a,b]=path.split('.');return list(p?.[a]?.[b]);};
 export function trackTopology(prior,next,command,at){
- const m=next?.runtime;if(!m?.topology)return;
+ const m=next?.runtime,mended=[];if(!m?.topology)return mended;
  const started=chosenHere(next)&&!chosenHere(prior);
  // What this commit has journalled already: a second call for the same commit (a batch's inner command) adds nothing.
  const done=new Set(list(next.changes?.events).slice(list(prior?.changes?.events).length).map(e=>e?.source?.chapter+':'+e?.source?.id));
@@ -356,12 +359,13 @@ export function trackTopology(prior,next,command,at){
   for(const r of rows(next,path)){
    // (every save of these records moves the revision, so a record at its earlier revision says what it said)
    let o=old.get(r?.id);if(!r?.id)continue;
-   if(!own){const back=!o&&restored.has(path+'|'+r.id),as=structuredClone(r),dropped=mend(next,r,path);if(!dropped&&(back||o&&o.revision===as.revision))continue;if(back)o=as;}
+   if(!own){const back=!o&&restored.has(path+'|'+r.id),as=structuredClone(r),dropped=mend(next,r,path);if(dropped)mended.push([as,r]);if(!dropped&&(back||o&&o.revision===as.revision))continue;if(back)o=as;}
    else if(o?o.revision===r.revision:isProposed(r)&&r.origin===SEEDED||restored.has(path+'|'+r.id))continue;
    const before=said(o,keys),after=said(r,keys),fields=keys.filter(k=>JSON.stringify(before[k])!==JSON.stringify(after[k])).map(k=>({key:k,label:LABELS[k],before:before[k],after:after[k]}));
    if(fields.length)journal(chapter,r.id,refOf(r),kind,r.title||r.id,o?before:null,after,fields);
   }
  }
+ return mended;
 }
 
 // ---------------------------------------------------------------- what the design fingerprint reads (rulings L5, L6)

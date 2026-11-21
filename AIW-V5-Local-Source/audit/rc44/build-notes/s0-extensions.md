@@ -328,7 +328,7 @@ Every part is optional.
 | `layers`, `hops` | `{layer: type}`, `[{layer, types, from, dir, ctx, only?}]` | `trace-kernel.js` |
 | `checks` | `{chapter: p => [finding]}` | `document-memo.js` `sharedList`: the chapter's checks, the review, readiness |
 | `commands` | `{type: {apply, staged?, person?, second?, validate?, undo?, large?}}` | `design-extension-boundary.js` (server), `canonical-command.js` `stagedBy` |
-| `track` | `(prior, next, command, at) => void` | `design-extension-boundary.js` `trackExtensions` (server), for every commit |
+| `track` | `(prior, next, command, at) => void`, or `[[as it was, as it is]]` for records of other collections it changed itself, which the boundary stamps as the commit's (ruling M1, wp9a slice 1 second fix-up) | `design-extension-boundary.js` `trackExtensions` (server), for every commit |
 | `lifecycle` | `{path: chapter}` | `record-lifecycle.js` `COLLECTIONS` |
 | `canRestore` | `{path: (p, record) => void}`, on the package's own `lifecycle` collections only; throws in a reader's words to refuse a restore | `record-lifecycle.js` restore, beside a chapter's own rule; ruling L3 (wp9a slice 1 fix-up); block "L3 restore rule" |
 | `provenance` | `{nouns: {path: noun}, paths: {type or prefix: [path]}, records: {path: chapter}}` | `provenance.js`, `sdd-architecture.js` |
@@ -528,7 +528,11 @@ The server calls it after the built-in trackers for **every** command of every p
 (a reviewed batch's, an applied impact's). `prior` is the document as the request found it and is not changed; `next`
 is the commit's own copy. **It writes nothing for a document without the package's records**, and returns at once
 there. What it writes into `next` is part of the same commit: the events it adds to `next.changes.events` are
-journalled and stamped by the boundary with who, of what kind and why, and listed in the commit's activity row.
+journalled and stamped by the boundary with who, of what kind and why, and listed in the commit's activity row. A
+record of another collection that the tracker changes itself (a built-in record: wp9a's mend of a zone or a placement)
+is answered as `[as it was, as it is]`; the boundary stamps each as the commit's (`provenance.js stampTracked`, the
+same stamp a record the commit changed gets), so its stamp names who sent the commit, never who wrote it before (the
+lead's rulings H2 and M1). A tracker that changes no such record answers nothing.
 
 **`lifecycle`.** `{path: chapter}`, the path `container.list` (a list inside a container: a single-segment path is
 refused at start, because a retirement keeps the owning container's `version`, `review` and `handoff`), the chapter 1

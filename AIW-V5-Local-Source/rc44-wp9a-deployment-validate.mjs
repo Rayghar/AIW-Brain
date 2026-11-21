@@ -960,7 +960,7 @@ await block('S1.21 the mend drops only what is not there', async () => {
       assert.deepEqual(stamps(), was, 'the mend changed no zone'); assert.ok(!events().slice(n).some(e => e.source?.kind === 'zone'), 'and journalled no drop');
       ok(await h.send('runtime.locate', {zoneId: I.zone3, reason: 'A later commit.'})); typedIn(d(), fd, kind + ': after a later commit');
       // the draft is a person's to review through the review plan, as for every record
-      assert.ok(JSON.stringify(reviewPlan(withFinalReview(d()))).includes(fd) || JSON.stringify(reviewPlan(withFinalReview(d()))).includes(domainOf(d(), fd).ref) || reviewPlan(withFinalReview(d())).steps?.some(s => /Sol|draft/i.test(JSON.stringify(s))), 'the review plan asks a person about the draft');
+      { const step = reviewPlan(withFinalReview(d())).steps.find(s => s.id === 'records:sol-draft:6:technology.domains'); assert.ok(step && step.count >= 1 && /^Review 1 failure domain /.test(step.title), 'the review plan asks a person to review the draft: ' + JSON.stringify(step)); }
     } finally { h.close(); }
   }
   // what the mend changes is stamped as the commit's: a batch that retires a zone's domain and node and restores the zone
@@ -1016,6 +1016,9 @@ await block('S1.11 the parts of the package', async () => {
   const e = P.assembleParts('p-test', [a, {}, b]);
   assert.deepEqual([e.id, Object.keys(e.objectTypes), Object.keys(e.commands), e.hops.map(h => h.layer), e.designKeys, e.evidenceKeys, e.lifecycle, e.provenance], ['p-test', ['one', 'two'], ['x.one', 'x.two'], ['one', 'two'], ['x.ones'], ['x.marks'], {'x.ones': 6}, {nouns: {'x.ones': 'one'}, paths: {'x.one': ['x.ones', 'x.twos'], 'x.two': ['x.twos']}, records: {'x.twos': 10}}]);
   e.records(); e.track(); assert.deepEqual([emitted, tracked], [['a', 'b'], ['a', 'b']], 'the emitters and the trackers each run, in the parts\' order');
+  // (ruling M1) what the parts' trackers answer they changed of other collections is joined, for the boundary to stamp
+  { const one = [{id: 'z1'}, {id: 'z1', n: 1}], two = [{id: 'l1'}, {id: 'l1', n: 2}], j = P.assembleParts('p-test', [{track: () => [one]}, {track: () => undefined}, {track: () => [two]}]);
+    assert.deepEqual(j.track(), [one, two], 'the trackers\' answers are joined in the parts\' order'); }
   assert.deepEqual([e.checks[10]({}).map(f => f.id), e.checks[6]({}).map(f => f.id), Object.keys(e.checks).sort()], [['a:1', 'b:1'], ['b:2'], ['10', '6']], 'a chapter\'s findings are those of every part');
   assert.deepEqual(Object.keys(P.assembleParts('p-test', [{}, {}])), ['id'], 'a part that states nothing adds no row');
   assert.throws(() => P.assembleParts('p-test', [a, {commands: {'x.one': {apply: () => 3}}}]), /p-test: two parts state commands “x\.one”/, 'a row is one part\'s');

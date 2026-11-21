@@ -445,6 +445,10 @@ export function stampChanged(prior,next,paths,author,at){
  }
  return next;
 }
+// stampTracked(was, now, author, at): one record a design package's tracker changed itself after the command (rc44; the
+// lead's ruling M1: wp9a's mend of a zone or a placement), stamped as the commit's as settle stamps a record the commit
+// changed. Server only: design-extension-boundary.js trackExtensions.
+export function stampTracked(was,now,author,at){if(author&&plain(was)&&plain(now))settle(was,now,author,at);return now;}
 // The provenance block a command carries (round 12, GR-GOV-09): the source, citations and basis of payload.provenance,
 // checked (provenanceBlock: each citation must name a row, a source version or a record the project holds) and set on the
 // record the command wrote, apart from what the record says. A key sent replaces the record's (empty clears it); a key

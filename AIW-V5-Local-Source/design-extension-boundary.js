@@ -26,7 +26,8 @@
 //   large    the request may carry up to 500 KB, as the built-in prefixes that say so.
 // and what a package says of itself: track(prior, next, command, at), its one tracker (the lead's ruling D4 of
 // 2026-11-18), called after the built-in trackers for every command and for each command a batch carries
-// (trackExtensions below); a command type states no tracker of its own.
+// (trackExtensions below), which answers nothing or the records of other collections it changed itself, each [as it
+// was, as it is], for the boundary to stamp as the commit's (ruling M1); a command type states no tracker of its own.
 // A package only adds: a type a built-in handler takes is never a package's. The built-in handlers are asked once per
 // type (builtInType): a type they refuse as unknown ("Unknown … action.") is free for a package.
 import {EXTENSIONS} from './public/design-extensions.js';
@@ -34,7 +35,7 @@ import {workbenchKey as onWorkbenchKey} from './public/design-extension-parts.js
 import {verifierRefusal} from './public/architecture-obligations.js';
 import {registerReviewTypes} from './authorship.js';
 import {registerUndoExtensions} from './public/action-undo-domain.js';
-import {innerCommands, listAt, reviewOf, stampChanged} from './public/provenance.js';
+import {innerCommands, listAt, reviewOf, stampChanged, stampTracked} from './public/provenance.js';
 import {isRetiredCommand} from './public/canonical-command.js';
 import {inheritedFindings, findingCause} from './public/review-domain.js';
 import {createProject} from './shared/projects-domain.js';
@@ -182,12 +183,17 @@ export function markPackages(prior, next, command) {
 // built-in trackers' are, and listed in the commit's activity row.
 // Who wrote a change, of what kind and why is what the server says of the commit (worker.js), never what a package
 // says: an event a tracker or a handler of a package adds states none of it, so the server's stamp is the only one.
+// A record of another collection that a tracker changes itself (wp9a's mend of a zone or a placement that names a
+// record no longer there) is answered by the tracker as [as it was, as it is], and stamped here as the commit's, as the
+// boundary stamps a package's own records (the lead's rulings H2 and M1): its stamp says who sent the commit that
+// changed it, never who wrote it before.
 const AUTHOR_FIELDS = ['actor', 'authorKind', 'reviewed', 'account', 'session', 'reason'];
 const eventsOf = p => (Array.isArray(p?.changes?.events) ? p.changes.events : []);
 function unstated(next, from) { for (const event of eventsOf(next).slice(from)) if (event && typeof event === 'object') for (const k of AUTHOR_FIELDS) delete event[k]; }
-export function trackExtensions(prior, next, command, at) {
-  const inner = innerCommands(command);
-  for (const c of inner.includes(command) ? inner : [command, ...inner]) for (const e of EXTENSIONS) if (typeof e.track === 'function') { const from = eventsOf(next).length; e.track(prior, next, c, at); unstated(next, from); }
+export function trackExtensions(prior, next, command, at, {author = null} = {}) {
+  const inner = innerCommands(command), changed = [];
+  for (const c of inner.includes(command) ? inner : [command, ...inner]) for (const e of EXTENSIONS) if (typeof e.track === 'function') { const from = eventsOf(next).length, answer = e.track(prior, next, c, at); unstated(next, from); if (Array.isArray(answer)) changed.push(...answer); }
+  for (const pair of changed) if (Array.isArray(pair)) stampTracked(pair[0], pair[1], author, at);
 }
 // Whether a request of this type may be large (worker.js, beside LARGE_COMMAND_PREFIXES).
 export const extensionLarge = type => extensionCommand(type)?.large === true;

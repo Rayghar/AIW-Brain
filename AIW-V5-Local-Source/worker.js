@@ -281,7 +281,7 @@ export function trackCommandChanges(prior,next,command,at,{author=null}={}){
     if(command.type==='workspace.apply')for(const c of Array.isArray(command.payload?.commands)?command.payload.commands:[]){trackModelChange(prior,next,c,at);trackInterfaceChange(prior,next,c,at);}
     // The design packages' trackers (rc44, slice S0; ruling D4), after every built-in tracker: for this command, a
     // built-in one too, and for each command it carries.
-    trackExtensions(prior,next,command,at);
+    trackExtensions(prior,next,command,at,{author});
     quietChanges(prior,(next.changes?.events||[]).slice(already),author);
     return impact;
   }));

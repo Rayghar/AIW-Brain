@@ -20,7 +20,8 @@ export * from './topology-domain.js';
 const TABLES=['objectTypes','prefixes','layers','commands','lifecycle','canRestore','design'],LISTS=['hops','designKeys','evidenceKeys','sections'],CALLED=['records','track'],STATED=new Set([...TABLES,...LISTS,...CALLED,'checks','provenance','upgrade','upgradeNote']);
 // One registration from the parts, in their order: the tables and the provenance rows joined (a row two parts state is
 // refused, but for the collections of a command, which are joined), the lists one after another, the emitters and the
-// trackers each called in turn, a chapter's findings those of every part that states them, and the upgrade steps
+// trackers each called in turn (the records the trackers answer they changed elsewhere joined, for the boundary to
+// stamp: ruling M1), a chapter's findings those of every part that states them, and the upgrade steps
 // chained in the parts' order (the document itself when no step changes it; its note is one part's).
 export function assembleParts(id,parts){
  const e={id},row=(table,name,key,value)=>{if(Object.hasOwn(table,key))throw Error(id+': two parts state '+name+' “'+key+'”.');table[key]=value;};
@@ -32,7 +33,7 @@ export function assembleParts(id,parts){
   for(const [k,rows] of Object.entries(part.provenance||{}))for(const [key,v] of Object.entries(rows)){const t=(e.provenance??={})[k]??={};if(k==='paths')t[key]=[...new Set([...t[key]||[],...v])];else row(t,'provenance.'+k,key,v);}
  }
  {const steps=parts.map(part=>part.upgrade).filter(Boolean);if(steps.length)e.upgrade=p=>steps.reduce((q,f)=>f(q)||q,p);}
- for(const k of CALLED){const fs=parts.map(part=>part[k]).filter(Boolean);if(fs.length)e[k]=(...args)=>{for(const f of fs)f(...args);};}
+ for(const k of CALLED){const fs=parts.map(part=>part[k]).filter(Boolean);if(fs.length)e[k]=(...args)=>fs.flatMap(f=>{const a=f(...args);return k==='track'&&Array.isArray(a)?a:[];});}
  const chapters=[...new Set(parts.flatMap(part=>Object.keys(part.checks||{})))];
  if(chapters.length)e.checks=Object.fromEntries(chapters.map(c=>[c,p=>parts.flatMap(part=>part.checks?.[c]?.(p)||[])]));
  return e;
