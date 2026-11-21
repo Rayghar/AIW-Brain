@@ -39,7 +39,8 @@ export const ADOPTION_PACKAGE={
  commands:{'adoption.reassess':step,'adoption.deviation':step,'adoption.accept':{apply:applyAdoptionCommand,second:acceptanceOf},
   'selection.start':propose,'selection.candidate':propose,'selection.judge':choose,'selection.choose':choose,'selection.instantiate':choose},
  track:trackAdoptionChange,
- provenance:{nouns:{'adoptions.records':'applied mechanism'},paths:{adoption:['adoptions.records']},records:{'adoptions.records':3}},
+ // (S5: a selection writes the decision, and its instantiation a component and an adoption; the boundary stamps who wrote each)
+ provenance:{nouns:{'adoptions.records':'applied mechanism'},paths:{adoption:['adoptions.records'],selection:['decisions.records','realisation.components','logical.assets','adoptions.records']},records:{'adoptions.records':3}},
  design:{adoptions:adoptionDesign}
 };
 registerExtension(ADOPTION_PACKAGE);

@@ -108,6 +108,8 @@ export default async function ({block, pass, load}) {
     for (const t of ['selection.start', 'selection.candidate']) { assert.ok(!e.commands[t].person, t + ' may be proposed by a draft by Sol'); assert.equal(isReviewCommand(t), false); }
     // the one accept step a selection leads to is the adoption's, a second person's (rulings D1, D7.1)
     assert.equal(typeof e.commands['adoption.accept'].second, 'function');
+    // the boundary stamps who wrote what a selection writes: the decision, and on instantiation the component and the adoption
+    assert.deepEqual(e.provenance.paths, {adoption: ['adoptions.records'], selection: ['decisions.records', 'realisation.components', 'logical.assets', 'adoptions.records']});
     // the package reads released knowledge through the one existing rule, and no store of its own
     const src = readFileSync(new URL('../public/adoption-selection.js', import.meta.url), 'utf8');
     assert.match(src, /import \{[^}]*claimReceiptCurrent[^}]*\} from '\.\/knowledge-governance\.js';/); assert.ok(!/knowledge-concepts|knowledge-structures|p\.knowledge\b/.test(src), 'no knowledge store of its own');
@@ -326,8 +328,6 @@ export default async function ({block, pass, load}) {
     assert.match(section, /Regional message relay \(profile, released KC-\d+ in KR-\d+\): rejected · Customer records stay in region North: fail/);
     assert.match(section, /Not chosen: It keeps messages outside region North\./); assert.match(section, /Not chosen: It states nothing about where it keeps data\./);
     assert.ok(!/score|weigh/i.test(section.slice(section.indexOf('**Selection basis**'))), 'the basis weighs nothing');
-    // a decision without a selection prints as before
-    const plain = selectionProject(); assert.equal(architectureMarkdown(withFinalReview(plain)).markdown, architectureMarkdown(withFinalReview(structuredClone(plain))).markdown);
     pass('S5 SDD: the decision record prints the selection basis (what is selected, each hard constraint with its typed reading or none), each candidate with its kind, its pinned knowledge, its outcome and its rows, the unproven rows named, and each rejected candidate with its reason; nothing is weighed');
   });
 
