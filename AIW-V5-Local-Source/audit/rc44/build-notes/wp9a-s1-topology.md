@@ -340,7 +340,10 @@ the step there. The slice has no second-person step, so it names no confirming s
     key that is no name; two statements of a key and of a key inside it are a clash. S0's contract text says so.
 14. **Failure-domain ids from Chapter 10's counters** (`runtime.counters.domain`, fix-up, ruling L6): the design
     fingerprint reads `technology.counters` and not `runtime.counters`, so a proposal would otherwise move the design
-    stamp by its counter.
+    stamp by its counter. A document typed on an earlier build of this unreleased slice (only test and trial documents)
+    keeps its counter in `technology.counters.domain`, which this head no longer reads: such a document would mint
+    `fd-001` again. No released document holds one, so no upgrade step is written; the lead's trial documents are to be
+    typed again.
 15. **The limits are 120 nodes and 60 failure domains** (fix-up, ruling L8; design: 2,000 and 500), measured through
     the commands against the document bound.
 16. **The walkthrough and the Model view read the typed domain in this slice** (fix-up, ruling L7; design: slices 2
@@ -362,7 +365,7 @@ D8's key and read a zone's failure domain by its name until their slice moves th
 |---|---|---|
 | ~~The walkthrough's "lose a failure domain" grouping, and its Failover test for a named domain~~ | `public/runtime-domain.js` `simulateRuntime` | **retired by the fix-up** (ruling L7, H4): it reads `failureDomainKey` first, the name as before (S1.17) |
 | ~~The Chapter 10 Model view's private failure-domain key~~ | `public/deploy-model.js` (`r.domains`, `domainsOf`, `fallbackSimulation`, `deployInsights`), `public/deploy-view.js` (a plan's domains) | **retired by the fix-up** (ruling L7, H15): each zone is keyed by `failureDomainKey` first (S1.17) |
-| The Model view's second propagation (`fallbackSimulation`), its scenario list from zones only, and the layout's bracket over adjacent columns by the zone's domain words | `public/deploy-model.js`, `public/deploy-layout.js` | slice 6 (R5, R6, with the surface); the bracket reads the key with H12 |
+| The Model view's second propagation (`fallbackSimulation`), its scenario list from zones only, the layout's bracket over adjacent columns by the zone's domain words, and a group's title from the first zone's words (a typed zone that states no name is titled "Undeclared failure domain") | `public/deploy-model.js`, `public/deploy-layout.js` | slice 6 (R5, R6, with the surface); the bracket and the title read the typed domain with H12 |
 | The desk's region guess from words in the name (a latency reading, ruling L7) | `public/desk-capacity.js` | slice 6 (H13, R2) |
 | Chapter 6's three string comparisons of a capability's domains | `public/technology-domain.js` | slice 5 (H14, R3, R4); no capability is typed before it |
 | The zone's attribute "Domain" in the model projection (the name as words) | `public/runtime-model.js` `runtimeProjection` | slice 6 with the surface |
@@ -456,8 +459,11 @@ import of `topology.js` in `deploy-view.js` the route is the same 3,230,089 B (t
 ## Suites
 
 **After the fix-up** (this head, the adoption record of `25cc426`): `rc44-wp9a-deployment-validate.mjs` 21 blocks green
-(S1.10 with `--measure`); `rc44-s0-extensions-validate.mjs`, `rc44-wp1-knowledge` and `rc44-wp2-adoption-validate.mjs` as
-the final run below says (wp2's block `size` counts every package's route bytes as wp2's: open question 11). `rc44-wp9a-deployment-browser-validate.mjs` green against the built client. Existing suites of the files the
+(S1.10 with `--measure`); `rc44-s0-extensions-validate.mjs` 26 of 26; `rc44-wp1-knowledge` 34 of 34 (4 pending, as
+before); `rc44-wp2-adoption-validate.mjs` 19 of 20 blocks, its block `size` red ("this build is inside the allowance of
+wp2: 660 B": it counts every package's route bytes as wp2's, open question 11; it passed on `afaf616`, after item 5, where
+the route was 569 B over the base). `test:deploy-browser`, red at the baseline, fails as there ("unplaced parts wait in Not
+placed"). `rc44-wp9a-deployment-browser-validate.mjs` green against the built client. Existing suites of the files the
 fix-up items 6 and 7 changed, green and unchanged: `deploy`, `runtime`, `rc42-g5-runtime`, `chapter-lines`,
 `not-stated`, `wire-merge` (H4, H15), `technology`, `interfaces`, `security`, `technology-realisation` (`patchLinks`);
 those of the earlier items as their lines above say. `node check-syntax.mjs` passes; `node scripts/lint.mjs --summary`:
