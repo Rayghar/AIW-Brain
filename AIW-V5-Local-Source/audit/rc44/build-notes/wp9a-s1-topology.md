@@ -14,8 +14,24 @@ here is approved, accepted, released or promoted.
   suite, the fixture, a browser case, the size evidence) and its fix-up: every item 0 to 8 below, the suite at 21
   blocks, green.
 - **Done since:** the second fix-up (rulings M1 to M9), section "Second fix-up" below; the suite at 24 blocks, green.
-- **In progress:** nothing.
+- **Done since:** the second fix-up's verifier (merge, three new problems) and the lead's rulings O1 to O5.
+- **In progress:** the third fix-up, section "Third fix-up" below (branch `rc44/wp9a-s1-topology-fix-c6`, from
+  `rc44/wp9a-s1-topology-fix-c5` at `5cae40a`).
 - **Next:** the lead's merge; see "What later slices inherit" and "Open questions (for the lead)".
+
+## Third fix-up (after the second verifier; the lead's rulings O1 to O5, with K to N)
+
+Branch `rc44/wp9a-s1-topology-fix-c6`, from `rc44/wp9a-s1-topology-fix-c5` (`5cae40a`). Verifier:
+`/home/user/hb-review/rc44-build/wp9a-s1-topology.verify2.json` (verdict merge, three new problems). Order of work, each
+case first and seen to fail on the head the item started from, a WIP commit after each:
+1. O1, the bookings checked: routeBookings refuses; the lead's file; the consistency check in S0's suite.
+2. O2, trackPaths: the boundary says what a tracker changed; the tracker's answer retired.
+3. O3, the notes.
+4. O5, re-measured after O2 (O4 needs no code).
+5. The notes, the suites, the final commit.
+
+State: item 1 in progress. Measured before any change (`node build.mjs` on `5cae40a`): chapters route 3,230,605 B,
+projects 507,338 B, 148 script files, buckets 53/50/45, stylesheet 901,873 B, no violation.
 
 ## Second fix-up (after the verifier; the lead's rulings M1 to M9, with K and L)
 
