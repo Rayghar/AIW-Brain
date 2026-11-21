@@ -1,0 +1,249 @@
+{
+ "schema": "aiw.rc44.slice-evidence/1",
+ "slice": "wp1-s2-crosswalk",
+ "branch": "rc44/wp1-s2-crosswalk",
+ "start": "5cae40a",
+ "productionAccepted": false,
+ "caseFile": "rc44-wp1-cases-crosswalk.mjs",
+ "runner": "rc44-wp1-knowledge-validate.mjs",
+ "summary": {
+  "suite": "rc44-wp1-knowledge",
+  "passed": 47,
+  "failed": 0,
+  "pending": 3,
+  "failures": []
+ },
+ "redBeforeTheChange": "On the start commit, with the case file of this slice: 1 passed (S2.7, a guard), 12 failed: S2.0 \"The input did not match ... architectureUnit.mechanism states the number 7\", S2.1 \"resolveConcept exists\", S2.2 \"Cannot find module ... knowledge-crosswalk.js\", S2.3 and S2.12 ENOENT, S2.4, S2.6, S2.8, S2.9, S2.11 \"knowledge.crosswalk by architect: Choose a supported knowledge action.\", S2.5 \"the review is a second person's step\", S2.10 \"p10-knowledge is registered\".",
+ "mutations": [
+  "design row of p10-knowledge removed: S2.10 fails (\"A person's step moves the design stamp: the design fingerprint reads history of KA-0004\")",
+  "knowledge.crosswalk-review stated person instead of second: S2.5 fails (\"the review is a second person's step\")",
+  "the active-release test of releasedCrosswalk removed: S2.1 still passes, because a release that is not active holds no concept usable as a whole either (two conditions guard it)"
+ ],
+ "finalRun": [
+  {
+   "suite": "rc44-wp1-knowledge-validate.mjs",
+   "exit": 0,
+   "seconds": 154,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "rc44-s0-extensions-validate.mjs",
+   "exit": 0,
+   "seconds": 110,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "rc44-wp2-adoption-validate.mjs",
+   "exit": 0,
+   "seconds": 135,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "rc44-wp9a-deployment-validate.mjs",
+   "exit": 0,
+   "seconds": 22,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "knowledge-coverage-validate.mjs",
+   "exit": 0,
+   "seconds": 1,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "rc42-g4-trace-kernel-validate.mjs",
+   "exit": 0,
+   "seconds": 12,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "rc42-g2-library-validate.mjs",
+   "exit": 0,
+   "seconds": 3,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "knowledge-structure-validate.mjs",
+   "exit": 0,
+   "seconds": 1,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "architecture-knowledge-unit-validate.mjs",
+   "exit": 0,
+   "seconds": 1,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "candidate-import-validate.mjs",
+   "exit": 0,
+   "seconds": 1,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "knowledge-boundaries-validate.mjs",
+   "exit": 0,
+   "seconds": 2,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "knowledge-retrieval-validate.mjs",
+   "exit": 0,
+   "seconds": 11,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "recovery-authority-validate.mjs",
+   "exit": 0,
+   "seconds": 33,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "repository-sync-validate.mjs",
+   "exit": 0,
+   "seconds": 1,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "repository-transfer-validate.mjs",
+   "exit": 0,
+   "seconds": 2,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "repository-service-validate.mjs",
+   "exit": 0,
+   "seconds": 1,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "desk-validate.mjs",
+   "exit": 0,
+   "seconds": 3,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "tradeoff-validate.mjs",
+   "exit": 0,
+   "seconds": 5,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "utility-validate.mjs",
+   "exit": 0,
+   "seconds": 1,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "design-spec-validate.mjs",
+   "exit": 0,
+   "seconds": 2,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "component-library-validate.mjs",
+   "exit": 0,
+   "seconds": 3,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "architecture-intelligence-validate.mjs",
+   "exit": 0,
+   "seconds": 8,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "product-choice-validate.mjs",
+   "exit": 0,
+   "seconds": 2,
+   "at": "head before the final commit"
+  },
+  {
+   "suite": "rc42-g1-tech-approval-validate.mjs",
+   "exit": 0,
+   "seconds": 8,
+   "at": "head before the final commit"
+  }
+ ],
+ "earlierRun": [
+  {
+   "suite": "knowledge-validate.mjs",
+   "exit": 1,
+   "seconds": 0,
+   "at": "WIP head 3691968 to 8f44836 (the code moved during the run)",
+   "firstFailure": "AssertionError [ERR_ASSERTION]: The upstream inventory dependency can time out."
+  },
+  {
+   "suite": "stewardship-validate.mjs",
+   "exit": 1,
+   "seconds": 5,
+   "at": "WIP head 3691968 to 8f44836 (the code moved during the run)",
+   "firstFailure": "AssertionError [ERR_ASSERTION]: F:latency:QD-003: knowledge captured from a disagreement is read with the record it is linked to, not wherever its words match"
+  },
+  {
+   "suite": "rc44-wp9a-deployment-validate.mjs",
+   "exit": 1,
+   "seconds": 19,
+   "at": "WIP head 3691968 (the code moved during the run)",
+   "firstFailure": "FAIL S1.10 the client build: AssertionError [ERR_ASSERTION]: this build: the package is 22572 B of what the entry adds, at most 22569 |     at file:///home/user/AIW-Brain/.claude/worktrees/wf_b160b888"
+  },
+  {
+   "suite": "brain-ahead-validate.mjs",
+   "exit": 1,
+   "seconds": 1,
+   "at": "WIP head 3691968 (the code moved during the run)",
+   "firstFailure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /\\| Capacity \\| Critical \\|/. Input:"
+  },
+  {
+   "suite": "chapter-reasoning-validate.mjs",
+   "exit": 1,
+   "seconds": 6,
+   "at": "WIP head 3691968 (the code moved during the run)",
+   "firstFailure": "    if (sources.length >= MAX_SOURCES || chars + s.excerpt.length > MAX_CHARS) { if (must) throw Error('These decisions do not fit in one request. Ask Sol about fewer at a time.'); omissions.push({id:"
+  },
+  {
+   "suite": "round27-model-validate.mjs",
+   "exit": 1,
+   "seconds": 2,
+   "at": "WIP head 3691968 (the code moved during the run)",
+   "firstFailure": "AssertionError [ERR_ASSERTION]: The input was expected to not match the regular expression /data-cm-question|<button/. Input:"
+  }
+ ],
+ "redAtTheBaseline": [
+  {
+   "suite": "brain-ahead-validate.mjs",
+   "sameFirstFailureOn94dbd4f": true,
+   "note": "run on an archive of 94dbd4f in this worktree: the same first failure line, which audit/rc42/regression-2026-11-16.json records too"
+  },
+  {
+   "suite": "chapter-reasoning-validate.mjs",
+   "sameFirstFailureOn94dbd4f": true,
+   "note": "run on an archive of 94dbd4f in this worktree: the same first failure line, which audit/rc42/regression-2026-11-16.json records too"
+  },
+  {
+   "suite": "round27-model-validate.mjs",
+   "sameFirstFailureOn94dbd4f": true,
+   "note": "run on an archive of 94dbd4f in this worktree: the same first failure line, which audit/rc42/regression-2026-11-16.json records too"
+  },
+  {
+   "suite": "knowledge-validate.mjs",
+   "sameFirstFailureOn94dbd4f": true,
+   "note": "run on an archive of 94dbd4f in this worktree: the same first failure line, which audit/rc42/regression-2026-11-16.json records too"
+  },
+  {
+   "suite": "stewardship-validate.mjs",
+   "sameFirstFailureOn94dbd4f": true,
+   "note": "run on an archive of 94dbd4f in this worktree: the same first failure line, which audit/rc42/regression-2026-11-16.json records too"
+  }
+ ],
+ "notRun": [
+  "browser suites (red on this machine at the baseline, the lead's run)",
+  "test:scale",
+  "the full regression (the lead's)"
+ ],
+ "checks": {
+  "checkSyntax": "passed (942 modules)",
+  "lint": "162 problems, baseline 162, new 0",
+  "build": "node build.mjs: no violation; chapters route 3,230,723 B; 148 script files"
+ }
+}

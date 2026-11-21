@@ -150,7 +150,32 @@ Not retired: `PHRASES` (lexical retrieval, not identity), component `patternIds`
 | opens with records (D10) | route + 145,006 B in 2 scripts | route + 145,475 B in 2 scripts (3,376,198 B) | – |
 
 wp1: S1 65 B, S2 118 B, 477 B left for S3 of the 660 B. The route bytes are the stub (the package's own, as the contract
-says) and alias shifts; no reader or command is on the route.
+says); no reader or command is on the route. `knowledge-governance.js` in the client: unchanged (the release hook is in
+the command function, which the client does not hold).
+
+## Suites (on the final code; evidence `audit/rc44/evidence/wp1-s2-crosswalk-suites.json`)
+
+- `rc44-wp1-knowledge-validate.mjs`: 47 passed (S1's 34, S2's 13), 0 failed, 3 pending (S3 to S5), 154 s.
+- Green, unchanged: `rc44-s0-extensions-validate.mjs` (**with `p10-knowledge` registered every block holds**: no
+  assertion of S0's suite fails, so there is none to list for the lead), `rc44-wp2-adoption-validate.mjs`,
+  `rc44-wp9a-deployment-validate.mjs` (24 checks; its exact bound on its own lazy entry holds because no shared output
+  moves, deviation 6), `knowledge-coverage-validate.mjs`, `rc42-g4-trace-kernel-validate.mjs`,
+  `rc42-g2-library-validate.mjs`, `knowledge-structure`, `architecture-knowledge-unit`, `candidate-import`,
+  `knowledge-boundaries`, `knowledge-retrieval`, `recovery-authority`, `repository-sync`, `repository-transfer`,
+  `repository-service`, and the suites that import `design-reasoning.js` or the coverage module: `desk`, `tradeoff`,
+  `utility`, `design-spec`, `component-library`, `architecture-intelligence`, `product-choice`, `rc42-g1-tech-approval`;
+  earlier on the WIP head also `driver-applicability`, `driver-kinds`, `driver-spec-view`, `intake`, `not-stated`,
+  `operations`, `rc42-g3a`, `rc42-g3b`, `rc42-g5`, `rc42-g7`, `service-routes`.
+- Red, and red the same way on an archive of `94dbd4f` run in this worktree (the first failure line identical, as
+  `audit/rc42/regression-2026-11-16.json` records it): `knowledge`, `stewardship`, `brain-ahead`, `chapter-reasoning`,
+  `round27-model`.
+- `node check-syntax.mjs`: 942 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, new 0.
+  `node build.mjs`: no violation.
+- Not run: browser suites (red on this machine at the baseline), `test:scale`, the full regression (the lead's).
+- Mutations, each alone and restored: the design row taken out (S2.10 red: "the design fingerprint reads history of
+  KA-0004"); the review stated `person` instead of `second` (S2.5 red); the active-release test of `releasedCrosswalk`
+  taken out (S2.1 stays green: a release that is not active holds no concept usable as a whole either, so two conditions
+  guard it).
 
 ## Open questions and limits (for the lead)
 
@@ -164,4 +189,10 @@ says) and alias shifts; no reader or command is on the route.
 4. **A row a merge or a template copy wrote** carries no author stamp (D12): it takes a person's confirmation before a
    second person's review, as an imported one does. A template copy drops `knowledge` whole.
 5. **Rows of an organisation's release** travel with S3 (`orgContent` copies no `parts` yet).
-6. **S0's own suite** with a third real package: see the result of `rc44-s0-extensions-validate.mjs` below.
+6. **S0's own suite** holds with a third real package (above). Nothing of S0 needed changing.
+7. **The library's document loads the knowledge workspace's entry** before it is drawn once it holds a row (145 KB, D10's
+   figure above), so that the browser reads the design row the server reads. At the close of wave 2 (D10) the lead may
+   move the package's browser part into a shared entry; its design row is 69 B and the statement in
+   `knowledge-crosswalk.js`.
+8. **Ruling I2 is closed here** (S2.0). Its reading: every text and value of the unit, which may refuse a unit whose
+   typed predicate states a number no quote holds (stricter than the ruling's list).
