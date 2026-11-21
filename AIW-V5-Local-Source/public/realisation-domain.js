@@ -346,7 +346,7 @@ export function applyRealisationCommand(input,command,at=new Date().toISOString(
    // rc42 (D4): what it comes from must be proposable (component-library.js proposalSource): no withdrawn archetype, no
    // organisation entry outside a signed release installed here. An open question the person answered is not kept.
    if(LIBRARY_KEYS.includes(raw.key)){
-    const ref=cleanLibraryRef(raw.library);if((raw.key==='archetype')!==(ref.scope==='catalogue'))throw Error('A library proposal names a library entry; an archetype proposal names a catalogue archetype.');
+    const ref=cleanLibraryRef(raw.library);if((raw.key==='archetype')!==(ref.scope==='catalogue')||(raw.key==='profile')!==(ref.scope==='knowledge'))throw Error('A library proposal names a library entry; an archetype proposal names a catalogue archetype.');
     const entry=proposalSource(p,ref);if(entry){ref.title=entry.title;if(entry.organization)ref.releaseId=entry.organization.releaseId;else ref.revision=entry.revision;}
     const c=saveComponent(p,{...raw,id:undefined,patternKey:null,status:'candidate',open:Object.fromEntries(Object.entries(raw.open||{}).filter(([k])=>!clean(raw[k])))},at);selected=c.id;c.origin=raw.key;c.library=ref;c.proposed=cleanProposed(raw.proposed);
     const asset=p.logical.assets.find(n=>n.id===c.id);if(asset)asset.origin='suggestion';

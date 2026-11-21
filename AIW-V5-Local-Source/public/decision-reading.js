@@ -153,8 +153,10 @@ export function constraintForce(p, r) {
 // priorities: {driverId: priority} read instead of the recorded ones (a what-if, a sensitivity step); the reading of the
 // recorded priorities is remembered per settled document. lean: the screen, the totals and the lead only (what a
 // sensitivity step or a driver's tuning compares), not dominance, firmness or the unknowns.
+// rc44 wp2 S5: a component selection (decision.selection, adoption-selection.js) is never weighed: its candidates are
+// read against the hard constraints, kept in the order they were added, and hold no score, rank or weight.
 export function readDecision(p, d, {priorities = null, lean = false} = {}) {
-  if (!d) return null;
+  if (!d || d.selection !== undefined) return null;
   return priorities || lean ? readDecisionOf(p, d, priorities, lean) : remember(p, 'decision-reading', d, () => readDecisionOf(p, d, null, false));
 }
 export const decisionReadingOf = (p, id) => readDecision(p, list(p?.decisions?.records).find(d => d.id === id) || null);

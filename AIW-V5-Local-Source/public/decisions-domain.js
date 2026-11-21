@@ -184,7 +184,8 @@ function normaliseOption(p,d,raw,old){
  const responsibilityIds=responsibilities.ids,rows=raw.relationships===undefined&&old?old.relationships:Array.isArray(raw.relationships)?raw.relationships:[];
  if(rows.length>DECISION_LIMITS.relationships)throw Error(`Propose at most ${DECISION_LIMITS.relationships} relationships for one alternative; ${rows.length} were sent.`);
  const relationships=rows.map(e=>({from:clean(e.from,60),to:clean(e.to,60),label:clean(e.label,160)}));if(relationships.some(e=>!responsibilityIds.includes(e.from)||!responsibilityIds.includes(e.to)||e.from===e.to||!e.label))throw Error('Every impact relationship needs two different affected responsibilities and a label.');
- const a={id:old?.id||'ALT-'+pad(++p.decisions.counters.alternative),strategy:old?.strategy||'custom_'+pad(p.decisions.counters.alternative),responsibilityIds,relationships,assessments:{}};
+ // rc44 wp2 S5: the candidate a selection compares (alternative.candidate, adoption-selection.js) stays with its alternative.
+ const a={id:old?.id||'ALT-'+pad(++p.decisions.counters.alternative),strategy:old?.strategy||'custom_'+pad(p.decisions.counters.alternative),responsibilityIds,relationships,assessments:{},...(old?.candidate&&{candidate:old.candidate})};
  for(const key of ALTERNATIVE_TEXT)a[key]=patchText(raw,key,old,key==='title'?160:4000,'The '+fieldWords(key));if(!a.title)throw Error('Name the alternative.');
  a.componentIds=componentIds.ids;a.requirementGroupIds=groups.ids;a.open=raw.open===undefined?old?.open:cleanOpen(raw.open,ALTERNATIVE_TEXT);
  const given=raw.assessments===undefined&&old?old.assessments:raw.assessments;

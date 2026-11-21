@@ -11,12 +11,13 @@
 // knowledge: it enters no score, no hard constraint and no conformance reading. Pure.
 import {redactSecretsDeep} from './secret-redaction.js';
 import {CATALOGUE} from './catalogue-index.js';
-import {withdrawn} from './knowledge-governance.js';
+import {withdrawn, claimReceiptCurrent} from './knowledge-governance.js';
 import {list, str, num, uniq} from './util.js';
 
 export const COMPONENT_LIBRARY_KIND = 'component';
 export const SNAPSHOT_SCHEMA = 'aiw.component-snapshot.v1';
-export const LIBRARY_KEYS = ['library', 'archetype'];
+// rc44 wp2 S5: 'profile', a component profile chosen in a selection from released knowledge (adoption-selection.js).
+export const LIBRARY_KEYS = ['library', 'archetype', 'profile'];
 export const SNAPSHOT_LIMIT = 30000;
 // What a snapshot holds at most: entries per list, characters per name and per text.
 export const LIST = 24, NAME = 160, TEXT = 1200;
@@ -61,7 +62,9 @@ export const archetypeWithdrawn = (p, id) => withdrawn(p, [id, CATALOGUE.release
 const componentEntries = p => list(p?.workbench?.catalogue).filter(e => e.kind === COMPONENT_LIBRARY_KIND);
 export const releasedEntries = p => componentEntries(p).filter(e => e.organization && e.status === 'approved' && e.organization.assurance?.eligible === true);
 export const projectEntries = p => componentEntries(p).filter(e => !e.organization && e.status !== 'deprecated');
+// rc44 wp2 S5: a released component profile, pinned to its release and claim, while the existing rule reads it current.
 export function proposalSource(p, ref) {
+  if (ref.scope === 'knowledge') { if (!claimReceiptCurrent(p, ref)) throw Error('Candidate knowledge can be read, not selected.'); return null; }
   if (ref.scope === 'catalogue') { if (archetypeWithdrawn(p, ref.archetypeId)) throw Error('This archetype was withdrawn from this project.'); return null; }
   if (ref.scope === 'organisation') { const e = releasedEntries(p).find(e => e.organization.id === ref.organizationId && e.organization.entryId === ref.entryId); if (!e || e.organization.contentHash !== ref.contentHash) throw Error('An organisation entry reaches this project only through a signed release installed here.'); return e; }
   const e = componentEntries(p).find(e => e.id === ref.entryId && !e.organization);
@@ -82,10 +85,11 @@ export function cleanProposed(raw) {
 // Where a proposal came from: a project library entry, an organisation library entry or a catalogue archetype.
 export function cleanLibraryRef(raw) {
   const r = raw && typeof raw === 'object' ? raw : {};
-  const scope = ['project', 'organisation', 'catalogue'].includes(r.scope) ? r.scope : null;
+  const scope = ['project', 'organisation', 'catalogue', 'knowledge'].includes(r.scope) ? r.scope : null;
   if (!scope) throw Error('Say where the proposal comes from: the project library, an organisation library or the catalogue.');
   const ref = {scope, title: clip(r.title, NAME)};
-  if (scope === 'catalogue') { if (!isArchetypeId(r.archetypeId)) throw Error('Choose one of the catalogue’s component archetypes.'); ref.archetypeId = r.archetypeId; ref.releaseId = clip(r.releaseId, 60); ref.recordSha256 = clip(r.recordSha256, 64); }
+  if (scope === 'knowledge') for (const k of ['claimId', 'releaseId', 'claimHash', 'releaseHash']) ref[k] = clip(r[k], 100);
+  else if (scope === 'catalogue') { if (!isArchetypeId(r.archetypeId)) throw Error('Choose one of the catalogue’s component archetypes.'); ref.archetypeId = r.archetypeId; ref.releaseId = clip(r.releaseId, 60); ref.recordSha256 = clip(r.recordSha256, 64); }
   else { if (!str(r.entryId)) throw Error('Choose a library entry.'); ref.entryId = clip(r.entryId, 100); ref.revision = num(r.revision) ?? null; ref.contentHash = clip(r.contentHash, 64); if (scope === 'organisation') { if (!str(r.organizationId)) throw Error('Name the organisation the entry belongs to.'); ref.organizationId = clip(r.organizationId, 100); ref.organizationTitle = clip(r.organizationTitle, NAME); } }
   return ref;
 }
