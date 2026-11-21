@@ -94,7 +94,26 @@ case first and seen to fail on the head the item started from, a WIP commit afte
   proposal is dismissed, the safe direction) and its owner (wp9b, with the built-in seeds' rule). The second fix-up's
   lines on M1's answer are marked as retired by O2.
 
-State: item 4 in progress. Measured before any change (`node build.mjs` on `5cae40a`): chapters route 3,230,605 B,
+- **Item 4, O4 and O5: done.** O4 needs no code (it confirms the second fix-up's S0 edits: `quietProposals`,
+  `routeBookings` as O1 amends it, `stampTracked` as O2 uses it). O5, re-measured after O2 with `node build.mjs` and
+  S1.10 `--measure` (`audit/rc44/evidence/wp9a-s1-size.json`, its name now "after its third fix-up"):
+  - chapters route 3,230,605 B, unchanged by items 1 to 3 (+765 B against `9673661`, +440 B against `rc44/integration`
+    `a4c1690`; cap 3,233,792 B unchanged, 3,187 B left); projects 507,338 B; 148 script files; 53 files under 10 KB
+    (buckets 53/50/45); stylesheet 901,873 B; no violation; no gate changed.
+  - the lazy entry's pinned module bytes, old -> new (S1.10 `LAZY_SHARE`, recorded in its comment and the commit):
+    `topology.js` 1,448 -> 1,503 B (`assembleParts` joins `trackPaths`, its tracker answers nothing);
+    `topology-domain.js` 20,903 -> 20,903 B (the `trackPaths` row added what the retired answer saved); the four
+    parts 10 B each and the lists 178 B unchanged; the package's share 22,569 -> 22,624 B against `a4c1690`'s entry.
+    "Opens with records": 4,086,294 -> 4,086,349 B (855,689 -> 855,744 B in 12 scripts beside the route).
+  - S0's part name booked in the lead's file: `trackPathsPartNameO2` 0 B (`design-extension-parts.js` is in no client
+    bundle; the boundary's copy, `stampTracked` and `settle` are server-only), with the build it was measured on.
+  - The consistency check of item 1 on this build: 3,230,605 - 3,229,840 = 765 = wp2 325 + wp9a 342 + the lead 0, plus
+    the pool 98 (wp9a's 34 + 64) + 0 (the lead's): S0 block "O1" green; wp2's block `size` and S1.10 green.
+  - Restated: **wp9a's own bytes 342 B of its 500 B, 158 B left**; the shared pool's bytes on the route 98 B (wp9a's
+    file) + 0 B (the lead's file), so of the pool of the seven later packages (1,656 B after H1) 1,558 B are left, as
+    ruling N1 states.
+
+State: item 5 in progress. Measured before any change (`node build.mjs` on `5cae40a`): chapters route 3,230,605 B,
 projects 507,338 B, 148 script files, buckets 53/50/45, stylesheet 901,873 B, no violation.
 
 ## Second fix-up (after the verifier; the lead's rulings M1 to M9, with K and L)
