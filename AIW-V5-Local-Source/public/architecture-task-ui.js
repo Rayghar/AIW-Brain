@@ -19,6 +19,8 @@ import {timeHTML} from './format.js';
 // The design package of applied mechanisms is held in this lazy entry (rc44, wp2 slice S1; the lead's ruling D7.6):
 // it registers when this module arrives, and its route stub loads this entry for a document that holds adoptions.
 import './adoption-package.js';
+// The selection's surface (rc44, wp2 slice S5) is held here too; the library chooser opens it through this entry.
+export {openSelection} from './adoption-ui.js';
 
 const B=(action,label,cls='',attrs='')=>`<button type="button" class="btn ${cls}" data-arc-action="${action}" ${attrs}>${label}</button>`;
 let projectId='',taskId='',answers={},revision=0,mode='conditions',optionId='request-reply',dirty=false,busy=false,error='',reqId='',driverId='',hooks=null,pending=null,sourceReviewer='',sourceReason='',sourceConfirmed=false;let entryTopic='interaction',entrySelection='',readCase='normal',measurementDraft={},measurementDirty=false;
