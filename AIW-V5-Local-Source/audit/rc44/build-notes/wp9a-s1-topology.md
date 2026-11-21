@@ -55,7 +55,20 @@ item started from, then the change. (Work in progress; this section is completed
   is schema v3 (`ownBytes`, `sharedPoolBytes`; `booked` gone). The four rc44 suites on this head: see the commit.
   Not changed: wp2's `--measure` still writes the whole growth as wp2's `delta`, so it is to be run at wp2's own head
   only (on a merged head its own check `measured == size.slice` fails, so it cannot pass unnoticed).
-- **Item 5, M5:** in progress.
+- **Item 5, M5:** done.
+  - The package's share of the lazy entry of the Chapter 10 Model view, set from the measurement on this head against
+    the adoption record's entry (a4c1690 adds 833,120 B beside the route; this head 855,612 B): **22,492 B**, itemised
+    by module from the entry's script: `topology-domain.js` 20,843, `topology.js` 1,431, the four empty parts 10 each,
+    and the script's import and export lists with the rest of the closure 178. S1.10 pins each module's bytes of this
+    build to those figures (every run, not only with `--measure`), records them in the evidence, and holds the share at
+    most 22,492 B. Old -> new: `w.added - BASE_OPENS.added < 25000` (loosened from `< 20000` by the first fix-up without
+    record; against the base's entry) -> the itemised modules exact and the share `<= 22492` against the adoption
+    record's entry. Seen to fail first: the evidence held no share.
+  - S1.7 calls `assertBuiltInChainsUnchanged` unconditionally (old: only `if (typeof … === 'function')`).
+  - S1.14 matches the exact sentence ("FD-nnn cannot come back yet: FD-mmm, which it lies in, is not standing in the
+    design. Restore it first, or bring FD-nnn back elsewhere."), both refs read from the document that holds the
+    records (old: `/FD-/i`, the parent's ref read from a document that did not hold it).
+- **Item 6, M6:** in progress.
 
 ## Fix-up (after the adversarial review; the lead's rulings L1 to L11, K1, K2, K6, and K7 to K9 since)
 

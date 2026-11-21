@@ -75,6 +75,24 @@
    "total": 4062884,
    "files": 12
   },
+  "atTheAdoptionRecord": {
+   "route": 3230165,
+   "added": 833120,
+   "total": 4063285,
+   "files": 12
+  },
+  "packageShare": {
+   "modules": {
+    "public/topology-blueprints.js": 10,
+    "public/topology-domain.js": 20843,
+    "public/topology-failures.js": 10,
+    "public/topology-fallback.js": 10,
+    "public/topology-gates.js": 10,
+    "public/topology.js": 1431
+   },
+   "lists": 178,
+   "total": 22492
+  },
   "note": "A document that holds the marker runtime.topology also loads the lazy entry of the Chapter 10 Model view, which holds the package, before it is first drawn: the route and the static closure of that entry, each script counted once."
  }
 }

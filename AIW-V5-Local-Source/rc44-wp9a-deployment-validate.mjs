@@ -483,7 +483,9 @@ await block('S1.7 the trace', () => {
   // package's records gives: a zone's node or failure domain is no way between two built-in records. The helper comes
   // with the adoption record's follow-up (rc44/wp2-s1-lead at ec0cd3c), which this branch does not hold yet: held there
   // on a trial merge (8c6237d), and here once the lead merges it.
-  if (typeof R.assertBuiltInChainsUnchanged === 'function') assert.ok(R.assertBuiltInChainsUnchanged(base, p) > 0);
+  // (rulings K8 and M5; was: called only when the helper existed, so it was skipped until the adoption record's follow-up was merged) unconditional:
+  // the chains that explain pairs of built-in records, and the built-in records of every record's trace, are the ones the untyped design gives
+  assert.ok(R.assertBuiltInChainsUnchanged(base, p) > 0, 'the package\'s records move no chain between built-in records (ruling K8)');
   assert.deepEqual(kernel.TRACE_LAYERS.slice(kernel.BUILT_IN_LAYERS.length).filter(l => ['node', 'domain'].includes(l)), ['node', 'domain'], 'its layers follow the built-in ones, node before domain');
   assert.equal(kernel.requirementTrace(base, I.requirement).layers.node, undefined, 'a trail without such a record lists no such layer');
   // the connected model has the issues it had (ruling J2): every relation the package states is between records that exist
@@ -708,8 +710,11 @@ await block('S1.14 nothing left naming what is not there', async () => {
     // failure domains likewise: not under a domain that is not standing, nor deeper than six
     let e = doc(p, 'technology.domain', {title: 'Site D', scope: 'site', cause: 'location'}); const top = e.technology.domains.at(-1).id;
     e = doc(e, 'technology.domain', {title: 'Room D', scope: 'node', cause: 'location', parentId: top}); const room = e.technology.domains.at(-1).id;
+    // (ruling M5; was: matched by /FD-/i only, because the parent's ref was read from a document that does not hold it) the exact sentence, each ref
+    // read from the document that holds the record
+    const [roomRef, topRef] = [domainOf(e, room).ref, domainOf(e, top).ref]; assert.ok(/^FD-\d{3}$/.test(roomRef) && /^FD-\d{3}$/.test(topRef) && roomRef !== topRef);
     e = doc(doc(e, 'record.retire', {id: room, chapter: 6, reason: 'Moved out for a while.'}), 'record.retire', {id: top, chapter: 6, reason: 'Moved out for a while.'});
-    refuses(e, 'record.restore', {id: room, chapter: 6}, new RegExp(domainOf(p, top)?.ref || 'FD-', 'i'), 'a domain is not restored under a domain that is not there'); }
+    refuses(e, 'record.restore', {id: room, chapter: 6}, new RegExp('^' + roomRef + ' cannot come back yet: ' + topRef + ', which it lies in, is not standing in the design\\. Restore it first, or bring ' + roomRef + ' back elsewhere\\.$'), 'a domain is not restored under a domain that is not there'); }
   pass('S1.14: after a batch that retires the plans, the zone, the node and the domain only it names and restores the zone and the plans, by a person and by an agent account, no zone or placement names a record that is not there and what was dropped is journalled; a zone made and located in one commit has its location journalled; a node is not restored while its parent or its failure domain is not standing, nor into a ninth level, and a domain not under a domain that is not there');
 });
 
@@ -1124,6 +1129,11 @@ const ITEMISED = {stubWithItsImport: 105, failureDomainKeyH1: 21, restoreRuleRea
 const SHARED_POOL = {baselineDefectFmtL10: ITEMISED.baselineDefectFmtL10, designRowChapterKeysL5: ITEMISED.designRowChapterKeysL5};
 // What the same lazy entry added to the route at the base, before it held the package (opensWithRecords on the base's build).
 const BASE_OPENS = {route: 3229840, added: 833044, total: 4062884, files: 12};
+// (ruling M5) What it adds at the adoption record (opensWithRecords on a4c1690's build), and the package's share of it, set
+// from the measurement and itemised by module: each module's bytes in the entry's script (bytesInOutput), and the
+// script's import and export lists with the rest of the entry's closure (lists). The figures are in the notes.
+const ADOPTION_OPENS = {route: 3230165, added: 833120, total: 4063285, files: 12};
+const LAZY_SHARE = {modules: {'public/topology-blueprints.js': 10, 'public/topology-domain.js': 20843, 'public/topology-failures.js': 10, 'public/topology-fallback.js': 10, 'public/topology-gates.js': 10, 'public/topology.js': 1431}, lists: 178, total: 22492};
 await block('S1.10 the client build', async () => {
   need();
   const {bundleClient, BUDGET} = await import('./client-bundle.mjs');
@@ -1148,7 +1158,7 @@ await block('S1.10 the client build', async () => {
     fromIntegrated: measured.chapters - BASE.chapters, fromAdoption, projectsFromAdoption: measured.projects - ADOPTION.projects, headroomAfter: BUDGET.routes.chapters - measured.chapters,
     itemised: ITEMISED, ownBytes: fromAdoption - Object.values(SHARED_POOL).reduce((n, x) => n + x, 0), sharedPoolBytes: SHARED_POOL, registryOnceK6: 'in the adoption record\'s figure (its stub brought registerExtension onto the route; wp2\'s evidence records it in its delta)',
     onRoute: 'Against the adoption record as closed (a4c1690): the route stub with its import of registerExtension in design-package-routes.js (105 B); failureDomainKey reads the typed domain (runtime-model.js, H1, 21 B); the lifecycle reads a package\'s restore rule (record-lifecycle.js, L3, 47 B); S0\'s design row takes chapter.key (review-domain.js reviewSource, L5 and L6, 64 B, the shared pool\'s by M8); simulateRuntime reads the typed domain (runtime-domain.js, H4 of L7, -10 B) and the Chapter 10 Model view keys a zone by it (deploy-model.js, H15 of L7, -5 B); alias and import shifts of the route outputs whose imports and exports moved (88 B: the outputs\' import and export lists, with +3, -1 and -2 B in composition-design.js, model-impact.js and architecture-design.js); the definition of fmt in technology-domain.js that patchLinks named and the module lacked since rc.10.73.42 (L10, 34 B, the shared pool\'s). registerExtension itself reached the route with the adoption record\'s stub (K6: 110 to 123 B, measured by two reviewers; in the adoption record\'s figure).',
-    'opens with records': {gate: 'The chapters-route gate is unchanged and measures opening a document that holds no package records (ruling D10 of 2026-11-18).', host: HOST, ...opens, beforeThePackage: BASE_OPENS, note: 'A document that holds the marker runtime.topology also loads the lazy entry of the Chapter 10 Model view, which holds the package, before it is first drawn: the route and the static closure of that entry, each script counted once.'}}, null, 1) + '\n'); }
+    'opens with records': {gate: 'The chapters-route gate is unchanged and measures opening a document that holds no package records (ruling D10 of 2026-11-18).', host: HOST, ...opens, beforeThePackage: BASE_OPENS, atTheAdoptionRecord: ADOPTION_OPENS, packageShare: LAZY_SHARE, note: 'A document that holds the marker runtime.topology also loads the lazy entry of the Chapter 10 Model view, which holds the package, before it is first drawn: the route and the static closure of that entry, each script counted once.'}}, null, 1) + '\n'); }
   assert.ok(existsSync(EVIDENCE), 'the slice\'s measurement is kept (node rc44-wp9a-deployment-validate.mjs --measure)');
   const size = JSON.parse(readFileSync(EVIDENCE, 'utf8'));
   assert.deepEqual([size.bases.integrated, size.bases.adoption, size.itemised], [BASE, ADOPTION, ITEMISED]); assert.equal(size.fromIntegrated, size.slice.chapters - BASE.chapters); assert.equal(size.fromAdoption, size.slice.chapters - ADOPTION.chapters);
@@ -1170,7 +1180,14 @@ await block('S1.10 the client build', async () => {
   assert.deepEqual([size.slice.scripts, size.slice.under10k, size.slice.css], [148, BASE.under10k, BASE.css], '148 script files, no new file under 10 KB, no stylesheet rule');
   assert.ok(size.slice.chapters <= BUDGET.routes.chapters); assert.equal(size.allowance.chapters, 500);
   { const w = size['opens with records']; assert.ok(w && w.host === HOST && w.total === w.route + w.added && w.route === size.slice.chapters && w.files > 0, 'the size file says what a document with the package\'s records opens with');
-    assert.deepEqual(w.beforeThePackage, BASE_OPENS); assert.equal(w.files, BASE_OPENS.files, 'the package adds no script to what the entry loads'); assert.ok(w.added - BASE_OPENS.added < 25000, 'the package itself is ' + (w.added - BASE_OPENS.added) + ' B of what the entry adds'); }
+    assert.deepEqual(w.beforeThePackage, BASE_OPENS); assert.equal(w.files, BASE_OPENS.files, 'the package adds no script to what the entry loads');
+    // (ruling M5; was: "the package itself is under 25,000 B of what the entry adds" against the base's entry, loosened from 20,000 B without record) set
+    // from the measurement, itemised by module: the evidence records the share and its items, each module of this build's entry script is as measured,
+    // and the share, in the evidence and in this build, is no more than the measured total
+    assert.deepEqual([w.atTheAdoptionRecord, w.packageShare], [ADOPTION_OPENS, LAZY_SHARE], 'the evidence records the measured share'); assert.equal(Object.values(LAZY_SHARE.modules).reduce((n, x) => n + x, 0) + LAZY_SHARE.lists, LAZY_SHARE.total);
+    assert.ok(w.added - ADOPTION_OPENS.added <= LAZY_SHARE.total, 'the package is ' + (w.added - ADOPTION_OPENS.added) + ' B of what the entry adds, at most ' + LAZY_SHARE.total); }
+  { const live = Object.fromEntries(Object.entries(meta.outputs[holders[0]].inputs).filter(([i]) => /^public\/topology(-[a-z]+)?\.js$/.test(i)).map(([i, x]) => [i, x.bytesInOutput]).sort(([a], [b]) => a < b ? -1 : 1));
+    assert.deepEqual(live, LAZY_SHARE.modules, 'each module of the package in the entry\'s script is as measured'); assert.ok(opens.added - ADOPTION_OPENS.added <= LAZY_SHARE.total, 'this build: the package is ' + (opens.added - ADOPTION_OPENS.added) + ' B of what the entry adds, at most ' + LAZY_SHARE.total); }
   if (process.argv.includes('--measure')) assert.deepEqual(measured, size.slice, 'at the slice\'s commit the build measures what the evidence says');
   pass('S1.10: the client build passes every gate with the caps unchanged; the chapters route is ' + size.slice.chapters + ' B of ' + BUDGET.routes.chapters + ' (+' + size.fromIntegrated + ' B against ' + BASE.commit + ', +' + size.fromAdoption + ' B against the adoption record ' + ADOPTION.commit + '); wp9a\'s own ' + size.ownBytes + ' B of its 500 B (this build: ' + mine + ' B once the other packages\' own bytes and the shared pool\'s are taken out, ruling M4), the shared pool\'s ' + JSON.stringify(size.sharedPoolBytes) + ' booked apart; 148 script files, ' + size.slice.under10k + ' under 10 KB; opens with records: ' + size['opens with records'].total + ' B (' + size['opens with records'].added + ' B in ' + size['opens with records'].files + ' more scripts); this build: ' + measured.chapters + ' B');
 });
