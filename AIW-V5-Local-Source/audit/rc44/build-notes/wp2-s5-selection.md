@@ -12,7 +12,8 @@ is S1's second-person step.
 
 - **Done:** the selection module and its five steps, the registration rows, the built-in edits, the parity of row 9,
   the SDD's selection basis, the surface, the size evidence, the 13 blocks of `rc44-wp2-adoption-cases/selection.mjs`
-  (all green; each seen to fail on the base first), S1's suite green with three assertions replaced (below).
+  (all green; each seen to fail on the base first), S1's suite green with three assertions replaced (below), the
+  related suites (below).
 - **In progress:** nothing.
 - **Next (for the lead):** the open questions below; the review of the slice.
 
@@ -153,9 +154,20 @@ Itemised (route outputs, metafiles of both builds): `decision-reading.js` +17, `
 `architecture-design.js` +93 and its export +8. A first build measured +537 B (with the reviewed candidate path's edits
 and a builder of closures); see deviation 3.
 
-## Suites
+## Suites (run on the slice's head, two at a time, the machine shared)
 
-(filled at the end of the slice; see the final commit)
+- `test:rc44-wp2-adoption`: 33 blocks green (S1's 20, S5's 13). Each S5 block was seen to fail on the base first
+  (commit `9b37553`: all thirteen fail; the request is "Unknown project action.").
+- Named by the task, green: `component-library`, `rc42-g2-library`, `decisions`, `sdd-architecture`, `sdd-content`,
+  `sdd-formats`, `sdd-modules`, `sol-sdd`, `rc44-s0-extensions` (26 checks; with the package's S5 rows registered no
+  block fails), `rc44-wp9a-deployment` (24), `rc44-wp1-knowledge`.
+- Every other suite that imports a changed file (47 more): green, but for four red at the baseline and red the same way
+  on an archive of `5cae40a` run on this machine: `design-concern` (l.119, `QD-002` in the assessments),
+  `command-equivalence` (l.60), `contextual-intelligence-ui` (l.116), and `sdd-size` (the export timer: 11.8 s here,
+  12.0 s on the base, against 10 s).
+- `node check-syntax.mjs`: passes (940 modules). `node scripts/lint.mjs --summary`: 162 problems, the baseline's 162,
+  0 new. `node build.mjs`: every gate passes; chapters route 3,230,758 B, 148 scripts.
+- Not run: the full regression (the lead's), the browser suites (red at the baseline on this machine), `test:scale`.
 
 ## Open questions (for the lead)
 
