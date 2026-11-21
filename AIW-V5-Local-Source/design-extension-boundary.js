@@ -195,14 +195,15 @@ export function markPackages(prior, next, command) {
 const AUTHOR_FIELDS = ['actor', 'authorKind', 'reviewed', 'account', 'session', 'reason'];
 const eventsOf = p => (Array.isArray(p?.changes?.events) ? p.changes.events : []);
 function unstated(next, from) { for (const event of eventsOf(next).slice(from)) if (event && typeof event === 'object') for (const k of AUTHOR_FIELDS) delete event[k]; }
-// The records of a package's trackPaths in `p`, by id, each as a copy (in the order they stand, should an id stand twice).
-const tracked = (p, paths) => paths.map(path => { const out = new Map(); for (const r of listAt(p, path)) if (r && typeof r === 'object' && r.id != null) out.set(r.id, [...out.get(r.id) || [], structuredClone(r)]); return [path, out]; });
+// The records of a package's trackPaths in `p`, by id, each as a copy in its JSON text (a document is JSON; in the order
+// they stand, should an id stand twice), read back as a record only where a call changed it.
+const tracked = (p, paths) => paths.map(path => { const out = new Map(); for (const r of listAt(p, path)) if (r && typeof r === 'object' && r.id != null) out.set(r.id, [...out.get(r.id) || [], JSON.stringify(r)]); return [path, out]; });
 export function trackExtensions(prior, next, command, at, {author = null} = {}) {
   const inner = innerCommands(command);
   for (const c of inner.includes(command) ? inner : [command, ...inner]) for (const e of EXTENSIONS) if (typeof e.track === 'function') {
     const paths = Array.isArray(e.trackPaths) ? e.trackPaths.filter(x => typeof x === 'string') : [], before = tracked(next, paths), from = eventsOf(next).length;
     e.track(prior, next, c, at); unstated(next, from);
-    for (const [path, was] of before) for (const now of listAt(next, path)) if (now && typeof now === 'object' && now.id != null) { const old = was.get(now.id)?.shift(); if (!old || JSON.stringify(old) !== JSON.stringify(now)) stampTracked(old || null, now, author, at); }
+    for (const [path, was] of before) for (const now of listAt(next, path)) if (now && typeof now === 'object' && now.id != null) { const old = was.get(now.id)?.shift(); if (old === undefined) stampTracked(null, now, author, at); else if (old !== JSON.stringify(now)) stampTracked(JSON.parse(old), now, author, at); }
   }
 }
 // Whether a request of this type may be large (worker.js, beside LARGE_COMMAND_PREFIXES).
