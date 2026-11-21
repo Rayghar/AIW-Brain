@@ -393,3 +393,29 @@ seen to fail before its change (rulings K1 to K9).
 | K9 (b) | A status this build does not write reads "not a standing this build reads (…)". | "upgrade" |
 | K9 (c) | The upgrade mints no id a record of the document holds; the emitter states no adoption, and no relation, under an id another record holds. | "upgrade" |
 | notes | The three passages the verifier named are corrected above (J7 row, "What S2 inherits" 4, "What it moves"). | |
+
+### After the review of the lead's follow-up (2026-11-21)
+
+A reviewer read the lead's commits (35eeaed..ec28bd7): two must-fix, nine should-fix. Closed, cases first:
+
+| item | what | case |
+| --- | --- | --- |
+| must-fix 1 | A template that names a package this build does not register is copied as stored (no upgrade minted), as its read stores none. Seen to fail: three adoptions in the copy. | "template copy" |
+| must-fix 2 | The inherited-name check of `prefixes` runs in a child process holding the build's packages only; seen to fail on the old `builtInKind` in the suite's full run. | S0 "SF start check" |
+| K9 (b) | The step refusal says "not at a standing this build reads" too. | "upgrade" |
+| K9 (c) | An id a retired record holds is not minted. | "upgrade" |
+| K7 cost | What each record says is indexed once per document (`remember`). | |
+| K10 | What a bound record says to the tracker leaves out the readings it keeps of others (`sourceSnapshot`, `driverSnapshot`, `sourceDriverIds`, `sourceDecisionIds`), the review flag `assumptionsResolved` and where it is drawn (`col`, `row`, `x`, `y`). Where the earlier task stands, its own finding may still lapse an acceptance after such a change (K3a); in a copy without the task the acceptance stands. A re-scope of the bound component's allocation (`logical.mappings`) is not watched: S2, with the obligation readers. | "tracker" (with the task and in a copy) |
+| K1 robustness | The row is marked in its keys (`__upgrade_due`, skipped by `priorKeys`), so a route that copies the keys is held too. | S0 "2 command boundary" |
+| K1 coverage | Archive, restore and the template mark on a due row: taken, row as it was, upgrade still due. | S0 "2 command boundary" |
+| K8 helper | `assertBuiltInChainsUnchanged` also compares each record's trace on the built-in layers (the Model trace and the SDD journey line read those; only the Matrix reads `tracePath`); S0's synthetic package calls it, with two trespass cases. | S0 "1 record graph and trail" |
+| size | Re-measured: chapters route 3,230,165 B, wp2 325 B of 600 B (9 B for the follow-up), 3,627 B left; opens with records 3,325,829 B. | "size" |
+
+Known, by reading, not by a case: the background jobs that save (a draft's apply, a freeze) answer a due row as a
+failed job carrying the reload words, not as the browser's 409; the signed-notice, repository sync and transfer saves
+store the row as it was, since they do not upgrade. A new project (a template copy, a recovery import) gets a
+package's upgrade when it is made: there is no earlier row to recover. The command route keeps its early check
+(`upgradeDueRefusal` in worker.js) so that a command is not run only to be refused by the writer: one rule, read
+twice, not an old path beside a new one. When another record holds an adoption's id (only a hand-made or foreign
+document; the upgrade no longer mints such an id), the adoption is no object of the record graph and its task is not
+emitted either: the reading still names it. No case.

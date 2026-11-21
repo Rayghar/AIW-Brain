@@ -17,7 +17,6 @@ const knowledgePrefix=(owner,projectId)=>'knowledge/'+encodeURIComponent(owner)+
 // by a later save once SWEEP_GRACE_MS has passed, so a read that already holds the old reference still completes.
 export const SEGMENT_EVENTS=25,SEGMENT_BYTES=512*1024,SWEEP_GRACE_MS=10*60*1000;
 const put=(env,key,bytes)=>env.FILES.put(key,bytes,{httpMetadata:{contentType:'application/json'}});
-const UPGRADE_DUE_ROWS=new WeakSet();
 export async function readStoredProject(env,owner,serialized){
   const document=JSON.parse(serialized),keys=new Map();
   if(document.storageSweep){keys.set('__sweep',document.storageSweep);delete document.storageSweep;}
@@ -103,9 +102,9 @@ export async function readStoredProject(env,owner,serialized){
     }));
     keys.set('__baseline_parts',parts);
   }
-  // A row a design package must upgrade (rc44; the lead's ruling K1): remembered with its keys, which every save hands
-  // back, so that the writer knows the row it replaces (saveStoredProject).
-  if(extensionUpgradeNeeded(document))UPGRADE_DUE_ROWS.add(keys);
+  // A row a design package must upgrade (rc44; the lead's ruling K1): marked in its keys, which every save hands back
+  // (a copy of them too), so that the writer knows the row it replaces (saveStoredProject). The mark is no object.
+  if(extensionUpgradeNeeded(document))keys.set('__upgrade_due',true);
   return {document,keys};
 }
 
@@ -311,7 +310,7 @@ export function priorKeys(keys){
   for(const [name,value] of keys){
     // A frozen baseline's entry as read ('baseline:'+id) and the parts it names are no objects a save replaces: parts are
     // shared by their SHA-256 and never swept.
-    if(name==='__sweep'||name==='__requirement_index'||name==='__retained'||name==='__baseline_parts'||name.startsWith('baseline:'))continue;
+    if(name==='__sweep'||name==='__upgrade_due'||name==='__requirement_index'||name==='__retained'||name==='__baseline_parts'||name.startsWith('baseline:'))continue;
     if(typeof value==='string')out.add(value);
     else if(name==='__requirement_parts')for(const kind of ['artefacts','relationships'])for(const part of value[kind]||[])out.add(part.key);
     else if(value?.segments){for(const s of value.segments)out.add(s.key);if(value.head)out.add(value.head.key);for(const a of value.archive||[])out.add(a.key);}
@@ -359,7 +358,7 @@ export async function saveStoredProject(env,owner,projectId,document,revision,at
   // refused with a reload, whichever route asks; a save that leaves the upgrade due (a rename, a signed notice applied
   // before the read) is taken, and the read that follows stores the upgrade. Without object storage a read stores no
   // upgrade and no recovery point exists, so there the save goes on as it did on rc.10.73.42.
-  if(env.FILES&&!keepPrior&&UPGRADE_DUE_ROWS.has(keys)&&!extensionUpgradeNeeded(document))throw upgradeDueError();
+  if(env.FILES&&!keepPrior&&keys?.get?.('__upgrade_due')===true&&!extensionUpgradeNeeded(document))throw upgradeDueError();
   const stored={...document,finalReview:{...document.finalReview}},created=[];delete stored.storageSweep;delete stored.storageRetained;
   await writeRequirements(env,owner,projectId,document,stored,keys,created);
   const extensions={...Object.fromEntries(['workbench','assurance','guidance','intake'].filter(k=>document[k]).map(k=>[k,document[k]]))};

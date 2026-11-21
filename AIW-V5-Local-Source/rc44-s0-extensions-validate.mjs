@@ -398,10 +398,14 @@ await block('1 record graph and trail', () => {
   // package could put a record on a built-in trail: add() with a built-in type that stands on a layer, and a relation
   // of a type a built-in hop reads between two built-in records.
   assert.ok(assertBuiltInTrailsUnchanged(p0, p) > 0); assert.ok(assertFindingIdsUnique(p) > 0);
+  // (the lead's ruling K8) and the chains that explain pairs of built-in records, and the built-in records of every record's trace, are the ones p0 gives
+  assert.ok(R.assertBuiltInChainsUnchanged(p0, p) > 0, 'the synthetic package\'s records move no chain between built-in records');
   { const reqs = reviewRequirements(p0), last = p0.realisation.components.at(-1), off = reqs.find(r => !kernel.requirementSpine(p0, r.id).has(last.id));
     X.registerExtension({id: 'ab-trespass', records(q, add, rel) { if (q.trespass === 'type') { add({id: 'CMP-FAKE', ref: 'CMP-FAKE', title: 'A package\'s record of a built-in type'}, 'component', 'trespass.records.CMP-FAKE'); rel('fulfils', reqs[0].id, 'CMP-FAKE', {source: 'trespass.records.requirementIds'}); } if (q.trespass === 'relation' && off) rel('fulfils', off.id, last.id, {source: 'trespass.records.requirementIds'}); }});
     assert.throws(() => assertBuiltInTrailsUnchanged(p0, withFinalReview({...p0, trespass: 'type'})), /moved on the built-in layer “component”/, 'a package\'s record of a built-in type on a built-in layer is caught');
     if (off) assert.throws(() => assertBuiltInTrailsUnchanged(p0, withFinalReview({...p0, trespass: 'relation'})), /moved on the built-in layer “component”/, 'and so is a relation a built-in hop reads between two built-in records');
+    if (off) assert.throws(() => R.assertBuiltInChainsUnchanged(p0, withFinalReview({...p0, trespass: 'relation'})), /moved/, 'a relation between two built-in records is caught by the chains helper too');
+    assert.throws(() => R.assertBuiltInChainsUnchanged(p0, withFinalReview({...p0, trespass: 'type'})), /moved/, 'and so is a package\'s record of a built-in type');
     assert.ok(assertBuiltInTrailsUnchanged(p0, withFinalReview({...p0, trespass: ''})) > 0); }
   try { forge = 'finding'; assert.throws(() => assertFindingIdsUnique(withFinalReview(withSynthetic(p, {title: 'Unbound'}))), /Two findings share the id “C3:synthetic-unbound:SYN-003”/); } finally { forge = ''; }
   // should-fix 8: a package's hops cost a document nothing while it holds no record of the layer's type: the walk
@@ -556,13 +560,20 @@ await block('2 command boundary', async () => {
           { const res = await api('/api/operations' + q, 'POST', {action: 'policy', revision: due.revision, enabled: true, hourlyRequests: 10, dailyTokens: 1000, excludedObjectIds: [], reason: 'Budget for the pilot.'}, A), body = await res.json();
             assert.equal(res.status, 409, 'POST /api/operations on a row whose package upgrade is due is answered with a reload: ' + res.status + ' ' + JSON.stringify(body).slice(0, 200)); assert.equal(body.conflict, true); assert.equal(body.code, 'conflict'); assert.match(body.error, /earlier build of AIW.*Reload the latest project/); }
           { const now = await rowNow(); assert.equal(now.revision, due.revision, 'nothing was stored'); assert.equal(now.document, due.document); assert.equal(points(), before); assert.equal(await storageRows(), rowsBefore); }
+          // the rule does not depend on which Map object a route hands back: a copy of the keys it read is the same row (the reviewer of the lead's follow-up)
+          { let copied = null; try { await saveStoredProject(env, A, pid, upgraded, due.revision, '2026-10-06T09:06:00.000Z', new Map(read.keys)); } catch (e) { copied = e; } assert.ok(copied?.upgradeDue, 'a save with a copy of the keys is refused too'); }
           // a save that leaves the upgrade due is taken: the owner renames the project from the list, before anyone opened it on this build
           { const res = await api('/api/lifecycle' + q, 'POST', {action: 'rename', name: 'Renamed before it was opened', revision: due.revision}, A), body = await res.json(); assert.equal(res.status, 200, 'a rename is taken: ' + JSON.stringify(body).slice(0, 200));
             const now = await rowNow(), kept = await readStoredProject(env, A, now.document); assert.equal(now.revision, due.revision + 1); assert.equal(kept.document.name, 'Renamed before it was opened');
             assert.deepEqual(kept.document.legacySynthetic, ['Kept from an old document'], 'the row is stored as it was but for the name and the log: the upgrade is not stored with the rename'); assert.equal(storageUpgradeNeeded(kept), true, 'and is still due');
             assert.equal(points(), before, 'no recovery point is owed for it'); assert.equal(await storageRows(), rowsBefore, 'and no storage upgrade is recorded');
             assert.deepEqual(body.document.synthetic?.records?.map(x => x.title), ['Kept from an old document'], 'the answer shows the project as this build reads it'); assert.equal(body.revision, now.revision);
-            Object.assign(due, now); } }
+            Object.assign(due, now); }
+          // archive, restore from the archive and the template mark: each taken, each stores the row as it was, the upgrade stays due
+          for (const body of [{action: 'archive'}, {action: 'restore'}, {action: 'template', enabled: true}, {action: 'template', enabled: false}]) {
+            const res = await api('/api/lifecycle' + q, 'POST', {...body, revision: due.revision}, A); assert.equal(res.status, 200, JSON.stringify(body) + ' is taken: ' + res.status);
+            const now = await rowNow(), kept = await readStoredProject(env, A, now.document); assert.equal(now.revision, due.revision + 1); assert.deepEqual(kept.document.legacySynthetic, ['Kept from an old document'], JSON.stringify(body) + ' stores no upgrade'); assert.equal(storageUpgradeNeeded(kept), true);
+            assert.equal(points(), before); assert.equal(await storageRows(), rowsBefore); Object.assign(due, now); } }
         Object.assign(row, due); Object.assign(stored, await readStoredProject(env, A, due.document)); assert.equal(storageUpgradeNeeded(stored), true); }
       const saved = await storeStorageUpgrade(env, {owner: A, actor: A, role: 'owner'}, pid, row, stored, withFinalReview(stored.document)); assert.ok(saved, 'the upgraded document is stored');
       const events = (await env.DB.prepare('SELECT document FROM project_activity WHERE owner_id=? AND project_id=?').bind(A, pid).all()).results.map(r => JSON.parse(r.document)).filter(e => e.kind === 'storage');
@@ -1077,7 +1088,11 @@ await block('SF start check', () => {
   assert.ok(has({id: 'xy', prefixes: {actor: 'XAC'}}, /prefixes: “actor” is a type of Chapter 1 records/)); assert.ok(has({id: 'xy', prefixes: {nosuch: 'XNS'}}, /prefixes: “nosuch” is no built-in object type/));
   assert.ok(has({id: 'xy', objectTypes: kind('XY'), prefixes: {xy: 'XYZ'}}, /prefixes: “xy” is the package.s own type: its prefix is stated with the type/));
   // (the verifier of wp2 S1) a name every object inherits is no built-in object type
-  for (const type of ['constructor', 'toString', 'hasOwnProperty', '__proto__', 'valueOf']) assert.ok(has({id: 'xy', prefixes: JSON.parse('{"' + type + '":"XCN"}')}, /is no built-in object type/), 'prefixes: the inherited name “' + type + '” is refused');
+  // It is read in a process where only the build's packages are registered (the reviewer of the lead's follow-up): once a package that states objectTypes is
+  // registered, an inherited name compares equal to the registry's and the check passes for the wrong reason.
+  { const r = spawnSync(process.execPath, ['--input-type=module', '-e', 'await import("./worker.js"); const b = await import("./design-extension-boundary.js"); const {EXTENSIONS} = await import("./public/design-extensions.js"); console.log(JSON.stringify({stated: EXTENSIONS.filter(e => e.objectTypes && Object.keys(e.objectTypes).length).map(e => e.id), issues: ["constructor", "toString", "hasOwnProperty", "__proto__", "valueOf"].map(t => b.extensionIssues({id: "xy", prefixes: JSON.parse("{\\"" + t + "\\":\\"XCN\\"}")}).some(i => /is no built-in object type/.test(i)))}));'], {encoding: 'utf8', cwd: process.cwd(), env: {...process.env, AIW_QUIET: '1'}, maxBuffer: 1 << 24});
+    assert.equal(r.status, 0, 'inherited-name probe: ' + r.stderr.slice(0, 400)); const out = JSON.parse(r.stdout.trim().split('\n').filter(l => l.startsWith('{"stated"')).at(-1));
+    assert.ok(!out.stated.some(id => /^(?:zz|mm|aa|ab|zzz)-/.test(id)), 'no synthetic package is registered in the probe: ' + out.stated); assert.deepEqual(out.issues, [true, true, true, true, true], 'prefixes: an inherited name is refused in a process with the build\'s packages only'); }
   const retired = ['technology.keep-seed', 'technology.dismiss-seed', 'technology.restore-seed', 'interfaces.keep-seed', 'interfaces.dismiss-seed', 'interfaces.restore-seed', 'interfaces.remove-contract', 'runtime.keep-seed', 'runtime.dismiss-seed', 'runtime.restore-seed', 'runtime.remove-plan', 'runtime.remove-path'];
   for (const type of retired) { assert.ok(canonical.isRetiredCommand(type)); assert.equal(boundary.builtInType(type), true, type + ' is a retired name the workbench still reads'); assert.ok(has({id: 'xy', commands: {[type]: {apply() {}}}}, /is built in/)); }
   // before the server has said which types are built in, none is free (a package's command is then unknown, never applied)

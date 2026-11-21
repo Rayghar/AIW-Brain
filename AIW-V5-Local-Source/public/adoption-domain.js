@@ -146,7 +146,11 @@ const TYPE_PATHS={component:['realisation.components','logical.assets']};
 // Everything the document keeps under an id, as the tracker compares it (ruling K7): a component an applied design
 // created is kept twice, under logical.assets and under realisation.components, and a change of either is a change of
 // the bound record. Each record with the path that holds it, so that a twin that left one list is a change too.
-const recordSays=(p,id)=>COLLECTIONS.flatMap(([path])=>listAt(p,path).filter(r=>r?.id===id).map(r=>path+content(r))).join('\n');
+// What a record says to the tracker (ruling K10): its content less the readings it keeps of others (record-lifecycle's
+// list), the review flags a person sets on it and where it is drawn. Indexed once per document.
+const NOT_SAID=new Set(['sourceSnapshot','driverSnapshot','sourceDriverIds','sourceDecisionIds','assumptionsResolved','col','row','x','y']);
+const says=r=>content(Object.fromEntries(Object.entries(r||{}).filter(([k])=>!NOT_SAID.has(k))));
+const recordSays=(p,id)=>remember(p,'adoption:says','',()=>{const m=new Map();for(const [path] of COLLECTIONS)for(const r of listAt(p,path))if(r?.id!=null)m.set(r.id,(m.get(r.id)||'')+path+says(r)+'\n');return m;}).get(id)||'';
 const CONSIDERED=Object.freeze(['recorded facts','bound records and their relations','declared parameters']),NOT_CONSIDERED=Object.freeze(['runtime behaviour','implementation code','measured load','observed operation']);
 function read(p,a){
  const snapshot=a.definition?.snapshot||{},index=recordIndex(p),retired=new Set(list(p?.retired?.records).map(x=>x?.id)),live=applied(a),definition=definitionOf(p,a),source=live?basisFinding(p,a):null;
@@ -235,7 +239,7 @@ export function applyAdoptionCommand(p,command,at,actor,options={}){
  if(!['adoption.reassess','adoption.accept','adoption.deviation'].includes(type))throw Error('Unknown adoption action.');
  if(!a)throw Error('Choose an adoption.');
  if(raw.revision!==a.revision)throw Error('This adoption changed. Reopen it; your input is retained.');
- if(!applied(a))throw Error(a.id+' is '+a.status+': it takes no further step.');
+ if(!applied(a))throw Error(STATUSES.includes(a.status)?a.id+' is '+a.status+': it takes no further step.':a.id+' is not at a standing this build reads (“'+String(a.status).slice(0,40)+'”): it takes no step.');
  nameApplier(p,a);
  const changed=()=>{a.revision++;a.confirmed=false;};
  if(type==='adoption.reassess'){

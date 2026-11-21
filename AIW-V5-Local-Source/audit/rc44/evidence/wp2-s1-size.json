@@ -1,6 +1,6 @@
 {
  "schema": "aiw.rc44.slice-size.v1",
- "name": "wp2 S1 the adoption record, after its fix-up",
+ "name": "wp2 S1 the adoption record, after its fix-up and the lead's follow-up (rulings K1 to K10)",
  "measuredWith": "client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)",
  "allowance": {
   "chapters": 600,
@@ -22,15 +22,15 @@
   "measured": "node build.mjs on an archive of the commit, 2026-11-19"
  },
  "slice": {
-  "chapters": 3230156,
+  "chapters": 3230165,
   "projects": 507069,
   "scripts": 148,
   "under10k": 53,
   "css": 901873
  },
- "delta": 316,
+ "delta": 325,
  "projectsDelta": 240,
- "headroomAfter": 3636,
+ "headroomAfter": 3627,
  "firstBuild": {
   "commit": "13a72c2",
   "delta": 304,
@@ -39,9 +39,9 @@
  "opens with records": {
   "gate": "The chapters-route gate measures opening a document that holds no package records (ruling D10).",
   "host": "public/architecture-task-ui.js",
-  "route": 3230156,
-  "added": 95018,
-  "total": 3325174,
+  "route": 3230165,
+  "added": 95664,
+  "total": 3325829,
   "files": 2,
   "before": {
    "route": 3229775,

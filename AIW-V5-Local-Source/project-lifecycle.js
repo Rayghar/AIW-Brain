@@ -11,7 +11,7 @@ export function instantiateTemplate(source,id,name,at){
  // A template row an earlier build stored, whose design package upgrade is due, is copied as the read that opens it
  // would store it (the lead's ruling K2 of 2026-11-20): a copy is the same whether or not anyone opened the template
  // on this build first. A template no package must upgrade is copied as it is stored, as on rc.10.73.42.
- if(extensionUpgradeNeeded(source))source=withFinalReview(source);
+ if(!missingPackages(source).length&&extensionUpgradeNeeded(source))source=withFinalReview(source);
  const p=structuredClone(source),packages=source.workspace?.packages;p.id=id;p.name=name;p.workspace={template:'custom',createdAt:at,templateOrigin:{projectId:source.id,name:source.name,at},status:'active',...(Array.isArray(packages)&&packages.length?{packages:[...packages]}:{})};
  for(const key of ['intake','assurance','guidance','knowledge','changes','modelAlternatives','coauthoring','requirementsStorage','collaborationEvidence'])delete p[key];
  // Every review, confirmation and person's declaration is reset, a retired copy's too: a contract's 'read-only, safe to

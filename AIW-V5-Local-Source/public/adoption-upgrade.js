@@ -82,8 +82,8 @@ function fromTask(p,t,id,typeOf){
 export function upgradeAdoptions(p){
  if(!needsAdoptionUpgrade(p))return p;
  const tasks=p.coauthoring.designTasks.map(t=>due(p,t)?{...t}:t),held=plain(p.adoptions)?p.adoptions:null,typeOf=typeReader(p);
- // The ids the document's records hold (an id is minted only once nothing holds it).
- let ids=null;const taken=id=>(ids??=new Set(COLLECTIONS.flatMap(([path])=>{const [k,l]=path.split('.'),v=l?p?.[k]?.[l]:p?.[k];return list(v).map(x=>x?.id);}))).has(id);
+ // The ids the document's records hold, a retired record's too (an id is minted only once nothing holds it).
+ let ids=null;const taken=id=>(ids??=new Set(COLLECTIONS.flatMap(([path])=>{const [k,l]=path.split('.'),v=l?p?.[k]?.[l]:p?.[k];return list(v).map(x=>x?.id);}).concat(list(p?.retired?.records).map(x=>x?.id)))).has(id);
  const adoptions={schemaVersion:1,definition:ADOPTION_DEFINITION,counter:0,version:0,...held,records:[...list(held?.records)]};
  for(const t of tasks)if(due(p,t)){
   // a task that lost its pointer is linked again to the adoption written from it; one whose adoption is gone is upgraded again
