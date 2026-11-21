@@ -65,8 +65,8 @@
   "gate": "The chapters-route gate is unchanged and measures opening a document that holds no package records (ruling D10 of 2026-11-18).",
   "host": "public/deploy-view.js",
   "route": 3230500,
-  "added": 855555,
-  "total": 4086055,
+  "added": 855530,
+  "total": 4086030,
   "files": 12,
   "beforeThePackage": {
    "route": 3229840,

@@ -10,18 +10,99 @@ here is approved, accepted, released or promoted.
 
 ## State
 
-- **Done:** the package (one part of five filled), its registration lines, the route stub, hook H1, the suite
-  (12 blocks, green), the fixture, a browser case for the route stub, the size evidence, these notes.
+- **Done:** the slice (the package, one part of five filled, its registration lines, the route stub, hook H1, the
+  suite, the fixture, a browser case, the size evidence) and its fix-up: every item 0 to 8 below, the suite at 21
+  blocks, green.
 - **In progress:** nothing.
-- **Next:** see "Next, by slice" and "Open questions (for the lead)".
+- **Next:** the lead's merge; see "What later slices inherit" and "Open questions (for the lead)".
 
-## Fix-up (after the adversarial review; the lead's rulings L1 to L11, K1, K2 and K6)
+## Fix-up (after the adversarial review; the lead's rulings L1 to L11, K1, K2, K6, and K7 to K9 since)
 
-Branch `rc44/wp9a-s1-topology-fix-c2` (continues `rc44/wp9a-s1-topology-fix`, cut off after item 0), from the slice's
-head `1acb341`. Review: `/home/user/hb-review/rc44-build/wp9a-s1-topology.review.json`. Each item: case first, seen to
-fail on the head the item started from, then the change. One line per item; details under the item's heading below.
+Branches: `rc44/wp9a-s1-topology-fix` (item 0, cut off), `rc44/wp9a-s1-topology-fix-c2` (items 1 to 5, cut off),
+`rc44/wp9a-s1-topology-fix-c3` (items 6 and 7, and a trial merge, below), `rc44/wp9a-s1-topology-fix-c4` (this head:
+`-c3` before the trial merge, and item 8), from the slice's head `1acb341`. Review:
+`/home/user/hb-review/rc44-build/wp9a-s1-topology.review.json`. Each item: case first, seen to fail on the head the item
+started from, then the change.
 
-**In progress / next:** see the item list; an item not marked done is not started.
+`rc44/integration` still stands at `9673661`, which this branch holds since the start: its merge before the final
+commit brought nothing. The adoption record is the one item 0 merged (`rc44/wp2-s1-lead` at `25cc426`). That branch
+moved on during the fix-up (`963cae8`, `17753df`, `ec0cd3c`: the lead's follow-up after its verifier, rulings K7 to K9,
+"suites not yet rerun"). A trial merge of `ec0cd3c` (`8c6237d` on `-c3`, no conflict) gave wp9a 21 of 21 (with S1.7
+calling K8's helper), S0 26 of 26 and wp1 34 of 34, but wp2's suite does not finish: its block `upgrade` runs without
+end, on `ec0cd3c` itself too (300 s without an answer, this branch's code not involved), and
+`upgradeAdoptions(bankPaymentApplied())` alone does not return in 30 s there: the new loop of `adoption-upgrade.js`
+(`do id='ADP-'+…;while(typeOf(id)||…)`) seems never to find an id `typeOf` leaves free (open question 14). So this head
+keeps the adoption record of `25cc426` and leaves the follow-up to the lead's merge; S1.7 calls K8's helper once it is
+there (`assertBuiltInChainsUnchanged`; it held on the trial merge, and with `tracePath` as before K8 too).
+
+### One line each
+
+| Item of the review or ruling | State | Case (suite `rc44-wp9a-deployment-validate.mjs` unless named) |
+|---|---|---|
+| Must-fix 1: a keep by an agent, a draft or an import | done (L1, item 2) | S0 "L1 keep is a person's step"; S1.12 |
+| Must-fix 2: a half-typed environment reads more independent | done (L2, item 3): `hostingComparison`, Chapter 10's error `topology-incomparable` | S1.13 (the reviewer's walk) |
+| Must-fix 3: a zone left in a retired domain or node | done (L3, item 4): the tracker mends every zone and placement at the end of every commit | S1.14 |
+| Must-fix 4: nested domains and a shared cause stated nowhere | done (L2, item 3): nested raises the error; the shared cause is a retirement row and a case marked for slice 2 | S1.13 ("SLICE 2 FLIPS THIS") |
+| Must-fix 5: a placement located in a batch keeps its stamp | done (L4, item 5) | S1.15 |
+| Should-fix 1: the fingerprint does not read typed or not | done (L5, item 6) | S1.16 (the hand-made pair: two stamps) |
+| Should-fix 2: a recovery import keeps who chose it | done (L5, item 6): a step older than the import is nobody's; the commands are refused until a person takes it | S1.16; S1.0 (the copy) |
+| Should-fix 3: a zone made and located in one batch is not journalled | done (L3, item 4) | S1.14 |
+| Should-fix 4: a node restored under a retired parent or domain; a ninth level | done (L3, item 4): S0's row `canRestore` | S0 "L3 restore rule"; S1.14 |
+| Should-fix 5: H1 trusts `domainIds[0]` without the marker | recorded, not changed (L11 (a)): only a hand-made recovery package reaches it | — |
+| Should-fix 6: proposals and the design fingerprint | done (L6, item 6) | S1.4, S1.8, S1.16 |
+| Should-fix 7: the limits are not reachable | done (L8, item 7): 120 nodes, 60 domains | S1.18 |
+| Should-fix 8: the jurisdiction list | done (L8, item 7): the 249 officially assigned codes | S1.19, S1.1 |
+| Should-fix 9: small input points | done (L8, item 7) | S1.19 |
+| Should-fix 10: the address text and the mapped form | done (L8, item 7); the overlap check is slice 3's | S1.19, S1.1 |
+| Should-fix 11: evidence and the Chapter 10 register | done (L9, item 7) | S1.10; the retirement list |
+| Should-fix 12: goldens again; `assembleParts` rows | the rows done (L10, item 1); the goldens not captured again, as L10 rules | S1.11; S1.3 |
+| L1 | done (item 2) | as must-fix 1 |
+| L2 | done (item 3) | S1.13 |
+| L3 | done (item 4); the lifecycle question for built-in collections waits for slice 2, as ruled | S1.14 |
+| L4 | done (item 5); the merged alternative keeps its stamps (D12), the case says so | S1.15 |
+| L5 | done (item 6), with S0's design row extended to `chapter.key` (deviation 13) | S1.16, S1.0; S0 "J3 design statement" |
+| L6 | done (item 6); a batch's own receipt still moves the stamp (rc.10.73.42, for every batch) | S1.4, S1.8, S1.16 |
+| L7 | done (item 6); `deploy-model.js` is on the route, not in the lazy entry as L7 says (it cost -5 B) | S1.17 |
+| L8 | done (item 7) | S1.18, S1.19 |
+| L9 | done (item 7); S0's boundary sentence for a person-only step still names the type (open question 10) | S1.0, S1.19, S1.10 |
+| L10 | done (items 1 and 7): S0's suite with both packages; `assembleParts`; `fmt` in `patchLinks`, 34 B booked apart | S0 "D3 workbench keys"; S1.11; S1.20 |
+| L11 | recorded (see "What later slices inherit"): (a) slice 6, or nobody; (b) wp9b; (c) slice 6; (d) slice 2 | — |
+| K1, K2 | inherited through the merge: the package has no upgrade step, so its reads store nothing | — |
+| K6 | done: the registry's one-time cost is in the adoption record's figure; the package's own bytes stated | S1.10 |
+| K7 | nothing to change (checked on the trial merge): the tracker watches zones and placements (one path each) and its own collections | — |
+| K8 | done as far as this head allows: S1.7 calls `assertBuiltInChainsUnchanged` when the helper is there (the adoption record's follow-up); it held on the trial merge | S1.7 |
+| K9 | nothing to change: no prefix row; the emitter states records under their own ids only | — |
+
+Where I read a ruling otherwise, plainly: L5 and L6 say "through S0's design row", which took a key of the document only;
+I extended the row (64 B on the route, which I count as wp9a's; the lead may book them to the shared pool as an S0 row).
+L7 places `deploy-model.js` in the lazy entry; the build puts it on the chapters route. L8's document bound of 8,000,000
+characters is enforced for the knowledge library, not for a project: I set the counts against it as the rulings do.
+
+### What later slices inherit
+
+- **Slice 2:** the one reader of L2, `hostingComparison(p, environmentId)` in `public/topology-domain.js`: it extends it
+  to compare over the ancestors and the shared causes and writes no second comparison; S1.13's assertion marked "SLICE 2
+  FLIPS THIS" flips; the error `topology-incomparable` stays for whatever the reader cannot yet compare. The lifecycle
+  question of L3 (a package's rule on a built-in collection, concern 3) is ruled when it starts; until then the
+  tracker's mend and the L2 (c) error stand. L11 (d): no calculated verdict reads as confirmed an ancestor chain an
+  unreviewed draft changed. Its findings join Chapter 10's `checks` row (`assertFindingIdsUnique` is called in S1.7).
+- **Slice 3:** the overlap check of L8 compares `parsePrefix(…).parts` and `length`, never the stored text (which is now
+  canonical); an IPv4-mapped address cannot be stored in either form, so the check need say nothing of mapped
+  addresses unless slice 3 admits them; a node's `address` is one prefix.
+- **Slice 6:** the surface (the counts 120 and 60 are what it says when full); the finding "Review the proposals" for
+  AIW's own proposals (L11 (c)); the Chapter 10 register printing the typed location (L9, H12); R5, R6, the layout's
+  bracket and the desk's region guess (retirement list); L11 (a), a hand-made recovery package with typed fields and no
+  marker read by the built-in key, if a surface ever reads one.
+- **wp9b:** L11 (b), the lifecycle family's rule (an agent account retires and restores a person's node as it does a
+  person's zone; an import by a person writes authored records stamped as imported).
+- **Every later slice of wp9a:** the package's records at its slice-1 limits already take about 3,740,000 of a
+  document's 8,000,000 characters (S1.18); a slice that adds records measures them at their limits through the commands
+  (B8) against what is left, and sets its own counts so that the document bound is not what a person hits first. Route:
+  wp9a has 190 B left of its 500 B on the chapters route.
+
+### By item
+
+**In progress / next:** nothing; every item below is done.
 
 - **Item 0, merge `rc44/wp2-s1-lead`:** done (`317fd8f`; conflicts in `design-packages.js`, `public/design-package-routes.js`
   and `package.json` kept both packages' lines in id order with one import of `registerExtension`, every test script).
@@ -143,6 +224,10 @@ fail on the head the item started from, then the change. One line per item; deta
   - Route (S1.10, `--measure`): 3,230,500 B; +660 B against 9673661; +344 B against the adoption record (3,230,156 B, its
     build at 25cc426); of these, wp9a's own 310 B (of 500), the baseline defect's fix 34 B; the registry's one-time cost
     is in the adoption record's figure. 148 scripts, 53 under 10 KB, stylesheet unchanged, no gate changed.
+- **Item 8, notes and the final merge:** done. This section, the retirement list (two rows struck out by L7, one row
+  added for what of the Model view stays with slice 6), "What later slices inherit", the deviations 13 to 16, the
+  measurements and suites after the fix-up, open questions 10 to 14. `git merge rc44/integration`: already up to date.
+  K8: S1.7 calls `assertBuiltInChainsUnchanged` when the helper is there (see the trial merge above).
 
 ## What was built
 
@@ -247,11 +332,24 @@ the step there. The slice has no second-person step, so it names no confirming s
     hold 4,000 characters, and a domain's name 160.
 11. **The browser suite exists from slice 1** (design g creates it with slice 6): the route stub is in front of
     every project from this slice on, so its one case is held now. Slice 6 adds its cases to the same file.
-12. **The route:** 249 B measured against the base alone, where the task asks for well under half of 500 B. 139 B are
-    the package's own; 110 B are the registry's `registerExtension` joining the route with the first package that
-    registers a stub (see "Measurements").
+12. **The route** (at the slice): 249 B measured against the base alone; after the fix-up see "Measurements".
+13. **S0's design row takes `chapter.key`** (fix-up, rulings L5 and L6): the row of ruling J3 took a key of the document
+    only, and the marker and the two collections live in chapter containers. `reviewSource` now puts a statement of
+    `chapter.key` under that key of a copy of the chapter (64 B on the route, counted as wp9a's); the start check takes
+    `chapter.key` for a new key of a chapter's container and refuses every key the workbench writes, a deeper key and a
+    key that is no name; two statements of a key and of a key inside it are a clash. S0's contract text says so.
+14. **Failure-domain ids from Chapter 10's counters** (`runtime.counters.domain`, fix-up, ruling L6): the design
+    fingerprint reads `technology.counters` and not `runtime.counters`, so a proposal would otherwise move the design
+    stamp by its counter.
+15. **The limits are 120 nodes and 60 failure domains** (fix-up, ruling L8; design: 2,000 and 500), measured through
+    the commands against the document bound.
+16. **The walkthrough and the Model view read the typed domain in this slice** (fix-up, ruling L7; design: slices 2
+    and 6), first through `failureDomainKey`, then the name as before, so that a placeholder name does not turn
+    independent.
 
-No assertion of a suite that exists on `94dbd4f` was deleted, loosened or replaced.
+No assertion of a suite that exists on `94dbd4f` was deleted, loosened or replaced. The fix-up replaced assertions of
+the rc44 suites (this package's and S0's), each with one at least as strict; the list is in the final commit and under
+"Fix-up" item by item.
 
 ## Retirement list (ruling J6: no second truth beside an earlier path)
 
@@ -262,9 +360,10 @@ D8's key and read a zone's failure domain by its name until their slice moves th
 
 | Earlier reader | Where | Retired by |
 |---|---|---|
-| The walkthrough's "lose a failure domain" grouping, and its Failover test for a named domain | `public/runtime-domain.js` `simulateRuntime` | slice 2 (H4) |
-| The Chapter 10 Model view's private failure-domain key and its second propagation | `public/deploy-model.js` | slice 6 (H15, R1, R5, R6) |
-| The desk's region guess from words in the name | `public/desk-capacity.js` | slice 6 (H13, R2) |
+| ~~The walkthrough's "lose a failure domain" grouping, and its Failover test for a named domain~~ | `public/runtime-domain.js` `simulateRuntime` | **retired by the fix-up** (ruling L7, H4): it reads `failureDomainKey` first, the name as before (S1.17) |
+| ~~The Chapter 10 Model view's private failure-domain key~~ | `public/deploy-model.js` (`r.domains`, `domainsOf`, `fallbackSimulation`, `deployInsights`), `public/deploy-view.js` (a plan's domains) | **retired by the fix-up** (ruling L7, H15): each zone is keyed by `failureDomainKey` first (S1.17) |
+| The Model view's second propagation (`fallbackSimulation`), its scenario list from zones only, and the layout's bracket over adjacent columns by the zone's domain words | `public/deploy-model.js`, `public/deploy-layout.js` | slice 6 (R5, R6, with the surface); the bracket reads the key with H12 |
+| The desk's region guess from words in the name (a latency reading, ruling L7) | `public/desk-capacity.js` | slice 6 (H13, R2) |
 | Chapter 6's three string comparisons of a capability's domains | `public/technology-domain.js` | slice 5 (H14, R3, R4); no capability is typed before it |
 | The zone's attribute "Domain" in the model projection (the name as words) | `public/runtime-model.js` `runtimeProjection` | slice 6 with the surface |
 | Two zones that share a stated cause (`domainIds` after the first) read as independent in the built-in checks (`single-domain`, `standby`, `backup-domain`), `planFacts` and the desk: they compare the hosting domain only | `public/runtime-domain.js`, `public/design-reasoning.js`, the desk | slice 2 (the finding for a shared cause, evaluated over the ancestors); case S1.13 holds today's reading, marked "SLICE 2 FLIPS THIS" (ruling L2) |
@@ -272,8 +371,8 @@ D8's key and read a zone's failure domain by its name until their slice moves th
 | The Chapter 10 register prints the zones by name ("AZ-1", "AZ-2") beside the finding that they share one failure domain; no register, SDD or ARS prints an FD or DN reference (ruling L9) | `public/runtime-domain.js` register, `public/sdd-architecture.js` | slice 6 (H12, the typed location printed) |
 
 Until slice 6 no surface offers the topology commands, so a document is typed only through the command route.
-Between this slice and slices 2 and 6 such a document reads a typed zone as its typed domain in the checks and at
-the desk, and by its name in the three readers above. See open question 2.
+Between this slice and slices 2 and 6 such a document reads a typed zone as its typed domain in the checks, at the
+desk, in the walkthrough and in the Model view, and by its name only in the rows above that are not struck out.
 
 Nothing is printed of the typed topology yet: the records are in the document, the record graph, the journal and the
 SDD's counts of who wrote the records, and in no register, SDD or ARS section until slice 6 (H12, a `sections` row).
@@ -286,20 +385,52 @@ slice 6 brings the surface that offers Keep and Retire (ruling J7). See open que
 
 ## Next, by slice
 
-- **Slice 2:** `topology-failures.js`; H4 and H5 in `runtime-domain.js`; the first finding of the package, and with
-  it the `checks` row and `assertFindingIdsUnique` on a document that raises it.
-- **Slice 3:** `topology-gates.js`; `parsePrefix` is exported for the address-overlap check.
+- **Slice 2:** `topology-failures.js`; H4's lost set and H5 in `runtime-domain.js` (the walkthrough already reads the
+  typed domain: `dk` in `simulateRuntime`); its findings join the `checks` row Chapter 10's error opened (see "What
+  later slices inherit").
+- **Slice 3:** `topology-gates.js`; `parsePrefix` answers the parts and length the address-overlap check compares.
 - **Slice 5:** `topology-fallback.js`; the hop onto `domain` from `capability` (design d.4) joins the hops there, with
   `technology.capability-domains`.
 - **Slice 6:** the surface in `topology-ui.js`; the finding "Review the proposals" for proposed domains and nodes,
   with the surface that offers Keep and Retire (J7); the `sections` row for the Chapter 10 register (H12); the
   browser suite `rc44-wp9a-deployment-browser-validate.mjs`.
-- **When S0 gains the row of ruling J3** (what a package's records say to the fingerprint): the marker can be stated
-  there instead of as an evidence key, if the lead prefers one way for every package.
+- **Done by the fix-up:** the marker, the nodes and the failure domains are stated through S0's row of ruling J3.
 
 ## Measurements
 
-Built with `client-bundle.mjs bundleClient`, as `node build.mjs` builds the client. Base: `9673661`.
+**After the fix-up** (this head; `node build.mjs` and S1.10 `--measure`, `audit/rc44/evidence/wp9a-s1-size.json`). Two
+bases, each built with `node build.mjs` from an archive of its commit: the integrated base `9673661`, and the adoption
+record at `25cc426` (`rc44/wp2-s1-lead`), which this branch merged. (The lead's later `ec0cd3c` measures 3,230,165 B,
+9 B more; the trial merge with it 3,230,509 B: the same 344 B, itemised alike.)
+
+| | 9673661 | Adoption record 25cc426 | This head | Cap |
+|---|---|---|---|---|
+| Chapters route (code) | 3,229,840 B | 3,230,156 B | 3,230,500 B (+660 / **+344**) | 3,233,792 B (unchanged; 3,292 B left) |
+| Projects route (code) | 506,829 B | 507,069 B | 507,242 B | 1,242,112 B (unchanged) |
+| Script files | 148 | 148 | 148 | 148 (unchanged) |
+| Files under 10 KB | 53 | 53 | 53 | 61 (unchanged) |
+| Stylesheet | 901,873 B | 901,873 B | 901,873 B | 902,144 B (unchanged) |
+| Opens with records (D10) | 4,062,884 B | — | 4,086,030 B (855,530 B in 12 scripts) | — |
+
+The 344 B against the adoption record, read from the metafiles of the two builds, route output by route output:
+
+| What | Bytes | Booked to |
+|---|---|---|
+| The route stub with its import of `registerExtension` (`design-package-routes.js`) | 105 | wp9a |
+| H1, `failureDomainKey` reads the typed domain (`runtime-model.js`) | 21 | wp9a |
+| The lifecycle reads a package's restore rule (`record-lifecycle.js`, L3) | 47 | wp9a |
+| S0's design row takes `chapter.key` (`review-domain.js reviewSource`, L5, L6) | 64 | wp9a (the lead may book it as an S0 row) |
+| `simulateRuntime` reads the typed domain (`runtime-domain.js`, H4 of L7) | -10 | wp9a |
+| The Model view keys a zone by it (`deploy-model.js`, H15 of L7) | -5 | wp9a |
+| Alias and import shifts of the route outputs whose imports and exports moved | 88 | wp9a |
+| `fmt` for `patchLinks` (`technology-domain.js`, the defect of rc.10.73.42, L10) | 34 | the shared pool (L10) |
+
+wp9a's own: **310 B of its 500 B** (190 B left). The registry's one-time cost (K6, 110 to 123 B) is in the adoption
+record's figure: its stub brought `registerExtension` onto the route. Against `9673661` the route grew 660 B: wp2 S1's
+316 B, wp9a's 310 B, the defect's 34 B. No gate changed.
+
+**At the slice** (`1acb341`, before the fix-up). Built with `client-bundle.mjs bundleClient`, as `node build.mjs`
+builds the client. Base: `9673661`.
 
 | | Base | Slice 1 | Cap |
 |---|---|---|---|
@@ -323,6 +454,16 @@ Measured with scratch builds: with a second package's stub beside this one the r
 import of `topology.js` in `deploy-view.js` the route is the same 3,230,089 B (the package's modules add no export).
 
 ## Suites
+
+**After the fix-up** (this head, the adoption record of `25cc426`): `rc44-wp9a-deployment-validate.mjs` 21 blocks green
+(S1.10 with `--measure`); `rc44-s0-extensions-validate.mjs`, `rc44-wp1-knowledge` and `rc44-wp2-adoption-validate.mjs` as
+the final run below says (wp2's block `size` counts every package's route bytes as wp2's: open question 11). `rc44-wp9a-deployment-browser-validate.mjs` green against the built client. Existing suites of the files the
+fix-up items 6 and 7 changed, green and unchanged: `deploy`, `runtime`, `rc42-g5-runtime`, `chapter-lines`,
+`not-stated`, `wire-merge` (H4, H15), `technology`, `interfaces`, `security`, `technology-realisation` (`patchLinks`);
+those of the earlier items as their lines above say. `node check-syntax.mjs` passes; `node scripts/lint.mjs --summary`:
+162, baseline 162, 0 new; `node build.mjs`: no size violation.
+
+**At the slice:**
 
 - `rc44-wp9a-deployment-validate.mjs`: 12 blocks, green; `--measure` rewrites the size evidence from the build.
   Before the package was registered (its modules on disk, no line in `design-packages.js`, H1 not made) all ten
@@ -358,6 +499,33 @@ import of `topology.js` in `deploy-view.js` the route is the same 3,230,089 B (t
   was not run.
 
 ## Open questions (for the lead)
+
+Questions 1, 2, 4, 5 and 9 were closed by the rulings and the fix-up (L10 and item 1; L7 and item 6; L3 and item 4,
+with the built-in collections left to slice 2; L10 and item 7; L5, L6 and item 6). 3, 6, 7 and 8 stand (8 is L11 (c)).
+New after the fix-up:
+
+10. **S0's boundary sentence for a person-only step names the type** ("runtime.topology-start is a signed-in person's
+    step: …", `design-extension-boundary.js`), for every package. L9 asks that no refusal name a command type; the
+    package's own refusals name none (S1.19), but this one is S0's. Change S0's words (the S0 and wp2 suites hold parts
+    of them), or let a package state its step's words?
+11. **wp2's suite on a branch that holds both packages.** Its block `size` asserts "this build is inside the allowance
+    of wp2" as the whole route against the integrated base: with wp9a merged that is 660 B, over 600, though wp2's own
+    figure (the adoption record against the base) is 316 B. It counts every package's bytes as wp2's; the lead
+    re-measures at each merge (K6). Not edited here.
+12. **A reviewed batch's receipt moves the design stamp.** `workspace.apply` keeps its receipt in `workbench.history`,
+    which the design fingerprint reads on rc.10.73.42, so a batch of proposals moves the design stamp by its receipt
+    though the proposals say nothing (S1.8 holds the rest). Built-in; for every batch.
+14. **The adoption record's follow-up does not finish its own suite.** On `rc44/wp2-s1-lead` at `ec0cd3c` the block
+    `upgrade` of `rc44-wp2-adoption-validate.mjs` runs without end, and `upgradeAdoptions(bankPaymentApplied())` does
+    not return in 30 s: the loop that skips an id a record holds (`adoption-upgrade.js`, K9 (c)) seems never to find a
+    free one (perhaps `typeOf` answers the adoption's own type for every `ADP-` id, through the minted prefix). Not
+    this package's code; this head keeps `25cc426` until the lead's merge.
+13. **No document bound for a project in code.** The 8,000,000 characters of rulings B8 and E3 are the knowledge
+    library's (`knowledge-governance.js`); a project's document has no bound of its own, and the built-in limit of
+    2,000 zones is not reachable at its own field limits (about 10,000 characters a zone). The package's counts are set
+    against the 8,000,000 as the rulings read it.
+
+Earlier questions, as asked at the slice:
 
 1. **S0's suite with this package registered** (`rc44-s0-extensions-validate.mjs`, unedited; ruling J11). Seven
    assertions fail, each because the suite assumes that no package is registered:

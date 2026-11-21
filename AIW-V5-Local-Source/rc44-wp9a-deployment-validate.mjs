@@ -479,6 +479,11 @@ await block('S1.7 the trace', () => {
     assert.ok(kernel.requirementTrace(q, I.requirement).layers.node.includes(made.cluster)); assert.equal(recordGraph(q).relationships.find(e => e.type === 'sitsIn' && e.from === placement.id && e.to === made.cluster)?.source, 'runtime.placements.nodeId'); }
   // the package's records join the package's layers only (ruling D6.4): every built-in layer of every trail and spine is as it was
   assert.ok(R.assertBuiltInTrailsUnchanged(base, p) > 0); assert.ok(R.assertFindingIdsUnique(p) > 0);
+  // (the lead's ruling K8) and the chain that explains a pair of built-in records is the one the document without the
+  // package's records gives: a zone's node or failure domain is no way between two built-in records. The helper comes
+  // with the adoption record's follow-up (rc44/wp2-s1-lead at ec0cd3c), which this branch does not hold yet: held there
+  // on a trial merge (8c6237d), and here once the lead merges it.
+  if (typeof R.assertBuiltInChainsUnchanged === 'function') assert.ok(R.assertBuiltInChainsUnchanged(base, p) > 0);
   assert.deepEqual(kernel.TRACE_LAYERS.slice(kernel.BUILT_IN_LAYERS.length).filter(l => ['node', 'domain'].includes(l)), ['node', 'domain'], 'its layers follow the built-in ones, node before domain');
   assert.equal(kernel.requirementTrace(base, I.requirement).layers.node, undefined, 'a trail without such a record lists no such layer');
   // the connected model has the issues it had (ruling J2): every relation the package states is between records that exist
@@ -975,7 +980,7 @@ await block('S1.11 the parts of the package', async () => {
 // --measure` from the build the case makes (ruling L9: the file says what was measured). Two bases, each built with node
 // build.mjs from an archive of its commit: BASE, the commit the slice started from (9673661: S0 and wp1 S1 merged), and
 // ADOPTION, the adoption record this branch merged (rc44/wp2-s1-lead at 25cc426: wp2 S1 after its fix-up and the lead's
-// follow-up, which brought the registry's registerExtension onto the route with its stub). ITEMISED is read from the
+// follow-up of K1 and K2; its stub brought the registry's registerExtension onto the route). ITEMISED is read from the
 // metafiles of this build and of ADOPTION's, route output by route output.
 const EVIDENCE = 'audit/rc44/evidence/wp9a-s1-size.json', HOST = 'public/deploy-view.js';
 const BASE = {commit: '9673661', chapters: 3229840, projects: 506829, scripts: 148, under10k: 53, css: 901873};
