@@ -252,7 +252,7 @@ Done on `rc44/wp9a-s1-topology-fix-c2`, each case first. Route bytes of these ro
 | `design-extension-boundary.js` | server | The command boundary of the packages (person-only, second-person with two persons, validate, undo, the trackers, large), the packages a commit names, the built-in type probe, the start check. |
 | `public/design-extension-parts.js` | server (in no client bundle) | The upgrade chain and its notes, the packages a document names, the document sections, the statement of the workbench's own keys and id prefixes, the packages' collections, the conformance check and the clash check. |
 | `rc44-s0-extensions-validate.mjs`, `rc44-s0-extensions-baseline.json` | suite | The eight cases of the contract and fourteen more blocks; the SHA-256 of the readings at `94dbd4f`. |
-| `rc44-s0-readings.mjs` | suite helper, for every package's suite | The ten readings compared byte for byte, a document with a review list, `assertBuiltInTrailsUnchanged`, `assertFindingIdsUnique`, `opensWithRecords`. |
+| `rc44-s0-readings.mjs` | suite helper, for every package's suite | The ten readings compared byte for byte, a document with a review list, `assertBuiltInTrailsUnchanged`, `assertFindingIdsUnique`, `opensWithRecords`; since then `assertTemplateCopyClearsSteps`, `assertStepsMoveNoStamp`, `assertBuiltInChainsUnchanged`, `routeBookings`, `assertBookingsAddUp` and `assertTrackerStaysInPaths`. |
 | `audit/rc44/build-notes/s0-size.json` | evidence | The route measurement, written by the suite from the build, with the field "opens with records". |
 
 Hooks in existing files (each a few lines, all commented "rc44, slice S0"): `public/record-graph.js` (types, the
@@ -264,6 +264,22 @@ the ten chapter domains (their findings list is named by its chapter number), `p
 `public/workspace-ux.js` (the header of a tab that is behind), `public/readings-upgrade.js`, `storage-upgrade.js`,
 `public/sdd-architecture.js` (sections, who wrote the records), `public/action-undo-domain.js`, `authorship.js`,
 `project-lifecycle.js` (a template copy keeps the packages it names), `worker.js`.
+
+## With wp9a slice 1's third fix-up (rulings O1, O2; 2026-11-21)
+
+Done on `rc44/wp9a-s1-topology-fix-c6`, each case first and seen to fail on `5cae40a` (the notes of wp9a slice 1,
+"Third fix-up", say how). Ruling O4 confirms the second fix-up's edits of S0 (the `quietProposals` row with its start
+check, `routeBookings` as O1 amends it, `stampTracked` as O2 uses it); the track answer of M1 is replaced by
+`trackPaths`.
+
+| Ruling | What S0 gained | Where | Case |
+|---|---|---|---|
+| O1 | `routeBookings` refuses an own figure that is no integer of at least 0, a pool item two files book, a negative pool item outside the lead's file and bytes of the lead's own; `assertBookingsAddUp`, the lead's merge check; the lead's file `lead-bookings-size.json` | `rc44-s0-readings.mjs`, `audit/rc44/evidence/` | block "O1 the bookings add up" |
+| O2 | The row `trackPaths` with its start check; `trackExtensions` copies those paths before each call and stamps what the call changed; the tracker's answer is ignored; a record a tracker adds is no one's; `stampTracked` keeps no stamp or review a tracker wrote; `assertTrackerStaysInPaths` for every package with a tracker | `design-extension-parts.js`, `design-extension-boundary.js`, `public/provenance.js` (server only), `rc44-s0-readings.mjs` | block "O2 tracked paths" |
+
+Route: the row's name is in `design-extension-parts.js`, which is in no client bundle (block 8 asserts it), and
+`stampTracked` and `settle` are server-only; the bytes the build measures are booked in the lead's file (see wp9a's
+notes, "Third fix-up", item 4).
 
 ## Contract for packages
 
@@ -328,7 +344,8 @@ Every part is optional.
 | `layers`, `hops` | `{layer: type}`, `[{layer, types, from, dir, ctx, only?}]` | `trace-kernel.js` |
 | `checks` | `{chapter: p => [finding]}` | `document-memo.js` `sharedList`: the chapter's checks, the review, readiness |
 | `commands` | `{type: {apply, staged?, person?, second?, validate?, undo?, large?}}` | `design-extension-boundary.js` (server), `canonical-command.js` `stagedBy` |
-| `track` | `(prior, next, command, at) => void`, or `[[as it was, as it is]]` for records of other collections it changed itself, which the boundary stamps as the commit's (ruling M1, wp9a slice 1 second fix-up) | `design-extension-boundary.js` `trackExtensions` (server), for every commit |
+| `track` | `(prior, next, command, at) => void`; it answers nothing, and an answer is ignored (ruling O2, which retired the `[[as it was, as it is]]` answer of ruling M1) | `design-extension-boundary.js` `trackExtensions` (server), for every commit |
+| `trackPaths` | `['chapter.collection']`, beside `track`: the built-in collections the tracker mends; the boundary copies their records before each call and stamps as the commit's each record whose content the call changed; checked at start (it needs `track`, each entry is a `chapter.collection` path, none is the package's own collection) | `design-extension-boundary.js` `trackExtensions`, `provenance.js` `stampTracked` (server); ruling O2 (wp9a slice 1 third fix-up); block "O2 tracked paths" |
 | `lifecycle` | `{path: chapter}` | `record-lifecycle.js` `COLLECTIONS` |
 | `canRestore` | `{path: (p, record) => void}`, on the package's own `lifecycle` collections only; throws in a reader's words to refuse a restore | `record-lifecycle.js` restore, beside a chapter's own rule; ruling L3 (wp9a slice 1 fix-up); block "L3 restore rule" |
 | `quietProposals` | `{path: true}`, on the package's own `lifecycle` collections only: a proposal of the collection says nothing to the design, so retiring (dismissing) or restoring one moves no version and clears no check or handoff; a keep stays a design change | `record-lifecycle.js` retire and restore; ruling M6 (wp9a slice 1 second fix-up); block "L3 restore rule" |
@@ -529,11 +546,21 @@ The server calls it after the built-in trackers for **every** command of every p
 (a reviewed batch's, an applied impact's). `prior` is the document as the request found it and is not changed; `next`
 is the commit's own copy. **It writes nothing for a document without the package's records**, and returns at once
 there. What it writes into `next` is part of the same commit: the events it adds to `next.changes.events` are
-journalled and stamped by the boundary with who, of what kind and why, and listed in the commit's activity row. A
-record of another collection that the tracker changes itself (a built-in record: wp9a's mend of a zone or a placement)
-is answered as `[as it was, as it is]`; the boundary stamps each as the commit's (`provenance.js stampTracked`, the
-same stamp a record the commit changed gets), so its stamp names who sent the commit, never who wrote it before (the
-lead's rulings H2 and M1). A tracker that changes no such record answers nothing.
+journalled and stamped by the boundary with who, of what kind and why, and listed in the commit's activity row. It
+answers nothing; what it answers is ignored.
+
+**`trackPaths`.** `['chapter.collection', …]`: the built-in collections the package's tracker mends (wp9a states
+`runtime.zones` and `runtime.placements`, for its mend of a zone or a placement that names a record no longer there).
+The boundary, not the package, says what a tracker changed (the lead's rulings H2 and O2): before each call of the
+tracker it copies the records of those paths, and after the call it stamps as the commit's (`provenance.js
+stampTracked`, with the boundary's own copy as `was`) each record whose content the call changed, so its stamp names
+who sent the commit, never who wrote it before. A stamp or a review the tracker writes on such a record is not kept (a
+tracker's call confirms and keeps nothing, whoever sent the commit), and a record the call adds to such a path is no
+one's: it keeps no author or review stamp. The start check refuses `trackPaths` without `track`, an entry that is no
+`chapter.collection` path, and a collection of the package's own (its `lifecycle`, `provenance.records` or
+`provenance.paths` collections, which the boundary stamps already: `stampExtensions`). A tracker changes no other
+built-in collection: the package's suite calls `assertTrackerStaysInPaths(extension, cases)` (`rc44-s0-readings.mjs`)
+on its tracker's cases (below).
 
 **`lifecycle`.** `{path: chapter}`, the path `container.list` (a list inside a container: a single-segment path is
 refused at start, because a retirement keeps the owning container's `version`, `review` and `handoff`), the chapter 1
@@ -751,6 +778,19 @@ whose review list is not empty, which no reference is. Capture the goldens from 
 base: `node rc44-s0-readings.mjs --capture <sha> > rc44-<slice>-baseline.json`. Then compare with the package
 registered. Do not reuse S0's golden file once built-in behaviour has moved. With the package's records in a
 document, call `assertBuiltInTrailsUnchanged(base, withRecords)` and `assertFindingIdsUnique(p)`.
+
+A package with a tracker calls `assertTrackerStaysInPaths(extension, cases)` (ruling O2) on its tracker's cases, each
+`{prior, next, command, at}` with `next` the commit's document as the command left it: the tracker is run on a copy
+of `next`, and the whole document outside the package's own keys, its `trackPaths` and the change journal must be as
+it was; `prior` must not move; the journal's earlier events stand as they were and its counter moves by the events the
+tracker added. It answers `{cases, changed: {path: cases whose call changed it}, journalled}`, so the suite can assert
+that its cases reach the mend.
+
+A package's size case reads the bookings of every size file with `routeBookings(ownFile)` (rulings M4 and O1): an own
+figure (`ownBytes`, or `delta`) is an integer of at least 0, a shared-pool item an integer that one file books, a
+negative pool item only in the lead's file `audit/rc44/evidence/lead-bookings-size.json` (own figure 0). The lead's
+merge check `assertBookingsAddUp(route, base)` runs in S0's block "O1 the bookings add up": the chapters route less
+the integrated base (3,229,840 B at `9673661`) is every file's own bytes plus the pool's, exactly.
 
 ### A minimal worked example
 

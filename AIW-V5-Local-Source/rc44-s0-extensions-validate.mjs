@@ -1562,5 +1562,89 @@ await block('L3 restore rule', () => {
   pass('L3: a package states a restore rule (canRestore) for its own lifecycle collections only, as a function; and (M6) quietProposals for its own lifecycle collections only');
 });
 
+// ---------------------------------------------------------------- O2. the boundary, not the package, says what a tracker changed
+// (the lead's ruling O2 of 2026-11-21; new problem 2 of the second verifier of wp9a slice 1; it amends M1 and completes
+// H2) A package whose tracker mends records of a built-in collection states those collections as trackPaths
+// ('chapter.collection', beside track; checked at start: it needs track and names no collection of the package's own).
+// Before each call of a tracker the boundary copies the records of those paths, and after it stamps as the commit's
+// (provenance.js stampTracked, with the boundary's own copy as `was`) each record whose content the call changed; a
+// record the call adds to such a path is no one's; what a tracker answers is ignored. A tracker changes no other
+// built-in collection: rc44-s0-readings.mjs assertTrackerStaysInPaths(extension, cases) holds it on a package's cases.
+// The synthetic package below mends a Chapter 3 decision when its own command says how (this block registers it, last
+// of the suite, so no earlier block reads it).
+const TRACKING = {
+  id: 'zt-tracking',
+  commands: {'tracking.mode': {apply(p, command, at) { const raw = command.payload || {}; p.trackingProbe = {mode: String(raw.mode || ''), target: String(raw.target || ''), at}; return {document: p}; }}},
+  track(prior, next, command, at) {
+    const t = next.trackingProbe; if (!t || command.type !== 'tracking.mode') return;
+    const records = next.decisions.records, target = records.find(r => r.id === t.target), was = structuredClone(target);
+    // it mends what it mends and answers nothing, as a tracker does
+    if (t.mode === 'mend') { target.rationale += ' (mended by the tracker)'; return; }
+    // it changes nothing, and answers a record it did not change as if it had (the answer of ruling M1)
+    if (t.mode === 'fabricate') return [[{...was, topic: 'What it never said'}, target]];
+    // it adds a record to the path, with a stamp of its own, and answers it as changed
+    if (t.mode === 'add') { const added = {...structuredClone(target), id: 'ADR-990', topic: 'Added by the tracker', provenance: {author: {kind: 'person', by: C, at}}}; records.push(added); return [[{...was, id: 'ADR-990'}, added]]; }
+    // it writes a stamp of its own on a record whose content it leaves as it was
+    if (t.mode === 'stamp') { target.provenance = {...target.provenance, author: {kind: 'person', by: C, at}}; return; }
+    // it confirms a record: a tracker's call is no person's confirmation, whoever sent the commit
+    if (t.mode === 'confirm') { target.confirmed = true; return; }
+    // what assertTrackerStaysInPaths refuses: a built-in collection it does not state, the journal rewritten, prior changed
+    if (t.mode === 'outside') next.quality.drivers[0].title += ' (changed outside its paths)';
+    if (t.mode === 'rewrite') next.changes.events[0].title = 'Rewritten by the tracker';
+    if (t.mode === 'counter') next.changes.counter += 1;
+    if (t.mode === 'prior') prior.decisions.records[0].rationale += ' (prior changed)';
+    if (t.mode === 'journal') { next.changes.events.push({id: 'CHG-' + String(++next.changes.counter).padStart(3, '0'), source: {chapter: 3, id: target.id, kind: 'tracking'}, title: 'Read again', at, fields: [], items: []}); target.rationale += ' (mended and journalled)'; }
+  },
+  trackPaths: ['decisions.records'],
+  designKeys: ['trackingProbe']
+};
+await block('O2 tracked paths', async () => {
+  need();
+  // the start check: trackPaths needs track, is a list of 'chapter.collection' paths and names no collection of the package's own
+  const f = () => {}, words = (e, re, why) => assert.ok(boundary.extensionIssues(e).some(i => re.test(i)), why + ': ' + boundary.extensionIssues(e).join(' | '));
+  assert.deepEqual(boundary.extensionIssues({id: 'xy', track: f, trackPaths: ['decisions.records', 'runtime.zones']}), [], 'a tracker that states the built-in collections it mends');
+  words({id: 'xy', trackPaths: ['decisions.records']}, /xy: trackPaths names the built-in collections the package's tracker mends: it states track\./, 'not without a tracker');
+  for (const bad of ['decisions.records', [], ['decisions'], ['decisions.records.x'], [3], ['Decisions.records'], ['decisions.records', null]]) words({id: 'xy', track: f, trackPaths: bad}, /xy: trackPaths is a list of 'chapter\.collection' paths, each a collection of a chapter's container\./, 'a list of chapter.collection paths: ' + JSON.stringify(bad));
+  words({id: 'xy', track: f, lifecycle: {'journals.records': 3}, trackPaths: ['journals.records']}, /xy: trackPaths “journals\.records” is the package's own collection: the boundary stamps those already; trackPaths names built-in collections only\./, 'never a lifecycle collection of its own');
+  words({id: 'xy', track: f, provenance: {records: {'journals.notes': 3}}, trackPaths: ['journals.notes']}, /trackPaths “journals\.notes” is the package's own collection/, 'nor one it states for the provenance reader');
+  words({id: 'xy', track: f, provenance: {paths: {'xy.save': ['journals.items']}}, trackPaths: ['journals.items']}, /trackPaths “journals\.items” is the package's own collection/, 'nor one its commands write');
+  assert.deepEqual(boundary.extensionIssues(TRACKING), [], 'the synthetic package conforms');
+  X.registerExtension(TRACKING);
+  // assertTrackerStaysInPaths, on documents the handler of the package's own command leaves
+  const {assertTrackerStaysInPaths} = R; assert.equal(typeof assertTrackerStaysInPaths, 'function', 'rc44-s0-readings.mjs states assertTrackerStaysInPaths(extension, cases)');
+  { const base = reference('bank-payment'), id = base.decisions.records[0].id; base.changes.events.push({id: 'CHG-001', title: 'An earlier change', at: AT, fields: [], items: []}); base.changes.counter = 1;
+    const kase = mode => { const command = {type: 'tracking.mode', payload: {mode, target: id}}; return {prior: base, next: withFinalReview(TRACKING.commands['tracking.mode'].apply(structuredClone(base), command, AT).document), command, at: AT}; };
+    const read = assertTrackerStaysInPaths(TRACKING, [kase('mend'), kase('journal'), kase('fabricate'), kase('')]); assert.deepEqual(read, {cases: 4, changed: {'decisions.records': 2}, journalled: 1}, 'what the tracker changed in its paths and its journal: ' + JSON.stringify(read));
+    for (const [mode, re] of [['outside', /zt-tracking's tracker changed “quality\.drivers” outside its own keys, its trackPaths and the change journal \(case 1, tracking\.mode\)/], ['rewrite', /zt-tracking's tracker changed the change journal's earlier events \(case 1, tracking\.mode\): a tracker only adds to the journal/], ['counter', /zt-tracking's tracker moved the change journal's counter by 1 for 0 events it added \(case 1, tracking\.mode\)/], ['prior', /zt-tracking's tracker changed the document as the request found it \(prior, case 1, tracking\.mode\)/]]) assert.throws(() => assertTrackerStaysInPaths(TRACKING, [kase(mode)]), re, mode);
+    assert.equal(assertTrackerStaysInPaths(TRACKING, [kase('add')]).changed['decisions.records'], 1, 'a record added to a path it states is inside its paths');
+    assert.throws(() => assertTrackerStaysInPaths({id: 'xy'}, [kase('mend')]), /xy states no tracker/); assert.throws(() => assertTrackerStaysInPaths(TRACKING, []), /no case/); }
+  // through the server: who sent the commit stamps what the tracker changed; an answer is ignored; an added record is no one's
+  const h = await harness(), d = () => h.state.document, ok = (r, why) => assert.equal(r.status, 200, why + ': ' + JSON.stringify(r.body).slice(0, 300)), dec = id => d().decisions.records.find(r => r.id === id), stamp = id => dec(id).provenance?.author;
+  try {
+    const [one, two] = d().decisions.records.map(r => r.id);
+    // B saves both decisions first, so each is a person's other than the one who commits next
+    for (const id of [one, two]) ok(await h.send('decision.save', {...dec(id), rationale: dec(id).rationale + ' (B\'s wording)'}, B), 'B saves ' + id);
+    assert.deepEqual([stamp(one)?.kind, stamp(one)?.by, stamp(two)?.by], ['person', B, B], 'both are B\'s');
+    const misses = [], check = (why, test) => { try { test(); } catch (e) { misses.push(why + ': ' + e.message.split('\n')[0]); } };
+    // a person's commit: the record the tracker mended, answering nothing, is stamped as A's commit
+    ok(await h.send('tracking.mode', {mode: 'mend', target: one}), 'A\'s commit');
+    check('a person\'s commit', () => { assert.ok(/\(mended by the tracker\)$/.test(dec(one).rationale), 'the tracker mended it'); assert.deepEqual([stamp(one)?.kind, stamp(one)?.by, stamp(one)?.at, authorship(dec(one)).kind], ['person', A, d().trackingProbe.at, 'person'], 'the record the tracker mended is stamped as the commit\'s, A\'s'); });
+    // an agent account's commit: stamped as the draft it is
+    ok(await h.send('tracking.mode', {mode: 'mend', target: one}, AGENT), 'the agent account\'s commit');
+    check('an agent account\'s commit', () => assert.deepEqual([stamp(one)?.kind, stamp(one)?.by, stamp(one)?.at, authorship(dec(one)).kind], ['sol-draft', AGENT, d().trackingProbe.at, 'sol-draft'], 'the record the tracker mended is stamped as the commit\'s, the agent account\'s draft'));
+    // a fabricated answer that names a record the call did not change stamps nothing
+    { const was = JSON.stringify(dec(two)); ok(await h.send('tracking.mode', {mode: 'fabricate', target: two}), 'a fabricated answer'); check('a fabricated answer', () => assert.equal(JSON.stringify(dec(two)), was, 'the record the answer names is as it was, B\'s')); }
+    // a record the tracker adds to a path it states is no one's, whatever stamp it wrote and whatever it answered
+    ok(await h.send('tracking.mode', {mode: 'add', target: two}), 'an added record');
+    check('an added record', () => { const added = dec('ADR-990'); assert.ok(added, 'the tracker added it'); assert.deepEqual([added.provenance?.author, added.provenance?.reviewed], [undefined, undefined], 'the record a tracker adds is stamped as no one\'s: ' + JSON.stringify(added.provenance)); });
+    // a stamp a tracker writes on a record whose content it leaves is not kept: the stamp is the boundary's
+    { const was = JSON.stringify(stamp(two)); ok(await h.send('tracking.mode', {mode: 'stamp', target: two}), 'a stamp of its own'); check('a stamp of the tracker\'s own', () => assert.equal(JSON.stringify(stamp(two)), was, 'B\'s stamp stands')); }
+    // (not a defect of 5cae40a, where nothing stamped it: what the boundary's stamp must not do) a confirmation the tracker sets is no person's review
+    { const was = JSON.stringify(dec(two).provenance); ok(await h.send('tracking.mode', {mode: 'confirm', target: two}), 'a confirmation of its own'); check('a confirmation the tracker sets', () => { assert.equal(dec(two).confirmed, true); assert.equal(JSON.stringify(dec(two).provenance), was, 'A, who sent the commit, confirmed nothing: ' + JSON.stringify(dec(two).provenance)); }); }
+    assert.deepEqual(misses, [], 'the boundary, not the package, says what a tracker changed: ' + misses.join(' | '));
+  } finally { h.close(); }
+  pass('O2: trackPaths is checked at start (it needs track, is a list of chapter.collection paths, names no collection of the package\'s own); through the server the record a tracker mends in a path it states, answering nothing, is stamped as the commit\'s, a person\'s and an agent account\'s; a fabricated answer stamps nothing; a record the tracker adds is no one\'s; a stamp the tracker writes itself is not kept, and a confirmation it sets is no person\'s review; assertTrackerStaysInPaths refuses a tracker that changes a built-in collection it does not state, rewrites the journal, moves its counter without an event or changes prior');
+});
+
 assert.deepEqual(failed, [], 'every rc44 S0 block passes');
 console.log(`rc44 S0 design extensions: ${checks.length} checks passed`);

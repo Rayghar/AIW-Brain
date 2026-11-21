@@ -88,6 +88,37 @@ export function assertBuiltInChainsUnchanged(base, withRecords) {
   }
   return chains;
 }
+// assertTrackerStaysInPaths(extension, cases) (the lead's ruling O2 of 2026-11-21): a package's tracker changes nothing
+// of a document but the package's own keys (its design and evidence keys, the keys of its design row, its lifecycle and
+// provenance collections), the built-in collections it states as trackPaths, and the change journal, to which it only
+// adds: the boundary stamps what a call changed in its trackPaths, and nothing else of the built-in design may move
+// unseen. For each case {prior, next, command, at} (next: the commit's document as the command left it) it runs
+// extension.track(prior, a copy of next, command, at) and compares: prior is as it was; the events of next stand as
+// they were, in their order, and the journal's counter moves by the events the tracker added; the whole document
+// outside those keys is as it was. Throws with the key and the case named; answers {cases, changed: {path: the cases
+// whose call changed it}, journalled: the events the calls added}.
+export function assertTrackerStaysInPaths(extension, cases) {
+  const name = extension?.id || 'the package', plainOf = v => (v && typeof v === 'object' && !Array.isArray(v) ? v : {}), list = v => (Array.isArray(v) ? v : []);
+  if (typeof extension?.track !== 'function') throw Error('assertTrackerStaysInPaths: ' + name + ' states no tracker.');
+  if (!Array.isArray(cases) || !cases.length) throw Error('assertTrackerStaysInPaths: no case for ' + name + '\'s tracker.');
+  const paths = list(extension.trackPaths).filter(x => typeof x === 'string'), out = {cases: 0, changed: Object.fromEntries(paths.map(x => [x, 0])), journalled: 0};
+  const own = [...list(extension.designKeys), ...list(extension.evidenceKeys), ...Object.keys(plainOf(extension.design)), ...Object.keys(plainOf(extension.lifecycle)), ...Object.keys(plainOf(extension.provenance?.records)), ...Object.values(plainOf(extension.provenance?.paths)).flatMap(list)].filter(k => typeof k === 'string');
+  const at = (p, path) => path.split('.').reduce((v, k) => (v && typeof v === 'object' ? v[k] : undefined), p);
+  const outside = (p, journal) => { const q = structuredClone(p); for (const path of [...own, ...paths]) { const [a, b] = path.split('.'); if (b === undefined) delete q[a]; else if (q[a] && typeof q[a] === 'object') delete q[a][b]; }
+    if (q.changes && typeof q.changes === 'object') { delete q.changes.events; delete q.changes.counter; if (!journal && JSON.stringify(q.changes) === '{"schemaVersion":1}') delete q.changes; } return q; };
+  const keyOf = (a, b) => { for (const k of new Set([...Object.keys(a), ...Object.keys(b)])) if (JSON.stringify(a[k]) !== JSON.stringify(b[k])) { const x = plainOf(a[k]), y = plainOf(b[k]), inner = [...new Set([...Object.keys(x), ...Object.keys(y)])].find(j => JSON.stringify(x[j]) !== JSON.stringify(y[j])); return inner && (a[k] && typeof a[k] === 'object' && !Array.isArray(a[k])) ? k + '.' + inner : k; } return null; };
+  cases.forEach((c, i) => {
+    const where = '(case ' + (i + 1) + ', ' + (c?.command?.type || 'no command') + ')', prior = structuredClone(c.prior), next = structuredClone(c.next), was = JSON.stringify(c.prior);
+    extension.track(prior, next, c.command, c.at);
+    if (JSON.stringify(prior) !== was) throw Error(name + '\'s tracker changed the document as the request found it (prior, ' + where.slice(1, -1) + '): prior is read, never written.');
+    const before = list(c.next.changes?.events), after = list(next.changes?.events), added = after.length - before.length;
+    if (added < 0 || JSON.stringify(after.slice(0, before.length)) !== JSON.stringify(before)) throw Error(name + '\'s tracker changed the change journal\'s earlier events ' + where + ': a tracker only adds to the journal.');
+    const moved = (next.changes?.counter ?? 0) - (c.next.changes?.counter ?? 0); if (moved !== added) throw Error(name + '\'s tracker moved the change journal\'s counter by ' + moved + ' for ' + added + ' events it added ' + where + '.');
+    const key = keyOf(outside(c.next, 'changes' in c.next), outside(next, 'changes' in c.next)); if (key) throw Error(name + '\'s tracker changed “' + key + '” outside its own keys, its trackPaths and the change journal ' + where + ': state the built-in collections it mends as trackPaths, so that the boundary stamps what it changes, or leave them as they are.');
+    out.cases++; out.journalled += added; for (const path of paths) if (JSON.stringify(at(c.next, path)) !== JSON.stringify(at(next, path))) out.changed[path]++;
+  });
+  return out;
+}
 export function assertFindingIdsUnique(p) {
   const seen = new Set(), all = inheritedFindings(p);
   for (const f of all) { if (seen.has(f.id)) throw Error('Two findings share the id “' + f.id + '”: a treatment of one would cover the other. A package\'s finding id is its own (by convention code:record id, with a code no other package or chapter uses).'); seen.add(f.id); }

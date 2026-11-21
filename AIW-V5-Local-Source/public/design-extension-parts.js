@@ -149,7 +149,7 @@ export function packageCollections() {
 // An id is a key of the registry's own table, so the one lower-case name every object carries is no id.
 const ID = /^(?!constructor$)[a-z][a-z0-9-]{1,60}$/, TYPE = /^[A-Za-z][A-Za-z0-9]{0,40}$/, PATH = /^[a-z][A-Za-z]{0,40}(\.[a-z][A-Za-z]{0,40})?$/;
 export const COMMAND_TYPE = /^[a-z][A-Za-z0-9-]{0,60}\.[A-Za-z][A-Za-z0-9-]{0,60}$/;
-const PARTS = new Set(['id', 'objectTypes', 'prefixes', 'records', 'layers', 'hops', 'checks', 'commands', 'track', 'lifecycle', 'canRestore', 'quietProposals', 'provenance', 'designKeys', 'evidenceKeys', 'design', 'upgrade', 'upgradeNote', 'sections', 'needs', 'load']);
+const PARTS = new Set(['id', 'objectTypes', 'prefixes', 'records', 'layers', 'hops', 'checks', 'commands', 'track', 'trackPaths', 'lifecycle', 'canRestore', 'quietProposals', 'provenance', 'designKeys', 'evidenceKeys', 'design', 'upgrade', 'upgradeNote', 'sections', 'needs', 'load']);
 const HOP_PARTS = new Set(['layer', 'types', 'from', 'dir', 'ctx', 'only']);
 const COMMAND_PARTS = new Set(['apply', 'staged', 'person', 'second', 'validate', 'undo', 'large']);
 const LEVELS = new Set(Object.values(OBJECT_TYPES).map(t => t.level));
@@ -262,6 +262,15 @@ export function extensionIssues(e) {
   }
   // The package's tracker (ruling D4): one for the package, called for every commit; a command states none of its own.
   if (e.track !== undefined && !fn(e.track)) say('track is a function (prior, next, command, at): the package\'s tracker, called for every command.');
+  // (the lead's ruling O2 of 2026-11-21) trackPaths ['chapter.collection']: the built-in collections the tracker mends.
+  // The boundary copies their records before each call and stamps as the commit's what the call changed
+  // (design-extension-boundary.js trackExtensions); a package's own collections are stamped already (stampExtensions).
+  if (e.trackPaths !== undefined) {
+    if (!fn(e.track)) say('trackPaths names the built-in collections the package\'s tracker mends: it states track.');
+    if (!(Array.isArray(e.trackPaths) && e.trackPaths.length && e.trackPaths.every(x => typeof x === 'string' && /^[a-z][A-Za-z]{0,40}\.[a-z][A-Za-z]{0,40}$/.test(x)))) say('trackPaths is a list of \'chapter.collection\' paths, each a collection of a chapter\'s container.');
+    else { const own = new Set([...Object.keys(plain(e.lifecycle) ? e.lifecycle : {}), ...Object.keys(plain(e.provenance?.records) ? e.provenance.records : {}), ...Object.values(plain(e.provenance?.paths) ? e.provenance.paths : {}).flatMap(v => list(v))]);
+      for (const path of e.trackPaths) if (own.has(path)) say('trackPaths “' + path + '” is the package\'s own collection: the boundary stamps those already; trackPaths names built-in collections only.'); }
+  }
   // lifecycle and provenance
   if (e.lifecycle !== undefined && !plain(e.lifecycle)) say('lifecycle is {path: chapter}.');
   for (const [path, chapter] of Object.entries(plain(e.lifecycle) ? e.lifecycle : {})) {

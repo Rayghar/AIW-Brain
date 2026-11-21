@@ -26,8 +26,9 @@
 //   large    the request may carry up to 500 KB, as the built-in prefixes that say so.
 // and what a package says of itself: track(prior, next, command, at), its one tracker (the lead's ruling D4 of
 // 2026-11-18), called after the built-in trackers for every command and for each command a batch carries
-// (trackExtensions below), which answers nothing or the records of other collections it changed itself, each [as it
-// was, as it is], for the boundary to stamp as the commit's (ruling M1); a command type states no tracker of its own.
+// (trackExtensions below), with trackPaths, the built-in collections it mends, whose records the boundary stamps as the
+// commit's where a call changed them (ruling O2, which retired the tracker's answer of ruling M1: a tracker answers
+// nothing, and an answer is ignored); a command type states no tracker of its own.
 // A package only adds: a type a built-in handler takes is never a package's. The built-in handlers are asked once per
 // type (builtInType): a type they refuse as unknown ("Unknown … action.") is free for a package.
 import {EXTENSIONS} from './public/design-extensions.js';
@@ -183,17 +184,26 @@ export function markPackages(prior, next, command) {
 // built-in trackers' are, and listed in the commit's activity row.
 // Who wrote a change, of what kind and why is what the server says of the commit (worker.js), never what a package
 // says: an event a tracker or a handler of a package adds states none of it, so the server's stamp is the only one.
-// A record of another collection that a tracker changes itself (wp9a's mend of a zone or a placement that names a
-// record no longer there) is answered by the tracker as [as it was, as it is], and stamped here as the commit's, as the
-// boundary stamps a package's own records (the lead's rulings H2 and M1): its stamp says who sent the commit that
-// changed it, never who wrote it before.
+// The boundary, not the package, says what a tracker changed of a built-in collection (the lead's rulings H2 and O2 of
+// 2026-11-21): a package whose tracker mends records of a built-in collection (wp9a's mend of a zone or a placement
+// that names a record no longer there) states those collections as trackPaths. Before each call of a tracker the
+// boundary copies the records of those paths, and after it stamps as the commit's each record whose content the call
+// changed (provenance.js stampTracked, with the copy as `was`), as it stamps a package's own records: its stamp says who
+// sent the commit that changed it, never who wrote it before, and a stamp or a review the tracker writes is not kept. A
+// record the call adds to such a path is no one's. What a tracker answers is ignored. That a tracker changes no other
+// built-in collection is held by each package's suite (rc44-s0-readings.mjs assertTrackerStaysInPaths).
 const AUTHOR_FIELDS = ['actor', 'authorKind', 'reviewed', 'account', 'session', 'reason'];
 const eventsOf = p => (Array.isArray(p?.changes?.events) ? p.changes.events : []);
 function unstated(next, from) { for (const event of eventsOf(next).slice(from)) if (event && typeof event === 'object') for (const k of AUTHOR_FIELDS) delete event[k]; }
+// The records of a package's trackPaths in `p`, by id, each as a copy (in the order they stand, should an id stand twice).
+const tracked = (p, paths) => paths.map(path => { const out = new Map(); for (const r of listAt(p, path)) if (r && typeof r === 'object' && r.id != null) out.set(r.id, [...out.get(r.id) || [], structuredClone(r)]); return [path, out]; });
 export function trackExtensions(prior, next, command, at, {author = null} = {}) {
-  const inner = innerCommands(command), changed = [];
-  for (const c of inner.includes(command) ? inner : [command, ...inner]) for (const e of EXTENSIONS) if (typeof e.track === 'function') { const from = eventsOf(next).length, answer = e.track(prior, next, c, at); unstated(next, from); if (Array.isArray(answer)) changed.push(...answer); }
-  for (const pair of changed) if (Array.isArray(pair)) stampTracked(pair[0], pair[1], author, at);
+  const inner = innerCommands(command);
+  for (const c of inner.includes(command) ? inner : [command, ...inner]) for (const e of EXTENSIONS) if (typeof e.track === 'function') {
+    const paths = Array.isArray(e.trackPaths) ? e.trackPaths.filter(x => typeof x === 'string') : [], before = tracked(next, paths), from = eventsOf(next).length;
+    e.track(prior, next, c, at); unstated(next, from);
+    for (const [path, was] of before) for (const now of listAt(next, path)) if (now && typeof now === 'object' && now.id != null) { const old = was.get(now.id)?.shift(); if (!old || JSON.stringify(old) !== JSON.stringify(now)) stampTracked(old || null, now, author, at); }
+  }
 }
 // Whether a request of this type may be large (worker.js, beside LARGE_COMMAND_PREFIXES).
 export const extensionLarge = type => extensionCommand(type)?.large === true;

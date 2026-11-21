@@ -331,8 +331,10 @@ const RESTORE={
 // a record that is there and no proposal keeps its name, whoever changed it last) loses that name (mend), however the
 // commit got there (a restore of a zone or of the plan a placement left with, a batch that retires and restores in one
 // go). So a zone never reads as standing in a domain that is not there: it reads by its own name again, and a person
-// locates it anew. The tracker answers each zone and placement it mended, as it was and as it is, and the boundary
-// stamps it as the commit's (ruling M1). A zone or a placement the commit made has where it stands journalled with it.
+// locates it anew. The package states the two collections the mend changes (trackPaths below); the boundary copies them
+// before each call and stamps each zone and placement the call changed as the commit's (ruling O2, which retired the
+// tracker's answer of ruling M1: the tracker answers nothing). A zone or a placement the commit made has where it stands
+// journalled with it.
 function mend(p,r,path){
  const nodes=deploymentNodes(p),domains=failureDomains(p),there=standing,was=JSON.stringify([r.nodeId,r.domainIds]);
  if(path==='runtime.zones'){
@@ -348,7 +350,7 @@ const said=(r,keys)=>Object.fromEntries(keys.map(k=>[k,structuredClone(r?.[k]??(
 const TRACKED=[['runtime.nodes',10,'node',NODE_KEYS.filter(k=>k!=='open'),true],['technology.domains',6,'failureDomain',DOMAIN_KEYS.filter(k=>k!=='open'),true],['runtime.zones',10,'zone',['nodeId','domainIds','reason'],false],['runtime.placements',10,'placement',['nodeId'],false]];
 const rows=(p,path)=>{const [a,b]=path.split('.');return list(p?.[a]?.[b]);};
 export function trackTopology(prior,next,command,at){
- const m=next?.runtime,mended=[];if(!m?.topology)return mended;
+ const m=next?.runtime;if(!m?.topology)return;
  const started=chosenHere(next)&&!chosenHere(prior);
  // What this commit has journalled already: a second call for the same commit (a batch's inner command) adds nothing.
  const done=new Set(list(next.changes?.events).slice(list(prior?.changes?.events).length).map(e=>e?.source?.chapter+':'+e?.source?.id));
@@ -363,13 +365,12 @@ export function trackTopology(prior,next,command,at){
   for(const r of rows(next,path)){
    // (every save of these records moves the revision, so a record at its earlier revision says what it said)
    let o=old.get(r?.id);if(!r?.id)continue;
-   if(!own){const back=!o&&restored.has(path+'|'+r.id),as=structuredClone(r),dropped=mend(next,r,path);if(dropped)mended.push([as,r]);if(!dropped&&(back||o&&o.revision===as.revision))continue;if(back)o=as;}
+   if(!own){const back=!o&&restored.has(path+'|'+r.id),as=back&&structuredClone(r),dropped=mend(next,r,path);if(!dropped&&(back||o&&o.revision===r.revision))continue;if(back)o=as;}
    else if(o?o.revision===r.revision:isProposed(r)&&r.origin===SEEDED||restored.has(path+'|'+r.id))continue;
    const before=said(o,keys),after=said(r,keys),fields=keys.filter(k=>JSON.stringify(before[k])!==JSON.stringify(after[k])).map(k=>({key:k,label:LABELS[k],before:before[k],after:after[k]}));
    if(fields.length)journal(chapter,r.id,refOf(r),kind,r.title||r.id,o?before:null,after,fields);
   }
  }
- return mended;
 }
 
 // ---------------------------------------------------------------- what the design fingerprint reads (rulings L5, L6)
@@ -391,6 +392,8 @@ export const TOPOLOGY_PART={
  commands:{'runtime.topology-start':{apply:applyTopologyCommand,person:true},'technology.domain':record,'technology.domain-proposals':{apply:applyTopologyCommand},'runtime.node':record,'runtime.locate':edit},
  checks:{10:topologyFindings},
  track:trackTopology,
+ // (ruling O2) the built-in collections the tracker's mend changes: the boundary stamps what a call changed there
+ trackPaths:['runtime.zones','runtime.placements'],
  lifecycle:{'technology.domains':6,'runtime.nodes':10},
  canRestore:RESTORE,
  // (ruling M6) a proposal says nothing to the design (L6): dismissing or restoring one moves no version and clears no check

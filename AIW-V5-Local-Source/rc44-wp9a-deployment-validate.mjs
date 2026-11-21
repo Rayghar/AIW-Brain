@@ -946,7 +946,8 @@ await block('S1.20 a list past its limit is answered with its sentence', async (
 // whoever changed it last: a record a person kept and a draft then changed is standing to the comparison (the draft is
 // a person's to review through the review plan), and so is one a template copy holds. The verifier's two paths, through
 // the server, for a failure domain AIW proposed and for one Sol drafted: in every state the six findings or the error
-// stand. What the mend does change it stamps as the commit's.
+// stand. What the mend does change is stamped as the commit's: by the boundary, which copies the package's trackPaths
+// before each call of the tracker (ruling O2, which retired the tracker's answer of M1).
 await block('S1.21 the mend drops only what is not there', async () => {
   need();
   const I = F.ids(), ch10 = q => CHAPTERS.find(c => c.id === 10).checks(withFinalReview(q)), ids10 = q => ch10(q).map(f => f.id), ERR = 'topology-incomparable:' + I.production;
@@ -1093,6 +1094,45 @@ await block('S1.23 dismissing a proposal is no design change', () => {
   pass('S1.23: dismissing a failure domain AIW proposed and a node Sol drafted, and restoring them, moves no version and clears no check or handoff of Chapters 6 and 10 (the package\'s row quietProposals); a kept record\'s keep and retirement are design changes as before; built-in seeds keep their rc.10.73.42 rule (recorded for wp9b); the design stamp still moves by the retirement list (known limit, with M9 (e))');
 });
 
+// (the lead's ruling O2; new problem 2 of the second verifier, which amends M1) The boundary, not the package, says what
+// the tracker changed: the package states the built-in collections its mend changes as trackPaths (the zones and the
+// placements), the boundary copies them before each call of the tracker and stamps as the commit's each record whose
+// content the call changed (S1.21 holds that through the server), and the tracker answers nothing. It changes no other
+// built-in collection: rc44-s0-readings.mjs assertTrackerStaysInPaths runs it on its cases (a document with no
+// topology, the step that types the project, a node and a failure domain saved, a zone and a placement located, a zone
+// and a placement a restore brings back naming what is no longer there, a proposal kept) and compares the whole
+// document outside the package's own keys, its trackPaths and the change journal.
+await block('S1.24 the tracker stays in its paths', () => {
+  need();
+  const I = F.ids(), kase = (p, type, payload, actor = A) => ({prior: p, next: run(p, type, payload, actor).document, command: {type, payload}, at: AT}), cases = [];
+  cases.push(kase(F.tidewater(), 'runtime.zone', {id: I.zone1, isolation: 'Separate power, network and cooling (synthetic).'}));
+  cases.push(kase(F.tidewater(), 'runtime.topology-start', {}));
+  const {p, made} = typedTidewater(), placement = p.runtime.placements.find(l => l.planId === I.apiPlan && l.zoneId === I.zone1);
+  cases.push(kase(p, 'runtime.node', {title: 'Spare site', kind: 'site'}), kase(p, 'technology.domain', {title: 'Rack 9', scope: 'node', cause: 'location'}));
+  cases.push(kase(p, 'runtime.locate', {zoneId: I.zone2, nodeId: made.az1, domainIds: [made.fdZone1], reason: 'Moved into the first zone.'}), kase(p, 'runtime.locate', {placementId: placement.id, nodeId: made.cluster}));
+  // a zone a restore brings back while the node and the domain it names are retired: the mend drops both names
+  { let q = doc(p, 'runtime.zone', {environmentId: I.production, title: 'Bergen zone 4', kind: 'hosting', failureDomain: 'AZ-4', isolation: 'Separate power and network (synthetic).', owner: 'Reservations team (synthetic)'}); const z = q.runtime.zones.at(-1).id;
+    q = doc(q, 'technology.domain', {title: 'Bergen availability zone 4', scope: 'zone', cause: 'location'}); const fd = q.technology.domains.at(-1).id;
+    q = doc(q, 'runtime.node', {title: 'Bergen AZ 4', kind: 'availability-zone', parentId: made.region}); const dn = q.runtime.nodes.at(-1).id;
+    q = doc(q, 'runtime.locate', {zoneId: z, nodeId: dn, domainIds: [fd]}); for (const [id, chapter] of [[z, 10], [fd, 6], [dn, 10]]) q = doc(q, 'record.retire', {id, chapter, reason: 'A fourth zone is not built.'});
+    cases.push(kase(q, 'record.restore', {id: z, chapter: 10}, B)); }
+  // a placement that comes back with its plan while the node it names is retired
+  { let q = doc(p, 'runtime.locate', {placementId: placement.id, nodeId: made.cluster}); q = doc(q, 'record.retire', {id: I.apiPlan, chapter: 10, reason: 'Planned again later.'}); q = doc(q, 'record.retire', {id: made.cluster, chapter: 10, reason: 'No cluster of its own.'});
+    cases.push(kase(q, 'record.restore', {id: I.apiPlan, chapter: 10}, B)); }
+  { const q = doc(p, 'technology.domain-proposals'), proposal = q.technology.domains.find(x => x.state === 'proposed'); cases.push(kase(q, 'record.keep', {id: proposal.id, chapter: 6}, B)); }
+  const misses = [], check = (why, test) => { try { test(); } catch (e) { misses.push(why + ': ' + e.message.split('\n')[0]); } };
+  check('the package states the built-in collections its mend changes', () => assert.deepEqual(mine().trackPaths, ['runtime.zones', 'runtime.placements']));
+  // the tracker answers nothing, also where it mends
+  for (const c of cases.slice(-3, -1)) check('the tracker answers nothing (' + c.command.type + ')', () => { const next = structuredClone(c.next), answer = T.trackTopology(c.prior, next, c.command, AT); assert.equal(answer, undefined, 'it answered ' + String(JSON.stringify(answer)).slice(0, 120)); assert.notEqual(JSON.stringify(next.runtime), JSON.stringify(c.next.runtime), 'and it mended'); });
+  check('the tracker stays in its paths', () => {
+    assert.equal(typeof R.assertTrackerStaysInPaths, 'function', 'rc44-s0-readings.mjs states assertTrackerStaysInPaths');
+    const read = R.assertTrackerStaysInPaths(mine(), cases);
+    assert.equal(read.cases, cases.length); assert.deepEqual(read, {cases: cases.length, changed: {'runtime.zones': 1, 'runtime.placements': 1}, journalled: 7}, 'the tracker\'s calls mend a zone and a placement (the two restores) and journal seven changes: ' + JSON.stringify(read));
+  });
+  assert.deepEqual(misses, [], misses.join(' | '));
+  pass('S1.24: the package states the built-in collections its mend changes (trackPaths: runtime.zones, runtime.placements); its tracker answers nothing, where it mends too; on ' + cases.length + ' cases (no topology, the step, a node, a failure domain, a zone and a placement located, a zone and a placement a restore brings back naming what is not there, a proposal kept) it changes nothing outside its own keys, its trackPaths and the change journal (rc44-s0-readings.mjs assertTrackerStaysInPaths)');
+});
+
 await block('S1.9 staging; candidate knowledge reaches no topology reading', () => {
   need();
   const I = F.ids();
@@ -1127,9 +1167,10 @@ await block('S1.11 the parts of the package', async () => {
   const e = P.assembleParts('p-test', [a, {}, b]);
   assert.deepEqual([e.id, Object.keys(e.objectTypes), Object.keys(e.commands), e.hops.map(h => h.layer), e.designKeys, e.evidenceKeys, e.lifecycle, e.provenance], ['p-test', ['one', 'two'], ['x.one', 'x.two'], ['one', 'two'], ['x.ones'], ['x.marks'], {'x.ones': 6}, {nouns: {'x.ones': 'one'}, paths: {'x.one': ['x.ones', 'x.twos'], 'x.two': ['x.twos']}, records: {'x.twos': 10}}]);
   e.records(); e.track(); assert.deepEqual([emitted, tracked], [['a', 'b'], ['a', 'b']], 'the emitters and the trackers each run, in the parts\' order');
-  // (ruling M1) what the parts' trackers answer they changed of other collections is joined, for the boundary to stamp
-  { const one = [{id: 'z1'}, {id: 'z1', n: 1}], two = [{id: 'l1'}, {id: 'l1', n: 2}], j = P.assembleParts('p-test', [{track: () => [one]}, {track: () => undefined}, {track: () => [two]}]);
-    assert.deepEqual(j.track(), [one, two], 'the trackers\' answers are joined in the parts\' order'); }
+  // (ruling O2; was, by ruling M1: "the trackers' answers are joined in the parts' order", j.track() deep-equal to the parts' [was, is] pairs) the
+  // parts' trackPaths are joined in their order, each path once, and what a part's tracker answers is ignored: the assembly answers nothing
+  { const calls = [], j = P.assembleParts('p-test', [{track: () => { calls.push(1); return [[{id: 'z1'}, {id: 'z1', n: 1}]]; }, trackPaths: ['runtime.zones']}, {track: () => { calls.push(2); }}, {track: () => { calls.push(3); return 'an answer'; }, trackPaths: ['runtime.placements', 'runtime.zones']}]);
+    assert.deepEqual(j.trackPaths, ['runtime.zones', 'runtime.placements'], 'the parts\' trackPaths are joined in their order, each path once'); assert.equal(j.track(), undefined, 'what a part\'s tracker answers is ignored: the assembly answers nothing'); assert.deepEqual(calls, [1, 2, 3], 'and every part\'s tracker runs, in the parts\' order'); }
   assert.deepEqual([e.checks[10]({}).map(f => f.id), e.checks[6]({}).map(f => f.id), Object.keys(e.checks).sort()], [['a:1', 'b:1'], ['b:2'], ['10', '6']], 'a chapter\'s findings are those of every part');
   assert.deepEqual(Object.keys(P.assembleParts('p-test', [{}, {}])), ['id'], 'a part that states nothing adds no row');
   assert.throws(() => P.assembleParts('p-test', [a, {commands: {'x.one': {apply: () => 3}}}]), /p-test: two parts state commands “x\.one”/, 'a row is one part\'s');
@@ -1151,8 +1192,9 @@ await block('S1.11 the parts of the package', async () => {
   assert.deepEqual(Object.keys(mine().canRestore).sort(), ['runtime.nodes', 'technology.domains']);
   // (ruling L5; was: the keys hold evidenceKeys and no design) the marker and the two collections are stated through the design row
   // (ruling M6; was: the keys without quietProposals) and that its proposals say nothing to the design, on its two own collections
-  assert.deepEqual(Object.keys(mine()).sort(), ['canRestore', 'checks', 'commands', 'design', 'designKeys', 'hops', 'id', 'layers', 'lifecycle', 'objectTypes', 'provenance', 'quietProposals', 'records', 'track'], 'slice 1 states one check, no upgrade step and no section');
-  assert.deepEqual(mine().quietProposals, {'technology.domains': true, 'runtime.nodes': true});
+  // (ruling O2; was: the keys without trackPaths) and the built-in collections its tracker's mend changes
+  assert.deepEqual(Object.keys(mine()).sort(), ['canRestore', 'checks', 'commands', 'design', 'designKeys', 'hops', 'id', 'layers', 'lifecycle', 'objectTypes', 'provenance', 'quietProposals', 'records', 'track', 'trackPaths'], 'slice 1 states one check, no upgrade step and no section');
+  assert.deepEqual(mine().quietProposals, {'technology.domains': true, 'runtime.nodes': true}); assert.deepEqual(mine().trackPaths, ['runtime.zones', 'runtime.placements']);
   assert.deepEqual(Object.keys(mine().checks), ['10'], 'the check is Chapter 10\'s');
   pass('S1.11: the package is one registration assembled from five parts, of which slice 1 fills one: tables joined, lists in order, emitters, trackers and a chapter\'s findings of every part; a row two parts state and a part the assembly does not carry are refused');
 });
