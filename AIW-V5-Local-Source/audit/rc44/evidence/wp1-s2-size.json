@@ -30,31 +30,31 @@
   "note": "S0 and wp1 S1 merged (b59bc88 and 9673661 measure the same): ruling M4's base. The start commit is it, plus the adoption record's 325 B and the typed topology's 342 B of their own, plus the shared pool's 98 B, as their evidence books them."
  },
  "slice": {
-  "chapters": 3230726,
+  "chapters": 3230723,
   "projects": 507456,
   "scripts": 148,
   "under10k": 52,
   "css": 901873
  },
- "delta": 121,
- "ownBytes": 121,
+ "delta": 118,
+ "ownBytes": 118,
  "itemised": {
   "routeStub": 118,
-  "aliasAndImportShifts": 3
+  "aliasAndImportShifts": 0
  },
- "onRoute": "The route stub of p10-knowledge in design-package-routes.js (118 B: its id, needs and the load of the knowledge workspace's lazy entry; the chunk that holds the stubs grew from 10,232 B to 10,350 B, so one file fewer is under 10 KB, 52 not 53, and no file is added); the export of STYLE_CATALOGUE from design-reasoning.js and the alias and import lists of the route outputs whose imports and exports moved (net +3 B: runtime-ui +7, chunk-TU72BTYQ +8, chunk-BK2WU3BY +5, chunk-5RX3O7YP +3, chunk-4SYR5NRP -10, chunk-H77E26FI -6, chunk-BXZDDK3D -2, chunk-MRU24DEK -2). Nothing else of the slice is on the route: the readers, the commands and the seed are the server's, and the browser's part is in the knowledge workspace's lazy entry.",
+ "onRoute": "The route stub of p10-knowledge in design-package-routes.js (118 B: its id, needs and the load of the knowledge workspace's lazy entry), the last line of the list. The chunk that holds the stubs grew from 10,232 B to 10,350 B, so one file fewer is under 10 KB (52, not 53) and no file is added. No other output of the build changed but the knowledge workspace's lazy entry: no export or import list of a route output moved (a first build with the stub above the others' lines and the style rows read in the browser moved eight route outputs by -10 to +8 B, net +3 B, and the lazy entries of the Chapter 10 Model view and the desk by +6 and -7 B; both were taken back). The readers, the commands and the seed are the server's; the browser's part is in the knowledge workspace's lazy entry.",
  "wp1": {
   "s1": 65,
-  "s2": 121,
-  "leftForS3": 474
+  "s2": 118,
+  "leftForS3": 477
  },
- "headroomAfter": 3066,
+ "headroomAfter": 3069,
  "opens with records": {
   "gate": "The chapters-route gate is unchanged and measures opening a document that holds no package records (ruling D10 of 2026-11-18).",
   "host": "public/knowledge-workspace-ui.js",
-  "route": 3230726,
-  "added": 145580,
-  "total": 3376306,
+  "route": 3230723,
+  "added": 145475,
+  "total": 3376198,
   "files": 2,
   "beforeThePackage": {
    "route": 3230605,
@@ -64,12 +64,12 @@
   },
   "packageShare": {
    "modules": {
-    "public/knowledge-crosswalk.js": 1197,
+    "public/knowledge-crosswalk.js": 1130,
     "public/knowledge-package.js": 69
    },
-   "coverageModuleLessTheRetiredTable": -713,
-   "total": 574
+   "coverageModuleLessTheRetiredTable": -738,
+   "total": 469
   },
-  "note": "A document that holds crosswalk rows (knowledge.crosswalk, a library's) also loads the knowledge workspace's lazy entry, which holds the package's browser part (its design row), before it is first drawn: the route and the static closure of that entry, each script counted once. The entry grew by 574 B (133,731 B to 134,305 B, its bound 377,856 B): the built-in crosswalk and the design row, less the table the coverage module no longer holds."
+  "note": "A document that holds crosswalk rows (knowledge.crosswalk, a library's) also loads the knowledge workspace's lazy entry, which holds the package's browser part (its design row), before it is first drawn: the route and the static closure of that entry, each script counted once. The entry grew by 469 B (133,731 B to 134,200 B, its bound 377,856 B): the built-in method rows and the design row, less the table the coverage module no longer holds."
  }
 }
