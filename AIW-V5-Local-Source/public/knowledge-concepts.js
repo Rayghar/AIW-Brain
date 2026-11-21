@@ -14,7 +14,8 @@ import {verifierRefusal} from './architecture-obligations.js';
 import {digest} from './brain-integrity.js';
 import {FORM_TYPES,FORM_TIER,conceptFormIssues} from './concept-form.js';
 import {copy,list} from './util.js';
-import {BUILT_IN_CROSSWALK} from './knowledge-crosswalk.js';
+import {METHOD_CROSSWALK,builtInRow} from './knowledge-crosswalk.js';
+import {STYLE_CATALOGUE} from './design-reasoning.js';
 
 const order=type=>FORM_TYPES.indexOf(type);
 // A form's issues as its claim stands: against the claim's passage, with the claim's own statement, conditions and
@@ -155,7 +156,9 @@ export const conceptDecisionForms=(p,pinId)=>conceptDecisionReading(p,pinId).for
 // proposed otherwise. Only a `same` row that a second person verified and an active release of this project holds names
 // an identity; a proposed row, a row a document says its own author verified, and a verified row no release holds name
 // none, and nothing here is read by a check, a gate, a score or a conformance reading.
-export {BUILT_IN_CROSSWALK};
+// The built-in rows, navigation only (design d.2): the comparison options of scheme aiw-method, and the Playbook's five
+// style ids as the same as their catalogue styles, read from STYLE_CATALOGUE, their one definition.
+export const BUILT_IN_CROSSWALK=Object.freeze([...METHOD_CROSSWALK,...Object.entries(STYLE_CATALOGUE).map(([alias,id])=>builtInRow('playbook',alias,id,'same'))]);
 const CROSSWALK_CONTENT=['id','conceptId','scheme','aliasId','label','relation','evidenceClaimId','note','targetContent'];
 // What a row's review covered: what the row says (who wrote it, when, its steps and stamps are bookkeeping).
 export const crosswalkRowHash=r=>digest(Object.fromEntries(CROSSWALK_CONTENT.map(k=>[k,r?.[k]??null])));

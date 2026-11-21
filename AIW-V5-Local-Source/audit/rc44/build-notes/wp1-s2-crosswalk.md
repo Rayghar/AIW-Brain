@@ -4,57 +4,158 @@ Branch `rc44/wp1-s2-crosswalk`, from `5cae40a` (wp9a slice 1 after its second fi
 Binding: `audit/rc44/BUILD-PLAN-2026-11-16.md` section 2, the lead's rulings of 2026-11-18 (main checkout, sections A to
 M), the S0 contract (`audit/rc44/build-notes/s0-extensions.md`, "Contract for packages"). `productionAccepted` stays false.
 Resumable: read this file and `git log` first. Suite: `npm run test:rc44-wp1-knowledge` (the S2 cases are in
-`rc44-wp1-cases-crosswalk.mjs`; `--only S2.` runs them alone).
+`rc44-wp1-cases-crosswalk.mjs`; `--files ./rc44-wp1-cases-crosswalk.mjs` runs them alone, about two minutes;
+`AIW_RC44_WP1_MEASURE=1` makes S2.12 compare the built client with the size evidence exactly).
 
 ## State
 
-- **Done:** baseline measured (below); parity golden of the retired table captured on the start commit.
-- **In progress:** the case file (tests first).
-- **Next:** the modules, then the suites, the size evidence and the final commit.
+- **Done:** every item below, each case first and seen red on the start commit (S2.7 is a guard and passed there too).
+- **In progress:** nothing.
+- **Next:** the lead's review and merge. S3 (pins, currency, release parts of concepts and changes) builds on this.
 
-## Plan (as decided at the start, from the code)
+## What was built, case by case (`rc44-wp1-cases-crosswalk.mjs`)
 
-1. **Ruling I2 first** (the first item of the next wp1 slice): the structured unit of an applicability form is read by
-   the number rule against the form's quotes, at `knowledge.claim` and on every read (`formIssues`).
-2. **The crosswalk is a registered package, `p10-knowledge`** (ruling E5; the task: "a second-person step stated on the
-   command", rulings D1 and D7.1). Its command types are free for a package: the built-in knowledge entry answers
-   "Choose a supported knowledge action." for them.
-   - `knowledge.crosswalk` (anyone: a person, an import, a draft by Sol, an agent account as a draft): proposes or edits
-     a row; never verifies; `targetContent` is the server's.
-   - `knowledge.crosswalk-confirm` (`person`): the person-only step that confirms a row no person stood behind (F4).
-   - `knowledge.crosswalk-review` (`second`): verifies or rejects a row, on the projection `{id, actor, history, owner}`
-     of the row (D7.1); the boundary asks `verifierRefusal` and two persons (D1). The step is kept under `review` (F3),
-     with the reviewer's account kind; a read asks `verifierRefusal` again and a person's account.
-   - `knowledge.crosswalk-retire` (`person`).
-   - Each runs inside `applyKnowledgeCommand` (its copy, counter, history line and storage bound), handed a capability.
-   - `design` row for `knowledge.crosswalk` (ruling J3): what a row says to the design fingerprint, without `history`,
-     `review`, `confirmed`, `provenance`.
-   - Client: one route stub (`p10-knowledge-route`), loading the knowledge workspace (the design's host, d.7), which
-     registers the package's design row; the server adds the commands (`knowledge-package-server.js`).
-3. **One identity.** `resolveConcept(p, id)`: a released concept; a verified, released `same` row; a built-in `same`
-   row (navigation only). A row is released when a release of forms holds it (`parts.crosswalk`, the verified rows of
-   the released concepts, in the checksum); a proposed row, a row verified by its own author and a verified row no
-   release holds never resolve.
-4. **Retire `MAPPINGS`** (knowledge-coverage.js) in the same commit as its replacement: `BUILT_IN_CROSSWALK`
-   (`public/knowledge-crosswalk.js`): the 16 method rows of scheme `aiw-method` and the five style rows read from
-   `STYLE_CATALOGUE` (design-reasoning.js, exported). Parity for the 16 ids against the golden of the start commit.
-5. **The seed**: `scripts/build-crosswalk-seed.mjs` writes `candidate-sets/crosswalk-seed.json` from the Playbook's
-   `catalogue` names and the catalogue only (13 rows, all proposed, no verification), with `--check`.
+| Case | What it holds | Red before with |
+|---|---|---|
+| S2.0 | Ruling I2 (the first item of this slice): the structured unit of an applicability form is read by the number rule against the form's quotes, every text and value of it, at `knowledge.claim` and on every read (`formIssues`, so `formStatus` and every reader) | "The input did not match … architectureUnit.mechanism states the number 7" |
+| S2.1 | The design's first case: `resolveConcept(p, 'P-STRANGLER')` is null while the row is proposed, while a document says its own author verified it, while a second person verified it and no release holds it; `PAT-STRANGLER-FIG` (governed) once a release of the concept holds it and is active; null again when the release is deactivated, its parts are changed or the row is retired here. The release's checksum covers its parts. The concept view lists the aliases with their standing | "resolveConcept exists" |
+| S2.2 | Migration (ruling J6): `MAPPINGS` is gone from `knowledge-coverage.js`; for each of its 16 catalogue ids `knowledgeConceptCoverage(...).methods` hashes as on the start commit, on a blank project and with the method pack withdrawn; the built-in rows of scheme `aiw-method` name existing options and relate `realises` (never identity); the five style rows read `STYLE_CATALOGUE` and resolve, built-in | "Cannot find module … knowledge-crosswalk.js" |
+| S2.3 | The seed: `candidate-sets/crosswalk-seed.json` is `scripts/build-crosswalk-seed.mjs`'s output (`--check`), 13 Playbook rows (10 patterns, 3 anti-patterns), one catalogue record each by exact name, `P-STANDBY` and `P-CHECK-POINTED-SYSTEM` marked, every row `proposed`, nothing verified or promoted; imported into a library as an import through the commands, each row is proposed, stamped imported and resolves nothing | ENOENT (no seed) |
+| S2.4 | One identity: a row proposed twice is refused; a second verified `same` row for one alias is refused, a rejection of it is a second person's step and accepted; `narrower`, `broader`, `realises`, `distinct` rows, verified and released, never resolve; the release holds every verified row of its concept and no rejected one | "Choose a supported knowledge action." |
+| S2.5 | The second person (rulings D1, D7.1, F4): `knowledge.crosswalk-review` states `second`, the confirmation and the retirement `person`, the proposal neither; the review is refused for the row's author, its last editor, an agent account, a draft by Sol and an import, each in the boundary's or `verifierRefusal`'s words; a row only an import, a draft by Sol or an agent account wrote is refused to a second person until a person confirms it (`knowledge.crosswalk-confirm`), and the person who confirmed it does not then verify it; the stored step is checked again on every read (an agent's account, no account, a changed row, a reviewer who wrote a revision, no reviewer: proposed); a person's edit lapses the review; a draft by Sol proposes rows only (a claimed status or review is refused at the gate, a review, history, actor or revision sent with the row is not stored); a non-person changes no row that was verified here or is in a release | "the review is a second person's step" |
+| S2.6 | `targetContent` is the server's: a value sent is ignored on a proposal and an edit; `PAT-CIRCUIT-BREAKER` reads `authored`, `PAT-STRANGLER-FIG` `template`, `PAT-ACTIVE-PASSIVE` `marked`, the stub `ANTI-DUAL-WRITE` `stub`, a target outside the catalogue nothing; each scheme's own check; a library only; an unchanged save writes nothing; a row keeps its alias and its concept | "Choose a supported knowledge action." |
+| S2.7 | No module under `public/` reads the `catalogue` name of a Playbook entry: a source scan of the modules that import the Playbook, and the readings of the three references with a trap on the name | (a guard: green on the start commit) |
+| S2.8 | Inert: the bank-payment reference holding rows anyway (proposed, verified by their own author, verified in no release, in an inactive release) reads as the same document without them in the 27 readings of S1.10 but the knowledge stamp; nothing resolves; coverage, released claims and findings as they were; trails, chains and finding ids | "Choose a supported knowledge action." |
+| S2.9 | Ruling E1 for the package's types: each of the four types, sent by an agent account, a draft by Sol and an import against a reviewed concept and a released one (36 requests), is refused and leaves the concept's standing, forms, releases, checksums and resolution as they were; a proposal (an agent's too) lowers nothing; a person's retirement is saved with its effect | "Choose a supported knowledge action." |
+| S2.10 | Old documents and S0's helpers: with `p10-knowledge` registered the three references and the document with a review list read as S0's golden of `94dbd4f`; no crosswalk key and no package named until a row is written; a library that holds rows names `p10-knowledge` (ruling D2); the route stub, the server line and the host import exist; `assertStepsMoveNoStamp` (seen red with the design row taken out: "the design fingerprint reads history of KA-0004"), `assertTemplateCopyClearsSteps`, `assertBuiltInTrailsUnchanged`, `assertBuiltInChainsUnchanged`, `assertFindingIdsUnique`; the package conforms and clashes with nobody | "p10-knowledge is registered" |
+| S2.11 | Recovery import: a row's review, in the register and in a release, loses its reviewer (kept as `importedActor`); the recovered project reads the row proposed and resolves nothing | "Choose a supported knowledge action." |
+| S2.12 | Size (rulings A4, M4): 121 B of S2's 250 B as `audit/rc44/evidence/wp1-s2-size.json` books it (`ownBytes`), held through `routeBookings`; 148 scripts, no new file under 10 KB, no stylesheet change; "opens with records" | ENOENT (no evidence) |
 
-## Measurements at the start (node build.mjs on 5cae40a)
+## Registration through S0 (ruling E5; the task: "a second-person step stated on the command")
 
-Chapters route code 3,230,605 B (cap 3,233,792 B, 3,187 B left); 148 script files; files under 10 KB / 10–50 KB / over
-50 KB 53 / 50 / 45. wp1 has used 65 B (S1, ruling B1); S2 may add at most 250 B.
+S2 needs registration rows, and registers them as package **`p10-knowledge`** through S0's contract; nothing of S0's own
+files is edited. The three things a package adds outside its own modules, and nothing else:
+- `design-packages.js`: `import './knowledge-package-server.js'; // p10-knowledge`.
+- `public/design-package-routes.js`: the route stub `p10-knowledge-route`, `needs: p => p.knowledge?.crosswalk`,
+  `load` the knowledge workspace (`knowledge-workspace-ui.js`, the host the design names for wp1's surface, ruling
+  D7.6), which imports `public/knowledge-package.js`.
+- The suite (the existing `test:rc44-wp1-knowledge`).
+
+What the package states (`public/knowledge-package.js` in the browser and the server; `knowledge-package-server.js`
+adds the server's rows to the same object before the start check, as `adoption-server.js` does):
+- `commands`: `knowledge.crosswalk` (anyone; sent on its own, not staged), `knowledge.crosswalk-confirm` (`person`),
+  `knowledge.crosswalk-review` (`second`, answering the row's projection `{id, actor, history, owner: ''}`),
+  `knowledge.crosswalk-retire` (`person`). Each `apply` is `applyCrosswalkCommand`, which runs inside
+  `applyKnowledgeCommand` (its copy, counter, history line, history bound and storage bound). The built-in knowledge entry
+  answers these types "Choose a supported knowledge action.", so they are free for a package (S0's probe).
+- `provenance.paths`: `knowledge.crosswalk` for each of the four types: the boundary stamps who wrote and who confirmed
+  each row there, and reads those stamps for the second person's step (D1).
+- `design`: `{'knowledge.crosswalk': crosswalkDesign}`: the rows as the design fingerprint reads them, less `history`,
+  `review`, `confirmed` and `provenance` (ruling J3).
+No `objectTypes`, `records`, `layers`, `hops`, `checks`, `lifecycle`, `track`, `sections`, `upgrade`: a row is no record
+of the design model, raises no finding (none is needed before the concept view, ruling J7) and converts nothing.
+
+Person-only and second-person steps, as the contract asks: `person` or `second` is stated on the command and no check is
+written by the package (D1, D7.1); the step is kept under the row's key `review` (F3); the person-only step that
+confirms a row no person has stood behind is `knowledge.crosswalk-confirm` (F4); the read-time check calls
+`verifierRefusal` on the same projection with the stored actor and account kind and requires a person's
+(`knowledge-concepts.js crosswalkState`).
 
 ## Retirement list (ruling J6)
 
-- `MAPPINGS` in `public/knowledge-coverage.js` → `BUILT_IN_CROSSWALK` rows of scheme `aiw-method`
-  (`public/knowledge-crosswalk.js`); its one reader, `knowledgeConceptCoverage`, reads the rows.
+| Retired | Replaced by | Its readers | Case |
+|---|---|---|---|
+| `MAPPINGS` in `public/knowledge-coverage.js` (a private table from 11 built-in comparison options to 16 catalogue ids) | `BUILT_IN_CROSSWALK`, scheme `aiw-method`, relation `realises`, one row per catalogue id (`public/knowledge-crosswalk.js`; re-exported by `knowledge-concepts.js`) | `knowledgeConceptCoverage`, its only reader, reads the rows | S2.2 (parity for the 16 ids; the table is gone) |
+| The Playbook's `catalogue` name as an unread second identity (`playbook-knowledge.js`) | 13 proposed rows of the seed, `candidate-sets/crosswalk-seed.json`, for a person to send and a second person to verify | none (it had no reader); S2.7 keeps it so | S2.3, S2.7 |
+| `STYLE_CATALOGUE` as a private table (`design-reasoning.js`) | the same object, exported: the one definition of the five style rows, which `BUILT_IN_CROSSWALK` reads | `styleAlternative` keeps reading it (the design's temporary adapter, until wp2 moves the style decision onto adoptions) | S2.2 |
 
-## Deviations from the design
+Not retired: `PHRASES` (lexical retrieval, not identity), component `patternIds` (wp2's).
 
-(filled as the work goes)
+## Deviations from the design, and readings of the rulings
 
-## Open questions
+1. **The crosswalk is a registered package** (design c and d.3 have its types handled inside `applyConceptCommand`). The
+   task and rulings D1 and D7.1 ask for the second person's step stated on the command; S0's `second` is how a step is
+   stated, and only a package's type has it. So a library that holds rows names `p10-knowledge` under
+   `workspace.packages` (D2) from its first row, before S3's pins (ruling E5 says a design document names it "when a pin
+   is first written"; a library is where rows are written, and no design project takes one). The concept register
+   itself stays the built-in family's, as E5 says.
+2. **A person-only confirmation step, `knowledge.crosswalk-confirm`**, which the design does not have: ruling F4 asks for
+   the step that puts a person behind a row an import (the seed), a draft by Sol or an agent account wrote; without it
+   D1 would refuse every such row for good.
+3. **A row's status is derived, not stored** (design b.1 stores `status`): retired, verified or rejected while the stored
+   review stands, proposed otherwise, as S1 derives a concept's state. A status sent by a client is never read (a draft
+   by Sol that claims one is refused at the gate).
+4. **"Released" for a row is S2's, in `parts.crosswalk`** of a release of forms (design: release parts are S3's,
+   knowledge-governance.js `knowledge.release`): the design's own first case needs a released row. The form capability's
+   `parts` answers the verified rows of the released concepts; `knowledge.release` stores them before the checksum, only
+   when there is one, so every other release is as it was (S1.8's checksums hold). S3 adds `parts.concepts` and
+   `parts.changes` beside it, and carries `parts` into organisation releases (`orgContent`): until then a design project
+   that pins an organisation release resolves no governed row.
+5. **Resolution fails closed further than designed:** a released row resolves only while its release is active and as it
+   was made (checksum), its copied review stands, its concept is usable as a whole in that release, and this project's
+   register does not hold it retired or rejected; an alias two released rows give two concepts resolves nothing.
+6. **`BUILT_IN_CROSSWALK` lives in `public/knowledge-crosswalk.js`** (design: `knowledge-concepts.js`):
+   `knowledge-coverage.js` is a browser module (the knowledge workspace's chunk), and S1.14 holds that no browser module
+   imports `knowledge-concepts.js`. `knowledge-concepts.js` re-exports it.
+7. **The method rows are 16, one per catalogue id, relation `realises`** (design: "the eleven method mappings"): a
+   comparison option covers its subjects; it is not the identity of any of them (one option names four styles).
+8. **`targetContent` is read from the catalogue record the row points at**: the alias of an `akr` row, the concept
+   otherwise (design: `akr` rows only; the design's own case 3 asks it of two Playbook rows).
+9. **A row names a registered concept** that is not retired; a row keeps its scheme, alias and concept (an edit changes
+   its label, relation, note and evidence); the alias id is letters, digits and hyphens (a method alias one slash).
+10. **Rows do not join `conceptHash`.** Ruling B3 for rows: a row a second person verified here at some time, or that a
+    release holds, is changed by a signed-in person only (`crosswalkCovered`, as `conceptCovered`); a proposal on a
+    reviewed or released concept is anyone's, because it lowers nothing (S2.9). The concept review's `crosswalkChecked`
+    stays what it is: the set of verified rows changes only by a second person's review or a person's retirement.
+11. **A bound of 24 rows per concept** (any state), in the command module: the limit tiers are asserted whole by S1.7
+    and S1.25, and a concept-level bound is reached through the commands in 24 requests. The history bound of the tier
+    and the 8,000,000-character bound still apply; a library tranche of 60 concepts holds at most 1,440 rows.
+12. **`scheme: 'lens'` is refused** until the slice that reads lenses (S4, K-15): such a row maps to a Chapter 2
+    category, not a concept.
+13. **`resolveConcept` answers `via.releaseId`** beside the design's `{scheme, aliasId, rowId}`; built-in answers carry
+    the label "AIW built-in mapping, not reviewed by a person".
+14. **The seed is not imported by a script here.** The case imports it through the commands as an import; S4's import
+    script will carry it with the handbook packs. Its rows carry `basis` (the exact-name match, "for the reviewer") and
+    `status: 'proposed'`.
+15. **Ruling I2 reads every text and value of the unit**, its predicates' values included, not only the mechanism,
+    rationales and obligations the ruling names.
+16. **Recovery neutralises rows' reviews here** (design: S3, with pins): rows exist from this slice.
 
-(filled as the work goes)
+## Suites of S1 changed (none of `94dbd4f`)
+
+- `rc44-wp1-cases-forms.mjs` (S1's case file, this package's own suite): `designReadings`, `moved` and `graft` are
+  exported for S2.8 (no assertion changed); S1.29's walk names the four types as no command of the entry (its own rule:
+  "a type added later joins the walk or this case fails"), and asserts the entry refuses them; **one assertion
+  replaced**, S1.23: `run --only 'S2: not yet implemented'` answers status 1, `/PENDING S2/` and `/No case was executed/`
+  -> `run --files <a file with one synthetic pending case>` answers status 1, `/PENDING T2: a synthetic pending case/`
+  and `/No case was executed/` (the S2 placeholder is gone; the same property, held independently of any slice).
+- `rc44-wp1-cases-crosswalk.mjs`: the placeholder's one pending case is replaced by S2.0 to S2.12 (not a loosening).
+
+## Measurements (node build.mjs)
+
+| | start 5cae40a | this branch | cap |
+|---|---|---|---|
+| chapters route code | 3,230,605 B | 3,230,726 B (**+121 B**: the route stub 118 B, alias and import shifts +3 B) | 3,233,792 B (3,066 B left) |
+| projects route code | 507,338 B | 507,456 B | 1,242,112 B |
+| script files | 148 | 148 | 148 |
+| files under 10 KB / 10–50 KB / over 50 KB | 53 / 50 / 45 | 52 / 51 / 45 (the stubs' chunk grew past 10 KB: 10,232 -> 10,350 B) | 61 under 10 KB |
+| stylesheet | 901,873 B | 901,873 B | 902,144 B |
+| knowledge workspace entry | 133,731 B | 134,305 B (+574 B: the built-in crosswalk 1,197 B and the design row 69 B, less the table the coverage module no longer holds, 713 B) | 377,856 B |
+| opens with records (D10) | route + 145,006 B in 2 scripts | route + 145,580 B in 2 scripts (3,376,306 B) | – |
+
+wp1: S1 65 B, S2 121 B, 474 B left for S3 of the 660 B. The route bytes are the stub (the package's own, as the contract
+says) and alias shifts; no reader or command is on the route.
+
+## Open questions and limits (for the lead)
+
+1. **E5 and D2.** A library names `p10-knowledge` once it holds a row (deviation 1). If the lead wants the crosswalk to
+   stay unnamed until S3, the types move into the wrapper and the second-person step is no longer stated on the command.
+2. **The knowledge history moves a library's design fingerprint**, as every knowledge command does on rc.10.73.42: a
+   crosswalk review appends to `knowledge.history` and moves `knowledge.version`. The rows' own steps move no stamp
+   (J3, S2.10); the knowledge keys as a whole are S3's (B10: `designKeys` and `evidenceKeys` for the knowledge family).
+3. **No undo receipt** for the crosswalk's steps (none of the knowledge family has one): a counter-step reverses them
+   (a person's edit lapses a review; a retirement stands).
+4. **A row a merge or a template copy wrote** carries no author stamp (D12): it takes a person's confirmation before a
+   second person's review, as an imported one does. A template copy drops `knowledge` whole.
+5. **Rows of an organisation's release** travel with S3 (`orgContent` copies no `parts` yet).
+6. **S0's own suite** with a third real package: see the result of `rc44-s0-extensions-validate.mjs` below.

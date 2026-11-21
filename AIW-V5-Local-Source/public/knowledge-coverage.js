@@ -6,13 +6,13 @@ import {knowledgeStructures} from './knowledge-structure.js';
 import {catalogueRecord,knowledgeState,methodKnowledgeCurrent} from './knowledge-governance.js';
 import {architectureOptions,interactionSourceReceipt} from './architecture-knowledge.js';
 import {COMPOSITION_TOPICS} from './composition-knowledge.js';
-import {BUILT_IN_CROSSWALK} from './knowledge-crosswalk.js';
+import {METHOD_CROSSWALK} from './knowledge-crosswalk.js';
 
 const FAMILIES={interaction:'Request or deferred completion',reads:'Authoritative read or disposable cache',persistence:'Owned relational or aggregate persistence'};
 
 export function knowledgeConceptCoverage(p,conceptId){
  const structure=knowledgeStructures(p,{conceptIds:[conceptId],includeRelated:false}),description=structure.records.find(r=>r.origin==='catalogue')||null;
- const methods=catalogueRecord(conceptId)?BUILT_IN_CROSSWALK.filter(r=>r.scheme==='aiw-method'&&r.conceptId===conceptId).flatMap(({aliasId})=>{const [topic,optionId]=aliasId.split('/');
+ const methods=catalogueRecord(conceptId)?METHOD_CROSSWALK.filter(r=>r.conceptId===conceptId).flatMap(({aliasId})=>{const [topic,optionId]=aliasId.split('/');
   const option=architectureOptions(topic).find(o=>o.id===optionId);if(!option)return [];
   const receipt=interactionSourceReceipt(topic);
   return [{topic,optionId,pattern:option.pattern,family:COMPOSITION_TOPICS[topic]?.label||FAMILIES[topic],methodId:receipt.methodId,packId:receipt.packId,fingerprint:receipt.fingerprint,

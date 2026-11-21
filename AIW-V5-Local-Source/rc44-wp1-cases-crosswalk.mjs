@@ -171,18 +171,18 @@ add('S2.2 (migration, ruling J6): MAPPINGS of knowledge-coverage.js is retired i
   }
   // The rows that replace it: one built-in row of scheme aiw-method for each catalogue id the table named, each naming a
   // comparison option that exists, never as identity (the option realises the mechanism; it is not the catalogue record).
-  const method = XW.BUILT_IN_CROSSWALK.filter(r => r.scheme === 'aiw-method');
+  const method = KC.BUILT_IN_CROSSWALK.filter(r => r.scheme === 'aiw-method');
   assert.deepEqual(method.map(r => r.conceptId).sort(), Object.keys(PARITY).sort());
   for (const r of method) { const [topic, optionId] = r.aliasId.split('/'); assert(architectureOptions(topic).some(o => o.id === optionId), r.aliasId); assert.equal(r.relation, 'realises'); assert.equal(r.authority, 'built-in'); assert.equal(PARITY[r.conceptId][0], r.aliasId); }
-  assert.equal(KC.BUILT_IN_CROSSWALK, XW.BUILT_IN_CROSSWALK, 'the concept readers read the same rows'); assert(Object.isFrozen(XW.BUILT_IN_CROSSWALK) && XW.BUILT_IN_CROSSWALK.every(Object.isFrozen));
+  assert(method.length === XW.METHOD_CROSSWALK.length && method.every((r, i) => r === XW.METHOD_CROSSWALK[i]), 'the coverage module and the concept readers read the same method rows'); assert(Object.isFrozen(KC.BUILT_IN_CROSSWALK) && KC.BUILT_IN_CROSSWALK.every(Object.isFrozen) && Object.isFrozen(XW.METHOD_CROSSWALK));
   // A method alias is no identity: the resolver answers only `same`.
   assert.equal(KC.resolveConcept(blank, 'delivery/transactional-outbox'), null);
   // The table is gone, in the same commit as its replacement: no second path.
-  const source = readFileSync('public/knowledge-coverage.js', 'utf8'); assert.doesNotMatch(source, /\bMAPPINGS\b/, 'MAPPINGS no longer exists'); assert.match(source, /BUILT_IN_CROSSWALK/, 'its reader reads the built-in crosswalk');
+  const source = readFileSync('public/knowledge-coverage.js', 'utf8'); assert.doesNotMatch(source, /\bMAPPINGS\b/, 'MAPPINGS no longer exists'); assert.match(source, /METHOD_CROSSWALK/, 'its reader reads the built-in crosswalk');
   for (const file of readdirSync('public').filter(f => f.endsWith('.js'))) assert.doesNotMatch(readFileSync('public/' + file, 'utf8'), /\['reads','cache-aside',\[/, file + ' holds a copy of the retired table');
   // The five style rows: the Playbook's style ids, read from design-reasoning.js STYLE_CATALOGUE, the one definition of them.
   const {STYLE_CATALOGUE} = await import('./public/design-reasoning.js');
-  assert.deepEqual(XW.BUILT_IN_CROSSWALK.filter(r => r.scheme === 'playbook').map(r => [r.aliasId, r.conceptId, r.relation]), Object.entries(STYLE_CATALOGUE).map(([a, c]) => [a, c, 'same']));
+  assert.deepEqual(KC.BUILT_IN_CROSSWALK.filter(r => r.scheme === 'playbook').map(r => [r.aliasId, r.conceptId, r.relation]), Object.entries(STYLE_CATALOGUE).map(([a, c]) => [a, c, 'same']));
   for (const [alias, concept] of Object.entries(STYLE_CATALOGUE)) assert.deepEqual(KC.resolveConcept(blank, alias), {conceptId: concept, relation: 'same', via: {scheme: 'playbook', aliasId: alias, rowId: null, releaseId: null}, authority: 'built-in', label: 'AIW built-in mapping, not reviewed by a person'}, alias);
   assert.equal(KC.resolveConcept(blank, 'S-MODMONO').conceptId, 'STYLE-MODULAR-MONOLITH');
 });
@@ -474,6 +474,7 @@ add('S2.12 (size, ruling A4 and M4): the client build passes every gate with the
     const measured = {chapters: report.routes.chapters.code, scripts: report.scripts, under10k: report.buckets.under10k, css: report.css};
     assert.deepEqual(report.violations || [], [], 'no gate is broken');
     const mine = measured.chapters - 3229840 - booked.othersTotal - booked.poolTotal; assert.ok(mine <= 250, 'this build: S2 is ' + mine + ' B of its 250 B');
+    for (const [f, o] of Object.entries(meta.outputs)) if (o.inputs?.['public/knowledge-crosswalk.js']) assert(!o.inputs['public/knowledge-concepts.js'], f + ' holds the server\'s concept readers');
     assert.equal(measured.scripts, 148); assert.ok(measured.under10k <= size.base.under10k); assert.equal(measured.css, size.base.css); const opens = R.opensWithRecords(meta, 'public/knowledge-workspace-ui.js', Object.keys(BUDGET.data)); assert.equal(opens.route, measured.chapters);
     if (process.argv.includes('--measure') || process.env.AIW_RC44_WP1_MEASURE === '1') { assert.deepEqual({chapters: measured.chapters, scripts: measured.scripts, under10k: measured.under10k}, {chapters: size.slice.chapters, scripts: size.slice.scripts, under10k: size.slice.under10k}, 'at the slice\'s commit the build measures what the evidence says'); assert.deepEqual(opens, {route: size['opens with records'].route, added: size['opens with records'].added, total: size['opens with records'].total, files: size['opens with records'].files}); }
   }
