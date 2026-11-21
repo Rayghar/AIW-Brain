@@ -84,7 +84,8 @@ await block('S1.0 the marker', async () => {
   const p0 = F.tidewater(), I = F.ids();
   // every other topology command is refused before it, in words that name the step
   for (const [type, payload] of [['runtime.node', {title: 'Norway East', kind: 'region'}], ['technology.domain', {title: 'Norway East region'}], ['technology.domain-proposals', {}], ['runtime.locate', {zoneId: I.zone1, nodeId: 'dn-001'}]])
-    refuses(p0, type, payload, /topology is not typed yet\. A signed-in person chooses that first \(runtime\.topology-start\)/, type + ' before the marker');
+    // (ruling L9; was: "… A signed-in person chooses that first (runtime.topology-start)", which named a command type)
+    refuses(p0, type, payload, /^This project's topology is not typed yet\. A signed-in person chooses typed topology for this project first\.$/, type + ' before the marker');
   const h = await F.server(worker);
   try {
     // a signed-in person's step: an agent account, a draft by Sol and an import are refused
@@ -154,10 +155,11 @@ await block('S1.1 a deployment node', () => {
   refuses(d, 'runtime.node', {title: 'A data centre', kind: 'datacentre'}, /Choose the kind of node/);
   refuses(d, 'runtime.node', {kind: 'region'}, /Name the node and choose its kind/);
   refuses(d, 'runtime.node', {id: 'dn-404', title: 'Gone'}, /Choose an existing deployment node/);
-  for (const jurisdiction of ['Norway', 'no', 'N', 'NOR', 'N0', ['NO'], {code: 'NO'}, 78]) refuses(d, 'runtime.node', {id: 'dn-001', jurisdiction}, /two capital letters/, 'jurisdiction ' + JSON.stringify(jurisdiction));
+  // (ruling L8; was: refused as "not two capital letters"; 'ZZ' and 'UK' were accepted) the officially assigned ISO 3166-1 alpha-2 codes only (S1.19)
+  for (const jurisdiction of ['Norway', 'no', 'N', 'NOR', 'N0', ['NO'], {code: 'NO'}, 78, 'ZZ', 'UK']) refuses(d, 'runtime.node', {id: 'dn-001', jurisdiction}, /officially assigned ISO 3166-1 alpha-2 code/, 'jurisdiction ' + JSON.stringify(jurisdiction));
   for (const [field, value] of [['parentId', ['dn-001']], ['domainId', ['fd-001']], ['address', ['10.0.0.0/8']], ['boundaryIds', 'tb-001']]) assert.throws(() => run(d, 'runtime.node', {title: 'Odd', kind: 'site', [field]: value}), /Choose|Give/, field + ' is an id, a prefix or a list of ids, never another shape');
   // one strictly parsed prefix
-  for (const address of ['10.20.0.0/16', '10.0.0.0/8', '0.0.0.0/0', '192.168.4.128/25', '2001:db8::/32', '::/0', 'fd00:1:2:3::/64', '2001:db8:0:0:0:0:0:1/128']) assert.equal(nodeOf(doc(d, 'runtime.node', {title: 'Net', kind: 'network', address}), 'dn-002').address, address.toLowerCase(), address);
+  for (const address of ['10.20.0.0/16', '10.0.0.0/8', '0.0.0.0/0', '192.168.4.128/25', '2001:db8::/32', '::/0', 'fd00:1:2:3::/64', '2001:db8:0:0:0:0:0:1/128']) assert.equal(nodeOf(doc(d, 'runtime.node', {title: 'Net', kind: 'network', address}), 'dn-002').address, address === '2001:db8:0:0:0:0:0:1/128' ? '2001:db8::1/128' : address.toLowerCase(), address); // (ruling L8; was: the text as sent, lower-cased) the canonical text
   for (const address of ['10.20.0.0', '10.20.1.5/16', '10.0.0.0/33', '010.0.0.0/8', '10.0.0/8', '10.0.0.0/08', '256.0.0.0/8', '2001:db8::1/32', '2001:db8::/129', '2001::db8::/32', '2001:db8:0:0:0:0:0:0:0/32', '::ffff:10.0.0.0/104', 'reservations-net', '10.0.0.0/8, 10.1.0.0/16'])
     refuses(d, 'runtime.node', {title: 'Net', kind: 'network', address}, /one IPv4 or IPv6 prefix/, 'address ' + address);
   if (T.parsePrefix) { assert.deepEqual(T.parsePrefix('10.20.0.0/16'), {family: 4, parts: [10, 20, 0, 0], length: 16, text: '10.20.0.0/16'}); assert.equal(T.parsePrefix('2001:DB8::/32').text, '2001:db8::/32'); assert.equal(T.parsePrefix('10.20.1.5/16'), null); } else assert.fail('the prefix reader is exported for the address checks of slice 3 (parsePrefix)');
@@ -181,9 +183,10 @@ await block('S1.1 a deployment node', () => {
   // words past a limit are refused, never cut
   refuses(d, 'runtime.node', {id: 'dn-001', reason: 'x'.repeat(601)}, /600/);
   // the bound
-  { const full = structuredClone(d); full.runtime.nodes = Array.from({length: T.TOPOLOGY_LIMITS.nodes}, (_, i) => ({...structuredClone(n()), id: 'dn-b' + i, ref: 'DN-B' + i}));
-    assert.equal(T.TOPOLOGY_LIMITS.nodes, 2000); refuses(withFinalReview(full), 'runtime.node', {title: 'One more', kind: 'site'}, /keeps up to 2,000 deployment nodes/); }
-  pass('S1.1: runtime.node writes DN-001 from the chapter\'s counter, as a patch with its history; it refuses a missing or unknown kind, a jurisdiction that is not two capitals, an address that is not one strict prefix (14 forms), a tier outside a network or subnet, a missing parent, a cycle, a ninth level, an unknown failure domain or boundary, words past a limit and a 2,001st node');
+  // (ruling L8; was: 2,000 nodes filled in by hand, the 2,001st refused) the bound is reached through the commands, with
+  // every field at its limit, in S1.18: 120 nodes, the 121st refused
+  assert.equal(T.TOPOLOGY_LIMITS.nodes, 120);
+  pass('S1.1: runtime.node writes DN-001 from the chapter\'s counter, as a patch with its history; it refuses a missing or unknown kind, a jurisdiction that is not two capitals, an address that is not one strict prefix (14 forms), a tier outside a network or subnet, a missing parent, a cycle, a ninth level, an unknown failure domain or boundary, words past a limit and and a node past the bound (S1.18)');
 });
 
 await block('S1.2 one typed failure domain is one hosting failure domain', () => {
@@ -314,11 +317,9 @@ await block('S1.4 proposals from the names in use', () => {
   { let q = doc(started(), 'technology.domain', {title: 'az-1', scope: 'zone', cause: 'location'}); q = doc(q, 'runtime.locate', {zoneId: I.zone2, domainIds: ['fd-001']}); q = doc(q, 'runtime.zone', {id: I.zone3, failureDomain: ''});
     assert.deepEqual(doc(q, 'technology.domain-proposals').technology.domains.filter(d => d.state === 'proposed').map(d => d.title).sort(), ['Identity issuer', 'Primary region'], 'AZ-1 is typed, zone 2 stands in it, zone 3 states none'); }
   // the bound holds for proposals: none is dropped silently
-  { const full = structuredClone(p0); full.technology.domains = Array.from({length: T.TOPOLOGY_LIMITS.domains - 2}, (_, i) => ({id: 'fd-b' + i, ref: 'FD-B' + i, revision: 1, title: 'Bound ' + i, scope: '', cause: '', parentId: '', origin: 'user', history: []}));
-    const at498 = withFinalReview(full);
-    refuses(at498, 'technology.domain-proposals', {}, /keeps up to 500 failure domains; 5 names in use would make 503/); assert.equal(T.TOPOLOGY_LIMITS.domains, 500);
-    const at500 = doc(doc(at498, 'technology.domain', {title: 'One more by hand'}), 'technology.domain', {title: 'And the last'});
-    assert.equal(at500.technology.domains.length, 500, 'two more by hand still fit'); refuses(at500, 'technology.domain', {title: 'One too many'}, /keeps up to 500 failure domains\.$/); }
+  // (ruling L8; was: 498 domains filled in by hand, the proposals refused at 503, two more by hand, the 501st refused) the
+  // same, reached through the commands with every field at its limit, in S1.18: 60 domains
+  assert.equal(T.TOPOLOGY_LIMITS.domains, 60);
   // what counts as a name in use: a capability's alternate failure domain too; not a zone people connect from, a name
   // kept open, a text too long to be a name, nor a second spelling of a name already proposed
   { let q = doc(started(), 'technology.capability', {id: I.identity, alternateDomain: 'Second issuer'});
@@ -326,7 +327,7 @@ await block('S1.4 proposals from the names in use', () => {
     q = doc(q, 'runtime.zone', {id: I.zone3, failureDomain: ' recovery REGION '}); q = doc(q, 'technology.capability', {id: I.storage, failureDomain: 'Recovery region'});
     q = doc(q, 'runtime.zone', {id: I.zone2, failureDomain: 'x'.repeat(170)});
     assert.deepEqual(doc(q, 'technology.domain-proposals').technology.domains.map(d => [d.title, d.legacyKeys]), [['AZ-1', ['az-1']], ['recovery REGION', ['recovery region']], ['Identity issuer', ['identity issuer']], ['Second issuer', ['second issuer']]], 'in the order the zones and then the capabilities state them, each once'); }
-  pass('S1.4: technology.domain-proposals proposes FD-001 to FD-005 from the five names in use, each AIW\'s proposal with no scope or cause guessed; no zone, capability or placement changes; the review stamps of Chapters 6 and 10 and every finding stay as they were; the SDD counts five proposals more; sent again, after a dismissal, or over typed names it proposes nothing twice; a capability\'s alternate domain is a name in use, a zone people connect from, a text too long to be a name and a second spelling are not; the bound of 500 holds for proposals and by hand');
+  pass('S1.4: technology.domain-proposals proposes FD-001 to FD-005 from the five names in use, each AIW\'s proposal with no scope or cause guessed; no zone, capability or placement changes; the review stamps of Chapters 6 and 10 and every finding stay as they were; the SDD counts five proposals more; sent again, after a dismissal, or over typed names it proposes nothing twice; a capability\'s alternate domain is a name in use, a zone people connect from, a text too long to be a name and a second spelling are not; the bound holds for proposals and by hand (S1.18)');
 });
 
 await block('S1.5 the lifecycle', () => {
@@ -802,6 +803,113 @@ await block('S1.17 the walkthrough and the Model view read the typed domain', ()
   { const named = doc(F.tidewater(), 'runtime.zone', {id: I.zone2, failureDomain: 'AZ-1'});
     assert.deepEqual(lose(named, I.zone1), [I.zone1, I.zone2].sort()); assert.deepEqual(groups(named), [['az-1', [I.zone1, I.zone2].sort()]]); assert.deepEqual(lose(F.tidewater(), I.zone1), [I.zone1]); }
   pass('S1.17: simulateRuntime\'s "lose a failure domain" and the Chapter 10 Model view read failureDomainKey: two zones typed into one domain under two names fail together and form one group and one scenario; two typed domains under one name do not; an untyped project reads by name as before');
+});
+
+// (the lead's ruling L8, first part; ruling B8; the review's should-fix 7) Every limit of the package is reached through
+// the commands, with every field, open entry and history at its limit: 60 failure domains, a chain six deep, 120
+// deployment nodes, a chain eight deep, twenty trust boundaries on a node, twelve failure domains on a zone. The
+// document is measured there against the 8,000,000-character bound of a document (rulings B8 and E3): the package's
+// limits bind first, and the case says by how much.
+const DOCUMENT_BOUND = 8000000;
+await block('S1.18 every limit reached through the commands', () => {
+  need();
+  const I = F.ids(), L = T.TOPOLOGY_LIMITS;
+  assert.deepEqual({...L}, {nodes: 120, domains: 60, nodeDepth: 8, domainDepth: 6, zoneDomains: 12}, 'the package\'s limits');
+  let {p, made} = typedTidewater();
+  // in place, as the handler works on the copy it is handed (a copy per command would make the case quadratic)
+  const send = (type, payload) => { const r = commandHandler(type)(p, {type, payload}, AT, A, {author: person(A)}); p = r.document; return r.selected; };
+  const fails = (type, payload, words, why) => assert.throws(() => commandHandler(type)(structuredClone(p), {type, payload}, AT, A, {author: person(A)}), e => { assert.match(e.message, words, why + ': ' + e.message); return true; }, why);
+  const x = n => 'x'.repeat(n), OPEN = fields => Object.fromEntries(fields.map(f => [f, {state: 'open-question', question: x(600), raisedBy: x(180), at: x(40), source: x(600)}]));
+  const DOMAIN_OPEN = ['scope', 'cause', 'basis', 'owner', 'recoveryOwner', 'treatment'], NODE_OPEN = ['place', 'provider', 'jurisdiction', 'tier', 'exposure', 'address', 'reason', 'owner', 'basis'];
+  for (let i = 0; i < 21; i++) send('technology.boundary', {title: 'Boundary ' + i, owner: 'Owner (synthetic)', policy: 'Crossing policy (synthetic)'});
+  const boundaries = p.technology.boundaries.map(b => b.id).slice(-21);
+  // failure domains to one short of the bound, the first six a chain six deep; every field and open entry at its limit
+  const domain = parentId => send('technology.domain', {title: x(160), scope: 'region', cause: 'power', basis: x(2400), owner: x(180), recoveryOwner: x(180), treatment: 'isolate', parentId, open: OPEN(DOMAIN_OPEN)});
+  const chain = []; for (let i = 0; i < L.domainDepth; i++) chain.push(domain(chain.at(-1) || ''));
+  fails('technology.domain', {title: 'A seventh level', parentId: chain.at(-1)}, /Failure domains nest at most 6 deep/, 'a seventh level of failure domains');
+  while (p.technology.domains.length < L.domains - 1) domain('');
+  // AIW's proposals: none is dropped silently at the bound (two names in use would make 61)
+  fails('technology.domain-proposals', {}, /This workspace keeps up to 60 failure domains; 2 names in use would make 61\./, 'proposals past the bound');
+  domain(''); assert.equal(p.technology.domains.length, L.domains);
+  fails('technology.domain', {title: 'One too many'}, /^This workspace keeps up to 60 failure domains\.$/, 'the 61st failure domain');
+  // a zone names twelve failure domains: the one it stands in and eleven causes it shares; a thirteenth is refused
+  const causes = p.technology.domains.filter(d => d.cause === 'power').map(d => d.id);
+  fails('runtime.locate', {zoneId: I.zone1, domainIds: [made.fdZone1, ...causes.slice(0, 12)]}, /A zone names up to 12 failure domains; 13 were sent/, 'a thirteenth failure domain on a zone');
+  send('runtime.locate', {zoneId: I.zone1, domainIds: [made.fdZone1, ...causes.slice(0, 11)], reason: x(600)}); assert.equal(zoneOf(p, I.zone1).domainIds.length, L.zoneDomains);
+  // deployment nodes to the bound, a chain eight deep under the region; every field and open entry at its limit, twenty trust boundaries each
+  const node = parentId => send('runtime.node', {title: x(160), kind: 'network', place: x(160), provider: x(160), tier: 'data', exposure: 'private', reason: x(600), owner: x(180), basis: x(2400), jurisdiction: 'NO', address: '2001:db8:1234:5678:9abc:def0:1234:5600/120', domainId: causes[0], parentId, boundaryIds: boundaries.slice(0, 20), open: OPEN(NODE_OPEN)});
+  fails('runtime.node', {title: 'Twenty-one boundaries', kind: 'site', boundaryIds: boundaries}, /A deployment node names up to 20 trust boundaries; 21 were sent/, 'a twenty-first trust boundary on a node');
+  const nodes = [made.region]; while (nodes.length < L.nodeDepth) nodes.push(node(nodes.at(-1)));
+  fails('runtime.node', {title: 'A ninth level', kind: 'site', parentId: nodes.at(-1)}, /Deployment nodes nest at most 8 deep/, 'a ninth level of deployment nodes');
+  while (p.runtime.nodes.length < L.nodes) node('');
+  fails('runtime.node', {title: 'One too many', kind: 'site'}, /^This workspace keeps up to 120 deployment nodes\.$/, 'the 121st deployment node');
+  // every record's history to its bound: 24 revisions kept
+  for (let i = 0; i < 25; i++) { for (const d of p.technology.domains) send('technology.domain', {id: d.id, title: x(150) + String(i).padStart(10, '0')}); for (const n of p.runtime.nodes) send('runtime.node', {id: n.id, title: x(150) + String(i).padStart(10, '0')}); }
+  assert.ok([...p.technology.domains, ...p.runtime.nodes].every(r => r.history.length === 24), 'every history at its bound');
+  // the document there, against the bound: the server stamps each record once more (provenance), at most STAMP characters
+  // (two actor ids of 128 and their times); the journal of each change is kept apart from the document (project-storage.js)
+  const STAMP = JSON.stringify({provenance: {author: {kind: 'person', by: x(128), at: AT, account: 'person'}, reviewed: {by: x(128), at: AT, how: 'confirmed'}}}).length;
+  const records = p.runtime.nodes.length + p.technology.domains.length, own = JSON.stringify([p.runtime.nodes, p.technology.domains]).length + records * STAMP;
+  const zoneFields = JSON.stringify({nodeId: 'dn-120', domainIds: zoneOf(p, I.zone1).domainIds, reason: x(600)}).length, whole = JSON.stringify(p).length + records * STAMP;
+  assert.ok(own <= DOCUMENT_BOUND / 2, 'at its limits the package\'s records take at most half of the document bound: ' + own + ' characters');
+  assert.ok(whole < DOCUMENT_BOUND, 'the document at the package\'s limits is inside the bound: ' + whole + ' characters');
+  // what one change of a node at its limits journals (before and after), which the journal keeps apart from the document
+  const journalled = (() => { const before = structuredClone(p), next = structuredClone(p), r = commandHandler('runtime.node')(next, {type: 'runtime.node', payload: {id: nodes[1], basis: 'y'.repeat(2400)}}, AT, A, {author: person(A)}); mine().track(before, r.document, {type: 'runtime.node', payload: {}}, AT); return JSON.stringify(r.document.changes.events.at(-1)).length; })();
+  pass('S1.18: every limit is reached through the commands with every field, open entry and history at its limit: 60 failure domains (proposals past the bound and the 61st refused, a seventh level refused), 12 failure domains on a zone (the 13th refused), 120 deployment nodes (the 121st and a ninth level refused, 20 trust boundaries a node); the package\'s records then take ' + own + ' characters (' + Math.round(own / records) + ' a record with its stamp), the whole document ' + whole + ' of the ' + DOCUMENT_BOUND + '-character bound, so the package\'s limits bind first while the rest of a project holds under ' + (DOCUMENT_BOUND - own) + ' characters; a zone\'s typed fields add at most ' + zoneFields + ' characters; one change of a node at its limits journals ' + journalled + ' characters, kept apart from the document');
+});
+
+// (the lead's rulings L8, second part, and L9; the review's should-fix 8, 9 and 10) Input: the jurisdiction is an
+// officially assigned ISO 3166-1 alpha-2 code; a locate names a zone or a placement, not both; words are sent as text;
+// a location takes no treatment; an address is stored in its canonical text, and the IPv4-mapped form is refused in hex
+// as it is dotted. No refusal of the package names a command type.
+await block('S1.19 input and words', () => {
+  need();
+  const I = F.ids(), {p, made} = typedTidewater();
+  // jurisdiction: the officially assigned codes (249), never one reserved, user-assigned or lower-cased
+  for (const code of ['NO', 'SE', 'GB', 'DE', 'US', 'AX', 'SS', 'ZW']) assert.equal(nodeOf(doc(p, 'runtime.node', {id: made.region, jurisdiction: code}), made.region).jurisdiction, code, code + ' is officially assigned');
+  for (const code of ['ZZ', 'UK', 'EU', 'XK', 'AA', 'QM', 'XX', 'no', 'Gb', 'GBR']) refuses(p, 'runtime.node', {id: made.region, jurisdiction: code}, /Give the jurisdiction as an officially assigned ISO 3166-1 alpha-2 code \(NO, SE, GB\), or leave it not stated\./, 'jurisdiction ' + code);
+  assert.equal(T.JURISDICTIONS.size, 249, 'the officially assigned codes');
+  // a locate names a zone or a placement, not both
+  const placement = p.runtime.placements.find(l => l.zoneId === I.zone1 && l.planId === I.apiPlan);
+  refuses(p, 'runtime.locate', {zoneId: I.zone1, placementId: placement.id, nodeId: made.cluster}, /^Name a zone or a placement to locate, not both\.$/);
+  // words are sent as text: an object, a number, a list or a truth value is refused, never stored as '[object Object]'
+  for (const value of [{text: 'A name'}, 42, ['A name'], true]) {
+    refuses(p, 'runtime.node', {id: made.region, title: value}, /The node name is words: send it as text\./, 'a node name sent as ' + JSON.stringify(value));
+    refuses(p, 'technology.domain', {id: made.fdRegion, basis: value}, /The basis is words: send it as text\./, 'a basis sent as ' + JSON.stringify(value));
+    refuses(p, 'runtime.locate', {zoneId: I.zone1, reason: value}, /The reason is words: send it as text\./, 'a reason sent as ' + JSON.stringify(value));
+  }
+  // a location takes no treatment: it is where something stands, not a cause shared
+  refuses(p, 'technology.domain', {title: 'A site', scope: 'site', cause: 'location', treatment: 'accept'}, /A location is where something stands: it takes no treatment\. Leave the treatment not stated, or state a cause that is no location\./);
+  { const shared = doc(p, 'technology.domain', {title: 'Shared power feed', scope: 'site', cause: 'power', treatment: 'isolate'}), id = shared.technology.domains.at(-1).id;
+    assert.equal(domainOf(shared, id).treatment, 'isolate', 'a shared cause takes one');
+    refuses(shared, 'technology.domain', {id, cause: 'location'}, /takes no treatment/, 'nor does a cause changed to a location while it keeps one'); }
+  // an address is stored in its canonical text (RFC 5952; IPv4 dotted decimal) and the overlap check reads the parts
+  for (const [sent, kept] of [['2001:0db8::/32', '2001:db8::/32'], ['2001:DB8:0:0:0:0:0:0/32', '2001:db8::/32'], ['2001:db8:0:0:1:0:0:1/128', '2001:db8::1:0:0:1/128'], ['2001:db8:0:1:0:0:0:1/128', '2001:db8:0:1::1/128'], ['0:0:0:0:0:0:0:0/0', '::/0'], ['0:0:0:0:0:0:0:1/128', '::1/128'], ['fd00:0:0:0:0:0:0:0/8', 'fd00::/8'], ['2001:db8:1:2:3:4:5:6/128', '2001:db8:1:2:3:4:5:6/128'], [' 10.20.0.0/16 ', '10.20.0.0/16']]) {
+    assert.equal(nodeOf(doc(p, 'runtime.node', {id: made.region, address: sent}), made.region).address, kept, sent + ' is kept as ' + kept);
+    assert.deepEqual(T.parsePrefix(sent).parts, T.parsePrefix(kept).parts, 'and reads as the same parts'); }
+  for (const address of ['::ffff:0a00:0000/104', '::ffff:0:0/96', '0:0:0:0:0:ffff:c0a8:0100/120', '::FFFF:10.0.0.0/104']) refuses(p, 'runtime.node', {id: made.region, address}, /one IPv4 or IPv6 prefix/, 'the IPv4-mapped form ' + address);
+  // no refusal of the package names a command type (ruling L9)
+  { const source = readFileSync('public/topology-domain.js', 'utf8'), said = [...source.matchAll(/Error\(([^;]*?)\)(?:;|\})/g)].map(m => m[1]).concat([T.UNTYPED, T.NOT_HERE]);
+    const TYPE = /\b(?:runtime\.(?:topology-start|node|locate)|technology\.domain(?:-proposals)?|record\.(?:keep|retire|restore)|workspace\.[a-z-]+)\b/;
+    assert.ok(said.length > 30 && TYPE.test('(runtime.topology-start)') && !TYPE.test('technology.domains'), 'the scan reads the refusals');
+    for (const words of said) assert.ok(!TYPE.test(words), 'a refusal names a command type: ' + words); }
+  pass('S1.19: the jurisdiction is one of the 249 officially assigned ISO 3166-1 alpha-2 codes (ZZ, UK, EU, XK and lower case refused); a locate of a zone and a placement at once is refused; a name, a basis and a reason sent as anything but text are refused; a location takes no treatment; an address is kept in its canonical text and reads as the same parts, the IPv4-mapped form refused in hex as dotted; no refusal of the package names a command type');
+});
+
+// (the lead's ruling L10, second part; the review's concern 10) A defect of rc.10.73.42, fixed here: patchLinks in
+// public/technology-domain.js named its limit through `fmt`, which that module does not define, so a list past its limit
+// was answered with a general fault. A zone saved with 21 trust boundaries is answered with its own sentence.
+await block('S1.20 a list past its limit is answered with its sentence', async () => {
+  need();
+  const I = F.ids(), h = await F.server(worker);
+  try {
+    for (let i = 0; i < 21; i++) assert.equal((await h.send('technology.boundary', {title: 'Boundary ' + i, owner: 'Owner (synthetic)', policy: 'Crossing policy (synthetic)'})).status, 200);
+    const ids = h.state.document.technology.boundaries.map(b => b.id).slice(-21), r = await h.send('runtime.zone', {id: I.zone1, boundaryIds: ids});
+    assert.equal(r.status, 400); assert.equal(r.error, 'A record links up to 20 trust boundaries; 21 were sent.', 'the sentence of the limit, not a general fault: ' + r.error);
+    assert.equal((await h.send('runtime.zone', {id: I.zone1, boundaryIds: ids.slice(0, 20)})).status, 200, 'twenty are taken');
+  } finally { h.close(); }
+  assert.throws(() => run(F.tidewater(), 'runtime.zone', {id: I.zone1, boundaryIds: Array.from({length: 21}, (_, i) => 'tb-' + i)}), /Choose existing trust boundaries/, 'unknown ids are refused before the count, as before');
+  pass('S1.20: a zone saved with 21 trust boundaries is refused with "A record links up to 20 trust boundaries; 21 were sent." through the server (on rc.10.73.42 a general fault), and twenty are taken');
 });
 
 await block('S1.9 staging; candidate knowledge reaches no topology reading', () => {
