@@ -44,7 +44,51 @@ case first and seen to fail on the head the item started from, a WIP commit afte
   0, sharedPoolBytes empty until item 2 measures S0's row, productionAccepted false). wp2's block `size` and S1.10 keep
   their two checks of M4 and pass unchanged.
 
-State: item 2 in progress. Measured before any change (`node build.mjs` on `5cae40a`): chapters route 3,230,605 B,
+- **Item 2, O2: done.** Cases: S0's block "O2 tracked paths" and wp9a's S1.24 "the tracker stays in its paths",
+  with S1.11 replaced and S1.21 unchanged. Seen to fail on `5cae40a`: the start check refused `trackPaths` as no part
+  of the contract (`.aiw-local/third-fixup/o2-s0-before-1.log`); with the start check and the helper left out, all
+  five server cases failed (`o2-s0-before-2.log`: the record the tracker mended, answering nothing, was not stamped
+  for a person's commit nor for an agent account's; a fabricated answer restamped a record the call did not change;
+  a record the tracker added took the commit's stamp; a stamp the tracker wrote was kept); S1.11 failed ("a part
+  states trackPaths"); S1.24 failed in its three parts (no trackPaths; trackTopology answered the pairs; no
+  `assertTrackerStaysInPaths`) (`o2-wp9a-before*.log`). What was built:
+  - S0 (`design-extension-parts.js`): the part `trackPaths`, start-checked (it needs `track`; a non-empty list of
+    `chapter.collection` paths; none of the package's `lifecycle`, `provenance.records` or `provenance.paths`
+    collections).
+  - S0 (`design-extension-boundary.js trackExtensions`): before each call of a package's tracker the records of its
+    `trackPaths` are copied (by id, in order); after it each record whose JSON the call changed is handed to
+    `provenance.js stampTracked` with the copy as `was`; a record with no copy (one the call added) is no one's; the
+    answer is not read. `stampTracked` stamps through `settle` with a new flag `tracked`: a tracker's call confirms and
+    keeps nothing and marks no draft as a person's edit, and a stamp it wrote is replaced by the copy's; for an added
+    record it removes the author and review stamps. Server only.
+  - S0 (`rc44-s0-readings.mjs`): `assertTrackerStaysInPaths(extension, cases)`: the tracker on a copy of each case's
+    `next`; `prior` unchanged; the journal's earlier events unchanged and its counter moved by the events added; the
+    document outside the package's own keys (design and evidence keys, design row, lifecycle and provenance
+    collections), its `trackPaths` and the journal unchanged; answers `{cases, changed, journalled}`.
+  - wp9a: `trackPaths: ['runtime.zones', 'runtime.placements']` (what the mend changes: a zone's `nodeId` and
+    `domainIds`, a placement's `nodeId`, with their `revision`); `trackTopology` answers nothing (and clones a record
+    only where a restore brought it back); `assembleParts` joins the parts' `trackPaths` in their order, each path once,
+    and its tracker answers nothing.
+  - S1.24 calls `assertTrackerStaysInPaths` on nine cases of the tracker (no topology, the step, a node, a failure
+    domain, a zone and a placement located, a zone and a placement a restore brings back naming what is not there, a
+    proposal kept): the calls mend one zone and one placement and journal seven changes, and nothing else moves.
+  - Mutations, each caught: without the boundary's stamp call, S0 "O2" (person, agent, added, stamp) and S1.21 ("the
+    zone the mend changed is stamped as the commit's") fail; without the `tracked` flag, S0 "O2" fails on the tracker's
+    confirmation stamped as A's review; without the unstamp of an added record, S0 "O2" fails on the added record.
+  - Old -> new (wp9a's suite): S1.11 `j.track()` deep-equal to the parts' `[was, is]` pairs ("the trackers' answers are
+    joined in the parts' order") -> `j.trackPaths` deep-equal to the joined paths, `j.track()` answers `undefined` though
+    the parts answer, and every part's tracker runs in order; S1.11 the registration's keys gain `trackPaths`, with its
+    value asserted. S1.21 is unchanged and green (the boundary now stamps what the mend changes).
+  - The S0 contract text (`s0-extensions.md`: the `track` and `trackPaths` rows and paragraphs, the helpers, a section
+    for this fix-up) and the comments of `design-extensions.js`, `design-extension-boundary.js`, `provenance.js`,
+    `topology.js` and `topology-domain.js` say the same.
+  - Route after item 2 (`node build.mjs`): 3,230,605 B, unchanged: the part's name is in `design-extension-parts.js`,
+    in no client bundle (S0 block 8), and `stampTracked` and `settle` are server-only. In the lazy entry:
+    `topology-domain.js` 20,903 B (unchanged: `trackPaths` added what the retired answer saved) and `topology.js`
+    1,448 -> 1,503 B; S1.10 is red until item 4 re-measures it.
+  - Suites after item 2: S0 28 of 28; wp9a 24 of 25 (S1.10, the pins).
+
+State: item 3 in progress. Measured before any change (`node build.mjs` on `5cae40a`): chapters route 3,230,605 B,
 projects 507,338 B, 148 script files, buckets 53/50/45, stylesheet 901,873 B, no violation.
 
 ## Second fix-up (after the verifier; the lead's rulings M1 to M9, with K and L)
