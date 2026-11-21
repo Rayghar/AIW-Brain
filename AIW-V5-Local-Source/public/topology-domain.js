@@ -235,8 +235,11 @@ export function hostingComparison(p,environmentId){
  return {comparable:!issues.length,zones:zs.map(z=>z.id),issues};
 }
 // Chapter 10's finding for it: one error for each environment whose hosting zones cannot be compared, which no
-// treatment waives (hard): while it stands the chapter is not ready and the review is blocked. It names the zones and
-// what a person does.
+// treatment waives (hard). "Cannot be checked" in ruling L2 is the non-waivable class of rc.10.73.42 and nothing
+// stricter (ruling M3): while it stands it blocks the review and the freeze as every built-in non-waivable error does
+// (fixed before review or carried as an action; no positive review, so a freeze is a working draft), and Chapter 10's
+// own check and handoff keep their built-in rule, which reads no error. One rule for every hard finding, no row of its
+// own. It names the zones and what a person does.
 export function topologyFindings(p){
  if(!topologyTyped(p))return [];
  const zone=id=>refOf(find(p.runtime.zones,id))||id,dom=id=>refOf(find(failureDomains(p),id))||refOf(find(deploymentNodes(p),id))||id,out=[];

@@ -28,7 +28,17 @@ item started from, then the change. (Work in progress; this section is completed
 - **Item 1, M1:** done (`d66c269`), case S1.21.
 - **Item 2, M2:** done, cases in S1.16 (a step dated after the import, a package without finalReview, both; seen to fail
   on `d66c269`: "Missing expected exception: a step dated after the import: architect-a's runtime.node is refused").
-- **Item 3, M3:** in progress, case S1.22.
+- **Item 3, M3:** done, case S1.22 through the server (it holds behaviour unchanged since the slice, so it passes on
+  `df4ff65` as on this head: the ruling is a reading, and the code comment of `topologyFindings` that said only "the
+  review is blocked" now says the reading). The reading of L2: "cannot be checked" is the non-waivable class of
+  rc.10.73.42. Beside the built-in non-waivable `state-protection` error of the same chapter, step by step: the same two
+  treatments and no waiver (the three waivers refused, the package's in ruling A1's words, the built-in in its own),
+  "fix before review" keeps both blockers, the review's checks count them, the findings milestone stays open, a positive
+  review is refused, and a freeze (the job route) is a working draft that holds both; `runtime.review` and
+  `runtime.handoff` are taken while both stand, as their built-in rule reads no error; changing the design removes
+  exactly this blocker. Deviation recorded: L2's words "the chapter cannot be checked ... or handed off" are not built;
+  M3 rules that they mean this class.
+- **Item 4, M4:** in progress.
 
 ## Fix-up (after the adversarial review; the lead's rulings L1 to L11, K1, K2, K6, and K7 to K9 since)
 

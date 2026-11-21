@@ -35,7 +35,7 @@ import worker, {commandHandler} from './worker.js';
 import * as X from './public/design-extensions.js';
 import * as boundary from './design-extension-boundary.js';
 import {storageUpgradeNeeded} from './storage-upgrade.js';
-import {withFinalReview, inheritedFindings, reviewSource, designOf, reviewSourceStamp, reviewDesignStamp, evidenceStamp, CHAPTERS, reviewBlockers} from './public/review-domain.js';
+import {withFinalReview, inheritedFindings, reviewSource, designOf, reviewSourceStamp, reviewDesignStamp, evidenceStamp, CHAPTERS, reviewBlockers, nonWaivable, treatmentsFor, DISPOSITIONS, finalMilestones} from './public/review-domain.js';
 import * as rt from './public/runtime-domain.js';
 import * as runtimeModel from './public/runtime-model.js';
 import {technologyFindings} from './public/technology-domain.js';
@@ -996,6 +996,54 @@ await block('S1.21 the mend drops only what is not there', async () => {
     } finally { h.close(); }
   }
   pass('S1.21: the mend drops only names of records that are absent, retired or a proposal: through the server, for a failure domain AIW proposed and one Sol drafted, kept by B and standing for both zones (named AZ-1 and AZ-2), a template copy after a person takes the step there and commits again, and the agent account\'s draft edit of the domain followed by a person\'s commit, each keep both zones in the domain, and in every state the six findings or the error stand (here the six); a zone and a placement the mend changes are stamped as the commit\'s, a person\'s and an agent account\'s');
+});
+
+// (the lead's ruling M3; the verifier's new problem 3) "Cannot be checked" in ruling L2 is the non-waivable class of
+// rc.10.73.42, and nothing stricter: topology-incomparable blocks the review and the freeze as every built-in
+// non-waivable error does, with no row of its own, and Chapter 10's own check (runtime.review) and its handoff keep their
+// built-in rule, which reads no error. Through the server, beside a built-in non-waivable error of the same chapter
+// (state-protection, the invariant class): step by step the two read and block alike.
+await block('S1.22 the error blocks as every non-waivable error does', async () => {
+  need();
+  const I = F.ids(), h = await F.server(worker), d = () => withFinalReview(h.state.document), ok = (r, why) => assert.equal(r.status, 200, (why || 'accepted') + ': ' + JSON.stringify(r.body).slice(0, 300));
+  const find = code => inheritedFindings(d()).find(f => f.chapter === 10 && f.code === code), blocking = f => reviewBlockers(d()).some(x => x.id === f.id);
+  try {
+    ok(await h.send('runtime.topology-start', {})); const fd = (await h.send('technology.domain', {title: 'Bergen availability zone 1', scope: 'zone', cause: 'location'})).body.selected;
+    ok(await h.send('runtime.locate', {zoneId: I.zone1, domainIds: [fd]}), 'zone 1 typed, zone 2 only named');
+    const mine = find('topology-incomparable'), builtIn = find('state-protection');
+    assert.ok(mine && builtIn, 'the document holds the package\'s error and a built-in non-waivable error of Chapter 10');
+    assert.deepEqual([mine.level, mine.hard, nonWaivable(mine), builtIn.level, nonWaivable(builtIn)], ['error', true, true, 'error', 'invariant'], 'both are in the one non-waivable class');
+    assert.deepEqual(treatmentsFor(mine), ['Fix before review', 'Carry as action']); assert.deepEqual(treatmentsFor(mine), treatmentsFor(builtIn), 'the dialog offers the same treatments for both, and no waiver');
+    assert.deepEqual([blocking(mine), blocking(builtIn)], [true, true], 'both block the review');
+    // Chapter 10's own check and its handoff keep their built-in rule, which reads no error: both are taken while either error stands
+    ok(await h.send('runtime.review', {}), 'runtime.review with both errors standing'); assert.ok(h.state.document.runtime.review?.stamp, 'the chapter\'s check is recorded');
+    ok(await h.send('runtime.handoff', {acknowledge: true}), 'runtime.handoff with both errors standing'); assert.ok(h.state.document.runtime.handoff?.stamp, 'and its handoff');
+    assert.ok(find('topology-incomparable') && find('state-protection'), 'neither check nor handoff clears an error');
+    // no waiver is taken, for either; 'fix before review' is recorded and keeps both blockers
+    const treat = (f, treatment) => h.send('review.disposition', {findingId: f.id, stamp: find(f.code).stamp, treatment, rationale: 'Synthetic.', reviewer: 'A reviewer (synthetic)', reference: 'REF-1', reviewBy: '2099-12-31', reviewed: true});
+    for (const waiver of DISPOSITIONS.filter(t => !treatmentsFor(mine).includes(t))) {
+      const a = await treat(mine, waiver), b = await treat(builtIn, waiver);
+      assert.deepEqual([a.status, b.status], [400, 400], waiver + ' is refused for both');
+      assert.equal(a.error, '“' + mine.title + '” cannot be waived: change the design. Until then, fix it before review or carry it as an action.', 'in the words of ruling A1');
+      assert.match(b.error, /breaks an invariant: change the design\. It cannot be waived; until then, fix it before review or carry it as an action\./, 'and the built-in one in its own words'); }
+    ok(await treat(mine, 'Fix before review')); ok(await treat(builtIn, 'Fix before review'));
+    assert.deepEqual([blocking(mine), blocking(builtIn)], [true, true], 'fix before review keeps both blockers');
+    // the review: its checks count both among the blockers, the findings milestone stays open, and a positive review is refused
+    ok(await h.send('review.checks', {})); assert.equal(h.state.document.finalReview.checks.blockers, reviewBlockers(d()).length, 'the review\'s checks count the blockers, both among them');
+    { const m = finalMilestones(d()).find(x => x.id === 'findings'); assert.deepEqual([m.done, m.detail], [false, reviewBlockers(d()).length + ' still need treatment']); }
+    { const r = await h.send('review.record', {stamp: reviewDesignStamp(d()), outcome: 'Ready with actions / limitations', reviewed: true, reviewer: 'A reviewer (synthetic)', reference: 'REF-1', rationale: 'Synthetic.'}); assert.equal(r.status, 400); assert.match(r.error, /finding treatment before a positive review/, 'no positive review while they need treatment'); }
+    // the freeze: taken as a working draft only, which holds both errors; never as architect reviewed while they block
+    { const requestId = 'wp9a-freeze-' + Date.now().toString(36), started = await h.api('/api/baselines' + h.q + '&action=freeze', 'POST', {requestId, title: 'With the errors standing', reviewed: true, stamp: reviewDesignStamp(d())});
+      assert.equal(started.status, 202, 'the freeze is a job: ' + (await started.clone().text()).slice(0, 300));
+      for (let i = 0, job; ; i++) { await new Promise(resolve => setTimeout(resolve, 50)); job = (await (await h.api('/api/baselines' + h.q + '&action=status&id=' + requestId)).json()).job; if (!['queued', 'running'].includes(job.status)) { assert.equal(job.status, 'completed', JSON.stringify(job).slice(0, 300)); break; } assert.ok(i < 1200, 'the freeze ends'); }
+      await h.read(); const b = h.state.document.finalReview.baselines.at(-1); assert.equal(b.classification, 'Working draft', 'a working draft, not architect reviewed');
+      const whole = await (await h.api('/api/baselines' + h.q + '&action=open&part=whole&id=' + encodeURIComponent(b.id))).json();
+      assert.ok(whole.findings.some(f => f.id === mine.id) && whole.findings.some(f => f.id === builtIn.id), 'it holds both errors'); }
+    // changing the design resolves it: the review then has exactly one blocker fewer, this one
+    const before = reviewBlockers(d()).map(f => f.id); ok(await h.send('runtime.locate', {zoneId: I.zone1, domainIds: []}), 'zone 1 named again');
+    assert.deepEqual(before.filter(id => !reviewBlockers(d()).some(f => f.id === id)), [mine.id], 'the package\'s error is gone and no other blocker moved'); assert.ok(blocking(builtIn));
+  } finally { h.close(); }
+  pass('S1.22: through the server, topology-incomparable reads and blocks as the built-in non-waivable state-protection error of Chapter 10 does, step by step: the same treatments and no waiver (each refused, the package\'s in the words of ruling A1), fix before review keeps both blockers, the review\'s checks count them, no positive review is taken and a freeze is a working draft holding both; runtime.review and runtime.handoff keep their built-in rule, which reads no error, and are taken while both stand; changing the design removes exactly this blocker');
 });
 
 await block('S1.9 staging; candidate knowledge reaches no topology reading', () => {
