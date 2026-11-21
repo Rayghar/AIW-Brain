@@ -917,6 +917,71 @@ await block('S1.20 a list past its limit is answered with its sentence', async (
   pass('S1.20: a zone saved with 21 trust boundaries is refused with "A record links up to 20 trust boundaries; 21 were sent." through the server (on rc.10.73.42 a general fault), and twenty are taken');
 });
 
+// (the lead's ruling M1; the verifier's new problem 1) The mend drops only names of records that are not there: absent,
+// retired or a proposal. A zone or a placement keeps a name while the record is in the design and is no proposal,
+// whoever changed it last: a record a person kept and a draft then changed is standing to the comparison (the draft is
+// a person's to review through the review plan), and so is one a template copy holds. The verifier's two paths, through
+// the server, for a failure domain AIW proposed and for one Sol drafted: in every state the six findings or the error
+// stand. What the mend does change it stamps as the commit's.
+await block('S1.21 the mend drops only what is not there', async () => {
+  need();
+  const I = F.ids(), ch10 = q => CHAPTERS.find(c => c.id === 10).checks(withFinalReview(q)), ids10 = q => ch10(q).map(f => f.id), ERR = 'topology-incomparable:' + I.production;
+  const named = doc(doc(started(), 'runtime.zone', {id: I.zone2, failureDomain: 'AZ-1'}), 'technology.domain-proposals'), six = ids10(named).filter(id => /^(standby|backup-domain|single-domain|isolate)/.test(id) && !id.includes(I.recovery));
+  assert.ok(six.length >= 5 && six.includes('standby:' + I.storePlan) && six.includes('backup-domain:' + I.storePlan), 'the all-named design reads one shared domain: ' + six.join(', '));
+  const held = (q, why) => { const now = ids10(q); assert.ok(six.every(id => now.includes(id)) || ch10(q).find(f => f.id === ERR)?.level === 'error', why + ': the six findings stand, or the error does: ' + now.join(', ')); };
+  const typedIn = (q, fd, why) => { held(q, why); assert.deepEqual([I.zone1, I.zone2].map(id => zoneOf(q, id).domainIds), [[fd], [fd]], why + ': both zones still stand in ' + fd); assert.ok(six.every(id => ids10(q).includes(id)) && !ids10(q).includes(ERR), why + ': the six findings, and no error'); };
+  const ok = (r, why) => assert.equal(r.status, 200, (why || 'accepted') + ': ' + JSON.stringify(r.body).slice(0, 300));
+  for (const kind of ['AIW', 'Sol']) {
+    const h = await F.server(worker), d = () => h.state.document, events = () => d().changes?.events || [];
+    const inProject = async (q, type, payload, as = A) => { const cur = await (await h.api('/api/project' + q, 'GET', null, as)).json(), res = await h.api('/api/commands' + q, 'POST', {revision: cur.revision, command: {type, payload}}, as); return {status: res.status, body: await res.json()}; };
+    const readIn = async q => (await (await h.api('/api/project' + q)).json()).document;
+    try {
+      ok(await h.send('runtime.topology-start', {})); ok(await h.send('runtime.zone', {id: I.zone2, failureDomain: 'AZ-1'})); held(d(), kind + ': all named');
+      let fd;
+      if (kind === 'AIW') { ok(await h.send('technology.domain-proposals', {}, AGENT)); fd = d().technology.domains.find(x => x.title === 'AZ-1' && x.state === 'proposed').id; }
+      else { ok(await h.send('technology.domain', {title: 'AZ-1', scope: 'zone', cause: 'location', origin: 'sol-draft'}, AGENT)); fd = d().technology.domains.at(-1).id; assert.equal(domainOf(d(), fd).state, 'proposed'); }
+      held(d(), kind + ': proposed'); ok(await h.send('record.keep', {id: fd, chapter: 6}, B), 'B keeps it'); held(d(), kind + ': kept by B');
+      ok(await h.send('runtime.locate', {zoneId: I.zone1, domainIds: [fd]})); held(d(), kind + ': zone 1 typed, zone 2 named');
+      ok(await h.send('runtime.locate', {zoneId: I.zone2, domainIds: [fd]})); typedIn(d(), fd, kind + ': both typed');
+      // the zones keep their names AZ-1 and AZ-2: only the typed domain says they share one
+      ok(await h.send('runtime.zone', {id: I.zone2, failureDomain: 'AZ-2'})); typedIn(d(), fd, kind + ': zone 2 named AZ-2 again');
+      // path 2: a template copy of this design; a person takes the step there, then commits again
+      { const cur = await h.read(), r = await h.api('/api/lifecycle' + h.q, 'POST', {action: 'template', enabled: true, revision: cur.revision}); assert.equal(r.status, 200, 'marked as a template'); }
+      const made = await h.api('/api/projects', 'POST', {name: 'Tidewater copy', sourceProjectId: h.pid}); assert.equal(made.status, 201, 'the copy is made');
+      const copy = (await made.json()).document, q2 = '?project=' + encodeURIComponent(copy.id);
+      assert.equal(domainOf(copy, fd).provenance?.reviewed, false, 'the copy holds the domain with its keep reset'); typedIn(copy, fd, kind + ': the template copy');
+      ok(await inProject(q2, 'runtime.topology-start', {}), 'a person takes the step in the copy'); typedIn(await readIn(q2), fd, kind + ': the copy after a person takes the step there');
+      ok(await inProject(q2, 'runtime.locate', {zoneId: I.zone3, reason: 'A later commit in the copy.'})); typedIn(await readIn(q2), fd, kind + ': the copy after a later commit');
+      // path 1: the agent account edits the basis of the domain B kept, as the draft it is; then a person commits again
+      const stamps = () => [I.zone1, I.zone2].map(id => JSON.stringify(zoneOf(d(), id).provenance)), was = stamps(), n = events().length;
+      ok(await h.send('technology.domain', {id: fd, basis: 'Drafted basis.', origin: 'sol-draft'}, AGENT), 'the agent\'s draft edit');
+      assert.deepEqual([domainOf(d(), fd).state, domainOf(d(), fd).provenance?.author?.kind], [undefined, 'sol-draft'], 'the domain is no proposal and is stamped as the draft (ruling H2)');
+      typedIn(d(), fd, kind + ': after the agent\'s draft edit of the domain B kept'); assert.ok(T.hostingComparison(d(), I.production).comparable, 'a record a person kept and a draft changed is standing to the comparison');
+      assert.deepEqual(stamps(), was, 'the mend changed no zone'); assert.ok(!events().slice(n).some(e => e.source?.kind === 'zone'), 'and journalled no drop');
+      ok(await h.send('runtime.locate', {zoneId: I.zone3, reason: 'A later commit.'})); typedIn(d(), fd, kind + ': after a later commit');
+      // the draft is a person's to review through the review plan, as for every record
+      assert.ok(JSON.stringify(reviewPlan(withFinalReview(d()))).includes(fd) || JSON.stringify(reviewPlan(withFinalReview(d()))).includes(domainOf(d(), fd).ref) || reviewPlan(withFinalReview(d())).steps?.some(s => /Sol|draft/i.test(JSON.stringify(s))), 'the review plan asks a person about the draft');
+    } finally { h.close(); }
+  }
+  // what the mend changes is stamped as the commit's: a batch that retires a zone's domain and node and restores the zone
+  for (const as of [A, AGENT]) {
+    const h = await F.server(worker), d = () => h.state.document, events = () => d().changes?.events || [];
+    const batch = async commands => { await h.read(as); return h.send('workspace.apply', {commands, stamp: previewWorkingChange(d(), commands).stamp, reason: 'Moved out and back.', reviewed: as !== AGENT}, as); };
+    try {
+      const sent = {}; for (const [type, payload, key] of [['runtime.topology-start', {}], ['technology.domain', {title: 'Bergen availability zone 2', scope: 'zone', cause: 'location'}, 'fd'], ['runtime.node', {title: 'Bergen AZ 2', kind: 'availability-zone'}, 'az'], ['runtime.node', {title: 'Cluster 2', kind: 'cluster', parentId: 'dn-001'}, 'cluster']]) { const r = await h.send(type, payload); ok(r, type); if (key) sent[key] = r.body.selected; }
+      ok(await h.send('runtime.locate', {zoneId: I.zone2, nodeId: sent.az, domainIds: [sent.fd]}));
+      const placement = d().runtime.placements.find(l => l.planId === I.apiPlan && l.zoneId === I.zone2); ok(await h.send('runtime.locate', {placementId: placement.id, nodeId: sent.cluster}));
+      const plans = [...new Set(d().runtime.placements.filter(l => l.zoneId === I.zone2).map(l => l.planId))], n = events().length, retire = (id, chapter) => ({type: 'record.retire', payload: {id, chapter, reason: 'Moved out for a while.'}});
+      ok(await batch([...plans.map(id => retire(id, 10)), retire(I.zone2, 10), retire(sent.cluster, 10), retire(sent.az, 10), retire(sent.fd, 6), {type: 'record.restore', payload: {id: I.zone2, chapter: 10}}, ...plans.map(id => ({type: 'record.restore', payload: {id, chapter: 10}}))]), as + '\'s batch');
+      const z = zoneOf(d(), I.zone2), l = d().runtime.placements.find(x => x.id === placement.id), drop = events().slice(n).find(e => e.source.id === I.zone2 && e.fields.some(f => f.key === 'domainIds'));
+      assert.ok(drop && !('domainIds' in z) && !('nodeId' in z) && !('nodeId' in l), as + ': the zone and the placement name nothing that is not there');
+      const want = {kind: as === AGENT ? 'sol-draft' : 'person', by: as, at: drop.at};
+      for (const [what, r] of [['the zone', z], ['the placement', l]]) assert.deepEqual([r.provenance?.author?.kind, r.provenance?.author?.by, r.provenance?.author?.at, authorship(r).kind], [want.kind, want.by, want.at, want.kind], as + ': ' + what + ' the mend changed is stamped as the commit\'s');
+    } finally { h.close(); }
+  }
+  pass('S1.21: the mend drops only names of records that are absent, retired or a proposal: through the server, for a failure domain AIW proposed and one Sol drafted, kept by B and standing for both zones (named AZ-1 and AZ-2), a template copy after a person takes the step there and commits again, and the agent account\'s draft edit of the domain followed by a person\'s commit, each keep both zones in the domain, and in every state the six findings or the error stand (here the six); a zone and a placement the mend changes are stamped as the commit\'s, a person\'s and an agent account\'s');
+});
+
 await block('S1.9 staging; candidate knowledge reaches no topology reading', () => {
   need();
   const I = F.ids();
