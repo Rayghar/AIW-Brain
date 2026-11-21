@@ -29,7 +29,7 @@ Resumable: read this file and `git log` first. Suite: `npm run test:rc44-wp1-kno
 | S2.9 | Ruling E1 for the package's types: each of the four types, sent by an agent account, a draft by Sol and an import against a reviewed concept and a released one (36 requests), is refused and leaves the concept's standing, forms, releases, checksums and resolution as they were; a proposal (an agent's too) lowers nothing; a person's retirement is saved with its effect | "Choose a supported knowledge action." |
 | S2.10 | Old documents and S0's helpers: with `p10-knowledge` registered the three references and the document with a review list read as S0's golden of `94dbd4f`; no crosswalk key and no package named until a row is written; a library that holds rows names `p10-knowledge` (ruling D2); the route stub, the server line and the host import exist; `assertStepsMoveNoStamp` (seen red with the design row taken out: "the design fingerprint reads history of KA-0004"), `assertTemplateCopyClearsSteps`, `assertBuiltInTrailsUnchanged`, `assertBuiltInChainsUnchanged`, `assertFindingIdsUnique`; the package conforms and clashes with nobody | "p10-knowledge is registered" |
 | S2.11 | Recovery import: a row's review, in the register and in a release, loses its reviewer (kept as `importedActor`); the recovered project reads the row proposed and resolves nothing | "Choose a supported knowledge action." |
-| S2.12 | Size (rulings A4, M4): 121 B of S2's 250 B as `audit/rc44/evidence/wp1-s2-size.json` books it (`ownBytes`), held through `routeBookings`; 148 scripts, no new file under 10 KB, no stylesheet change; "opens with records" | ENOENT (no evidence) |
+| S2.12 | Size (rulings A4, M4): 118 B of S2's 250 B as `audit/rc44/evidence/wp1-s2-size.json` books it (`ownBytes`), held through `routeBookings`; 148 scripts, no new file under 10 KB, no stylesheet change; "opens with records" | ENOENT (no evidence) |
 
 ## Registration through S0 (ruling E5; the task: "a second-person step stated on the command")
 
@@ -65,7 +65,7 @@ confirms a row no person has stood behind is `knowledge.crosswalk-confirm` (F4);
 
 | Retired | Replaced by | Its readers | Case |
 |---|---|---|---|
-| `MAPPINGS` in `public/knowledge-coverage.js` (a private table from 11 built-in comparison options to 16 catalogue ids) | `BUILT_IN_CROSSWALK`, scheme `aiw-method`, relation `realises`, one row per catalogue id (`public/knowledge-crosswalk.js`; re-exported by `knowledge-concepts.js`) | `knowledgeConceptCoverage`, its only reader, reads the rows | S2.2 (parity for the 16 ids; the table is gone) |
+| `MAPPINGS` in `public/knowledge-coverage.js` (a private table from 11 built-in comparison options to 16 catalogue ids) | the built-in rows of scheme `aiw-method`, relation `realises`, one per catalogue id: `METHOD_CROSSWALK` (`public/knowledge-crosswalk.js`), part of `BUILT_IN_CROSSWALK` (`knowledge-concepts.js`) | `knowledgeConceptCoverage`, its only reader, reads the rows | S2.2 (parity for the 16 ids; the table is gone) |
 | The Playbook's `catalogue` name as an unread second identity (`playbook-knowledge.js`) | 13 proposed rows of the seed, `candidate-sets/crosswalk-seed.json`, for a person to send and a second person to verify | none (it had no reader); S2.7 keeps it so | S2.3, S2.7 |
 | `STYLE_CATALOGUE` as a private table (`design-reasoning.js`) | the same object, exported: the one definition of the five style rows, which `BUILT_IN_CROSSWALK` reads | `styleAlternative` keeps reading it (the design's temporary adapter, until wp2 moves the style decision onto adoptions) | S2.2 |
 
@@ -94,9 +94,15 @@ Not retired: `PHRASES` (lexical retrieval, not identity), component `patternIds`
 5. **Resolution fails closed further than designed:** a released row resolves only while its release is active and as it
    was made (checksum), its copied review stands, its concept is usable as a whole in that release, and this project's
    register does not hold it retired or rejected; an alias two released rows give two concepts resolves nothing.
-6. **`BUILT_IN_CROSSWALK` lives in `public/knowledge-crosswalk.js`** (design: `knowledge-concepts.js`):
-   `knowledge-coverage.js` is a browser module (the knowledge workspace's chunk), and S1.14 holds that no browser module
-   imports `knowledge-concepts.js`. `knowledge-concepts.js` re-exports it.
+6. **`BUILT_IN_CROSSWALK` is assembled in `knowledge-concepts.js`** as designed, from `METHOD_CROSSWALK`
+   (`public/knowledge-crosswalk.js`) and the style rows read from `STYLE_CATALOGUE`: `knowledge-coverage.js` is a
+   browser module (the knowledge workspace's chunk) and S1.14 holds that no browser module imports
+   `knowledge-concepts.js`, so the method rows it reads live in a module of their own. The browser reads no style row:
+   a first build that read `STYLE_CATALOGUE` in the browser moved eight route outputs and two other lazy entries by a
+   few bytes (export and import lists), which broke the typed topology's exact bound on its own lazy entry
+   (`rc44-wp9a-deployment-validate.mjs` S1.10, "22572 B of what the entry adds, at most 22569"). With the style rows on
+   the server and the stub as the list's last line no output of the build moves but the stubs' chunk and the knowledge
+   workspace's entry.
 7. **The method rows are 16, one per catalogue id, relation `realises`** (design: "the eleven method mappings"): a
    comparison option covers its subjects; it is not the identity of any of them (one option names four styles).
 8. **`targetContent` is read from the catalogue record the row points at**: the alias of an `akr` row, the concept
@@ -135,15 +141,15 @@ Not retired: `PHRASES` (lexical retrieval, not identity), component `patternIds`
 
 | | start 5cae40a | this branch | cap |
 |---|---|---|---|
-| chapters route code | 3,230,605 B | 3,230,726 B (**+121 B**: the route stub 118 B, alias and import shifts +3 B) | 3,233,792 B (3,066 B left) |
+| chapters route code | 3,230,605 B | 3,230,723 B (**+118 B**: the route stub; no other route output moved) | 3,233,792 B (3,069 B left) |
 | projects route code | 507,338 B | 507,456 B | 1,242,112 B |
 | script files | 148 | 148 | 148 |
 | files under 10 KB / 10–50 KB / over 50 KB | 53 / 50 / 45 | 52 / 51 / 45 (the stubs' chunk grew past 10 KB: 10,232 -> 10,350 B) | 61 under 10 KB |
 | stylesheet | 901,873 B | 901,873 B | 902,144 B |
-| knowledge workspace entry | 133,731 B | 134,305 B (+574 B: the built-in crosswalk 1,197 B and the design row 69 B, less the table the coverage module no longer holds, 713 B) | 377,856 B |
-| opens with records (D10) | route + 145,006 B in 2 scripts | route + 145,580 B in 2 scripts (3,376,306 B) | – |
+| knowledge workspace entry | 133,731 B | 134,200 B (+469 B: the method rows and the design statement 1,130 B, the registration 69 B, less the table the coverage module no longer holds, 738 B) | 377,856 B |
+| opens with records (D10) | route + 145,006 B in 2 scripts | route + 145,475 B in 2 scripts (3,376,198 B) | – |
 
-wp1: S1 65 B, S2 121 B, 474 B left for S3 of the 660 B. The route bytes are the stub (the package's own, as the contract
+wp1: S1 65 B, S2 118 B, 477 B left for S3 of the 660 B. The route bytes are the stub (the package's own, as the contract
 says) and alias shifts; no reader or command is on the route.
 
 ## Open questions and limits (for the lead)
