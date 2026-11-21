@@ -30,7 +30,21 @@ case first and seen to fail on the head the item started from, a WIP commit afte
 4. O5, re-measured after O2 (O4 needs no code).
 5. The notes, the suites, the final commit.
 
-State: item 1 in progress. Measured before any change (`node build.mjs` on `5cae40a`): chapters route 3,230,605 B,
+- **Item 1, O1: done.** Case: S0's block "O1 the bookings add up" (`rc44-s0-extensions-validate.mjs`, after block 8,
+  whose build it reads). Seen to fail on `5cae40a` (`.aiw-local/third-fixup/o1-before.log`): a negative own figure, a
+  pool item two files book, a negative pool item in a package's file and bytes of the lead's own were all accepted, a
+  figure that is no integer was refused in other words, and the merge check did not exist. Now `rc44-s0-readings.mjs`
+  `routeBookings` refuses each, naming the file (an own figure is an integer of at least 0; a pool item is an integer
+  one file books; a negative pool item only in `lead-bookings-size.json`, whose own figure is 0), and answers `own` for
+  every file beside `others`; `assertBookingsAddUp(route, base, dir)` is the lead's merge check: the route less the
+  integrated base (3,229,840 B at `9673661`) is every file's own bytes plus the pool's, exactly, or it fails naming each
+  file's figure. The block holds it on this build (765 = 0 + 325 + 342 + 98) and sees it fail for a stale figure (each
+  package file's own figure changed by one byte, in turn), a foreign file with bytes, a foreign pool item and a negative
+  pool item of the lead's that no build shows. `audit/rc44/evidence/lead-bookings-size.json` exists (schema v3, ownBytes
+  0, sharedPoolBytes empty until item 2 measures S0's row, productionAccepted false). wp2's block `size` and S1.10 keep
+  their two checks of M4 and pass unchanged.
+
+State: item 2 in progress. Measured before any change (`node build.mjs` on `5cae40a`): chapters route 3,230,605 B,
 projects 507,338 B, 148 script files, buckets 53/50/45, stylesheet 901,873 B, no violation.
 
 ## Second fix-up (after the verifier; the lead's rulings M1 to M9, with K and L)

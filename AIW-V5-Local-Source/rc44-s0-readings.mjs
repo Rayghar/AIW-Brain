@@ -103,21 +103,42 @@ export function assertFindingIdsUnique(p) {
 // stub loads ('public/architecture-task-ui.js'), `dataNames` the data modules the gate sets apart from code
 // (Object.keys(BUDGET.data) of client-bundle.mjs). It answers {route, added, total, files}: the route as the gate
 // counts it, what the lazy entry adds to it, their sum, and how many scripts the entry adds.
-// routeBookings(ownFile) (the lead's rulings K6 and M4 of 2026-11-21): the chapters-route bytes the rc44 size evidence
-// books, read from every audit/rc44/evidence/*-size.json: each package's own, as its evidence records it at its own head
-// (ownBytes, or the delta of a file that books the whole of its growth to its package), and the shared pool's
-// (sharedPoolBytes, {item: bytes}, in whichever file records the change). A package's size case holds that the route's
-// growth against the integrated base, less every other package's own bytes and less the shared pool's, is inside its
-// allowance. Answers {others: {file: bytes}, pool: {file:item: bytes}, othersTotal, poolTotal}.
+// routeBookings(ownFile) (the lead's rulings K6, M4 and O1 of 2026-11-21): the chapters-route bytes the rc44 size
+// evidence books, read from every audit/rc44/evidence/*-size.json: each package's own, as its evidence records it at its
+// own head (ownBytes, or the delta of a file that books the whole of its growth to its package), an integer of at least
+// 0 (a slice that adds nothing to the route books 0), and the shared pool's (sharedPoolBytes, {item: bytes}, in
+// whichever file records the change), each item an integer that one file books. A negative pool item is the lead's
+// alone, in the lead's own file (LEAD_BOOKINGS, which books nothing of its own: ownBytes 0), for what merging packages
+// adds or saves together (ruling N1: stub bytes are not additive). A package's size case holds that the route's growth
+// against the integrated base, less every other package's own bytes and less the shared pool's, is inside its
+// allowance. Answers {own: {file: bytes} of every file, others: {file: bytes} but ownFile's, pool: {file:item: bytes},
+// othersTotal, poolTotal}; refuses, naming the file, what it cannot trust.
+export const LEAD_BOOKINGS = 'lead-bookings-size.json';
 export function routeBookings(ownFile, dir = 'audit/rc44/evidence') {
-  const out = {others: {}, pool: {}, othersTotal: 0, poolTotal: 0};
+  const out = {own: {}, others: {}, pool: {}, othersTotal: 0, poolTotal: 0}, booked = new Map();
   for (const name of readdirSync(dir).filter(f => /-size\.json$/.test(f)).sort()) {
-    const file = dir + '/' + name, e = JSON.parse(readFileSync(file, 'utf8')), own = e.ownBytes ?? e.delta;
-    if (!Number.isInteger(own)) throw Error(file + ' states no route bytes of its own (ownBytes, or delta).');
-    if (file !== ownFile) { out.others[file] = own; out.othersTotal += own; }
-    for (const [item, bytes] of Object.entries(e.sharedPoolBytes || {})) { if (!Number.isInteger(bytes)) throw Error(file + ': the shared pool\'s ' + item + ' is no count of bytes.'); out.pool[file + ':' + item] = bytes; out.poolTotal += bytes; }
+    const file = dir + '/' + name, e = JSON.parse(readFileSync(file, 'utf8')), own = e.ownBytes ?? e.delta, lead = name === LEAD_BOOKINGS;
+    if (!Number.isInteger(own) || own < 0) throw Error(file + ' states no route bytes of its own (ownBytes, or delta): an integer of at least 0, not ' + JSON.stringify(own) + '.');
+    if (lead && own !== 0) throw Error(file + ' is the lead\'s: it books the shared pool only (ownBytes 0), not ' + own + '.');
+    out.own[file] = own; if (file !== ownFile) { out.others[file] = own; out.othersTotal += own; }
+    if (e.sharedPoolBytes !== undefined && !(e.sharedPoolBytes && typeof e.sharedPoolBytes === 'object' && !Array.isArray(e.sharedPoolBytes))) throw Error(file + ': the shared pool\'s bytes are {item: bytes}.');
+    for (const [item, bytes] of Object.entries(e.sharedPoolBytes || {})) {
+      if (!Number.isInteger(bytes)) throw Error(file + ': the shared pool\'s ' + item + ' is no count of bytes.');
+      if (bytes < 0 && !lead) throw Error(file + ': the shared pool\'s ' + item + ' is ' + bytes + ' B: a negative pool item is the lead\'s alone, in ' + LEAD_BOOKINGS + '.');
+      if (booked.has(item)) throw Error('The shared pool\'s ' + item + ' is booked twice: by ' + booked.get(item) + ' and by ' + file + '. One file books each item.');
+      booked.set(item, file); out.pool[file + ':' + item] = bytes; out.poolTotal += bytes;
+    }
   }
   return out;
+}
+// assertBookingsAddUp(route, base, dir) (the lead's merge check, ruling O1): on a build, the chapters route
+// (routes.chapters.code) less the integrated base ({commit, chapters}) is every size file's own bytes plus the shared
+// pool's, exactly. A stale, foreign or mistyped file fails it, and the failure names each file's figure. Answers
+// {grew, own, pool}.
+export function assertBookingsAddUp(route, base, dir = 'audit/rc44/evidence') {
+  const b = routeBookings(null, dir), own = Object.values(b.own).reduce((n, x) => n + x, 0), grew = route - base.chapters;
+  if (grew !== own + b.poolTotal) throw Error('The bookings do not add up: the chapters route grew ' + grew + ' B against ' + base.commit + ' (' + route + ' - ' + base.chapters + '), and the size files book ' + (own + b.poolTotal) + ' B: ' + Object.entries(b.own).map(([f, n]) => f.split('/').pop() + ' ' + n + ' B of its own').join(', ') + '; the shared pool ' + b.poolTotal + ' B (' + (Object.entries(b.pool).map(([k, n]) => k.split('/').pop() + ' ' + n + ' B').join(', ') || 'no item') + '). A size file is stale, foreign or mistyped: measure it again at its own head.');
+  return {grew, own, pool: b.poolTotal};
 }
 export function opensWithRecords(metafile, entry, dataNames = []) {
   const outputs = metafile.outputs, scripts = Object.keys(outputs).filter(f => f.endsWith('.js'));

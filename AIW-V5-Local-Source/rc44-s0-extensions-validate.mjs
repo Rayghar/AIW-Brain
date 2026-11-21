@@ -21,7 +21,7 @@
 // the command types of the four designs that will register here are free, and every built-in one is taken.
 // Run: npm run test:rc44-s0-extensions
 import assert from 'node:assert/strict';
-import {readFileSync, existsSync, writeFileSync, mkdirSync, readdirSync} from 'node:fs';
+import {readFileSync, existsSync, writeFileSync, mkdirSync, readdirSync, rmSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import * as R from './rc44-s0-readings.mjs';
@@ -1424,10 +1424,11 @@ await block('7 idempotent and order-free', () => {
 // 94dbd4f. Later slices add to the route, so the suite compares its own build with the evidence only when asked
 // (AIW_S0_MEASURE=1, at the slice's own commit); the gates and the slice's recorded delta are checked always.
 const BASELINE = {commit: '94dbd4f', chapters: 3228863, projects: 506102, scripts: 148, under10k: 53, css: 901873}, EVIDENCE = 'audit/rc44/build-notes/s0-size.json';
+let clientBuilt = null; // the build of block 8, which the lead's merge check below reads
 await block('8 client build', async () => {
   need();
   const {bundleClient, BUDGET} = await import('./client-bundle.mjs');
-  const out = '.aiw-local/rc44-s0/client', built = await bundleClient(out), report = built.report;
+  const out = '.aiw-local/rc44-s0/client', built = clientBuilt = await bundleClient(out), report = built.report;
   assert.deepEqual(report.violations, [], 'the client build passes every size gate');
   assert.equal(BUDGET.routes.chapters, 3233792, 'the chapters route cap is the one it was'); assert.equal(BUDGET.routes.projects, 1213 * 1024); assert.equal(BUDGET.scripts, 148); assert.equal(BUDGET.tiny, 61); assert.equal(BUDGET.css, 881 * 1024);
   const meta = JSON.parse(readFileSync(built.metafile, 'utf8')), on = Object.values(meta.outputs).flatMap(o => Object.entries(o.inputs || {})).filter(([i]) => i === 'public/design-extensions.js');
@@ -1461,6 +1462,51 @@ await block('8 client build', async () => {
   assert.ok(measured.chapters >= size.slice.chapters - 700, 'the route as built now is the slice\'s or a later one\'s: ' + measured.chapters);
   if (process.env.AIW_S0_MEASURE || process.argv.includes('--measure')) assert.deepEqual(measured, size.slice, 'at the slice\'s commit the build measures what the evidence says');
   pass('8: the client build passes every gate with the caps unchanged; S0 measured ' + size.delta + ' B on the chapters route (' + size.baseline.chapters + ' → ' + size.slice.chapters + ' of ' + BUDGET.routes.chapters + '), 148 script files; the registry is ' + on[0][1].bytesInOutput + ' B; this build: ' + measured.chapters + ' B');
+});
+
+// ---------------------------------------------------------------- O1. the bookings are checked, not trusted
+// (the lead's ruling O1 of 2026-11-21; new problem 1 of the second verifier of wp9a slice 1) Every rc44 size file
+// (audit/rc44/evidence/*-size.json) books route bytes: a package's own (ownBytes, or delta), an integer of at least 0
+// (a slice that adds nothing to the route books 0), and the shared pool's items (sharedPoolBytes), each an integer that
+// one file books. A negative pool item is the lead's alone, in the lead's own file (lead-bookings-size.json, ownBytes
+// 0), which books what merging packages adds or saves together (ruling N1: stub bytes are not additive) and S0's rows
+// a package's slice needed. The lead's merge check, beside the build: on this build the chapters route less the
+// integrated base (3,229,840 B at 9673661) is every file's own bytes plus the pool's, exactly, so a stale, foreign or
+// mistyped file fails loudly, naming each file's figure (rc44-s0-readings.mjs routeBookings, assertBookingsAddUp).
+const INTEGRATED = {commit: '9673661', chapters: 3229840}, BOOKINGS = 'audit/rc44/evidence', LEAD_FILE = BOOKINGS + '/lead-bookings-size.json';
+await block('O1 the bookings add up', async () => {
+  // hostile evidence, each in a scratch copy of the evidence directory: every one is refused, in its own words
+  const scratch = (name, files) => { const dir = '.aiw-local/rc44-s0/bookings/' + name; rmSync(dir, {recursive: true, force: true}); mkdirSync(dir, {recursive: true});
+    for (const f of readdirSync(BOOKINGS).filter(f => /-size\.json$/.test(f))) writeFileSync(dir + '/' + f, readFileSync(BOOKINGS + '/' + f, 'utf8'));
+    for (const [f, edit] of Object.entries(files)) { const at = dir + '/' + f, was = existsSync(at) ? JSON.parse(readFileSync(at, 'utf8')) : {schema: 'aiw.rc44.slice-size.v3', name: 'a file of no package of this build'}; writeFileSync(at, JSON.stringify(edit(was), null, 1) + '\n'); }
+    return dir; };
+  const misses = [], refused = (why, dir, words) => { try { R.routeBookings(null, dir); misses.push(why + ': accepted'); } catch (e) { if (!words.test(e.message)) misses.push(why + ': refused in other words: ' + e.message); } };
+  refused('a negative own figure', scratch('negative-own', {'zz-foreign-size.json': e => ({...e, ownBytes: -300})}), /zz-foreign-size\.json states no route bytes of its own \(ownBytes, or delta\): an integer of at least 0, not -300\./);
+  refused('an own figure that is no integer', scratch('fraction-own', {'zz-foreign-size.json': e => ({...e, ownBytes: 1.5})}), /zz-foreign-size\.json states no route bytes of its own \(ownBytes, or delta\): an integer of at least 0, not 1\.5\./);
+  refused('an own figure written as text', scratch('text-own', {'wp9a-s1-size.json': e => ({...e, ownBytes: String(e.ownBytes)})}), /wp9a-s1-size\.json states no route bytes of its own \(ownBytes, or delta\): an integer of at least 0, not "342"\./);
+  refused('a pool item two files book', scratch('twice', {'zz-foreign-size.json': e => ({...e, ownBytes: 0, sharedPoolBytes: {baselineDefectFmtL10: 34}})}), /The shared pool's baselineDefectFmtL10 is booked twice: by \S+wp9a-s1-size\.json and by \S+zz-foreign-size\.json\. One file books each item\./);
+  refused('a negative pool item in a package\'s file', scratch('foreign-negative', {'zz-foreign-size.json': e => ({...e, ownBytes: 0, sharedPoolBytes: {sharedOnce: -46}})}), /zz-foreign-size\.json: the shared pool's sharedOnce is -46 B: a negative pool item is the lead's alone, in lead-bookings-size\.json\./);
+  refused('a pool item that is no count of bytes', scratch('pool-text', {'zz-foreign-size.json': e => ({...e, ownBytes: 0, sharedPoolBytes: {sharedOnce: '46'}})}), /zz-foreign-size\.json: the shared pool's sharedOnce is no count of bytes\./);
+  refused('the lead\'s file stating bytes of its own', scratch('lead-own', {'lead-bookings-size.json': e => ({...e, ownBytes: 5})}), /lead-bookings-size\.json is the lead's: it books the shared pool only \(ownBytes 0\), not 5\./);
+  assert.deepEqual(misses, [], 'routeBookings refuses each: ' + misses.join(' | '));
+  // the lead's own file may book a negative pool item, which the merge check then holds to the build like any other
+  { const dir = scratch('lead-negative', {'lead-bookings-size.json': e => ({...e, sharedPoolBytes: {...e.sharedPoolBytes, sharedOnceN1: -46}})}); assert.equal(R.routeBookings(null, dir).pool[dir + '/lead-bookings-size.json:sharedOnceN1'], -46, 'a negative pool item in the lead\'s own file is read'); }
+  // the lead's merge check, on this build
+  const {assertBookingsAddUp} = R; assert.equal(typeof assertBookingsAddUp, 'function', 'rc44-s0-readings.mjs states the lead\'s merge check (assertBookingsAddUp)');
+  const route = (clientBuilt || await (await import('./client-bundle.mjs')).bundleClient('.aiw-local/rc44-s0/client')).report.routes.chapters.code;
+  assert.ok(existsSync(LEAD_FILE), 'the lead\'s own file exists (' + LEAD_FILE + ')'); const lead = JSON.parse(readFileSync(LEAD_FILE, 'utf8'));
+  assert.deepEqual([lead.schema, lead.ownBytes, lead.productionAccepted, typeof lead.name, typeof lead.whatWasMeasured, lead.bases?.integrated?.commit, lead.bases?.integrated?.chapters], ['aiw.rc44.slice-size.v3', 0, false, 'string', 'string', INTEGRATED.commit, INTEGRATED.chapters], 'the lead\'s file is a size file like the others, with no bytes of its own');
+  const real = assertBookingsAddUp(route, INTEGRATED);
+  assert.equal(real.grew, route - INTEGRATED.chapters); assert.equal(real.grew, real.own + real.pool, 'the route\'s growth is every file\'s own bytes plus the pool\'s');
+  // a stale figure: each file's own figure changed by one byte, in turn, fails, naming each file's figure
+  const own = R.routeBookings(null, BOOKINGS).own; assert.ok(Object.keys(own).length >= 3, 'the files of the build\'s packages and the lead\'s: ' + JSON.stringify(own));
+  // (the lead's own figure is 0 by rule: a changed one is refused above)
+  for (const file of Object.keys(own).filter(f => !f.endsWith('/lead-bookings-size.json'))) { const name = file.split('/').pop(), key = name === 'wp2-s1-size.json' && !('ownBytes' in JSON.parse(readFileSync(file, 'utf8'))) ? 'delta' : 'ownBytes', dir = scratch('stale-' + name.replace(/\.json$/, ''), {[name]: e => ({...e, [key]: e[key] + 1})});
+    assert.throws(() => assertBookingsAddUp(route, INTEGRATED, dir), e => { assert.match(e.message, /^The bookings do not add up: the chapters route grew \d+ B against 9673661 \(\d+ - 3229840\), and the size files book \d+ B: /, name + ' stale: ' + e.message); for (const [f, n] of Object.entries(own)) assert.ok(e.message.includes(f.split('/').pop() + ' ' + (f === file ? n + 1 : n) + ' B of its own'), name + ' stale: the failure names ' + f + '\'s figure: ' + e.message); return true; }, name + ' changed by one byte'); }
+  // a foreign file that books bytes, and one that books a pool item, fail the check too
+  for (const [why, files] of [['a foreign file with bytes of its own', {'zz-foreign-size.json': e => ({...e, ownBytes: 300})}], ['a foreign pool item', {'zz-foreign-size.json': e => ({...e, ownBytes: 0, sharedPoolBytes: {strayItem: 12}})}], ['the lead\'s negative pool item that no build shows', {'lead-bookings-size.json': e => ({...e, sharedPoolBytes: {...e.sharedPoolBytes, sharedOnceN1: -46}})}]])
+    assert.throws(() => assertBookingsAddUp(route, INTEGRATED, scratch('add-' + why.replace(/\W+/g, '-'), files)), /^Error: The bookings do not add up: /, why);
+  pass('O1: routeBookings refuses an own figure that is no integer of at least 0, a pool item two files book, a negative pool item outside the lead\'s own file and bytes of the lead\'s own; the lead\'s merge check holds on this build (the chapters route ' + route + ' B less the integrated base ' + INTEGRATED.chapters + ' B: ' + real.grew + ' B = ' + Object.entries(own).map(([f, n]) => f.split('/').pop() + ' ' + n).join(' + ') + ' + the shared pool ' + real.pool + '), and a stale figure (each file\'s own changed by one byte), a foreign file and a foreign pool item each fail it, naming each file\'s figure');
 });
 
 // ---------------------------------------------------------------- L1. keeping a proposal is a signed-in person's step
