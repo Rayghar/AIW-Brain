@@ -86,7 +86,8 @@ export function upgradeAdoptions(p){
  for(const t of tasks)if(due(p,t)){
   // a task that lost its pointer is linked again to the adoption written from it; one whose adoption is gone is upgraded again
   const mine=adoptions.records.find(a=>a?.legacy?.taskId===t.id&&!tasks.some(o=>o!==t&&o.adoptionId===a.id));
-  if(mine)t.adoptionId=mine.id;else{const a=fromTask(p,t,'ADP-'+String(++adoptions.counter).padStart(3,'0'),typeOf);adoptions.records.push(a);t.adoptionId=a.id;}
+  // (an id a record of the document already holds is never minted: the counter moves past it)
+  if(mine)t.adoptionId=mine.id;else{let id;do id='ADP-'+String(++adoptions.counter).padStart(3,'0');while(typeOf(id)||adoptions.records.some(a=>a?.id===id));const a=fromTask(p,t,id,typeOf);adoptions.records.push(a);t.adoptionId=a.id;}
  }
  return {...p,coauthoring:{...p.coauthoring,designTasks:tasks},adoptions};
 }

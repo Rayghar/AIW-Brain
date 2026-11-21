@@ -1076,6 +1076,8 @@ await block('SF start check', () => {
   assert.ok(has({id: 'xy', prefixes: {component: 'XCO'}}, /prefixes: “component” stands on the built-in layer “component”: a package adds no record of that type/), 'only a type that stands on no built-in layer (ruling D7.2)');
   assert.ok(has({id: 'xy', prefixes: {actor: 'XAC'}}, /prefixes: “actor” is a type of Chapter 1 records/)); assert.ok(has({id: 'xy', prefixes: {nosuch: 'XNS'}}, /prefixes: “nosuch” is no built-in object type/));
   assert.ok(has({id: 'xy', objectTypes: kind('XY'), prefixes: {xy: 'XYZ'}}, /prefixes: “xy” is the package.s own type: its prefix is stated with the type/));
+  // (the verifier of wp2 S1) a name every object inherits is no built-in object type
+  for (const type of ['constructor', 'toString', 'hasOwnProperty', '__proto__', 'valueOf']) assert.ok(has({id: 'xy', prefixes: JSON.parse('{"' + type + '":"XCN"}')}, /is no built-in object type/), 'prefixes: the inherited name “' + type + '” is refused');
   const retired = ['technology.keep-seed', 'technology.dismiss-seed', 'technology.restore-seed', 'interfaces.keep-seed', 'interfaces.dismiss-seed', 'interfaces.restore-seed', 'interfaces.remove-contract', 'runtime.keep-seed', 'runtime.dismiss-seed', 'runtime.restore-seed', 'runtime.remove-plan', 'runtime.remove-path'];
   for (const type of retired) { assert.ok(canonical.isRetiredCommand(type)); assert.equal(boundary.builtInType(type), true, type + ' is a retired name the workbench still reads'); assert.ok(has({id: 'xy', commands: {[type]: {apply() {}}}}, /is built in/)); }
   // before the server has said which types are built in, none is free (a package's command is then unknown, never applied)

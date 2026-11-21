@@ -41,6 +41,8 @@ export const ADOPTION_LIMITS=Object.freeze({records:60,deviations:20,text:2000,h
 export const adoptionRecords=p=>list(p?.adoptions?.records);
 export const adoption=(p,id)=>adoptionRecords(p).find(a=>a?.id===id)||null;
 const applied=a=>a?.status==='applied';
+// The standings this build writes (applied, and reversed with its design); any other is a hand-made or foreign document's.
+const STATUSES=['applied','reversed'];
 const words=(v,what)=>{if(typeof v!=='string'||!v.trim())throw Error(what);if(v.length>ADOPTION_LIMITS.text)throw Error('Use at most '+ADOPTION_LIMITS.text+' characters ('+v.length+' were sent); nothing is cut.');return v.trim();};
 const name=a=>a.id+' · '+(a.title||a.definition?.definitionId||'applied mechanism');
 // The task an upgraded adoption was written from, while the document still holds it.
@@ -163,7 +165,7 @@ function read(p,a){
   :!subject.actor?'No person stands behind '+a.id+' in this project: a signed-in person reads it against the model and confirms it as it stands; then a second signed-in person accepts it.'
   :change?'A record '+a.id+' rests on has changed: a signed-in person reads it against the model again and confirms it; then '+second+'.'
   :a.confirmed||a.provenance?.author?.kind==='person'?second[0].toUpperCase()+second.slice(1)+'.':'A signed-in person reads '+a.id+' against the model and confirms it as it stands; then '+second+'.';
- const label=!live?String(a.status):accepted?'applied · accepted by '+a.review.actor:!a.applied&&!subject.actor?'applied in another project · not applied or accepted in this project':'applied · not accepted by a second person';
+ const label=!live?(STATUSES.includes(a.status)?String(a.status):'not a standing this build reads (“'+String(a.status).slice(0,40)+'”)'):accepted?'applied · accepted by '+a.review.actor:!a.applied&&!subject.actor?'applied in another project · not applied or accepted in this project':'applied · not accepted by a second person';
  const findings=[],finding=(code,level,title,detail)=>findings.push({id:code+':'+a.id,code,title,detail,level,objectId:a.id});
  if(live){
   const deviates=id=>deviations.some(d=>d.target?.kind==='role'&&d.target.id===id),rests=ids=>{const os=list(a.obligations).filter(o=>list(o.targetIds).some(id=>ids.includes(id))).map(o=>o.id);return os.length?' Its obligation'+(os.length>1?'s ':' ')+os.join(', ')+' rest'+(os.length>1?'':'s')+' on it.':'';};
@@ -216,6 +218,8 @@ export function adoptionDesign(p){
 export function emitAdoptions(p,add,rel,has){
  for(const a of adoptionRecords(p)){
   const live=applied(a),source=live?'adoptions.records.':'adoptions.past.',seen=new Set();
+  // (an id another record of the document holds is that record's: the adoption is no object beside it, and states no relation from it)
+  if(has(a.id))continue;
   add(a,'pattern','adoptions.records.'+a.id);
   const to=(type,id,field,attributes)=>{if(id&&!seen.has(id)&&has(id)){seen.add(id);rel(type,a.id,id,attributes?{source:source+field,attributes}:{source:source+field});}};
   to('addresses',a.scope?.requirementId,'scope');to('assesses',a.scope?.driverId,'scope');

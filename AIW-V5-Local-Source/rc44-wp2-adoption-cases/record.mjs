@@ -117,6 +117,16 @@ export default async function ({block, pass, load}) {
     assert.equal(U.needsAdoptionUpgrade(before), true); assert.equal(extensionUpgradeNeeded(before), true);
     const after = U.upgradeAdoptions(before);
     assert.notEqual(after, before); assert.equal(JSON.stringify(before), text, 'the document handed in is left as it was');
+    // (the verifier) an id a record of the document already holds is not minted: the adoption is an object of its own, and no relation is stated from another record
+    { const held = structuredClone(before), twin = {...held.realisation.components[0], id: 'ADP-001', title: 'A component that happens to carry the id'}; held.realisation.components.push(twin);
+      const up = U.upgradeAdoptions(held), ids = records(up).map(a => a.id); assert.deepEqual(ids, ['ADP-002', 'ADP-003', 'ADP-004'], 'the upgrade skips the id a component holds: ' + ids);
+      const G = recordGraph(up); for (const id of ids) assert.equal(G.objects.get(id)?.type, 'pattern', id + ' is the adoption'); assert.equal(G.objects.get('ADP-001')?.type, 'component');
+      assert.ok(!G.relationships.some(r => r.from === 'ADP-001' && ['binds', 'addresses', 'assesses', 'scopes'].includes(r.type)), 'no relation of an adoption is stated from the component');
+      // and a record that takes an adoption's id afterwards does not lend the adoption its relations: the adoption is no object while the id is another record's
+      const later = structuredClone(after); later.realisation.components.push({...later.realisation.components[0], id: 'ADP-002', title: 'Named like an adoption'}); const L = recordGraph(later);
+      assert.equal(L.objects.get('ADP-002')?.type, 'component'); assert.ok(!L.relationships.some(r => r.from === 'ADP-002' && ['binds', 'addresses', 'assesses', 'scopes'].includes(r.type)), 'no relation is stated from the record that holds the id'); }
+    // (the verifier) a status this build does not write is read as what it is: not a standing this build reads
+    { const odd = structuredClone(after); byId(odd, 'ADP-001').status = 'accepted'; const g = D.adoptionReading(odd, byId(odd, 'ADP-001')); assert.equal(g.accepted, false); assert.equal(g.label, 'not a standing this build reads (“accepted”)'); }
     assert.equal(JSON.stringify(U.upgradeAdoptions(bankPaymentApplied())), JSON.stringify(after), 'the step is deterministic'); assert.equal(U.upgradeAdoptions(after), after, 'and idempotent: the upgraded document needs none'); assert.equal(U.needsAdoptionUpgrade(after), false);
     assert.deepEqual({schemaVersion: after.adoptions.schemaVersion, definition: after.adoptions.definition, counter: after.adoptions.counter}, {schemaVersion: 1, definition: 1, counter: 3});
     assert.deepEqual(records(after).map(a => a.id), ['ADP-001', 'ADP-002', 'ADP-003']);
@@ -245,6 +255,7 @@ export default async function ({block, pass, load}) {
     assert.ok(list(requirementTrace(after, 'REQ-004').layers.mechanism).includes('ADP-002')); assert.ok(list(requirementTrace(after, 'REQ-001').layers.mechanism).includes('ADP-003'));
     assert.equal(requirementTrace(before, 'REQ-005').layers.mechanism, undefined, 'a document without adoptions has no such layer on any trail: a task the built-in emitter states stands on none');
     assert.ok(assertBuiltInTrailsUnchanged(before, after) > 0, 'the built-in layers of every trail and spine hold what they held');
+    { const t0 = Date.now(), n = R.assertBuiltInChainsUnchanged(before, after); assert.ok(n > 1000, 'the chain that explains each pair of built-in records is the one the document gave before its adoptions (ruling K8): ' + n + ' chains'); if (process.env.AIW_WP2_VERBOSE) console.log('  chains compared: ' + n + ' in ' + (Date.now() - t0) + ' ms'); }
     assert.equal(requirementSpine(after, 'REQ-005').layers.mechanism, undefined, 'the mechanism is context on a trail: no spine holds it, so no governance check reads it');
     assertFindingIdsUnique(after);
     // the provenance reader reads the records (ruling D5 prints them); none carries an author stamp

@@ -162,7 +162,7 @@ function fingerprintReads(key) {
 // The package as registered under the id, when `e` is that registration (its rows are then in the tables already).
 const registered = e => EXTENSIONS.find(x => x.id === e?.id) || null;
 // A built-in object type: in the table, and not as a registered package states it (the table keeps a package's entry itself).
-const builtInKind = type => type in OBJECT_TYPES && !EXTENSIONS.some(x => plain(x.objectTypes) && x.objectTypes[type] === OBJECT_TYPES[type]);
+const builtInKind = type => Object.hasOwn(OBJECT_TYPES, type) && !EXTENSIONS.some(x => plain(x.objectTypes) && x.objectTypes[type] === OBJECT_TYPES[type]);
 // Whether two keys (a key of the document, or container.key) are one key, or one is the container of the other.
 const overKey = (a, b) => a === b || !a.includes('.') && b.split('.')[0] === a || !b.includes('.') && a.split('.')[0] === b;
 // The id prefixes of the workbench's own records, journals and codes (2 to 5 capitals before the hyphen): one

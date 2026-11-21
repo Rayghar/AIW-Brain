@@ -3,7 +3,7 @@
 // the Matrix (model-matrix.js) and the SDD journey line (sdd-architecture.js). Kept apart from the kernel so that a
 // route reading only requirement trails and the chapters' sources does not load it. Pure; nothing here changes the
 // project.
-import {traceGraph, requirementTrace, walk, walkBack, traceOf} from './trace-kernel.js';
+import {traceGraph, requirementTrace, walk, walkBack, traceOf, BUILT_IN_LAYERS} from './trace-kernel.js';
 import {remember} from './document-memo.js';
 
 const joinHops = (into, from) => { for (const [k, hs] of from) { const xs = into.get(k) || []; for (const h of hs) if (!xs.some(x => x.relation === h.relation && x.from === h.from)) xs.push(h); into.set(k, xs); } };
@@ -31,13 +31,19 @@ const nextOf = T => { let m = onward.get(T); if (!m) { onward.set(T, m = new Map
 // what reaches the start).
 export function tracePath(T, id) {
   if (!T || !T.has(id) || id === T.start) return [];
-  const next = nextOf(T), prev = new Map([[T.start, null]]), queue = [T.start];
+  // A chain runs through the built-in layers when one exists (rc44; the lead's ruling K8): a record a design package
+  // puts on a layer of its own is a way between two records only when there is no other, so a document reads the pairs
+  // of its built-in records as it did before it held such a record.
+  return chain(T, id, x => x === id || BUILT_IN_LAYERS.includes(T.layerOf(x))) || chain(T, id) || [];
+}
+function chain(T, id, open) {
+  const next = nextOf(T), prev = new Map([[T.start, null]]), queue = [T.start], reach = (to, at, step) => { if (!prev.has(to) && (!open || open(to))) { prev.set(to, {at, step}); queue.push(to); } };
   while (queue.length && !prev.has(id)) {
     const x = queue.shift();
-    for (const {to, h} of next.get(x) || []) if (!prev.has(to)) { prev.set(to, {at: x, step: {from: x, to, type: h.type, relation: h.relation, source: h.source}}); queue.push(to); }
-    for (const h of T.hops.get(x) || []) if (!prev.has(h.from)) { prev.set(h.from, {at: x, step: {from: h.from, to: x, type: h.type, relation: h.relation, source: h.source}}); queue.push(h.from); }
+    for (const {to, h} of next.get(x) || []) reach(to, x, {from: x, to, type: h.type, relation: h.relation, source: h.source});
+    for (const h of T.hops.get(x) || []) reach(h.from, x, {from: h.from, to: x, type: h.type, relation: h.relation, source: h.source});
   }
-  if (!prev.has(id)) return [];
+  if (!prev.has(id)) return null;
   const path = []; for (let at = id; prev.get(at); at = prev.get(at).at) path.unshift(prev.get(at).step);
   return path;
 }
