@@ -35,7 +35,7 @@ import worker, {commandHandler} from './worker.js';
 import * as X from './public/design-extensions.js';
 import * as boundary from './design-extension-boundary.js';
 import {storageUpgradeNeeded} from './storage-upgrade.js';
-import {withFinalReview, inheritedFindings, reviewSourceStamp, evidenceStamp, CHAPTERS, reviewBlockers} from './public/review-domain.js';
+import {withFinalReview, inheritedFindings, reviewSource, reviewSourceStamp, reviewDesignStamp, evidenceStamp, CHAPTERS, reviewBlockers} from './public/review-domain.js';
 import * as rt from './public/runtime-domain.js';
 import * as runtimeModel from './public/runtime-model.js';
 import {technologyFindings} from './public/technology-domain.js';
@@ -51,6 +51,8 @@ import {provenanceReading} from './public/sdd-architecture.js';
 import {previewWorkingChange, previewScenarioAlternative, rebaseWorkingAlternative} from './public/workbench-domain.js';
 import {reviewPlan} from './public/review-plan.js';
 import {instantiateTemplate} from './project-lifecycle.js';
+import {neutraliseImportedAuthority} from './recovery-service.js';
+import {deploySource} from './public/deploy-model.js';
 
 const {A, B, C, AGENT} = F, PACKAGE = 'p30-deployment', AT = '2026-11-19T10:00:00.000Z';
 const checks = [], failed = [], pass = n => { checks.push(n); console.log('PASS ' + n); };
@@ -112,15 +114,22 @@ await block('S1.0 the marker', async () => {
   assert.deepEqual(copy.runtime.topology, {schemaVersion: 1, review: null}, 'the copy is typed, by nobody here yet');
   assert.equal(copy.runtime.nodes.length, typed.runtime.nodes.length); assert.equal(copy.technology.domains.length, typed.technology.domains.length);
   assert.equal(mine().needs === undefined, true, 'the package states no needs itself: its route stub does');
-  assert.equal(run(copy, 'runtime.node', {title: 'A node of the copy', kind: 'site'}).selected, 'dn-00' + (typed.runtime.nodes.length + 1), 'the copy takes topology commands');
+  // (ruling L5; was: "the copy takes topology commands" before anyone there took the step) the copy reads typed, and its
+  // topology commands are refused until a person takes the step there
+  for (const [type, payload] of [['runtime.node', {title: 'A node of the copy', kind: 'site'}], ['technology.domain', {title: 'A domain of the copy'}], ['technology.domain-proposals', {}], ['runtime.locate', {zoneId: F.ids().zone3, reason: 'Moved in the copy.'}]])
+    refuses(copy, type, payload, /topology of this project is typed, but nobody here has chosen it yet\. A signed-in person chooses typed topology for this project first\./, type + ' in a copy before a person there takes the step');
+  assert.equal(runtimeModel.failureDomainKey(zoneOf(copy, F.ids().zone1)), runtimeModel.failureDomainKey(zoneOf(typed, F.ids().zone1)), 'the readings stay typed');
   const retaken = doc(copy, 'runtime.topology-start', {}, B);
   assert.deepEqual({actor: retaken.runtime.topology.review.actor, account: retaken.runtime.topology.review.account}, {actor: B, account: 'person'}, 'a person takes the step in the copy');
+  assert.equal(run(retaken, 'runtime.node', {title: 'A node of the copy', kind: 'site'}).selected, 'dn-00' + (typed.runtime.nodes.length + 1), 'then the copy takes topology commands');
   // What the step is to the design: choosing it is a change of Chapter 10 (its version moves, and with it the design
   // stamp); who chose it is bookkeeping, which neither fingerprint reads, so a step taken again moves no stamp (ruling J3).
   { const base = F.tidewater(), first = started();
     assert.notEqual(reviewSourceStamp(first), reviewSourceStamp(base)); assert.equal(evidenceStamp(first), evidenceStamp(base), 'the marker is no evidence');
     assert.deepEqual([reviewSourceStamp(retaken), evidenceStamp(retaken), retaken.runtime.version], [reviewSourceStamp(copy), evidenceStamp(copy), copy.runtime.version], 'taken again in the copy it moves no stamp and no version');
-    assert.deepEqual([mine().evidenceKeys, mine().designKeys], [['runtime.topology'], ['technology.domains', 'runtime.nodes']]); }
+    // (ruling L5; was: [evidenceKeys, designKeys] are [['runtime.topology'], ['technology.domains', 'runtime.nodes']]) the
+    // marker and the two collections are stated through S0's design row; no key of the package is evidence
+    assert.deepEqual([mine().evidenceKeys, mine().designKeys, Object.keys(mine().design)], [undefined, ['runtime.topology', 'technology.domains', 'runtime.nodes'], ['runtime.topology', 'technology.domains', 'runtime.nodes']]); }
   pass('S1.0: before the marker runtime.node, technology.domain, technology.domain-proposals and runtime.locate are refused; runtime.topology-start is refused for an agent account, a draft by Sol and an import, and for a person writes the marker, names the package in the document and is journalled; sent again it changes nothing; a template copy stays typed and clears who chose it; choosing it moves the design stamp through Chapter 10\'s version, and who chose it moves no stamp');
 });
 
@@ -285,7 +294,13 @@ await block('S1.4 proposals from the names in use', () => {
   // moves no review stamp of Chapter 10 (nor Chapter 6's), and raises no finding
   assert.ok(rt.runtimeReviewCurrent(p), 'the review stamp of Chapter 10 does not move'); assert.equal(p.technology.version, p0.technology.version); assert.equal(p.runtime.version, p0.runtime.version); assert.deepEqual(p.technology.review, p0.technology.review);
   assert.deepEqual(technologyFindings(p), technologyFindings(p0)); assert.deepEqual(rt.runtimeFindings(p), rt.runtimeFindings(p0)); assert.deepEqual(ids(inheritedFindings(p)), ids(inheritedFindings(p0)), 'a proposal counts in no check');
-  assert.notEqual(reviewSourceStamp(p), reviewSourceStamp(p0), 'the records are design: the design fingerprint reads them');
+  // (ruling L6; was: "the records are design: the design fingerprint reads them", the stamp moved) a proposal says
+  // nothing to the design fingerprint: the generator moves no design stamp and no evidence stamp; keeping one is a
+  // design change (the record joins the design, its chapter's version moves and its check is cleared)
+  assert.deepEqual([reviewSourceStamp(p), evidenceStamp(p)], [reviewSourceStamp(p0), evidenceStamp(p0)], 'AIW\'s proposals move no design stamp');
+  { const kept = doc(p, 'record.keep', {id: made[0].id, chapter: 6});
+    assert.notEqual(reviewSourceStamp(kept), reviewSourceStamp(p), 'keeping a proposal is a design change'); assert.equal(kept.technology.version, p.technology.version + 1); assert.equal(rt.runtimeReviewCurrent(kept), false, 'and the checks after it are no longer current');
+    assert.deepEqual(reviewSource(kept).technology.domains.map(d => d.id), [made[0].id], 'the design source holds the kept record and no proposal'); }
   // the SDD's reading of who wrote the records counts them as AIW's proposals (ruling D5), none as a person's (ruling J9)
   { const before = provenanceReading(p0), after = provenanceReading(p), chapter6 = x => x.chapters.find(c => c.chapter === 6);
     assert.equal(after.by.proposal, before.by.proposal + 5, 'five more proposals: ' + JSON.stringify(after.by)); assert.equal(after.by.person, before.by.person, 'none counted as written by a person'); assert.equal(after.total, before.total + 5);
@@ -479,13 +494,19 @@ await block('S1.8 a draft by Sol and an agent account', async () => {
   const batch = async (commands, as, extra = {}) => { const cur = await h.read(as); return h.send('workspace.apply', {commands, stamp: previewWorkingChange(cur.document, commands).stamp, reason: 'A drafted topology.', ...extra}, as); };
   try {
     assert.equal((await h.send('runtime.topology-start', {})).status, 200);
+    // (ruling L6) Chapters 6 and 10 checked by a person first, so that a draft that moved a stamp, a version or a check would show
+    for (const type of ['technology.review', 'runtime.review']) assert.equal((await h.send(type, {})).status, 200, type);
+    const checked = withFinalReview(structuredClone(d())), still = () => { const q = withFinalReview(structuredClone(d())); return [reviewSourceStamp(q), evidenceStamp(q), q.technology.version, q.runtime.version, rt.runtimeReviewCurrent(q), q.technology.review, q.runtime.handoff]; };
+    const unmoved = (why) => assert.deepEqual(still(), [reviewSourceStamp(checked), evidenceStamp(checked), checked.technology.version, checked.runtime.version, true, checked.technology.review, checked.runtime.handoff], why + ': a proposal moves no design stamp and no version, and clears no check or handoff (ruling L6)');
+    assert.equal(rt.runtimeReviewCurrent(checked), true);
     // a draft by Sol, sent on its own: its proposal, unreviewed
     let r = await h.send('runtime.node', {title: 'Sweden Central', kind: 'region', origin: 'sol-draft'}, A, SOL);
     assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300));
     let node = nodeOf(d(), 'dn-001'), event = events().at(-1);
     assert.deepEqual([node.state, node.origin, authorship(node).kind, node.provenance?.author], ['proposed', 'sol-draft', 'sol-draft', undefined], 'it arrives as Sol\'s proposal');
     assert.deepEqual([event.source.id, event.authorKind, event.reviewed, event.reason], ['dn-001', 'sol-draft', false, 'Drafted from the brief.'], 'and unreviewed, with the reason the request gave');
-    assert.equal(d().runtime.review, null);
+    // (ruling L6; was: the chapter's check is null after the draft, as the step before it had cleared it) the check a person ran stands
+    unmoved('a node Sol drafted');
     // the review plan asks a person to keep or dismiss it, as it asks for every proposal Sol's draft made
     assert.deepEqual(reviewPlan(withFinalReview(d())).steps.filter(x => x.id === 'proposals:sol:10:1').map(x => [x.commandType, x.target]), [['record.keep', {ids: ['dn-001'], chapter: 10}]]);
     // it says so, or it is refused: a draft never arrives as a person's record
@@ -505,6 +526,7 @@ await block('S1.8 a draft by Sol and an agent account', async () => {
     assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300));
     assert.deepEqual([nodeOf(d(), 'dn-002').state, nodeOf(d(), 'dn-002').origin, domainOf(d(), 'fd-002').state, domainOf(d(), 'fd-002').origin], ['proposed', 'sol-draft', 'proposed', 'sol-draft']);
     assert.deepEqual(events().slice(-2).map(e => [e.source.id, e.authorKind, e.reviewed]), [['dn-002', 'sol-draft', false], ['fd-002', 'sol-draft', false]], 'journalled once a record, as the draft it is');
+    unmoved('a node, a failure domain and a batch an agent account drafted');
     { const n = d().runtime.nodes.length; r = await batch([{type: 'runtime.node', payload: {title: 'Iceland', kind: 'region'}}], AGENT, {reviewed: false}); assert.equal(r.status, 400); assert.match(r.error, /as its proposal \(origin: sol-draft\)/); assert.equal((await h.read()).document.runtime.nodes.length, n, 'nothing of the refused batch is kept'); }
     r = await batch([{type: 'runtime.node', payload: {title: 'Norway West', kind: 'region', origin: 'sol-draft', jurisdiction: 'NO'}}], A, {reviewed: false, authorKind: 'sol-draft'}); assert.equal(r.status, 400); assert.match(r.error, /A jurisdiction is stated by a signed-in person/);
     // kept as an alternative by an agent account: saved only with its records as proposals; a person merges it, and the
@@ -520,7 +542,9 @@ await block('S1.8 a draft by Sol and an agent account', async () => {
     // a proposal binds nothing
     r = await h.send('runtime.locate', {zoneId: I.zone3, nodeId: 'dn-001'}); assert.equal(r.status, 400); assert.match(r.error, /DN-001 is still a proposal: keep it first/);
     // a person keeps it: authored, the person's from Sol's draft, stamped as kept by them; then it binds
+    const beforeKeep = withFinalReview(structuredClone(d()));
     r = await h.send('record.keep', {id: 'dn-001', chapter: 10}, B); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); node = nodeOf(d(), 'dn-001');
+    { const q = withFinalReview(structuredClone(d())); assert.notEqual(reviewSourceStamp(q), reviewSourceStamp(beforeKeep), 'keeping a proposal is a design change (ruling L6)'); assert.equal(q.runtime.version, beforeKeep.runtime.version + 1); }
     assert.deepEqual([node.state, node.origin, authorship(node), node.provenance.reviewed.by, node.provenance.reviewed.how], [undefined, 'sol-draft', {kind: 'person', from: 'sol-draft'}, B, 'kept']);
     assert.equal((await h.send('runtime.locate', {zoneId: I.zone3, nodeId: 'dn-001'})).status, 200);
     // a draft that locates a zone in a record a person kept: applied as the draft it is, the zone stamped as Sol's and journalled unreviewed
@@ -703,6 +727,75 @@ await block('S1.15 a locate answers what it wrote', async () => {
       assert.deepEqual([l.provenance?.author?.kind, zoneOf(d(), I.zone1).provenance?.author?.kind], ['sol-draft', 'sol-draft'], 'KNOWN LIMIT (ruling D12): a merge stamps no author, so the relocated placement and zone keep the stamp they had'); }
   } finally { h.close(); }
   pass('S1.15: runtime.locate on a placement answers the placement as the record it wrote, alone and in a batch, so the agent\'s batch restamps it as the draft it is (a zone likewise); a placement and a zone a merged alternative relocates keep their earlier stamps until the slice of ruling D12');
+});
+
+// (the lead's rulings L5 and L6; the review's should-fix 1, 2 and 6) The choice to type a project is design; who chose
+// it, and when, is not: the package states the marker through S0's design row (ruling J3), typed or not, and leaves
+// `review` out. A step older than a recovery import (finalReview.imported.at) is nobody's, as in a template copy (ruling
+// F3): the topology commands are refused there until a person takes the step, and the readings stay typed. What the
+// package's records say leaves out their history, review, confirmed and provenance, and a proposal says nothing.
+await block('S1.16 typed or not is design; who chose it is not', async () => {
+  need();
+  const I = F.ids(), base = F.tidewater(), stamps = p => [reviewSourceStamp(p), reviewDesignStamp(p), evidenceStamp(p)];
+  const marked = review => withFinalReview({...base, runtime: {...base.runtime, topology: {schemaVersion: 1, review}}});
+  // a hand-made pair at one version: typed and untyped are two designs
+  const typedByHand = marked({actor: A, at: AT, account: 'person'});
+  assert.equal(typedByHand.runtime.version, base.runtime.version, 'the pair is at one version');
+  assert.notEqual(reviewSourceStamp(typedByHand), reviewSourceStamp(base), 'typed or not is read by the design fingerprint: two stamps at one version');
+  assert.equal(evidenceStamp(typedByHand), evidenceStamp(base), 'the choice is no evidence');
+  for (const review of [null, {actor: B, at: '2026-12-01T00:00:00.000Z', account: 'person'}]) assert.deepEqual(stamps(marked(review)), stamps(typedByHand), 'who chose it, and when, moves no stamp');
+  assert.deepEqual(reviewSource(typedByHand).runtime.topology, {schemaVersion: 1}, 'the design source holds what the package states of the marker');
+  assert.ok(!('topology' in reviewSource(base).runtime) && !('nodes' in reviewSource(base).runtime) && !('domains' in reviewSource(base).technology), 'an untyped document\'s design source holds none of it');
+  // the package's records: their history, review, confirmed and provenance move no design stamp (S0's rule for every package, ruling J3)
+  const {p: typed, made} = typedTidewater();
+  assert.equal(R.assertStepsMoveNoStamp(typed, d => [...d.runtime.nodes, ...d.technology.domains]), typed.runtime.nodes.length + typed.technology.domains.length);
+  // a recovery import: the step was taken on the workbench the package came from, so it is nobody's here
+  const IMPORTED = '2026-11-20T00:00:00.000Z', recovered = withFinalReview(neutraliseImportedAuthority(structuredClone(typed), IMPORTED, C));
+  assert.equal(recovered.finalReview.imported.at, IMPORTED); assert.deepEqual(recovered.runtime.topology.review.actor, A, 'the recovery keeps what the other workbench wrote');
+  for (const [type, payload] of [['runtime.node', {title: 'A node', kind: 'site'}], ['technology.domain', {title: 'A domain'}], ['technology.domain-proposals', {}], ['runtime.locate', {zoneId: I.zone3, reason: 'Moved.'}], ['runtime.node', {id: made.region, reason: 'Changed after the recovery.'}]])
+    refuses(recovered, type, payload, /topology of this project is typed, but nobody here has chosen it yet\. A signed-in person chooses typed topology for this project first\./, type + ' in a recovered project before a person here takes the step');
+  // the readings stay typed
+  assert.equal(runtimeModel.failureDomainKey(zoneOf(recovered, I.zone1)), made.fdZone1); assert.ok(recordGraph(recovered).nodes.some(n => n.id === made.region), 'its records are in the record graph');
+  // a person takes the step here: the marker names them, no design stamp and no version moves, the step is journalled, and the commands are taken
+  const taken = run(recovered, 'runtime.topology-start', {}, C).document;
+  assert.deepEqual([taken.runtime.topology.review.actor, taken.runtime.topology.review.account, taken.runtime.topology.review.at > IMPORTED], [C, 'person', true], 'a person here took the step');
+  assert.deepEqual([reviewSourceStamp(taken), taken.runtime.version], [reviewSourceStamp(recovered), recovered.runtime.version], 'taking it again moves no design stamp and no version');
+  { const next = structuredClone(taken); mine().track(recovered, next, {type: 'runtime.topology-start', payload: {}}, AT);
+    assert.deepEqual(next.changes.events.slice((recovered.changes?.events || []).length).map(e => [e.source.kind, e.after]), [['topology', {typed: true}]], 'the step taken here is journalled'); }
+  assert.equal(run(taken, 'runtime.node', {title: 'A node', kind: 'site'}).selected, 'dn-00' + (typed.runtime.nodes.length + 1), 'then the topology commands are taken');
+  assert.equal(run(taken, 'runtime.topology-start', {}, B).document.runtime.topology.review.actor, C, 'and a second request changes nothing');
+  // a proposal says nothing to the design fingerprint (ruling L6): the design source holds no proposal, and the document
+  // with only proposals reads as the one without them
+  { const q = doc(started(), 'technology.domain-proposals'); assert.ok(q.technology.domains.length > 0);
+    assert.ok(!('domains' in reviewSource(q).technology), 'proposals only: the design source holds no failure domain');
+    const sol = doc(doc(started(), 'runtime.node', {title: 'Drafted region', kind: 'region', origin: 'sol-draft'}, AGENT, {kind: 'sol-draft', id: AGENT, account: 'agent'}), 'technology.domain', {title: 'Drafted domain', origin: 'sol-draft'}, AGENT, {kind: 'sol-draft', id: AGENT, account: 'agent'});
+    assert.deepEqual([sol.runtime.nodes[0].state, sol.technology.domains[0].state], ['proposed', 'proposed']);
+    assert.deepEqual([reviewSourceStamp(sol), sol.runtime.version, sol.technology.version], [reviewSourceStamp(started()), started().runtime.version, started().technology.version], 'a draft that arrives as a proposal moves no design stamp and no version'); }
+  pass('S1.16: typed and untyped read as two designs at one version, and who chose it and when moves no stamp (the marker stated through S0\'s design row, review left out); the history, review, confirmed and provenance of a node and a failure domain move no design stamp; in a recovered project the step taken elsewhere is nobody\'s: the topology commands are refused until a person here takes it, the readings stay typed, and taking it moves no stamp and no version and is journalled; a proposal says nothing to the design fingerprint and moves no version');
+});
+
+// (the lead's ruling L7) The readers that still went by name and erred towards independence read failureDomainKey:
+// the walkthrough's "lose a failure domain" (simulateRuntime, design hook H4) and the Chapter 10 Model view's key
+// (deploy-model.js, design hook H15). Two zones typed into one failure domain fail together whatever they are named;
+// two zones typed into two domains do not, though they share a name. An untyped project reads by name as before.
+await block('S1.17 the walkthrough and the Model view read the typed domain', () => {
+  need();
+  const I = F.ids(), lose = (p, zoneId) => rt.simulateRuntime(p, {environmentId: I.production, zoneId, mode: 'domain', durationMinutes: 60}).failedZoneIds.slice().sort();
+  const groups = p => deploySource(p, {envId: I.production}).domains.map(d => [d.key, d.zones.slice().sort()]), scenarios = p => deploySource(p, {envId: I.production}).scenarios.filter(s => s.mode === 'domain').map(s => s.id);
+  const {p: typed, made} = typedTidewater();
+  // one domain under two names: the zones are named AZ-1 and AZ-2, and both stand in Bergen availability zone 1
+  const one = doc(typed, 'runtime.locate', {zoneId: I.zone2, nodeId: made.az1, domainIds: [made.fdZone1]});
+  assert.deepEqual([zoneOf(one, I.zone1).failureDomain, zoneOf(one, I.zone2).failureDomain], ['AZ-1', 'AZ-2']);
+  assert.deepEqual(lose(one, I.zone1), [I.zone1, I.zone2].sort(), 'losing the failure domain of zone 1 loses zone 2 with it');
+  assert.deepEqual(groups(one), [[made.fdZone1, [I.zone1, I.zone2].sort()]], 'the Model view groups the two zones as one failure domain');
+  assert.deepEqual(scenarios(one), ['domain:' + made.fdZone1], 'and offers losing it as one scenario');
+  // two domains under one name: both zones are named AZ-1 and stand in two typed domains
+  const two = doc(typed, 'runtime.zone', {id: I.zone2, failureDomain: 'AZ-1'});
+  assert.deepEqual(lose(two, I.zone1), [I.zone1], 'losing zone 1\'s domain loses zone 1 only'); assert.deepEqual(groups(two).map(g => g[1].length), [1, 1]); assert.deepEqual(scenarios(two), []);
+  // an untyped project reads by name, as on rc.10.73.42
+  { const named = doc(F.tidewater(), 'runtime.zone', {id: I.zone2, failureDomain: 'AZ-1'});
+    assert.deepEqual(lose(named, I.zone1), [I.zone1, I.zone2].sort()); assert.deepEqual(groups(named), [['az-1', [I.zone1, I.zone2].sort()]]); assert.deepEqual(lose(F.tidewater(), I.zone1), [I.zone1]); }
+  pass('S1.17: simulateRuntime\'s "lose a failure domain" and the Chapter 10 Model view read failureDomainKey: two zones typed into one domain under two names fail together and form one group and one scenario; two typed domains under one name do not; an untyped project reads by name as before');
 });
 
 await block('S1.9 staging; candidate knowledge reaches no topology reading', () => {
