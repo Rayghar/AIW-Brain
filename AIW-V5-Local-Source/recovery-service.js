@@ -74,6 +74,10 @@ export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??
  // approval of an accepted residual risk never counts as independent on this workbench.
  for(const r of Array.isArray(p?.security?.risks)?p.security.risks:[])strip(r);
  for(const g of Array.isArray(p?.security?.governance)?p.security.governance:[])strip(g);
+ // rc44 (wp9a; the lead's ruling M2): who chose typed topology is a person's step taken on the workbench the package came
+ // from. It is kept as history (runtime.topology.importedReview) and the step is nobody's here, whatever the package says
+ // of itself or of its dates, until a person here takes it. A document with no step taken gains no key.
+ {const t=p?.runtime?.topology;if(t&&typeof t==='object'&&t.review){t.importedReview=t.review;t.review=null;}}
  const m=p.finalReview;if(!m||typeof m!=='object')return p;
  strip(m.intake);strip(m.checks);
  for(const r of m.reviews||[])strip(r);

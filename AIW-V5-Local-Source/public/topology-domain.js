@@ -7,8 +7,8 @@
 //   The marker    runtime.topology {schemaVersion, review: {actor, at, account}}: a signed-in person chose to type this
 //                 project's topology (runtime.topology-start). Every other topology command is refused without it, and
 //                 nothing of the package is read into the record graph without it. Who chose it is kept under `review`,
-//                 which a project copied from a template clears; a step older than a recovery import was taken on another
-//                 workbench. Either way the project stays typed, by nobody here yet, and its topology commands are refused
+//                 which a project copied from a template clears and a recovery import moves aside (importedReview). Either
+//                 way the project stays typed, by nobody here yet, and its topology commands are refused
 //                 until a person here takes the step (ruling L5). Typed or not is design; who chose it, and when, is not.
 //   Records       a failure domain {title, scope, cause, parentId, basis, owner, recoveryOwner, treatment}; a node
 //                 {kind, title, parentId, domainId, jurisdiction, place, provider, tier, exposure, address, reason,
@@ -47,9 +47,10 @@ const find=(xs,id)=>typeof id==='string'&&id?list(xs).find(x=>x?.id===id)||null:
 // A stated shared cause: a cause that is no location. A domain that states none, or a location, is where something stands.
 const sharedCause=d=>!!d?.cause&&d.cause!=='location';
 export const topologyTyped=p=>!!p?.runtime?.topology;
-// Whether a signed-in person chose it in this project: a step a template copy cleared (review null), or one older than a
-// recovery import (finalReview.imported.at), was taken elsewhere and is nobody's here (rulings F3 and L5).
-const chosenHere=p=>{const r=p?.runtime?.topology?.review,i=p?.finalReview?.imported?.at;return !!r?.actor&&!(i&&!(r.at>i));};
+// Whether a signed-in person chose it in this project: a template copy clears the step (review null) and a recovery
+// import moves it aside (importedReview, recovery-service.js neutraliseImportedAuthority), so a step taken elsewhere is
+// nobody's here and no date is compared (rulings F3, L5 and M2).
+const chosenHere=p=>!!p?.runtime?.topology?.review?.actor;
 export const failureDomains=p=>list(p?.technology?.domains),deploymentNodes=p=>list(p?.runtime?.nodes);
 
 // One IPv4 or IPv6 prefix, read strictly: an address and its length, no host bit set, no leading zero in a decimal

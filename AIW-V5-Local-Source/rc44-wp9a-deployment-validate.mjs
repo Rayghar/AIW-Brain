@@ -743,7 +743,7 @@ await block('S1.15 a locate answers what it wrote', async () => {
 
 // (the lead's rulings L5 and L6; the review's should-fix 1, 2 and 6) The choice to type a project is design; who chose
 // it, and when, is not: the package states the marker through S0's design row (ruling J3), typed or not, and leaves
-// `review` out. A step older than a recovery import (finalReview.imported.at) is nobody's, as in a template copy (ruling
+// `review` out. A recovery import moves the step aside (importedReview: ruling M2), as a template copy clears it (ruling
 // F3): the topology commands are refused there until a person takes the step, and the readings stay typed. What the
 // package's records say leaves out their history, review, confirmed and provenance, and a proposal says nothing.
 await block('S1.16 typed or not is design; who chose it is not', async () => {
@@ -763,7 +763,23 @@ await block('S1.16 typed or not is design; who chose it is not', async () => {
   assert.equal(R.assertStepsMoveNoStamp(typed, d => [...d.runtime.nodes, ...d.technology.domains]), typed.runtime.nodes.length + typed.technology.domains.length);
   // a recovery import: the step was taken on the workbench the package came from, so it is nobody's here
   const IMPORTED = '2026-11-20T00:00:00.000Z', recovered = withFinalReview(neutraliseImportedAuthority(structuredClone(typed), IMPORTED, C));
-  assert.equal(recovered.finalReview.imported.at, IMPORTED); assert.deepEqual(recovered.runtime.topology.review.actor, A, 'the recovery keeps what the other workbench wrote');
+  // (ruling M2; was: recovered.runtime.topology.review.actor is A, "the recovery keeps what the other workbench wrote")
+  // the recovery keeps what the other workbench wrote as history, under importedReview, and the step is nobody's here
+  assert.equal(recovered.finalReview.imported.at, IMPORTED); assert.deepEqual([recovered.runtime.topology.review, recovered.runtime.topology.importedReview], [null, typed.runtime.topology.review], 'the recovery keeps what the other workbench wrote as history, and no step');
+  assert.equal(recovered.runtime.topology.importedReview.actor, A); assert.deepEqual(Object.keys(recovered.runtime.topology).sort(), ['importedReview', 'review', 'schemaVersion']);
+  // (ruling M2; the verifier's new problem 2) a recovery import carries no topology step, whatever the package says of
+  // itself: neutraliseImportedAuthority moves it aside before anything else, so no date is compared. A package whose
+  // step is dated after the import (forged, or a clock that runs ahead), and one without finalReview, are refused alike.
+  for (const [why, forge] of [['a step dated after the import', q => { q.runtime.topology.review = {...q.runtime.topology.review, at: '2099-01-01T00:00:00.000Z'}; }], ['a package without finalReview', q => { delete q.finalReview; }], ['both', q => { q.runtime.topology.review = {...q.runtime.topology.review, at: '2099-01-01T00:00:00.000Z'}; delete q.finalReview; }]]) {
+    const q = structuredClone(typed); forge(q); const back = withFinalReview(neutraliseImportedAuthority(q, IMPORTED, C));
+    assert.deepEqual([back.runtime.topology.schemaVersion, back.runtime.topology.review, back.runtime.topology.importedReview?.actor], [1, null, A], why + ': the step is moved aside and kept as history');
+    for (const [actor, author, payload] of [[A, person(A), {title: 'A node', kind: 'site'}], [AGENT, {kind: 'sol-draft', id: AGENT, account: 'agent'}, {title: 'A node', kind: 'site', origin: 'sol-draft'}]])
+      assert.throws(() => run(back, 'runtime.node', payload, actor, author), e => e.message === T.NOT_HERE, why + ': ' + actor + '\'s runtime.node is refused until a person here takes the step');
+    assert.equal(runtimeModel.failureDomainKey(zoneOf(back, I.zone1)), made.fdZone1, why + ': the readings stay typed');
+  }
+  // a document with no marker gains none, and a copy's cleared step stays cleared
+  { const plain = neutraliseImportedAuthority(structuredClone(F.tidewater()), IMPORTED, C); assert.equal(plain.runtime.topology, undefined, 'an untyped document gains no marker');
+    const copied = structuredClone(typed); copied.runtime.topology.review = null; assert.deepEqual(neutraliseImportedAuthority(copied, IMPORTED, C).runtime.topology, {schemaVersion: 1, review: null}, 'a step nobody took is no history'); }
   for (const [type, payload] of [['runtime.node', {title: 'A node', kind: 'site'}], ['technology.domain', {title: 'A domain'}], ['technology.domain-proposals', {}], ['runtime.locate', {zoneId: I.zone3, reason: 'Moved.'}], ['runtime.node', {id: made.region, reason: 'Changed after the recovery.'}]])
     refuses(recovered, type, payload, /topology of this project is typed, but nobody here has chosen it yet\. A signed-in person chooses typed topology for this project first\./, type + ' in a recovered project before a person here takes the step');
   // the readings stay typed

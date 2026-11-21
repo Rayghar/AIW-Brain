@@ -13,8 +13,22 @@ here is approved, accepted, released or promoted.
 - **Done:** the slice (the package, one part of five filled, its registration lines, the route stub, hook H1, the
   suite, the fixture, a browser case, the size evidence) and its fix-up: every item 0 to 8 below, the suite at 21
   blocks, green.
-- **In progress:** nothing.
+- **In progress:** the second fix-up (rulings M1 to M9), section "Second fix-up" below.
 - **Next:** the lead's merge; see "What later slices inherit" and "Open questions (for the lead)".
+
+## Second fix-up (after the verifier; the lead's rulings M1 to M9, with K and L)
+
+Branch `rc44/wp9a-s1-topology-fix-c5`, from `rc44/wp9a-s1-topology-fix-c4` (`1372785`). Verifier:
+`/home/user/hb-review/rc44-build/wp9a-s1-topology.verify.json`. Each item: case first, seen to fail on the head the
+item started from, then the change. (Work in progress; this section is completed with item 8.)
+
+- **Item 0, merge `rc44/integration` (`a4c1690`):** done (`1efbecc`), no conflict. The four rc44 suites on the merged
+  head: S0 26 of 26, wp1 34 of 34 (4 pending), wp9a 21 of 21 (S1.7 now runs K8's helper: it exists), wp2 19 of 20, its
+  block `size` red ("this build is inside the allowance of wp2: 669 B", M4).
+- **Item 1, M1:** done (`d66c269`), case S1.21.
+- **Item 2, M2:** done, cases in S1.16 (a step dated after the import, a package without finalReview, both; seen to fail
+  on `d66c269`: "Missing expected exception: a step dated after the import: architect-a's runtime.node is refused").
+- **Item 3, M3:** in progress, case S1.22.
 
 ## Fix-up (after the adversarial review; the lead's rulings L1 to L11, K1, K2, K6, and K7 to K9 since)
 
