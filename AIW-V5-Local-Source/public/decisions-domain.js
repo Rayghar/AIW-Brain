@@ -33,7 +33,7 @@ export const DECISION_FIELDS=['impact','stakeholderNote','dependencies','licensi
 // The text a decision and an alternative keep (DM-09: a save that leaves one out keeps it; null clears it; past its
 // limit it is refused, never cut).
 export const DECISION_TEXT=['question','context','rationale','assumptions','assumptionEvidence','risks','mitigation','owner','source',...DECISION_FIELDS],ALTERNATIVE_TEXT=['title','summary','benefits','costs','consequences','pattern','antiPattern','rejectionReason','source'];
-const DECISION_NEW=['category',...DECISION_FIELDS,'requirementGroupIds','stakeholderIds','dependsOn','open','recommendation'],ALTERNATIVE_NEW=['rejectionReason','source','componentIds','requirementGroupIds','open'];
+const DECISION_NEW=['category',...DECISION_FIELDS,'requirementGroupIds','stakeholderIds','dependsOn','open','recommendation'],ALTERNATIVE_NEW=['rejectionReason','source','componentIds','requirementGroupIds','open','candidate'];
 // A category the person has not chosen is not stated (''), never a default.
 export const decisionCategory=d=>DECISION_CATEGORIES.find(c=>c.id===d?.category)?.id||'';
 export const chosen=d=>d?.alternatives.find(a=>a.id===d.selectedAlternativeId);
@@ -185,7 +185,7 @@ function normaliseOption(p,d,raw,old){
  if(rows.length>DECISION_LIMITS.relationships)throw Error(`Propose at most ${DECISION_LIMITS.relationships} relationships for one alternative; ${rows.length} were sent.`);
  const relationships=rows.map(e=>({from:clean(e.from,60),to:clean(e.to,60),label:clean(e.label,160)}));if(relationships.some(e=>!responsibilityIds.includes(e.from)||!responsibilityIds.includes(e.to)||e.from===e.to||!e.label))throw Error('Every impact relationship needs two different affected responsibilities and a label.');
  // rc44 wp2 S5: the candidate a selection compares (alternative.candidate, adoption-selection.js) stays with its alternative.
- const a={id:old?.id||'ALT-'+pad(++p.decisions.counters.alternative),strategy:old?.strategy||'custom_'+pad(p.decisions.counters.alternative),responsibilityIds,relationships,assessments:{},...(old?.candidate&&{candidate:old.candidate})};
+ const a={id:old?.id||'ALT-'+pad(++p.decisions.counters.alternative),strategy:old?.strategy||'custom_'+pad(p.decisions.counters.alternative),responsibilityIds,relationships,assessments:{},candidate:old?.candidate};
  for(const key of ALTERNATIVE_TEXT)a[key]=patchText(raw,key,old,key==='title'?160:4000,'The '+fieldWords(key));if(!a.title)throw Error('Name the alternative.');
  a.componentIds=componentIds.ids;a.requirementGroupIds=groups.ids;a.open=raw.open===undefined?old?.open:cleanOpen(raw.open,ALTERNATIVE_TEXT);
  const given=raw.assessments===undefined&&old?old.assessments:raw.assessments;

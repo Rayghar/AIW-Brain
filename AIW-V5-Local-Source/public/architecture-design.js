@@ -97,40 +97,40 @@ export const architecturePreviewStamp=(p,a)=>changeFingerprint(['architecture-co
 // to the decision, beside the comparison's own scenario. The person's reviewed apply links them, and the preview names
 // each with the criterion that brings it. Their effects stay unstated ('unknown') for every option, with the option's
 // released consequence on that criterion as the reason, until a person records one.
-export function concernComparison(input,concern,requirementId,driverId,description){
-  const receipt=concern.receipt,source='Released design concern '+receipt.claimId+' / '+receipt.releaseId+' · '+receipt.path+' @ '+receipt.revision+' lines '+receipt.lineStart+'–'+receipt.lineEnd;
+// `t` is the comparison ({governedConcern, requirementId, driverId, basis, answers: {owner, reason}}); `run(type,
+// payload)` writes each step through the chapter's handler (or keeps it: the selection takes its decision at its start
+// and each option's alternative when that option is added as a candidate); `chosen` is the option the comparison
+// chose, if any, and `notes` the criterion notes of each option. Answers [source, scope, options, decision id].
+export function concernComparison(input,t,chosen,notes,run){
+  const concern=knowledgeConcern(t),receipt=concern.receipt,a=t.answers,options=architectureOptions(t);
+  const source='Released design concern '+receipt.claimId+' / '+receipt.releaseId+' · '+receipt.path+' @ '+receipt.revision+' lines '+receipt.lineStart+'–'+receipt.lineEnd;
   const scope=concern.criteria.filter(c=>c.category||c.kind).map(c=>({c,ids:criterionDrivers(input,c).map(d=>d.id)}));
-  const driverIds=[...new Set([driverId,...scope.flatMap(x=>x.ids)])],linked=driverIds.filter(id=>id!==driverId);
-  return {source,scope,options:architectureOptions({governedConcern:concern}),
-   decision:(owner,rationale,risks)=>({question:concern.question,context:description+' '+concern.statement,requirementIds:[requirementId],driverIds,owner,source,rationale,assumptions:[...concern.conditions,...concern.limitations].join(' '),risks,mitigation:'Verify the project-specific criteria and quality scenario before acceptance.'}),
-   alternative(option,notes,rejectionReason){
+  const driverIds=[...new Set([t.driverId,...scope.flatMap(x=>x.ids)])],linked=driverIds.filter(id=>id!==t.driverId);
+  const decisionId=run('decision.save',{question:concern.question,context:t.basis.requirement.description+' '+concern.statement,requirementIds:[t.requirementId],driverIds,owner:a.owner,source,rationale:a.reason,assumptions:[...concern.conditions,...concern.limitations].join(' '),risks:options.find(o=>o.id===chosen)?.cost,mitigation:'Verify the project-specific criteria and quality scenario before acceptance.'});
+  for(const option of options){
     const released=concern.options.find(o=>o.id===option.id)||{},said=c=>released.consequences?.[c.id]||'';
-    const reasons=concern.criteria.map(c=>c.label+': '+String(notes?.[c.id]||'Not assessed').trim());
+    const reasons=concern.criteria.map(c=>c.label+': '+String(notes?.[option.id]?.[c.id]||'Not assessed').trim());
     // The released consequences and the evidence the option needs, as the concern states them; nothing when it does not.
     const consequences=option.counterfactual+(concern.criteria.some(said)?' As the released concern states: '+concern.criteria.filter(said).map(c=>c.label+': '+said(c)).join(' '):'')+(released.evidence?' The evidence it needs: '+released.evidence:'');
     // A driver's reason: the criteria assessed on it (every criterion for the comparison's own scenario), each with the
     // option's released consequence where that criterion weighs the driver.
     const weighs=(c,id)=>scope.some(x=>x.c===c&&x.ids.includes(id)),reasonOf=(id,cs)=>cs.map(c=>reasons[concern.criteria.indexOf(c)]+(said(c)&&weighs(c,id)?' Released consequence: '+said(c):'')).join(' ');
-    return {title:option.title,summary:reasons.join(' '),benefits:'Fit to this project requires the architect’s criterion assessments.',costs:option.cost,consequences,pattern:'Released design concern · '+concern.title,antiPattern:'Claiming an outcome without project evidence.',assessments:{[driverId]:{effect:'unknown',reason:reasonOf(driverId,concern.criteria),evidence:source},...Object.fromEntries(linked.map(id=>[id,{effect:'unknown',reason:reasonOf(id,concern.criteria.filter(c=>weighs(c,id))),evidence:source}]))},rejectionReason};
-   }};
+    run('decision.alternative',{id:decisionId,title:option.title,summary:reasons.join(' '),benefits:'Fit to this project requires the architect’s criterion assessments.',costs:option.cost,consequences,pattern:'Released design concern · '+concern.title,antiPattern:'Claiming an outcome without project evidence.',assessments:{[t.driverId]:{effect:'unknown',reason:reasonOf(t.driverId,concern.criteria),evidence:source},...Object.fromEntries(linked.map(id=>[id,{effect:'unknown',reason:reasonOf(id,concern.criteria.filter(c=>weighs(c,id))),evidence:source}]))},rejectionReason:option.id===chosen?'':a.reason});
+  }
+  return [source,scope,options,decisionId];
 }
 function previewReleasedConcern(input,alternative,t,assessment,at){
-  const concern=knowledgeConcern(t),a=t.answers;
+  const a=t.answers;
   for(const option of architectureOptions(t))if(!assessInteraction(input,t,option.id).ready)throw Error('Assess every released approach before previewing the decision.');
   if(!a.owner.trim())throw Error('Name the architect accountable for this comparison.');
   let notes={};try{notes=JSON.parse(a.criteriaNotes||'{}');}catch{throw Error('Reopen and complete the comparison criteria.');}
-  let p=copy(input);const executed=[],C=concernComparison(input,concern,t.requirementId,t.driverId,t.basis.requirement.description);
+  let p=copy(input);const executed=[];
   const run=(type,payload)=>{const r=applyDecisionCommand(p,{type,payload},at);p=r.document;executed.push({type,payload:copy(payload)});return r.selected;};
-  const decisionId=run('decision.save',C.decision(a.owner,a.reason,assessment.option.cost));
-  let selectedAlternativeId='';
-  for(const option of C.options){
-    run('decision.alternative',{id:decisionId,...C.alternative(option,notes?.[option.id],option.id===assessment.optionId?'':a.reason)});
-    if(option.id===assessment.optionId)selectedAlternativeId=p.decisions.records.find(d=>d.id===decisionId).alternatives.at(-1).id;
-  }
-  run('decision.choose',{id:decisionId,alternativeId:selectedAlternativeId});
+  const [source,scope,options,decisionId]=concernComparison(input,t,assessment.optionId,notes,run);
+  run('decision.choose',{id:decisionId,alternativeId:p.decisions.records.find(d=>d.id===decisionId).alternatives[options.findIndex(o=>o.id===assessment.optionId)].id});
   const result=architectureProposal(input,p,t,alternative,[{type:'decision.save',id:decisionId,slot:'reviewed concern comparison'}],executed,decisionId,assessment,at);
   const named=id=>{const d=input.quality.drivers.find(x=>x.id===id);return d?driverCode(input,d)+' · '+d.title:id;};
-  return {...result,previewChapters:[3],signals:[{title:'Source-grounded comparison',detail:'Options and criteria came from '+C.source+'. The selected alternative is an architect proposal; Chapter 3 acceptance and measured evidence remain separate.'},...(C.scope.length?[{title:'Drivers the released criteria weigh',detail:C.scope.map(x=>x.c.label+': '+(x.ids.length?x.ids.map(named).join(', '):'no driver of it is recorded')).join('; ')+'. Applying this preview links them to the decision; their effects stay unstated until a person records them.'}]:[])]};
+  return {...result,previewChapters:[3],signals:[{title:'Source-grounded comparison',detail:'Options and criteria came from '+source+'. The selected alternative is an architect proposal; Chapter 3 acceptance and measured evidence remain separate.'},...(scope.length?[{title:'Drivers the released criteria weigh',detail:scope.map(x=>x.c.label+': '+(x.ids.length?x.ids.map(named).join(', '):'no driver of it is recorded')).join('; ')+'. Applying this preview links them to the decision; their effects stay unstated until a person records them.'}]:[])]};
 }
 
 export function previewArchitectureDesign(input,alternative,at=new Date().toISOString()){

@@ -126,12 +126,17 @@ function predicatesOf(p,raw,driverIds,author){
  }
  return out;
 }
-// The released concern a selection of kind option compares, while it is current.
-function comparisonOf(p,s){
+// The one builder of a released concern's comparison (architecture-design.js concernComparison), its steps kept, not
+// written: [the decision's payload, then one alternative's payload per released option, in the concern's order].
+const comparison=(p,concern,t,notes)=>{const steps=[],[,,options]=concernComparison(p,{...t,governedConcern:concern},null,notes,(type,payload)=>{steps.push(payload);return '';});return {options,steps};};
+// The released concern a selection of kind option compares, while it is current, and the payload of one option.
+function optionOf(p,s,optionId,notes){
  const concern=releasedDesignConcern(p,s.concern?.id);
  if(!concern||!claimReceiptCurrent(p,s.concern.receipt)||!claimReceiptCurrent(p,concern.receipt))throw Error('This released concern is no longer current in this project: its options are not compared from it.');
  let basis;try{basis=designBasis(p,s.requirementId);}catch{throw Error('The requirement of this selection was removed.');}
- return concernComparison(p,concern,s.requirementId,s.driverId,basis.requirement.description);
+ const C=comparison(p,concern,{requirementId:s.requirementId,driverId:s.driverId,basis,answers:{owner:'',reason:''}},{[optionId]:notes}),i=C.options.findIndex(o=>o.id===optionId);
+ if(i<0)throw Error('Choose a released option of the concern.');
+ const {id,...payload}=C.steps[1+i];return {option:C.options[i],payload};
 }
 function start(p,raw,at,actor,author){
  const owner=words(raw.owner,'Name the architect accountable for this selection.',180);let s;
@@ -139,7 +144,7 @@ function start(p,raw,at,actor,author){
   const concern=releasedDesignConcern(p,typeof raw.concernId==='string'?raw.concernId:'');if(!concern)throw Error('Choose a current, released architecture concern.');
   let basis;try{basis=designBasis(p,raw.requirementId);}catch{throw Error('Choose an existing requirement.');}
   if(!list(basis.drivers).some(x=>x.id===raw.driverId))throw Error('Choose a driver that applies to this requirement or selected component.');
-  const reason=words(raw.reason,'Explain why this comparison is made and which trade-off you accept.'),C=concernComparison(p,concern,raw.requirementId,raw.driverId,basis.requirement.description),saved=C.decision(owner,reason,'');
+  const reason=words(raw.reason,'Explain why this comparison is made and which trade-off you accept.'),saved=comparison(p,concern,{requirementId:raw.requirementId,driverId:raw.driverId,basis,answers:{owner,reason}},{}).steps[0];
   // the decision names the requirement's drivers in scope too, as the guided comparison's proposal does (architecture-proposal.js)
   p=decide(p,'decision.save',{...saved,driverIds:uniq([...saved.driverIds,...list(basis.drivers).map(x=>x.id),raw.driverId])},at);
   s={kind:'option',requirementId:raw.requirementId,driverId:raw.driverId,concern:{id:concern.id,title:concern.title,receipt:copy(concern.receipt)}};
@@ -172,9 +177,9 @@ function candidate(p,raw,at,actor,author){
   const x=list(p.realisation?.components).find(y=>y.id===c.ref?.componentId);if(!x)throw Error('Choose an existing component.');
   ref={scope:'existing',componentId:x.id};fields.componentIds=[x.id];title||=x.title;
  }else if(kind==='option'){
-  const C=comparisonOf(p,s),option=C.options.find(o=>o.id===c.ref?.optionId);if(!option)throw Error('Choose a released option of the concern.');
   const notes=plain(raw.notes)?raw.notes:{};for(const v of Object.values(notes))if(typeof v!=='string'||v.length>SELECTION_LIMITS.text)throw Error('Record each criterion\'s note as text of at most '+SELECTION_LIMITS.text+' characters.');
-  ref={scope:'knowledge',optionId:option.id,claimId:s.concern.receipt.claimId,releaseId:s.concern.receipt.releaseId};fields=C.alternative(option,notes,'');title=option.title;
+  const {option,payload}=optionOf(p,s,typeof c.ref?.optionId==='string'?c.ref.optionId:'',notes);
+  ref={scope:'knowledge',optionId:option.id,claimId:s.concern.receipt.claimId,releaseId:s.concern.receipt.releaseId};fields=payload;title=option.title;
  }else if(!title)throw Error('Name the candidate.');
  const same=JSON.stringify(ref);if(ref&&list(d.alternatives).some(a=>a.candidate&&JSON.stringify(a.candidate.ref)===same))throw Error('This candidate is already compared in '+d.id+'.');
  const said=s.kind==='component'?Object.fromEntries(['summary','benefits','costs','consequences'].map(k=>[k,optional(raw[k],4000)]).filter(([,v])=>v)):{};
@@ -233,7 +238,11 @@ function instantiate(p,raw,at,actor,author){
  const e=candidateEligibility(p,d,a);if(e.rows.some(r=>r.state==='fail')||e.rows.some(r=>r.state==='unknown'&&!list(s.choice.unproven).includes(r.constraintId)))throw Error('The rows of '+a.title+' changed since it was chosen: choose again.');
  const h=kind==='profile'?releasedProfile(p,a.candidate.ref):null;if(kind==='profile'&&(!h?.eligible||!claimReceiptCurrent(p,a.candidate.ref)))throw Error('Candidate knowledge can be read, not selected.');
  const comp=raw.component,purpose=typeof comp.purpose==='string'?comp.purpose:'';
- const r=applyRealisationCommand(p,{type:'realisation.candidate',payload:{...comp,key:kind,library:copy(a.candidate.ref),reviewed:true,decisionIds:uniq([...list(comp.decisionIds),id]),...(comp.allocations===undefined?{allocations:list(s.responsibilityIds).map(logicalId=>({logicalId,scope:purpose||a.title}))}:{})}},at);
+ // A library entry or an archetype through the reviewed candidate path, with its pinned reference; a released profile
+ // as a candidate component that names where it comes from, the pin itself kept where it is read: on the profile's
+ // adoption (its definition's claim receipt) and on the selection's candidate.
+ const ref=a.candidate.ref,made={...comp,status:'candidate',decisionIds:uniq([...list(comp.decisionIds),id]),...(comp.allocations===undefined?{allocations:list(s.responsibilityIds).map(logicalId=>({logicalId,scope:purpose||a.title}))}:{})};
+ const r=applyRealisationCommand(p,h?{type:'realisation.component',payload:{...made,source:'Released component profile '+ref.claimId+' in '+ref.releaseId+' (claim '+String(ref.claimHash).slice(0,12)+'), chosen in '+id+'.'}}:{type:'realisation.candidate',payload:{...made,key:kind,library:copy(ref),reviewed:true}},at);
  p=r.document;const c=list(p.realisation.components).find(x=>x.id===r.selected);d=decisionOf(p,id);
  let adoptionId=null;
  if(h){

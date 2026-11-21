@@ -19,8 +19,9 @@
 //   S5 server        through the boundary: an agent account's and a draft by Sol's judgement are refused, a person's
 //                    keeps its actor; choose and instantiate are a signed-in person's; the profile adoption is accepted
 //                    by a second person only;
-//   S5 instantiate   the chosen profile is saved through realisation.candidate with its pinned release and claim
-//                    hash, linked to the decision, and applied as a profile adoption with its obligations open;
+//   S5 instantiate   the chosen profile is saved as a candidate component linked to the decision, and applied as a
+//                    profile adoption pinned to the release and the claim hash, with its obligations open; a chosen
+//                    library entry goes through realisation.candidate, the reviewed path, with its pinned reference;
 //   S5 parity row 9  a released concern compared through selection.* gives the decision and alternatives the guided
 //                    comparison gave at the base (public/architecture-design.js previewReleasedConcern, captured at
 //                    5cae40a), and the guided comparison still does;
@@ -265,11 +266,12 @@ export default async function ({block, pass, load}) {
     assert.throws(() => send(p, 'selection.instantiate', {id, component}), /Review/, 'the reviewed proposal is stated');
     const before = p.realisation.components.length, r = send(p, 'selection.instantiate', {id, reviewed: true, component}); p = doc(r);
     const c = p.realisation.components.find(x => x.id === r.selected), receipt = alt(decision(p, id), 'Inbox and deduplication component').candidate.ref;
-    assert.equal(p.realisation.components.length, before + 1); assert.equal(c.title, component.title); assert.equal(c.status, 'candidate'); assert.equal(c.origin, 'profile', 'saved through the reviewed candidate path with the key profile');
-    assert.deepEqual([c.library.scope, c.library.claimId, c.library.releaseId, c.library.claimHash, c.library.releaseHash], ['knowledge', receipt.claimId, receipt.releaseId, receipt.claimHash, receipt.releaseHash], 'pinned to the release and the claim hash');
-    assert.ok(c.decisionIds.includes(id), 'linked to the decision');
+    assert.equal(p.realisation.components.length, before + 1); assert.equal(c.title, component.title); assert.equal(c.status, 'candidate', 'a candidate component, as the reviewed path saves one');
+    assert.ok(!c.library, 'a profile is no library entry: the pin is the adoption\'s'); assert.ok(c.source.includes(receipt.claimId) && c.source.includes(receipt.releaseId) && c.source.includes(id), 'the component names the profile and the decision it comes from: ' + c.source);
+    assert.ok(c.decisionIds.includes(id), 'linked to the decision'); assert.deepEqual(p.logical.mappings.filter(m => m.physicalId === c.id).map(m => m.logicalId), ['api'], 'and allocated the responsibility it was selected for');
     const a = D.adoptionRecords(p).find(x => x.kind === 'profile');
-    assert.deepEqual([a.status, a.origin, a.decisionId, a.definition.authority, a.definition.receipt.claimId, a.definition.receipt.claimHash], ['applied', 'person', id, 'released', receipt.claimId, receipt.claimHash]);
+    assert.deepEqual([a.status, a.origin, a.decisionId, a.definition.authority, a.definition.receipt.kind, a.definition.receipt.claimId, a.definition.receipt.releaseId, a.definition.receipt.claimHash, a.definition.receipt.releaseHash], ['applied', 'person', id, 'released', 'governed-claim', receipt.claimId, receipt.releaseId, receipt.claimHash, receipt.releaseHash], 'the adoption pins the release, the claim and their hashes');
+    assert.ok(claimReceiptCurrent(p, a.definition.receipt), 'read with the existing rule');
     assert.deepEqual(a.bindings.map(b => [b.roleId, b.recordId, b.mode]), [['component', c.id, 'created'], ['responsibility', 'api', 'reused']]);
     const reading = D.adoptionReading(p, a);
     assert.deepEqual(reading.obligations.map(o => o.state), ['open', 'open'], 'the profile\'s obligations are open'); assert.deepEqual(a.obligations.map(o => o.action), ['Keep the deduplication key with each message.', 'Name the region the data is kept in.']);
@@ -278,7 +280,13 @@ export default async function ({block, pass, load}) {
     // the pinned knowledge withdrawn: the adoption reads it (ruling J4), and a selection not yet instantiated is refused
     const off = withFinalReview(applyKnowledgeCommand(p, {type: 'knowledge.deactivate', payload: {reviewed: true, reviewer: 'Second reviewer', reason: 'Withdraw project activation.', id: receipt.releaseId, stamp: knowledgeStamp(p)}}, AT, 'author').document, {upgrade: false});
     assert.equal(D.adoptionReading(off, D.adoptionRecords(off).find(x => x.kind === 'profile')).definition.state, 'withdrawn', 'a profile whose release is no longer active reads withdrawn');
-    pass('S5 instantiate: refused before an accepted choice and without the reviewed proposal; the chosen profile is saved through realisation.candidate as a candidate component of origin profile, pinned to the release, the claim and their hashes, with the decision in its decisionIds; a profile adoption is applied with the component and the responsibility bound, the released claim as its definition and its two obligations open, not accepted by a second person; once only; a deactivated release reads withdrawn');
+    // a chosen library entry is saved through the reviewed candidate path with its pinned reference, and applies no adoption
+    { let {p: q, id: k} = threeCandidates(); const lib = alt(decision(q, k), 'Ticket consumer v2');
+      q = doc(send(q, 'selection.choose', {id: k, alternativeId: lib.id, reason: 'Filed from the notification worker.', unproven: ['QD-007', 'QD-008'], rejections: Object.fromEntries(decision(q, k).alternatives.filter(x => x.id !== lib.id).map(x => [x.id, 'Not this one.']))}));
+      q = acceptDecision(q, k); const rr = send(q, 'selection.instantiate', {id: k, reviewed: true, component: {...component, title: 'Ticket consumer v2'}}); q = doc(rr);
+      const lc = q.realisation.components.find(x => x.id === rr.selected);
+      assert.deepEqual([lc.origin, lc.library.scope, lc.library.entryId, lc.status], ['library', 'project', 'LIB-S5-0001', 'candidate'], 'the library entry through realisation.candidate'); assert.ok(lc.decisionIds.includes(k)); assert.ok(!D.adoptionRecords(q).some(x => x.decisionId === k)); }
+    pass('S5 instantiate: refused before an accepted choice and without the reviewed proposal; the chosen profile is saved as a candidate component that names the profile and the decision, allocated its responsibility, with the decision in its decisionIds; a chosen library entry through the reviewed candidate path with its pinned reference; a profile adoption pinned to the release, the claim and their hashes is applied with the component and the responsibility bound, the released claim as its definition and its two obligations open, not accepted by a second person; once only; a deactivated release reads withdrawn');
   });
 
   // ------------------------------------------------------------ parity for row 9 of the retirement table (design §e.1)
@@ -311,7 +319,10 @@ export default async function ({block, pass, load}) {
       assert.throws(() => send(off, 'selection.start', {kind: 'option', concernId: 'schedule-ownership', requirementId: 'REQ-001', driverId: 'QD-001', owner: 'x', reason: 'y'}), /current, released/); }
     // retired: the guided comparison's own builder; it reads the one builder the selection uses (architecture-design.js)
     const src = readFileSync(new URL('../public/architecture-design.js', import.meta.url), 'utf8');
-    assert.match(src, /export function concernComparison\(/, 'the released concern\'s comparison is one builder'); assert.ok(!/run\('decision\.alternative',\{id:decisionId,title:option\.title,summary:reasons/.test(src), 'the guided path writes no comparison of its own');
+    assert.match(src, /export function concernComparison\(/, 'the released concern\'s comparison is one builder');
+    assert.equal(src.match(/run\('decision\.alternative',\{id:decisionId,title:option\.title,summary:reasons/g)?.length, 1, 'its alternatives are written in one place');
+    const guided = src.slice(src.indexOf('function previewReleasedConcern('), src.indexOf('export function previewArchitectureDesign('));
+    assert.match(guided, /concernComparison\(input,concern,t,assessment\.optionId,notes,run\)/, 'the guided comparison writes through that builder'); assert.ok(!/decision\.save'|decision\.alternative'/.test(guided), 'and writes no decision or alternative of its own');
     assert.match(readFileSync(new URL('../public/adoption-selection.js', import.meta.url), 'utf8'), /concernComparison/, 'the selection writes its options through that builder');
     pass('S5 parity row 9: the guided comparison of a released concern gives, for each option chosen, the decision and alternatives it gave at ' + BASE.capturedFrom + ' (question, context, requirements, drivers, owner, source, rationale, assumptions, risks, mitigation, status; each alternative\'s texts, assessments and rejection reason); selection.* with kind option gives the same, with the concern pinned and each option a candidate; an option meets the hard constraints (unknown, so chosen only as unproven); a concern that is no longer released is not compared; the comparison has one builder');
   });
