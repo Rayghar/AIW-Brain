@@ -117,6 +117,20 @@ export default async function ({block, pass, load}) {
     assert.equal(U.needsAdoptionUpgrade(before), true); assert.equal(extensionUpgradeNeeded(before), true);
     const after = U.upgradeAdoptions(before);
     assert.notEqual(after, before); assert.equal(JSON.stringify(before), text, 'the document handed in is left as it was');
+    // (the verifier) an id a record of the document already holds is not minted: the adoption is an object of its own, and no relation is stated from another record
+    { const held = structuredClone(before), twin = {...held.realisation.components[0], id: 'ADP-001', title: 'A component that happens to carry the id'}; held.realisation.components.push(twin);
+      const up = U.upgradeAdoptions(held), ids = records(up).map(a => a.id); assert.deepEqual(ids, ['ADP-002', 'ADP-003', 'ADP-004'], 'the upgrade skips the id a component holds: ' + ids);
+      const G = recordGraph(up); for (const id of ids) assert.equal(G.objects.get(id)?.type, 'pattern', id + ' is the adoption'); assert.equal(G.objects.get('ADP-001')?.type, 'component');
+      assert.ok(!G.relationships.some(r => r.from === 'ADP-001' && ['binds', 'addresses', 'assesses', 'scopes'].includes(r.type)), 'no relation of an adoption is stated from the component');
+      // and a record that takes an adoption's id afterwards does not lend the adoption its relations: the adoption is no object while the id is another record's
+      const later = structuredClone(after); later.realisation.components.push({...later.realisation.components[0], id: 'ADP-002', title: 'Named like an adoption'}); const L = recordGraph(later);
+      assert.equal(L.objects.get('ADP-002')?.type, 'component'); assert.ok(!L.relationships.some(r => r.from === 'ADP-002' && ['binds', 'addresses', 'assesses', 'scopes'].includes(r.type)), 'no relation is stated from the record that holds the id'); }
+    // (the verifier) a status this build does not write is read as what it is: not a standing this build reads
+    { const odd = structuredClone(after); byId(odd, 'ADP-001').status = 'accepted'; const g = D.adoptionReading(odd, byId(odd, 'ADP-001')); assert.equal(g.accepted, false); assert.equal(g.label, 'not a standing this build reads (“accepted”)'); }
+    { const odd = withFinalReview(structuredClone(after)); byId(odd, 'ADP-001').status = 'accepted'; assert.throws(() => commandHandler('adoption.reassess')(odd, {type: 'adoption.reassess', payload: {id: 'ADP-001', revision: byId(odd, 'ADP-001').revision, reviewed: true, reason: 'Read again.'}}, LATER, B, {author: {kind: 'person', id: B, account: 'person'}}), /ADP-001 is not at a standing this build reads \(“accepted”\): it takes no step\./, 'the step says so too'); }
+    // an id a retired record holds is not minted either
+    { const held = structuredClone(before), twin = {...held.realisation.components[0], id: 'ADP-001', title: 'A retired component that carries the id'}; held.retired = {...held.retired, records: [...list(held.retired?.records), {id: 'ADP-001', path: 'realisation.components', record: twin, at: '2026-10-01T09:00:00.000Z', by: A, reason: 'x'}]};
+      assert.deepEqual(records(U.upgradeAdoptions(held)).map(a => a.id), ['ADP-002', 'ADP-003', 'ADP-004'], 'the upgrade skips an id a retired record holds'); }
     assert.equal(JSON.stringify(U.upgradeAdoptions(bankPaymentApplied())), JSON.stringify(after), 'the step is deterministic'); assert.equal(U.upgradeAdoptions(after), after, 'and idempotent: the upgraded document needs none'); assert.equal(U.needsAdoptionUpgrade(after), false);
     assert.deepEqual({schemaVersion: after.adoptions.schemaVersion, definition: after.adoptions.definition, counter: after.adoptions.counter}, {schemaVersion: 1, definition: 1, counter: 3});
     assert.deepEqual(records(after).map(a => a.id), ['ADP-001', 'ADP-002', 'ADP-003']);
@@ -245,6 +259,7 @@ export default async function ({block, pass, load}) {
     assert.ok(list(requirementTrace(after, 'REQ-004').layers.mechanism).includes('ADP-002')); assert.ok(list(requirementTrace(after, 'REQ-001').layers.mechanism).includes('ADP-003'));
     assert.equal(requirementTrace(before, 'REQ-005').layers.mechanism, undefined, 'a document without adoptions has no such layer on any trail: a task the built-in emitter states stands on none');
     assert.ok(assertBuiltInTrailsUnchanged(before, after) > 0, 'the built-in layers of every trail and spine hold what they held');
+    { const t0 = Date.now(), n = R.assertBuiltInChainsUnchanged(before, after); assert.ok(n > 1000, 'the chain that explains each pair of built-in records is the one the document gave before its adoptions (ruling K8): ' + n + ' chains'); if (process.env.AIW_WP2_VERBOSE) console.log('  chains compared: ' + n + ' in ' + (Date.now() - t0) + ' ms'); }
     assert.equal(requirementSpine(after, 'REQ-005').layers.mechanism, undefined, 'the mechanism is context on a trail: no spine holds it, so no governance check reads it');
     assertFindingIdsUnique(after);
     // the provenance reader reads the records (ruling D5 prints them); none carries an author stamp
@@ -430,6 +445,9 @@ export default async function ({block, pass, load}) {
       assert.deepEqual(records(opened).map(a => a.id), ['ADP-001', 'ADP-002', 'ADP-003']); assert.deepEqual(records(unopened), records(opened), 'the copy of a template row no read of this build has upgraded holds the same adoptions');
       assert.deepEqual(unopened.workspace.packages, opened.workspace.packages); assert.deepEqual(unopened.workspace.packages, [PACKAGE], 'and names the package');
       for (const a of records(unopened)) { assert.deepEqual([a.review ?? null, a.applied, a.confirmed ?? false, a.history], [null, null, false, []], a.id + ': without the steps taken in the template'); assert.equal(D.adoptionAccepted(unopened, a), false); assert.match(D.adoptionReading(unopened, a).label, /not applied or accepted in this project/); }
+      // (the reviewer of the lead's follow-up) a template that names a package this build does not register is copied as stored: this build upgrades no design it cannot read in full (D2, F2)
+      { const missing = {...older, workspace: {...older.workspace, packages: ['p99-missing']}}, c = instantiateTemplate(structuredClone(missing), 'template-copy', 'A copy', LATER);
+        assert.ok(!list(c.adoptions?.records).length, 'no adoption is minted in a copy of a template that names a missing package'); assert.deepEqual(c.workspace.packages, ['p99-missing'], 'and the copy names the template\'s packages only'); }
       { const plain = instantiateTemplate({...R.reference('bank-payment'), workspace: {...R.reference('bank-payment').workspace, reusableTemplate: true}}, 'c', 'C', LATER); assert.ok(!('adoptions' in plain) && !plain.workspace.packages, 'a template without applied designs gives a copy without the key, naming no package'); } }
     pass('template copy (ruling F3): the acceptance is kept under review, which a project made from a template clears (assertTemplateCopyClearsSteps); in the copy the adoption reads "not applied or accepted in this project", says who must act, and nobody stands behind it until a person confirms it there');
   });
@@ -454,6 +472,36 @@ export default async function ({block, pass, load}) {
     // The change of the bound component also changed what the earlier path developed DES-003 from: its finding stands, and accept waits for its step (ruling J6).
     assert.deepEqual(g.basis, {state: 'changed', findingId: 'design-source:DES-003'}); { const r = await accept(id, B); assert.equal(r.status, 400); assert.match(r.error, /ADP-003 rests on DES-003, whose sources changed/); }
     await refresh('DES-003'); { const r = await accept(id, B); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); }
+    // The verifier's finding (ruling K7): a component an applied design created is kept twice, under logical.assets and under realisation.components, and the
+    // tracker compared the first alone: a field only the second carries (its inputs, its technology needs) changed unseen, and the acceptance kept standing.
+    for (const key of ['inputs', 'technologyNeeds']) {
+      const c = h.doc().realisation.components.find(x => x.id === store), before = naming(h.doc()).length; assert.equal(D.adoptionAccepted(h.doc(), adp(id)), true, key + ': accepted before the change');
+      const r = await h.ok('realisation.component', {...c, [key]: c[key] + ' (changed after the acceptance)'}, C);
+      a = adp(id); g = D.adoptionReading(h.doc(), a);
+      assert.equal(g.changed.required, true, 'a change of ' + key + ' of the bound store flags the adoption in its commit'); assert.ok(g.changed.causes.some(x => x.kind === 'binding' && x.id === store && x.detail === 'changed')); assert.equal(g.accepted, false, 'and the acceptance no longer stands');
+      assert.equal(naming(r.document).length, before + 1, 'one journal event of that commit names the adoption'); assert.deepEqual([naming(r.document).at(-1).actor, naming(r.document).at(-1).authorKind], [C, 'person']);
+      await reassess(id, A); if (D.adoptionReading(h.doc(), adp(id)).basis.state === 'changed') await refresh('DES-003'); { const r = await accept(id, B); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); }
+    }
+    // (ruling K10) what a bound record says to the tracker leaves out the readings a record keeps of others, review flags and where a record is drawn:
+    // a change of only those flags nothing and keeps an acceptance standing
+    { const before = naming(h.doc()).length;
+      for (const [path, key, value] of [['realisation.components', 'sourceDriverIds', ['QD-001']], ['realisation.components', 'assumptionsResolved', false], ['logical.assets', 'col', 7]]) {
+        const prior = withFinalReview(structuredClone(h.doc())), next = structuredClone(prior), [k, l] = path.split('.'), r = next[k][l].find(x => x.id === store); assert.ok(r, path + ' holds the store'); r[key] = value;
+        pkg().track(prior, next, {type: 'realisation.component', payload: {id: store}}, LATER); const g = D.adoptionReading(withFinalReview(next), byId(next, id));
+        assert.equal(g.changed.required, false, 'a change of only ' + path + '.' + key + ' flags nothing'); assert.equal(g.accepted, g.basis.state !== 'changed', 'the acceptance stands unless the earlier path\'s own finding for its task stands (ruling K3a): ' + JSON.stringify(g.basis)); assert.equal(naming(next).length, before, 'nothing is journalled'); } }
+    // the same in a project copied from a template, where no earlier task stands beside the adoption: the tracker alone tells
+    { const src = withFinalReview(structuredClone(h.doc())), copy = instantiateTemplate(withFinalReview({...src, workspace: {...src.workspace, reusableTemplate: true}}), 'template-copy', 'A copy', LATER), x = byId(copy, id), t1 = '2026-10-06T11:00:00.000Z';
+      x.applied = {at: t1, actor: A}; x.history.push({n: 1, at: t1, event: 'apply', actor: A, revision: x.revision}); x.confirmed = true; x.provenance = {author: {kind: 'person', by: A, at: t1}};
+      x.review = {actor: B, at: '2026-10-07T10:00:00.000Z', account: 'person', revision: x.revision, seq: 1, note: '', deviationIds: list(x.deviations).filter(d => !d.withdrawn).map(d => d.id)};
+      const prior = withFinalReview(structuredClone(copy)); assert.equal(D.adoptionAccepted(prior, byId(prior, id)), true, 'the copy\'s adoption, confirmed and accepted there, stands');
+      for (const key of ['inputs', 'technologyNeeds']) { const next = structuredClone(prior), c = next.realisation.components.find(y => y.id === store); c[key] += ' (changed)';
+        pkg().track(prior, next, {type: 'realisation.component', payload: {id: store}}, '2026-10-08T10:00:00.000Z'); const q = withFinalReview(next), r = D.adoptionReading(q, byId(q, id));
+        assert.equal(r.changed.required, true, 'copy: a change of ' + key + ' flags the adoption'); assert.equal(r.accepted, false, 'copy: and the acceptance no longer stands'); assert.equal(list(next.changes?.events).filter(e => e.source?.id === id).length, list(prior.changes?.events).filter(e => e.source?.id === id).length + 1, 'copy: journalled'); }
+      // where no earlier task stands, a change of only what a record keeps of others, a review flag or where it is drawn leaves the acceptance standing (ruling K10)
+      for (const [path, key, value] of [['realisation.components', 'sourceDriverIds', ['QD-001']], ['realisation.components', 'assumptionsResolved', false], ['logical.assets', 'col', 7]]) {
+        const next = structuredClone(prior), [k, l] = path.split('.'), r0 = next[k][l].find(y => y.id === store); assert.ok(r0, path + ' holds the store'); r0[key] = value;
+        pkg().track(prior, next, {type: 'realisation.component', payload: {id: store}}, '2026-10-08T10:00:00.000Z'); const q = withFinalReview(next), r = D.adoptionReading(q, byId(q, id));
+        assert.equal(r.changed.required, false, 'copy: ' + path + '.' + key + ' flags nothing'); assert.equal(r.accepted, true, 'copy: and the acceptance stands'); } }
     // the case that fails today: retire the store; a finding names the applied mechanism — in the commit that retires it
     const names = (d, x) => COLLECTIONS.flatMap(([path]) => { const [k, l] = path.split('.'), v = l ? d?.[k]?.[l] : d?.[k]; return list(v).filter(r => r && r.id !== x && JSON.stringify({...r, history: 0, provenance: 0, sourceSnapshot: 0}).includes('"' + x + '"')).map(r => r.id); });
     let commits = 0, last = null;
@@ -811,7 +859,7 @@ export default async function ({block, pass, load}) {
     // wp1 S1), built from an archive of that commit with node build.mjs on 2026-11-19. Every route byte of the rows S0 gained by J2, J3 and J10 is wp2's.
     const INTEGRATED = {commit: 'b59bc88 (rc44/integration: S0 closed, wp1 S1 merged)', chapters: 3229840, projects: 506829, scripts: 148, under10k: 53, css: 901873};
     const S0 = JSON.parse(readFileSync('audit/rc44/build-notes/s0-size.json', 'utf8')), measured = {chapters: report.routes.chapters.code, projects: report.routes.projects.code, scripts: report.scripts, under10k: report.buckets.under10k, css: report.css};
-    if (process.argv.includes('--measure')) { mkdirSync('audit/rc44/evidence', {recursive: true}); writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v1', name: 'wp2 S1 the adoption record, after its fix-up', measuredWith: 'client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)', allowance: {chapters: 600, of: 'all of wp2 (ruling A4), counted against the integrated base; the route bytes of the rows S0 gained by rulings J2, J3 and J10 are wp2\'s', scripts: 148}, caps: {chapters: BUDGET.routes.chapters, scripts: BUDGET.scripts}, before: {name: 'the integrated base', ...INTEGRATED, measured: 'node build.mjs on an archive of the commit, 2026-11-19'}, slice: measured, delta: measured.chapters - INTEGRATED.chapters, projectsDelta: measured.projects - INTEGRATED.projects, headroomAfter: BUDGET.routes.chapters - measured.chapters, firstBuild: {commit: '13a72c2', delta: 304, note: 'the slice as first built, against S0 before its second round'},
+    if (process.argv.includes('--measure')) { mkdirSync('audit/rc44/evidence', {recursive: true}); writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v1', name: 'wp2 S1 the adoption record, after its fix-up and the lead\'s follow-up (rulings K1 to K10)', measuredWith: 'client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)', allowance: {chapters: 600, of: 'all of wp2 (ruling A4), counted against the integrated base; the route bytes of the rows S0 gained by rulings J2, J3 and J10 are wp2\'s', scripts: 148}, caps: {chapters: BUDGET.routes.chapters, scripts: BUDGET.scripts}, before: {name: 'the integrated base', ...INTEGRATED, measured: 'node build.mjs on an archive of the commit, 2026-11-19'}, slice: measured, delta: measured.chapters - INTEGRATED.chapters, projectsDelta: measured.projects - INTEGRATED.projects, headroomAfter: BUDGET.routes.chapters - measured.chapters, firstBuild: {commit: '13a72c2', delta: 304, note: 'the slice as first built, against S0 before its second round'},
       'opens with records': {gate: 'The chapters-route gate measures opening a document that holds no package records (ruling D10).', host: HOST, ...opens, before: {...S0['opens with records'].hosts[HOST], note: 'the lazy entry as S0 measured it, before any package was held in it'}, holds: 'the record\'s readers, steps and tracker (adoption-domain.js) and the registration (adoption-package.js); not the upgrade, which the server alone runs (ruling J12)'}}, null, 1) + '\n'); }
     assert.ok(existsSync(EVIDENCE), 'the slice\'s measurement is kept (node rc44-wp2-adoption-validate.mjs --measure)');
     const size = JSON.parse(readFileSync(EVIDENCE, 'utf8'));

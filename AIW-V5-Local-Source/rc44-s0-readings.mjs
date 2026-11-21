@@ -9,7 +9,8 @@ import {createProject} from './shared/projects-domain.js';
 import {withFinalReview, reviewRequirements, inheritedFindings, finalFindings, chapterSummaries, reviewSourceStamp, reviewDesignStamp, evidenceStamp, traceStamp, assembleSDD, reviewBlockerCount, CHAPTERS} from './public/review-domain.js';
 import {recordGraph} from './public/record-graph.js';
 import {architectureModel} from './public/architecture-model.js';
-import {requirementTrace, requirementSpine} from './public/trace-kernel.js';
+import {requirementTrace, requirementSpine, BUILT_IN_LAYERS} from './public/trace-kernel.js';
+import {recordTrace, tracePath} from './public/trace-record.js';
 import {chapterChecks, sddBoard, sddOpenCounts} from './public/readiness-model.js';
 import {architectureMarkdown, provenanceReading} from './public/sdd-architecture.js';
 import {arsMarkdown} from './public/ars-document.js';
@@ -68,6 +69,23 @@ export function assertBuiltInTrailsUnchanged(base, withRecords) {
     for (const l of Object.keys(a.layers)) { layers++; if (JSON.stringify(b.layers[l]) !== JSON.stringify(a.layers[l])) throw Error('The ' + name + ' of ' + r.id + ' moved on the built-in layer “' + l + '”: ' + JSON.stringify(a.layers[l]) + ' became ' + JSON.stringify(b.layers[l]) + '. A package\'s records join a package\'s layers only.'); }
   }
   return layers;
+}
+// assertBuiltInChainsUnchanged(base, withRecords) (the lead's ruling K8 of 2026-11-20): the chain that explains a pair
+// of built-in records (trace-record.js tracePath, read by the Matrix, the Model trace and the SDD journey line) is the
+// chain `base` gives, for every record of `base` as the start and every record on its trace. A package's record on a
+// layer of its own may be a shorter way between two built-in records; it explains a pair only when no built-in chain
+// does; and the records of every such record's trace on the built-in layers are the ones `base` gives (the Model
+// trace and the SDD journey line read them). Answers how many chains it compared.
+export function assertBuiltInChainsUnchanged(base, withRecords) {
+  let chains = 0;
+  for (const start of recordGraph(base).objects.keys()) {
+    const a = recordTrace(base, start); if (!a) continue; const b = recordTrace(withRecords, start);
+    { const onBuiltIn = T => [...(T ? T.ids : [])].filter(x => BUILT_IN_LAYERS.includes(T.layerOf(x))).sort(), was = JSON.stringify(onBuiltIn(a)), now = JSON.stringify(onBuiltIn(b));
+      if (was !== now) throw Error('The trace of ' + start + ' moved on the built-in layers: ' + was + ' became ' + now + '. A package\'s records join a package\'s layers only.'); }
+    for (const id of a.ids) { if (id === start) continue; chains++; const was = JSON.stringify(tracePath(a, id)), now = JSON.stringify(b ? tracePath(b, id) : null);
+      if (was !== now) throw Error('The chain from ' + start + ' to ' + id + ' moved: ' + was + ' became ' + now + '. A package\'s record explains a pair only when no built-in chain does.'); }
+  }
+  return chains;
 }
 export function assertFindingIdsUnique(p) {
   const seen = new Set(), all = inheritedFindings(p);

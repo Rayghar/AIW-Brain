@@ -35,8 +35,8 @@ statement" the checks that stay current after a deviation.
 | 2. Must-fix 5 / J5, the tracker is journalled | done. One change event for each change the tracker opens or adds to and for each reversal, with the adoption as its source; the server stamps who sent the commit. | blocks "J5 journal" (a bound record, the driver, the decision, a reviewed batch, a merged alternative, a reversal), "tracker", "held back" |
 | 2. J10, the minted prefix | done. S0's row `prefixes {pattern: 'ADP'}`, read by the clash check; `WORKBENCH_PREFIXES` holds no package's prefix. | "registration"; S0 "SF start check", "7", "D3" |
 | 3. J6, no second truth | done. `adoption.obligation` and `adoption.withdraw` are no commands of this build; `adoption.accept` is refused while `design-source:<task>` stands as an error and is taken after `architecture.refresh`. The reader holds it too (my addition, below). The retirement list is below. | blocks "registration", "accept", "deviation", "held back", "J6 basis after acceptance" |
-| 3. J7, no finding before the step can be taken | done. No `adoption-acceptance` finding; the reading states the standing and what must happen next in a reader's words. An upgraded old document gains no finding. | blocks "e3 rules", "accept", "template copy" |
-| 3. J8, an upgrade is stored by a read | done for commands, as ruled: 409 with a reload, nothing stored; the read stores the upgrade with its recovery point. | block "storage upgrade"; S0 block "2 command boundary" (a synthetic upgrade) |
+| 3. J7, no finding before the step can be taken | done. No `adoption-acceptance` finding; the reading states the standing and what must happen next in a reader's words. An upgraded old document whose applied designs' records all stand gains no finding (corrected by the lead after the verifier: one whose applied design lost a bound record gains `adoption-role-broken`, an error, at the upgrade, and its findings, readiness and registers move). | blocks "e3 rules", "accept", "template copy" |
+| 3. J8, an upgrade is stored by a read | done for commands, as ruled: 409 with a reload, nothing stored; the read stores the upgrade with its recovery point. Every other save: the lead's ruling K1 (below, "Lead follow-up"). | block "storage upgrade"; S0 block "2 command boundary" (a synthetic upgrade) |
 | 3. J9, the SDD's count | done: a line and a column of their own, only in a document that holds such a record; in the suite's fixture 61 by a person before and after, 3 by an upgrade. | block "J9 SDD provenance"; S0 "D5 SDD provenance" |
 | 4. Should-fix 1, the owner | done: the projection carries `owner`; the one rule refuses the owner. | "J1 applier" |
 | 4. Should-fix 2, two re-read steps | done as J6 rules: the reading carries the earlier path's basis state, accept is refused while it stands. | "accept", "tracker", "J6 basis after acceptance" |
@@ -63,8 +63,8 @@ statement" the checks that stay current after a deviation.
    `architecture.refresh` re-read the design (the task's `sourceReview.at`) does not stand again: a second person
    accepts the design as re-read. This is stricter than ruled. Case: "J6 basis after acceptance", seen to fail
    (`true !== false`).
-2. **J8, as ruled and no further: commands.** A writing route that is not a command still stores a due package
-   upgrade with its own write, as it stores the built-in read upgrades. Probed on `/api/lifecycle`: a rename sent at
+2. **J8, as ruled and no further: commands** (closed by the lead's ruling K1; see "Lead follow-up"). A writing route that is not a command still stored a due package
+   upgrade with its own write (no tab left open is needed: the Projects page sends a rename or an archive without reading the project), as it stores the built-in read upgrades. Probed on `/api/lifecycle`: a rename sent at
    the stored revision of a row whose upgrade is due answers 200 and stores the three adoptions, with no recovery
    point and no storage-upgrade row in the activity. By the code the same holds wherever a route reads with
    `withFinalReview` and saves: `intake-service.js`, `drafting-service.js`, `baseline-service.js`,
@@ -157,7 +157,11 @@ changed.
    `COVERED` in `adoption-domain.js` and a case for it.
 3. A step that changes what an adoption says moves `revision` and sets `confirmed` false (`changed()`).
 4. `adoptionDesign` says everything but the bookkeeping for an adoption with no task beside it. A new key that is
-   bookkeeping must be left out there; `assertStepsMoveNoStamp` catches one that is not.
+   bookkeeping must be left out there; `assertStepsMoveNoStamp` catches one that is not. While its task stands, an
+   upgraded adoption's bindings, facts, parameters, obligations, owner, title, definition and scope are left out of
+   the design statement too (the task says them). A step of S2 that changes one of them on such a record must reach
+   the design statement: S2 adds the counterpart of `assertStepsMoveNoStamp`, a case that such a change moves the
+   design stamp.
 5. Every relation the emitter states asks `has(id)` first.
 6. `definitionOf` reads released knowledge from `definition.receipt.governedConcern.receipt` and
    `legacy.governedKnowledge`. A definition S2 builds from a released claim puts its claim receipt where that reader
@@ -336,7 +340,7 @@ true`), obligations verbatim with their ids; `applied` verbatim; the applier whe
 
 **What it moves** (block "e3 rules", on the Bank Payment reference with three applied tasks): of the ten readings of
 `rc44-s0-readings.mjs` it moves `graph`, `model`, `trails` (the layer `mechanism`), `provenance` and `sdd` (the count
-of who wrote the records). It leaves `findings`, `stamps`, `readiness`, `registers` and `ars`. Also unmoved: the
+of who wrote the records). It leaves `findings`, `stamps`, `readiness`, `registers` and `ars` while every record the applied designs bound stands; an applied design that lost a bound record gains `adoption-role-broken` (error) at the upgrade, and then `findings`, `readiness` and `registers` move too. The chain that explains a pair of built-in records (the Matrix, the Model trace, the SDD journey line) does not move: ruling K8. Also unmoved: the
 design fingerprint and its version stamp, the evidence fingerprint, every requirement's trace stamp, the design source
 a freeze keeps (byte-identical), the whole `finalReview` record, every chapter container, the obligation basis stamp
 of a verified action (which stays `current-verified`), the 22 rows of `architectureObligationsFor`, the issues of the
@@ -373,3 +377,45 @@ in the design journal; a command that arrives first is answered with a reload).
    outbox's own store is held too (block "held back").
 10. **A kind `concern`** beside the design's five (ruling J4): a released design concern compared and applied as a
     guided design; S5 moves such a comparison to `selection.*`.
+
+## Lead follow-up after the verifier (2026-11-20 and 21; branch rc44/wp2-s1-lead)
+
+The verifier (35eeaed) answered not yet: J8 partly fixed, five new problems. The lead closed them, cases first, each
+seen to fail before its change (rulings K1 to K9).
+
+| item | what | case |
+| --- | --- | --- |
+| K1, J8 for every save | The one writer (`project-storage.js` `saveStoredProject`) refuses to store the upgraded document over a row whose package upgrade is due, unless it is the storage upgrade (`keepPrior`); the answer is the browser's conflict (409). A rename, archive or restore stores the row as it was. Seen to fail: `POST /api/operations` stored the adoptions (200). | S0 "2 command boundary"; "storage upgrade" |
+| K2, template copy | A template row whose package upgrade is due is copied as the read would store it. Seen to fail: the copy held no adoption. | "template copy" |
+| K7, the tracker sees both twins | The tracker compares every record the lifecycle collections hold under a bound id (`recordSays`), so a change of a component's inputs or technology needs, kept only under `realisation.components`, flags the adoption and is journalled. Seen to fail: `false !== true`, acceptance kept standing. | "tracker" (with the task and in a template copy) |
+| K8, chains | `tracePath` takes a chain through the built-in layers when one exists; a package's record explains a pair only when nothing else does. Shared helper `assertBuiltInChainsUnchanged` (7,194 chains on the Bank Payment fixture). Seen to fail: OUT-001 to tc-010 ran through ADP-001. | "trace" |
+| K9 (a) | `prefixes` refuses an inherited name (`Object.hasOwn`). | S0 J10 case |
+| K9 (b) | A status this build does not write reads "not a standing this build reads (…)". | "upgrade" |
+| K9 (c) | The upgrade mints no id a record of the document holds; the emitter states no adoption, and no relation, under an id another record holds. | "upgrade" |
+| notes | The three passages the verifier named are corrected above (J7 row, "What S2 inherits" 4, "What it moves"). | |
+
+### After the review of the lead's follow-up (2026-11-21)
+
+A reviewer read the lead's commits (35eeaed..ec28bd7): two must-fix, nine should-fix. Closed, cases first:
+
+| item | what | case |
+| --- | --- | --- |
+| must-fix 1 | A template that names a package this build does not register is copied as stored (no upgrade minted), as its read stores none. Seen to fail: three adoptions in the copy. | "template copy" |
+| must-fix 2 | The inherited-name check of `prefixes` runs in a child process holding the build's packages only; seen to fail on the old `builtInKind` in the suite's full run. | S0 "SF start check" |
+| K9 (b) | The step refusal says "not at a standing this build reads" too. | "upgrade" |
+| K9 (c) | An id a retired record holds is not minted. | "upgrade" |
+| K7 cost | What each record says is indexed once per document (`remember`). | |
+| K10 | What a bound record says to the tracker leaves out the readings it keeps of others (`sourceSnapshot`, `driverSnapshot`, `sourceDriverIds`, `sourceDecisionIds`), the review flag `assumptionsResolved` and where it is drawn (`col`, `row`, `x`, `y`). Where the earlier task stands, its own finding may still lapse an acceptance after such a change (K3a); in a copy without the task the acceptance stands. A re-scope of the bound component's allocation (`logical.mappings`) is not watched: S2, with the obligation readers. | "tracker" (with the task and in a copy) |
+| K1 robustness | The row is marked in its keys (`__upgrade_due`, skipped by `priorKeys`), so a route that copies the keys is held too. | S0 "2 command boundary" |
+| K1 coverage | Archive, restore and the template mark on a due row: taken, row as it was, upgrade still due. | S0 "2 command boundary" |
+| K8 helper | `assertBuiltInChainsUnchanged` also compares each record's trace on the built-in layers (the Model trace and the SDD journey line read those; only the Matrix reads `tracePath`); S0's synthetic package calls it, with two trespass cases. | S0 "1 record graph and trail" |
+| size | Re-measured: chapters route 3,230,165 B, wp2 325 B of 600 B (9 B for the follow-up), 3,627 B left; opens with records 3,325,829 B. | "size" |
+
+Known, by reading, not by a case: the background jobs that save (a draft's apply, a freeze) answer a due row as a
+failed job carrying the reload words, not as the browser's 409; the signed-notice, repository sync and transfer saves
+store the row as it was, since they do not upgrade. A new project (a template copy, a recovery import) gets a
+package's upgrade when it is made: there is no earlier row to recover. The command route keeps its early check
+(`upgradeDueRefusal` in worker.js) so that a command is not run only to be refused by the writer: one rule, read
+twice, not an old path beside a new one. When another record holds an adoption's id (only a hand-made or foreign
+document; the upgrade no longer mints such an id), the adoption is no object of the record graph and its task is not
+emitted either: the reading still names it. No case.
