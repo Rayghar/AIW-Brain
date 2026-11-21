@@ -21,10 +21,9 @@ is S1's second-person step.
 | File | Where it runs | What it is |
 |---|---|---|
 | `public/adoption-selection.js` | server; the lazy entry | `applySelectionCommand` (`selection.start`, `.candidate`, `.judge`, `.choose`, `.instantiate`), `selectionConstraints`, `candidateEligibility`, `selectionReading`, `selectableProfiles`, `SELECTION_LIMITS` |
-| `public/adoption-ui.js` | the lazy entry | `selectionView`, `openSelection` (the selection's part only; S3 adds the adoption workspace) |
-| `public/adoption-package.js` | server; the lazy entry | five command rows (`judge`, `choose`, `instantiate` a signed-in person's); `provenance.paths.selection` |
-| `public/architecture-task-ui.js` | lazy entry | re-exports `openSelection` (the host) |
-| `public/component-library-ui.js` | its own lazy entry | "Select for a responsibility", a dynamic import of the host |
+| `public/adoption-ui.js` | server; the lazy entry | `selectionView`, `openSelection` (the selection's part only; S3 adds the adoption workspace); a module of the package, imported by `adoption-package.js`; it sets `window.aiwSelection` in the browser |
+| `public/adoption-package.js` | server; the lazy entry | five command rows (`judge`, `choose`, `instantiate` a signed-in person's); `provenance.paths.selection`; imports the view |
+| `public/component-library-ui.js` | its own lazy entry | "Select for a responsibility": a dynamic import of the host, then `window.aiwSelection({store, modal})` with its own dialog helper |
 | `rc44-wp2-adoption-cases/selection.mjs`, `rc44-wp2-selection-baseline.json` | suite | 13 blocks; goldens captured at `5cae40a` (only test files changed then) |
 | `rc44-wp2-fixtures.mjs` (appended) | suite | `concernProject`, `guidedConcernPreview`, `decisionSays`, `selectionProject`, `PROFILE_FACTS`, `ARCHETYPE` |
 | `audit/rc44/evidence/wp2-s5-size.json` | evidence | `ownBytes` 153 |
@@ -117,6 +116,13 @@ weighed as before). That is the earlier path standing, not a second writer.
    (`libraryProposal`, `archetypeProposal`): the view asks for the reviewed fields itself.
 9. **No browser suite was run**: the comparison tools' browser suites are red on this machine at the baseline. The
    view is rendered in node (`S5 surface`).
+11. **The view is a module of the package, opened through a hook.** The design has the library chooser reach
+    `openSelection` through an import of the host entry. A workbench module that imports a package's module (the host
+    re-exporting the view) makes S0's suite read the package's modules as the workbench's, and the id prefix the
+    package mints (`ADP`) as a workbench prefix (block "D3 workbench keys" failed so, on an intermediate commit). So the
+    package imports the view, the host keeps its one bare import of the package, and the chooser loads the host and
+    calls `window.aiwSelection` (the codebase's pattern: `window.aiwProjectStore`, `window.aiwArchitectureTask`). The
+    view takes the dialog helper from its caller, so the server bundle holds no dialog code.
 10. **Decision acceptance** asks what Chapter 3 always asks (each alternative described, the chosen one's effect on each
     driver): the cases state it through `decision.alternative`, as a person does.
 
