@@ -88,7 +88,13 @@ case first and seen to fail on the head the item started from, a WIP commit afte
     1,448 -> 1,503 B; S1.10 is red until item 4 re-measures it.
   - Suites after item 2: S0 28 of 28; wp9a 24 of 25 (S1.10, the pins).
 
-State: item 3 in progress. Measured before any change (`node build.mjs` on `5cae40a`): chapters route 3,230,605 B,
+- **Item 3, O3: done** (notes only; no case). Under "Second fix-up", item 4: the figures 246 B and 669 - 246 - 98
+  are marked as the figures at item 4, with the final 342 B and 765 - 325 - 98 beside them. Known limit (e) names its
+  consequence (Chapter 11's `review.checks`, the intake and a recorded architect review lapse after a package's
+  proposal is dismissed, the safe direction) and its owner (wp9b, with the built-in seeds' rule). The second fix-up's
+  lines on M1's answer are marked as retired by O2.
+
+State: item 4 in progress. Measured before any change (`node build.mjs` on `5cae40a`): chapters route 3,230,605 B,
 projects 507,338 B, 148 script files, buckets 53/50/45, stylesheet 901,873 B, no violation.
 
 ## Second fix-up (after the verifier; the lead's rulings M1 to M9, with K and L)
@@ -132,6 +138,7 @@ Where I read a ruling otherwise, or did a little more, plainly:
   stamp current, not the package), S0's `track` row may now answer `[[as it was, as it is]]` for records of other
   collections the tracker changed, and `trackExtensions` stamps each as the commit's (`provenance.js stampTracked`,
   server only; `worker.js` hands the author over). That is an edit of S0's boundary and contract, which M1 does not name.
+  (Retired by ruling O2 in the third fix-up: the answer is ignored, and the boundary copies `trackPaths` instead.)
   The restore rule (L3) reads the same predicate as the mend and the comparison, so a node's restore is no longer
   refused because its domain is a person-kept record a draft changed since.
 - M3: L2's words "the chapter cannot be checked, frozen as checked or handed off" are not built: as M3 rules, they mean
@@ -167,8 +174,10 @@ Where I read a ruling otherwise, or did a little more, plainly:
   package, as wp2's v1 does) and the shared pool's (`sharedPoolBytes`, by item). The adoption record's block `size`
   (`rc44-wp2-adoption-cases/record.mjs`) and wp9a's S1.10 each hold: the build passes every gate with the caps
   unchanged; the figure recorded at the package's own head is inside its allowance (wp2: `delta` 325 B of 600; wp9a:
-  `ownBytes` 246 B of 500); and this build's growth against the integrated base, less every other package's own bytes
-  and less the shared pool's, is inside the allowance (wp2: 669 - 246 - 98 = 325 B; wp9a: 669 - 325 - 98 = 246 B). Seen
+  `ownBytes` 246 B of 500, **the figure at item 4**); and this build's growth against the integrated base, less every
+  other package's own bytes and less the shared pool's, is inside the allowance (**the figures at item 4**, before
+  item 6 added M6's 96 B: wp2: 669 - 246 - 98 = 325 B; wp9a: 669 - 325 - 98 = 246 B; on the final head of the second
+  fix-up wp9a's own bytes are 342 B, and 765 - 325 - 98 = 342 B, as "Measurements" says; ruling O3). Seen
   to fail first: wp2's block red at 669 B (item 0), then "wp9a-s1-size.json states no route bytes of its own" until the
   evidence was measured again; S1.10 failed on the old evidence file. Old -> new, at least as strict (with no other
   package's evidence the new assertion is the old one): wp2 `measured.chapters - INTEGRATED.chapters <= 600` ->
@@ -226,8 +235,10 @@ Where I read a ruling otherwise, or did a little more, plainly:
 
 ### What later slices inherit (second fix-up)
 
-- **Every package:** S0's `track` may answer `[[as it was, as it is]]` for records of other collections it changed
-  itself; the boundary stamps each as the commit's (M1). S0's row `quietProposals {path: true}` says that a proposal of
+- **Every package:** ~~S0's `track` may answer `[[as it was, as it is]]` for records of other collections it changed
+  itself; the boundary stamps each as the commit's (M1).~~ Superseded by ruling O2 (third fix-up): a tracker answers
+  nothing; a package states the built-in collections its tracker mends as `trackPaths`, and the boundary stamps what a
+  call changed there. S0's row `quietProposals {path: true}` says that a proposal of
   a package's own lifecycle collection is no design change when it is dismissed or restored (M6). A package's size case
   follows one rule (M4): its evidence states `ownBytes` and, for anything booked to the shared pool, `sharedPoolBytes`
   by item; its suite asserts the recorded figure at its own head and this build's growth less every other package's
@@ -637,10 +648,15 @@ slice 6 brings the surface that offers Keep and Retire (ruling J7). See open que
 - (d) For slice 2: no calculated verdict reads as confirmed an ancestor chain that an unreviewed draft changed.
 - (e) A reviewed batch keeps its receipt in `workbench.history`, which the design fingerprint reads on rc.10.73.42: a
   batch of proposals moves the design stamp by its receipt alone (S1.8 holds that nothing else moves). Likewise, found
-  by the second fix-up: a dismissal of a proposal moves no version and clears no check (M6), but the design stamp moves
-  by the dismissal's entry in `retired.records`, which the design fingerprint reads for every retirement on
-  rc.10.73.42 (S1.23 holds it, marked KNOWN LIMIT). Closing it means leaving such entries out of the design source
-  (`review-domain.js reviewSource`, on the route, about 100 to 150 B by estimate, not measured): for the lead.
+  by the second fix-up: a dismissal of a package's proposal moves no chapter version and clears no chapter's check or
+  handoff (M6), but the design stamp moves by the dismissal's entry in `retired.records`, which the design fingerprint
+  reads for every retirement on rc.10.73.42 (S1.23 holds it, marked KNOWN LIMIT). **Its consequence (ruling O3):**
+  after a package's proposal is dismissed, Chapter 11's `review.checks`, the intake and a recorded architect review are
+  no longer current (`finalChecksCurrent` goes from true to false), because the retirement list is in the design
+  source on rc.10.73.42. That is the safe direction: a check lapses, and none stands that should not. It stays a known
+  limit, **owned by wp9b** with the built-in seeds' rule (M6). Closing it would mean leaving such entries out of the
+  design source (`review-domain.js reviewSource`, on the route: the second verifier measured 187 B in a scratch copy,
+  more than wp9a had left).
 - (f) No document bound is enforced by code; the package's limits keep its worst case near 3.74 M of the 8 M characters
   (S1.18), and later wp9a slices measure what they add against that.
 
