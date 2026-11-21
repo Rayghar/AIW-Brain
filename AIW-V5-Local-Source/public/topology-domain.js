@@ -2,11 +2,14 @@
 // (Chapter 6, technology.domains, FD-nnn), deployment nodes (Chapter 10, runtime.nodes, DN-nnn) and where a zone and a
 // placement stand in them. One part of the design package p30-deployment (topology.js assembles the parts and registers
 // them at the one registration point, design-extensions.js). Pure: no clock but the `at` a command is handed, no
-// randomness; ids come from the chapters' counters.
+// randomness; ids come from Chapter 10's counters (runtime.counters.node and .domain, which the design fingerprint does
+// not read: a proposal, which says nothing to it, moves no counter it reads; ruling L6).
 //   The marker    runtime.topology {schemaVersion, review: {actor, at, account}}: a signed-in person chose to type this
 //                 project's topology (runtime.topology-start). Every other topology command is refused without it, and
 //                 nothing of the package is read into the record graph without it. Who chose it is kept under `review`,
-//                 which a project copied from a template clears: the copy stays typed, by nobody there yet.
+//                 which a project copied from a template clears; a step older than a recovery import was taken on another
+//                 workbench. Either way the project stays typed, by nobody here yet, and its topology commands are refused
+//                 until a person here takes the step (ruling L5). Typed or not is design; who chose it, and when, is not.
 //   Records       a failure domain {title, scope, cause, parentId, basis, owner, recoveryOwner, treatment}; a node
 //                 {kind, title, parentId, domainId, jurisdiction, place, provider, tier, exposure, address, reason,
 //                 owner, basis, boundaryIds}. Each is saved as a patch (a field left out keeps its value, null clears
@@ -38,6 +41,9 @@ const find=(xs,id)=>typeof id==='string'&&id?list(xs).find(x=>x?.id===id)||null:
 // A stated shared cause: a cause that is no location. A domain that states none, or a location, is where something stands.
 const sharedCause=d=>!!d?.cause&&d.cause!=='location';
 export const topologyTyped=p=>!!p?.runtime?.topology;
+// Whether a signed-in person chose it in this project: a step a template copy cleared (review null), or one older than a
+// recovery import (finalReview.imported.at), was taken elsewhere and is nobody's here (rulings F3 and L5).
+const chosenHere=p=>{const r=p?.runtime?.topology?.review,i=p?.finalReview?.imported?.at;return !!r?.actor&&!(i&&!(r.at>i));};
 export const failureDomains=p=>list(p?.technology?.domains),deploymentNodes=p=>list(p?.runtime?.nodes);
 
 // One IPv4 or IPv6 prefix, read strictly: an address and its length, no host bit set, no leading zero in a decimal
@@ -113,7 +119,7 @@ function saveDomain(p,raw,at){
   if(share.length&&!sharedCause(next))throw Error(and(share)+(share.length>1?' name ':' names ')+old.ref+' as a cause '+(share.length>1?'they share':'it shares')+': it keeps a cause that is no location.');
  }else if(xs.length>=TOPOLOGY_LIMITS.domains)throw Error('This workspace keeps up to '+fmt(TOPOLOGY_LIMITS.domains)+' failure domains.');
  t.domains=xs;
- return store(xs,old,next,raw,at,DOMAIN_KEYS,()=>{const n=t.counters.domain=(t.counters.domain||0)+1;return {id:'fd-'+pad(n),ref:'FD-'+pad(n)};});
+ return store(xs,old,next,raw,at,DOMAIN_KEYS,()=>{const c=p.runtime.counters,n=c.domain=(c.domain||0)+1;return {id:'fd-'+pad(n),ref:'FD-'+pad(n)};});
 }
 // One proposal for each name in use that no failure domain carries yet: the hosting failure domain a zone states by
 // name (as every reader reads it: runtime-model.js failureDomainKey) and the primary and alternate failure domain a
@@ -129,7 +135,7 @@ function proposeDomains(p){
  if(!names.size)return null;
  const n=xs.length+names.size;if(n>TOPOLOGY_LIMITS.domains)throw Error('This workspace keeps up to '+fmt(TOPOLOGY_LIMITS.domains)+' failure domains; '+names.size+(names.size>1?' names':' name')+' in use would make '+fmt(n)+'.');
  t.domains=xs;const first=xs.length;
- for(const [key,title] of names){const seq=t.counters.domain=(t.counters.domain||0)+1;xs.push({id:'fd-'+pad(seq),ref:'FD-'+pad(seq),revision:1,title,scope:'',cause:'',basis:'',owner:'',recoveryOwner:'',treatment:'',parentId:'',legacyKeys:[key],origin:SEEDED,state:PROPOSED,history:[]});}
+ for(const [key,title] of names){const c=p.runtime.counters,seq=c.domain=(c.domain||0)+1;xs.push({id:'fd-'+pad(seq),ref:'FD-'+pad(seq),revision:1,title,scope:'',cause:'',basis:'',owner:'',recoveryOwner:'',treatment:'',parentId:'',legacyKeys:[key],origin:SEEDED,state:PROPOSED,history:[]});}
  return xs[first].id;
 }
 
@@ -225,24 +231,26 @@ export function topologyFindings(p){
 }
 
 // ---------------------------------------------------------------- the commands
-export const UNTYPED='This project\'s topology is not typed yet. A signed-in person chooses that first (runtime.topology-start).';
+export const UNTYPED='This project\'s topology is not typed yet. A signed-in person chooses that first (runtime.topology-start).',NOT_HERE='The topology of this project is typed, but nobody here has chosen it yet. A signed-in person chooses typed topology for this project first.';
 // (document, command, at, actor, {author}) as every handler is called; inside a reviewed batch with the first four.
 // It works on the copy it is handed (the server's boundary and the staged path each hand it one), a settled document:
 // one that holds its chapters. A change of Chapter 10 moves its version and clears its check and handoff, as its own
-// commands do, and a change of Chapter 6 its own; AIW's proposals and a step taken again move neither.
+// commands do, and a change of Chapter 6 its own; a record that is a proposal after the save (AIW's, or a draft's), and
+// a step taken again, move neither and clear nothing (ruling L6: a proposal says nothing to the design).
 export function applyTopologyCommand(p,command,at,actor,options){
  const m=p.runtime,t=p.technology,raw=command.payload||{},type=command.type,touch=s=>{s.version++;s.review=null;s.handoff=null;};
  if(!m||!t)throw Error('Open the project before changing its topology.');
  if(type==='runtime.topology-start'){
   // Idempotent: once a person here has chosen it, the step is on record and a second request changes nothing. In a
-  // project copied from a template the topology is typed and the step is nobody's yet: a person takes it again there.
-  if(!m.topology?.review){if(!m.topology)touch(m);m.topology={schemaVersion:1,review:{actor,at,account:options?.author?.account??null}};}
+  // copy or a recovered project the topology is typed and the step is nobody's yet: a person takes it again there.
+  if(!chosenHere(p)){if(!m.topology)touch(m);m.topology={schemaVersion:1,review:{actor,at,account:options?.author?.account??null}};}
   return {document:p,selected:null};
  }
  if(!m.topology)throw Error(UNTYPED);
- if(type==='technology.domain'){const [r,changed]=saveDomain(p,raw,at);if(changed)touch(t);return {document:p,selected:r.id};}
+ if(!chosenHere(p))throw Error(NOT_HERE);
+ if(type==='technology.domain'){const [r,changed]=saveDomain(p,raw,at);if(changed&&!isProposed(r))touch(t);return {document:p,selected:r.id};}
  if(type==='technology.domain-proposals')return {document:p,selected:proposeDomains(p)};
- if(type==='runtime.node'){const [r,changed]=saveNode(p,raw,at);if(changed)touch(m);return {document:p,selected:r.id};}
+ if(type==='runtime.node'){const [r,changed]=saveNode(p,raw,at);if(changed&&!isProposed(r))touch(m);return {document:p,selected:r.id};}
  if(type==='runtime.locate'){const {changed,...answer}=locate(p,raw);if(changed)touch(m);return {document:p,...answer};}
  throw Error('Unknown topology action.');
 }
@@ -315,7 +323,7 @@ const TRACKED=[['runtime.nodes',10,'node',NODE_KEYS.filter(k=>k!=='open'),true],
 const rows=(p,path)=>{const [a,b]=path.split('.');return list(p?.[a]?.[b]);};
 export function trackTopology(prior,next,command,at){
  const m=next?.runtime,was=prior?.runtime;if(!m?.topology)return;
- const started=!!m.topology.review&&!was?.topology?.review;
+ const started=chosenHere(next)&&!chosenHere(prior);
  // What this commit has journalled already: a second call for the same commit (a batch's inner command) adds nothing.
  const done=new Set(list(next.changes?.events).slice(list(prior?.changes?.events).length).map(e=>e?.source?.chapter+':'+e?.source?.id));
  const journal=(chapter,id,ref,kind,title,before,after,fields)=>{
@@ -337,6 +345,14 @@ export function trackTopology(prior,next,command,at){
  }
 }
 
+// ---------------------------------------------------------------- what the design fingerprint reads (rulings L5, L6)
+// The marker says typed or not, and leaves out who chose it and when; the two collections say what their records say,
+// without their history, review, confirmed and provenance (S0's rule for every package, ruling J3), and a proposal says
+// nothing, so AIW's proposals and a draft that arrives as one move no design stamp; keeping one is a design change.
+// Each answers nothing for a document without the package's records, which reads as it did.
+const BOOKKEEPING=new Set(['history','review','confirmed','provenance']),stated=xs=>{const out=list(xs).filter(r=>r&&!isProposed(r)).map(r=>Object.fromEntries(Object.entries(r).filter(([k])=>!BOOKKEEPING.has(k))));return out.length?out:undefined;};
+const DESIGN={'runtime.topology':p=>topologyTyped(p)?{schemaVersion:p.runtime.topology.schemaVersion}:undefined,'technology.domains':p=>stated(p.technology?.domains),'runtime.nodes':p=>stated(p.runtime?.nodes)};
+
 // ---------------------------------------------------------------- what this part registers
 // The part of the package this module states (topology.js assembles the parts into the one registration).
 const edit={apply:applyTopologyCommand,staged:true},record={...edit,validate:refuseDraft};
@@ -351,6 +367,6 @@ export const TOPOLOGY_PART={
  lifecycle:{'technology.domains':6,'runtime.nodes':10},
  canRestore:RESTORE,
  provenance:{nouns:{'technology.domains':'failure domain','runtime.nodes':'deployment node'},paths:{'technology.domain':['technology.domains'],'technology.domain-proposals':['technology.domains'],'runtime.node':['runtime.nodes']}},
- designKeys:['technology.domains','runtime.nodes'],
- evidenceKeys:['runtime.topology']
+ design:DESIGN,
+ designKeys:['runtime.topology','technology.domains','runtime.nodes']
 };

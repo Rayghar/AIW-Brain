@@ -240,6 +240,7 @@ Done on `rc44/wp9a-s1-topology-fix-c2`, each case first. Route bytes of these ro
 |---|---|---|---|
 | L1 | record.keep is a signed-in person's step for every record: refused from an agent account, a draft by Sol and an import, alone and carried at any depth | `authorship.js` `refuseUnreviewable` (server) | block "L1 keep is a person's step" |
 | L3 | The row `canRestore {path: (p, record) => void}` on a package's own lifecycle collections | `public/record-lifecycle.js`, `public/design-extension-parts.js` | block "L3 restore rule" |
+| L5, L6 | The row `design` also takes `chapter.key` for a new key of a chapter's container (never one the workbench writes), so that a package states its marker and its records there; two statements of one key, or of a key and a key inside it, are a clash | `public/review-domain.js` `reviewSource` (route, 64 B, booked to wp9a), `public/design-extension-parts.js` | block "J3 design statement" (old -> new: "a statement of `runtime.nodes` is refused" -> "a new key of a chapter's container may be stated; a key the workbench writes, a deeper key and a key that is no name are refused"); block "7 idempotent and order-free" (the inner key's clash) |
 | L10 | The suite holds with both packages registered: D3's allowed-keys example uses keys no package states | the suite | block "D3 workbench keys" |
 
 
@@ -332,7 +333,7 @@ Every part is optional.
 | `canRestore` | `{path: (p, record) => void}`, on the package's own `lifecycle` collections only; throws in a reader's words to refuse a restore | `record-lifecycle.js` restore, beside a chapter's own rule; ruling L3 (wp9a slice 1 fix-up); block "L3 restore rule" |
 | `provenance` | `{nouns: {path: noun}, paths: {type or prefix: [path]}, records: {path: chapter}}` | `provenance.js`, `sdd-architecture.js` |
 | `designKeys`, `evidenceKeys` | `[key]` | `review-domain.js` `designOf` |
-| `design` | `{key: p => what the key says}` | `review-domain.js` `reviewSource`, in place of the raw key; ruling J3 |
+| `design` | `{key: p => what the key says}`, a key of the document or `chapter.key` for a new key of a chapter's container | `review-domain.js` `reviewSource`, in place of the raw key; rulings J3, L5 |
 | `upgrade`, `upgradeNote` | `p => p`, one sentence | `readings-upgrade.js`, `storage-upgrade.js` (server) |
 | `sections` | `[{document, after, markdown(p)}]` | the export routes of `worker.js`, `sdd-architecture.js` (server) |
 | `needs`, `load` | `p => boolean`, `() => Promise` | `project-store.js` through `ensureExtensions` |
@@ -564,7 +565,8 @@ registry converts no stored stamp: an upgrade step that adds a design key to an 
 design stamps, and handling that is the package's (as D14 did in `readings-upgrade.js`).
 
 **`design`** (ruling J3). `{key: p => what the key says to the design fingerprint}`, for a key of the document that is
-the package's own (not a key inside a chapter's container, never a key the workbench writes). `reviewSource` puts what
+the package's own, or (ruling L5, wp9a slice 1 fix-up) `chapter.key` for a new key of a chapter's container
+(`runtime.topology`, `runtime.nodes`, `technology.domains`); never a key the workbench writes. `reviewSource` puts what
 the function answers under the key, in place of the raw key; when it answers `undefined` or `null` the design source
 holds no key, so a document without the package's records, and a baseline frozen from one, read as they did. A key
 with a statement is design by that statement: the start check's probe of `designKeys` does not ask the fingerprint

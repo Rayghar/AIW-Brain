@@ -311,12 +311,13 @@ export function extensionIssues(e) {
   }
   // What a package's records say to the design fingerprint (the lead's ruling J3 of 2026-11-19; review-domain.js
   // reviewSource reads the statement in place of the raw key): a function for a key of the document that is the
-  // package's own. Such a key is design by its statement, so the probe of designKeys above does not ask the
-  // fingerprint about it (a statement answers nothing for a document without the package's records).
+  // package's own, or for a new key of a chapter's container (chapter.key, ruling L5: never one the workbench writes).
+  // Such a key is design by its statement, so the probe of designKeys above does not ask the fingerprint about it (a
+  // statement answers nothing for a document without the package's records).
   if (e.design !== undefined && !plain(e.design)) say('design is {key: p => what the key says to the design fingerprint}.');
   for (const [k, f] of Object.entries(plain(e.design) ? e.design : {})) {
     if (!fn(f)) say('the design statement of “' + k + '” is a function (p) that answers what the key says, or nothing.');
-    if (!/^[a-z][A-Za-z]{0,40}$/.test(k)) say('the design statement of “' + k + '” names a key of the document (the row carries no key inside a chapter\'s container).');
+    if (!PATH.test(k)) say('the design statement of “' + k + '” names a key of the document, or chapter.key for a new key of a chapter\'s container.');
     else if (workbenchKey(k)) say('the design statement of “' + k + '” is on a key the workbench itself writes: a package states what its own key says.');
     if (list(e.evidenceKeys).includes(k)) say('“' + k + '” is stated as design and as evidence.');
   }
@@ -345,7 +346,8 @@ export function extensionConflicts() {
     // A prefix a package mints for a built-in type is its own as a kind's prefix is (ruling J10).
     for (const prefix of Object.values(plain(e.prefixes) ? e.prefixes : {})) if (typeof prefix === 'string') claim('id prefix', prefix, e.id);
     // One key has one statement of what it says to the design fingerprint (ruling J3): the fingerprint would read the later one.
-    for (const k of Object.keys(plain(e.design) ? e.design : {})) { const first = stated.get(k); if (first && first !== e.id) out.push('the design statement of “' + k + '” is stated by ' + first + ' and by ' + e.id + ': one key has one statement.'); else stated.set(k, e.id); }
+    // (a statement of a key and one of a key inside it are one key's two statements too: chapter.key, ruling L5)
+    for (const k of Object.keys(plain(e.design) ? e.design : {})) { const first = [...stated].find(([s]) => overKey(s, k))?.[1]; if (first && first !== e.id) out.push('the design statement of “' + k + '” is stated by ' + first + ' and by ' + e.id + ': one key has one statement.'); else stated.set(k, e.id); }
     for (const [k, t] of Object.entries(plain(e.layers) ? e.layers : {})) if (!BUILT_IN_LAYERS.includes(k)) { claim('layer', k, e.id); claim('the layer of the type', t, e.id); }
     for (const k of Object.keys(plain(e.commands) ? e.commands : {})) claim('command', k, e.id);
     for (const k of Object.keys(plain(e.provenance?.nouns) ? e.provenance.nouns : {})) claim('the noun of', k, e.id);

@@ -66,6 +66,42 @@ fail on the head the item started from, then the change. One line per item; deta
   plan `run-001`): alone, in the agent's batch (placement and zone restamped `sol-draft`), and a merged alternative
   that relocates both leaves their earlier stamps, held as the known limit of ruling D12. Replaced: S1.2 and S1.6
   "selected is the plan (I.apiPlan)" -> "selected is the placement".
+- **Item 6, L5, L6, L7 (should-fix 1, 2 and 6; concern 4 in part):** done (branch `rc44/wp9a-s1-topology-fix-c3`, which
+  continues `-fix-c2`, cut off after item 5). Cases first, all five seen to fail on `afaf616` (`b118f90`).
+  - L5: the marker is stated through S0's design row (`design {'runtime.topology': typed ? {schemaVersion} : nothing}`),
+    `review` left out; the evidence key is gone. S0's row took a key of the document only, so it now also takes
+    `chapter.key` for a new key of a chapter's container (`review-domain.js reviewSource`, 64 B on the route; the start
+    check and S0's block "J3 design statement", old -> new recorded there and in S0's notes). A step older than
+    `finalReview.imported.at` is nobody's (`chosenHere`), as a template copy's (review null) is: in both the four
+    topology commands are refused ("The topology of this project is typed, but nobody here has chosen it yet. A
+    signed-in person chooses typed topology for this project first."), the readings stay typed, and the step taken
+    there moves no stamp and no version and is journalled. Cases: S1.16 (the hand-made pair at one version gives two
+    stamps; the recovered project), S1.0 (the copy). Replaced: S1.0 "the copy takes topology commands" -> "refused in
+    the copy until a person there takes the step; then taken"; S1.0 "[evidenceKeys, designKeys] = [['runtime.topology'],
+    [...]]" -> "no evidence key; designKeys and the design row name the marker and both collections"; S1.11's key list
+    `evidenceKeys` -> `design`.
+  - L6: the statements of `technology.domains` and `runtime.nodes` hold each record that is no proposal, without its
+    history, review, confirmed and provenance (S0's rule for every package; S1.16 calls `assertStepsMoveNoStamp`); a
+    document with only proposals reads as one without the key. A save that leaves its record a proposal moves no version
+    and clears no check or handoff. A failure domain's id now comes from Chapter 10's counters (`runtime.counters.domain`,
+    which the design fingerprint does not read; `technology.counters` it reads), so the generator and a draft move no
+    counter the fingerprint reads. Cases: S1.4 (the generator; a keep moves the stamp and the version), S1.8 (a node Sol
+    drafted, a domain the agent drafted, the agent's batch; the keep), S1.16. Replaced: S1.4 "the records are design:
+    the design fingerprint reads them" (stamp moves) -> "AIW's proposals move no design stamp and no evidence stamp;
+    keeping one moves the stamp and the version"; S1.8 "the chapter's check is null after the draft" -> "the check a
+    person ran stands"; S1.2 and S1.5 `technology.counters.domain` -> `runtime.counters.domain` (S1.2 also asserts
+    `technology.counters` holds no `domain`), S1.3 adds `runtime.counters` holds no `domain`.
+    Found, not changed: a reviewed batch keeps its receipt in `workbench.history`, which the design fingerprint reads
+    for every batch on rc.10.73.42, so a batch of proposals moves the design stamp by its receipt; S1.8 holds that
+    beside the receipt the design source is what it was, and no version or check moves.
+  - L7: `simulateRuntime` (H4) reads `failureDomainKey` first and the name as before (`dk`): the "lose a failure
+    domain" grouping, its refusal and its Failover test; `deploy-model.js` (H15) keys each zone the same way (`key`) in
+    `r.domains`, `domainsOf`, `fallbackSimulation` and `deployInsights`, and `deploy-view.js` compares a plan's domains by
+    that key. A placeholder name groups as before (it does not turn independent). Note: `deploy-model.js` is on the
+    chapters route, not in the lazy entry as L7 says (it is imported by `chapter-reasoning.js`); the change saves 5 B there,
+    `simulateRuntime` 10 B. The layout's bracket (`deploy-layout.js`) still groups adjacent columns by the zone's domain
+    words: slice 6 (H12, R1). Case S1.17 (seen to fail: losing zone 1's typed domain lost zone 1 only).
+    `deploy`, `runtime`, `rc42-g5-runtime`, `chapter-lines`, `not-stated`, `wire-merge` pass unchanged.
 
 ## What was built
 

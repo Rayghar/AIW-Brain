@@ -8,6 +8,7 @@
 import {exchangeSource} from './exchange-model.js';
 import {environments, zones as zonesOf, plans as plansOf, placements as placementsOf, paths as pathsOf, runtimeDependencies, runtimeFindings, simulateRuntime, runtimeSources, requiredRuntimeControls, planOperation, runtimeIsSeed} from './runtime-domain.js';
 import {text,list,num,fewNames,recordsOf} from './util.js';
+import {failureDomainKey} from './runtime-model.js';
 // Round 24 (D-24-08): under a module scope the model reads the scope's projection; its checks are the saved document's
 // (module-lens.js), kept to the records the projection holds.
 import {baseOf, scopeFindings} from './module-lens.js';
@@ -48,14 +49,15 @@ export function deployModel(X, {envs = [], env = null, zones = [], plans = [], p
     recovery: r.recoveryStrategy || 'Unspecified', recoveryPlan: text(r.recoveryPlan, 260), rto: r.recoveryMinutes === '' || r.recoveryMinutes == null ? '' : String(r.recoveryMinutes), rpo: r.lossMinutes === '' || r.lossMinutes == null ? '' : String(r.lossMinutes),
     backupZone: r.backupZoneId || '', fencing: text(r.fencing, 200), backupPlan: text(r.backupPlan, 200), monitoring: text(r.monitoring, 200), runbook: text(r.runbook, 200), rollout: text(r.rollout, 200), rollback: text(r.rollback, 200),
     scaling: text(r.scalingPolicy, 160), readiness: text(r.readiness, 160), network: text(r.networkPolicy, 160), controls: list(r.controlIds), release: text(r.releaseReference, 80), capacityConfirmed: !!r.capacityConfirmed, illustrative: r.origin === 'reference'}]));
-  const Z = zones.map(z => ({id: z.id, ref: z.ref, title: text(z.title, 80), domain: text(z.failureDomain, 80), isolation: text(z.isolation, 220), owner: text(z.owner, 80), boundary: z.boundaryId || ''}));
+  // rc44 (wp9a, ruling L7; design hook H15): a zone's failure domain is the typed one it stands in (failureDomainKey), else its name as before
+  const Z = zones.map(z => ({id: z.id, ref: z.ref, title: text(z.title, 80), domain: text(z.failureDomain, 80), key: failureDomainKey(z) || norm(text(z.failureDomain, 80)), isolation: text(z.isolation, 220), owner: text(z.owner, 80), boundary: z.boundaryId || ''}));
   const L = placements.filter(l => P.has(l.planId)).map(l => ({id: l.id, plan: l.planId, zone: l.zoneId, role: ['active', 'standby'].includes(l.role) ? l.role : 'not stated', replicas: copies(l.replicas) || 0, open: !['active', 'standby'].includes(l.role) || copies(l.replicas) == null, confirmed: !!l.confirmed}));
   const byPlan = new Map([...P.keys()].map(id => [id, L.filter(l => l.plan === id)]));
   for (const r of P.values()) {
     const ls = byPlan.get(r.id), active = ls.filter(l => l.role === 'active' && Z.some(z => z.id === l.zone)).reduce((n, l) => n + l.replicas, 0);
     r.active = active; r.standby = ls.filter(l => l.role === 'standby').reduce((n, l) => n + l.replicas, 0);
     r.placed = ls.length > 0; r.open = ls.filter(l => l.open).length; r.short = r.minReady != null && active < r.minReady;
-    r.domains = [...new Set(ls.filter(l => l.role === 'active').map(l => norm(Z.find(z => z.id === l.zone)?.domain) || l.zone))];
+    r.domains = [...new Set(ls.filter(l => l.role === 'active').map(l => Z.find(z => z.id === l.zone)?.key || l.zone))];
   }
   const planOfAsset = new Map([...P.values()].map(r => [r.asset, r.id]));
   // Dependencies between plans, and runtime paths out to parties outside the environment.
@@ -85,7 +87,7 @@ export function deployModel(X, {envs = [], env = null, zones = [], plans = [], p
 // Zones that share a failure domain fail together; each distinct domain gets a colour slot.
 function domainsOf(Z) {
   const out = [], by = new Map();
-  for (const z of Z) { const k = norm(z.domain) || 'zone:' + z.id; if (!by.has(k)) { by.set(k, {key: k, title: z.domain || 'Undeclared failure domain', zones: [], slot: out.length}); out.push(by.get(k)); } by.get(k).zones.push(z.id); }
+  for (const z of Z) { const k = z.key || 'zone:' + z.id; if (!by.has(k)) { by.set(k, {key: k, title: z.domain || 'Undeclared failure domain', zones: [], slot: out.length}); out.push(by.get(k)); } by.get(k).zones.push(z.id); }
   return out;
 }
 export function zoneOrder(V) { return V.domains.flatMap(d => d.zones); }
@@ -115,7 +117,7 @@ export function failureOf(V, scenarioId) {
 // Used where no chapter simulation is available (fixtures): replica counting and required
 // dependency propagation only.
 function fallbackSimulation(V, s) {
-  const failed = s.mode === 'zone' ? [s.zone] : V.zones.filter(z => norm(z.domain) === norm(V.zones.find(x => x.id === s.zone)?.domain)).map(z => z.id);
+  const failed = s.mode === 'zone' ? [s.zone] : V.zones.filter(z => z.key === V.zones.find(x => x.id === s.zone)?.key).map(z => z.id);
   const map = new Map();
   for (const r of V.plans.values()) {
     const ls = V.byPlan.get(r.id), all = ls.filter(l => l.role === 'active').reduce((n, l) => n + l.replicas, 0), left = ls.filter(l => l.role === 'active' && !failed.includes(l.zone)).reduce((n, l) => n + l.replicas, 0);
@@ -209,7 +211,7 @@ export function deployInsights(V, scope = {kind: 'system'}) {
   const unplaced = comps.filter(r => !r.placed);
   if (unplaced.length) out.push({kind: 'gap', id: unplaced[0].id, text: `${unplaced.length} component${unplaced.length === 1 ? ' is' : 's are'} not placed in any zone (${titles(unplaced)}). The design cannot run without ${unplaced.length === 1 ? 'it' : 'them'}.`, records: recs(unplaced), ask: `Where should ${unplaced[0].title} run, and with how many copies?`});
   const placedComps = comps.filter(r => r.placed), domains = new Set(placedComps.flatMap(r => r.domains));
-  if (placedComps.length > 1 && domains.size === 1) out.push({kind: 'risk', id: [...V.zones].find(z => norm(z.domain) === [...domains][0])?.id || placedComps[0].id, text: `Every placed component runs in one failure domain (${V.zones.find(z => norm(z.domain) === [...domains][0])?.domain || [...domains][0]}). One failure there stops them all.`, ask: 'Which parts need a standby in an independent failure domain?'});
+  if (placedComps.length > 1 && domains.size === 1) out.push({kind: 'risk', id: [...V.zones].find(z => z.key === [...domains][0])?.id || placedComps[0].id, text: `Every placed component runs in one failure domain (${V.zones.find(z => z.key === [...domains][0])?.domain || [...domains][0]}). One failure there stops them all.`, ask: 'Which parts need a standby in an independent failure domain?'});
   const single = placedComps.filter(r => !r.open && r.active <= 1 && r.recovery === 'Unspecified');
   if (single.length) out.push({kind: 'risk', id: single[0].id, text: `${single.length} placed component${single.length === 1 ? ' runs' : 's run'} as a single copy with no recovery strategy (${titles(single)}).`, records: recs(single)});
   const platformNeeded = new Map();
