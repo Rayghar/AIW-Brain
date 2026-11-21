@@ -1,11 +1,13 @@
 {
- "schema": "aiw.rc44.slice-size.v1",
- "name": "wp9a slice 1: typed failure domains, nodes and registration (p30-deployment)",
- "measuredWith": "client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)",
+ "schema": "aiw.rc44.slice-size.v2",
+ "name": "wp9a slice 1 after its fix-up: typed failure domains, nodes and registration (p30-deployment)",
+ "measuredWith": "client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code, scripts, buckets)",
+ "whatWasMeasured": "The chapters route of this build, against two bases each built with node build.mjs from an archive of its commit: the integrated base the slice started from, and the adoption record the branch merged. The itemised bytes are read from the metafiles of this build and of the adoption record's, route output by route output (a module's bytes in its output, and the import and export lists of each output).",
  "allowance": {
   "chapters": 500,
+  "of": "all of wp9a on the chapters route",
   "scripts": 148,
-  "ruling": "A4 of 2026-11-18: 500 B on the chapters route for all of wp9a; slice 1 well under half"
+  "rulings": "A4 of 2026-11-18 (500 B for wp9a); K6 (the registry's one-time cost to the shared pool); L10 (the baseline defect's fix to the shared pool)"
  },
  "caps": {
   "chapters": 3233792,
@@ -14,37 +16,57 @@
   "under10k": 61,
   "css": 902144
  },
- "baseline": {
-  "commit": "9673661",
-  "chapters": 3229840,
-  "projects": 506829,
-  "scripts": 148,
-  "under10k": 53,
-  "css": 901873
+ "bases": {
+  "integrated": {
+   "commit": "9673661",
+   "chapters": 3229840,
+   "projects": 506829,
+   "scripts": 148,
+   "under10k": 53,
+   "css": 901873
+  },
+  "adoption": {
+   "commit": "25cc426 (rc44/wp2-s1-lead)",
+   "chapters": 3230156,
+   "projects": 507069,
+   "scripts": 148,
+   "under10k": 53,
+   "css": 901873
+  }
  },
  "slice": {
-  "chapters": 3230089,
-  "projects": 507062,
+  "chapters": 3230500,
+  "projects": 507242,
   "scripts": 148,
   "under10k": 53,
   "css": 901873
  },
- "delta": 249,
- "projectsDelta": 233,
- "headroomAfter": 3703,
- "onRoute": "Read from the metafiles of the two builds, output by output. The package's own: its route stub in public/design-package-routes.js with the import of registerExtension there (118 B), and the typed-domain reading in public/runtime-model.js failureDomainKey (design hook H1, 21 B). The first package to register a stub also brings registerExtension itself onto the route: 94 B in the registry's chunk and 16 B in the import lists of two route chunks whose aliases move with the new export. That part is paid once, by whichever package merges first (wp2's first slice measures it too). The package's modules import only what the route already exports, so they add no export.",
+ "fromIntegrated": 660,
+ "fromAdoption": 344,
+ "projectsFromAdoption": 173,
+ "headroomAfter": 3292,
  "itemised": {
-  "stubWithItsImport": 118,
-  "failureDomainKey": 21,
-  "registerExtensionOnTheRouteOnce": 94,
-  "aliasShiftsOfThatExport": 16
+  "stubWithItsImport": 105,
+  "failureDomainKeyH1": 21,
+  "restoreRuleReadL3": 47,
+  "designRowChapterKeysL5": 64,
+  "simulateRuntimeH4": -10,
+  "modelViewH15": -5,
+  "aliasAndImportShifts": 88,
+  "baselineDefectFmtL10": 34
  },
+ "booked": {
+  "wp9a": 310,
+  "registryOnceK6": 0,
+  "baselineDefectL10": 34
+ },
+ "onRoute": "Against the adoption record: the route stub with its import of registerExtension in design-package-routes.js (105 B); failureDomainKey reads the typed domain (runtime-model.js, H1, 21 B); the lifecycle reads a package's restore rule (record-lifecycle.js, L3, 47 B); the design row takes chapter.key (review-domain.js reviewSource, L5 and L6, 64 B); simulateRuntime reads the typed domain (runtime-domain.js, H4 of L7, -10 B) and the Chapter 10 Model view keys a zone by it (deploy-model.js, H15 of L7, -5 B); alias and import shifts of the route outputs whose imports and exports moved (88 B); the definition of fmt in technology-domain.js that patchLinks named and the module lacked since rc.10.73.42 (L10, 34 B). registerExtension itself reached the route with the adoption record's stub (K6: 110 to 123 B, measured by two reviewers; in the adoption record's figure).",
  "opens with records": {
   "gate": "The chapters-route gate is unchanged and measures opening a document that holds no package records (ruling D10 of 2026-11-18).",
   "host": "public/deploy-view.js",
-  "route": 3230089,
-  "added": 849867,
-  "total": 4079956,
+  "route": 3230500,
+  "added": 855555,
+  "total": 4086055,
   "files": 12,
   "beforeThePackage": {
    "route": 3229840,

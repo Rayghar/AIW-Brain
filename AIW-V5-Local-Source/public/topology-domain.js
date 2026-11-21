@@ -34,8 +34,14 @@ export const DOMAIN_CAUSES=['location','power','network-path','carrier','identit
 export const DOMAIN_TREATMENTS=['remove','isolate','accept'];
 export const NODE_KINDS=['account','region','availability-zone','site','network','subnet','cluster','node-pool','namespace','cell','managed-service','edge','external-network'];
 export const NODE_TIERS=['ingress','workload','data','endpoint','management'],NODE_EXPOSURES=['private','public'];
-// What one workspace keeps, and how deep its two trees go.
-export const TOPOLOGY_LIMITS=Object.freeze({nodes:2000,domains:500,nodeDepth:8,domainDepth:6,zoneDomains:12});
+// What one workspace keeps, and how deep its two trees go (ruling L8, reached through the commands: the suite's case
+// S1.18). With every field, open entry and history at its limit, 120 nodes and 60 failure domains take about 3,740,000
+// of the 8,000,000 characters a document holds (about 20,800 a record with its stamp): these counts bind first while the
+// rest of a project holds less than the other half.
+export const TOPOLOGY_LIMITS=Object.freeze({nodes:120,domains:60,nodeDepth:8,domainDepth:6,zoneDomains:12});
+// The officially assigned ISO 3166-1 alpha-2 codes (249; none reserved or user-assigned): where a node lies is stated
+// as one of these. Here, in the lazy entry, not on the route (ruling L8).
+export const JURISDICTIONS=new Set('AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR GS GT GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ UA UG UM US UY UZ VA VC VE VG VI VN VU WF WS YE YT ZA ZM ZW'.split(' '));
 const DRAFT='sol-draft',pad=n=>String(n).padStart(3,'0'),fmt=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,','),norm=s=>String(s||'').trim().toLowerCase();
 const find=(xs,id)=>typeof id==='string'&&id?list(xs).find(x=>x?.id===id)||null:null,refOf=r=>r?.ref||r?.id,and=xs=>xs.length>1?xs.slice(0,-1).join(', ')+' and '+xs.at(-1):xs[0]||'';
 // A stated shared cause: a cause that is no location. A domain that states none, or a location, is where something stands.
@@ -47,7 +53,10 @@ const chosenHere=p=>{const r=p?.runtime?.topology?.review,i=p?.finalReview?.impo
 export const failureDomains=p=>list(p?.technology?.domains),deploymentNodes=p=>list(p?.runtime?.nodes);
 
 // One IPv4 or IPv6 prefix, read strictly: an address and its length, no host bit set, no leading zero in a decimal
-// part, at most one '::', no IPv4 tail in an IPv6 address. Answers {family, parts, length, text} or null.
+// part, at most one '::', no IPv4 tail in an IPv6 address and no IPv4-mapped address (::ffff:0:0/96) in hex either.
+// Answers {family, parts, length, text} or null; text is the canonical text (dotted decimal; RFC 5952: lower case, no
+// leading zeros, the longest run of two or more zero groups, the first of equals, as '::'), so one prefix has one text.
+// A comparison of prefixes (slice 3's overlap check) reads parts and length, never the text.
 export function parsePrefix(value){
  if(typeof value!=='string')return null;
  const text=value.trim().toLowerCase(),m=/^([0-9a-f:.]+)\/(0|[1-9]\d{0,2})$/.exec(text);if(!m)return null;
@@ -60,10 +69,15 @@ export function parsePrefix(value){
   const head=groups(halves[0]),tail=halves.length===2?groups(halves[1]):[],n=head.length+tail.length;
   if([...head,...tail].some(g=>!/^[0-9a-f]{1,4}$/.test(g))||(halves.length===2?n>7:n!==8))return null;
   parts=[...head,...Array(8-n).fill('0'),...tail].map(g=>parseInt(g,16));
+  if(parts.slice(0,5).every(g=>!g)&&parts[5]===0xffff)return null;
  }
  if(length>bits*parts.length)return null;
  let left=length;for(const part of parts){const keep=Math.min(bits,Math.max(0,left));if(part&(2**(bits-keep)-1))return null;left-=keep;}
- return {family:bits===8?4:6,parts,length,text};
+ return {family:bits===8?4:6,parts,length,text:(bits===8?parts.join('.'):canonical6(parts))+'/'+length};
+}
+function canonical6(parts){
+ let at=-1,run=0;for(let i=0;i<8;){if(parts[i]){i++;continue;}let j=i;while(j<8&&!parts[j])j++;if(j-i>1&&j-i>run){at=i;run=j-i;}i=j;}
+ const h=parts.map(g=>g.toString(16));return at<0?h.join(':'):h.slice(0,at).join(':')+'::'+h.slice(at+run).join(':');
 }
 
 // ---------------------------------------------------------------- the two trees
@@ -82,6 +96,9 @@ function patchParent(xs,old,raw,noun,max){
  if(chain.length+(old?height(xs,old.id):1)>max)throw Error((noun==='failure domain'?'Failure domains nest':'Deployment nodes nest')+' at most '+max+' deep.');
  return id;
 }
+// Words are sent as text (ruling L8): a field of words sent as an object, a number, a list or a truth value is refused,
+// never stored as what String() makes of it. null clears a field, as for every save.
+function textOnly(raw,spec){for(const [f,k,,label] of spec)if(k==='t'&&raw[f]!=null&&typeof raw[f]!=='string')throw Error('The '+label+' is words: send it as text.');}
 // A link list as every save takes one (whole, or {add, remove}; null clears it; each id exists), bounded here in the
 // record's own words.
 function patchBounded(old,raw,f,exists,noun,max,owner){const ids=patchLinks(old,raw,f,exists,noun,Infinity);if(ids.length>max)throw Error(owner+' names up to '+max+' '+noun+'; '+fmt(ids.length)+' were sent.');return ids;}
@@ -110,7 +127,7 @@ const DOMAIN_FIELDS=[['title','t',160,'failure domain name'],['scope','e',[...DO
 const DOMAIN_KEYS=[...DOMAIN_FIELDS.map(([f])=>f),'parentId','open'],DOMAIN_OPEN=['scope','cause','basis','owner','recoveryOwner','treatment'];
 function saveDomain(p,raw,at){
  const t=p.technology,xs=t.domains||[],old=raw.id?find(xs,raw.id):null;if(raw.id&&!old)throw Error('Choose an existing failure domain.');
- const f=patchFields(old,raw,DOMAIN_FIELDS);if(!f.title)throw Error('Name the failure domain.');
+ textOnly(raw,DOMAIN_FIELDS);const f=patchFields(old,raw,DOMAIN_FIELDS);if(!f.title)throw Error('Name the failure domain.');
  const next={...f,parentId:patchParent(xs,old,raw,'failure domain',TOPOLOGY_LIMITS.domainDepth)},open=patchOpen(old,raw,DOMAIN_OPEN);if(open)next.open=open;
  // What a zone reads a domain as does not change under it: the domain it stands in stays one, a cause it shares stays one.
  if(old){
@@ -118,6 +135,7 @@ function saveDomain(p,raw,at){
   if(stand.length&&sharedCause(next))throw Error(and(stand)+(stand.length>1?' stand':' stands')+' in '+old.ref+': it keeps a location as its cause, or states none.');
   if(share.length&&!sharedCause(next))throw Error(and(share)+(share.length>1?' name ':' names ')+old.ref+' as a cause '+(share.length>1?'they share':'it shares')+': it keeps a cause that is no location.');
  }else if(xs.length>=TOPOLOGY_LIMITS.domains)throw Error('This workspace keeps up to '+fmt(TOPOLOGY_LIMITS.domains)+' failure domains.');
+ if(f.cause==='location'&&f.treatment)throw Error('A location is where something stands: it takes no treatment. Leave the treatment not stated, or state a cause that is no location.');
  t.domains=xs;
  return store(xs,old,next,raw,at,DOMAIN_KEYS,()=>{const c=p.runtime.counters,n=c.domain=(c.domain||0)+1;return {id:'fd-'+pad(n),ref:'FD-'+pad(n)};});
 }
@@ -145,9 +163,9 @@ const NODE_KEYS=[...NODE_FIELDS.map(([f])=>f),'parentId','domainId','jurisdictio
 const patchValue=(old,raw,f)=>raw[f]===undefined?old?.[f]??'':raw[f]??'';
 function saveNode(p,raw,at){
  const m=p.runtime,xs=m.nodes||[],old=raw.id?find(xs,raw.id):null;if(raw.id&&!old)throw Error('Choose an existing deployment node.');
- const f=patchFields(old,raw,NODE_FIELDS);if(!f.title||!f.kind)throw Error('Name the node and choose its kind.');
+ textOnly(raw,NODE_FIELDS);const f=patchFields(old,raw,NODE_FIELDS);if(!f.title||!f.kind)throw Error('Name the node and choose its kind.');
  if(f.tier&&!['network','subnet'].includes(f.kind))throw Error('Only a network or a subnet has a tier.');
- const jurisdiction=patchValue(old,raw,'jurisdiction');if(jurisdiction!==''&&!(typeof jurisdiction==='string'&&/^[A-Z]{2}$/.test(jurisdiction)))throw Error('Give the jurisdiction as two capital letters (ISO 3166-1 alpha-2), or leave it not stated.');
+ const jurisdiction=patchValue(old,raw,'jurisdiction');if(jurisdiction!==''&&!JURISDICTIONS.has(jurisdiction))throw Error('Give the jurisdiction as an officially assigned ISO 3166-1 alpha-2 code (NO, SE, GB), or leave it not stated.');
  let address=patchValue(old,raw,'address');if(address!==''){const x=parsePrefix(address);if(!x)throw Error('Give the address as one IPv4 or IPv6 prefix with its length and no host bit set (10.20.0.0/16, 2001:db8::/32), or leave it not stated.');address=x.text;}
  const domainId=patchValue(old,raw,'domainId');if(domainId&&domainId!==old?.domainId)authoredRecord(p.technology.domains,domainId,'failure domain');
  const boundaryIds=patchBounded(old,raw,'boundaryIds',id=>list(p.technology.boundaries).some(b=>b.id===id),'trust boundaries',20,'A deployment node');
@@ -163,6 +181,7 @@ function saveNode(p,raw,at){
 const put=(r,k,v)=>{if(Array.isArray(v)?v.length:v)r[k]=v;else delete r[k];};
 function locate(p,raw){
  const m=p.runtime,nodes=m.nodes,node=id=>refOf(find(nodes,id))||id;
+ if(raw.placementId!==undefined&&raw.zoneId!==undefined)throw Error('Name a zone or a placement to locate, not both.');
  if(raw.placementId!==undefined){
   const l=m.placements.find(x=>x.id===raw.placementId);if(!l)throw Error('Choose an existing zone or placement.');
   const z=m.zones.find(x=>x.id===l.zoneId),nodeId=raw.nodeId===undefined?l.nodeId||'':raw.nodeId||'';
@@ -177,7 +196,7 @@ function locate(p,raw){
   return {selected:l.id,selectedIds:[l.id],changed:true};
  }
  const z=m.zones.find(x=>x.id===raw.zoneId);if(!z)throw Error('Choose an existing zone or placement.');
- const nodeId=raw.nodeId===undefined?z.nodeId||'':raw.nodeId||'',reason=raw.reason===undefined?z.reason||'':fitText(raw.reason,600,'The reason');
+ textOnly(raw,[['reason','t',600,'reason']]);const nodeId=raw.nodeId===undefined?z.nodeId||'':raw.nodeId||'',reason=raw.reason===undefined?z.reason||'':fitText(raw.reason,600,'The reason');
  if(nodeId!==(z.nodeId||'')){
   if(nodeId)authoredRecord(nodes,nodeId,'deployment node');
   for(const l of m.placements)if(l.zoneId===z.id&&l.nodeId&&!(nodeId&&nodeUnder(p,l.nodeId,nodeId)))throw Error(l.id+' stands in '+node(l.nodeId)+(nodeId?', which does not lie under '+node(nodeId)+'. Move it first.':', under the node of '+refOf(z)+'. Clear it first.'));
@@ -231,7 +250,7 @@ export function topologyFindings(p){
 }
 
 // ---------------------------------------------------------------- the commands
-export const UNTYPED='This project\'s topology is not typed yet. A signed-in person chooses that first (runtime.topology-start).',NOT_HERE='The topology of this project is typed, but nobody here has chosen it yet. A signed-in person chooses typed topology for this project first.';
+export const UNTYPED='This project\'s topology is not typed yet. A signed-in person chooses typed topology for this project first.',NOT_HERE='The topology of this project is typed, but nobody here has chosen it yet. A signed-in person chooses typed topology for this project first.';
 // (document, command, at, actor, {author}) as every handler is called; inside a reviewed batch with the first four.
 // It works on the copy it is handed (the server's boundary and the staged path each hand it one), a settled document:
 // one that holds its chapters. A change of Chapter 10 moves its version and clears its check and handoff, as its own
@@ -322,7 +341,7 @@ const said=(r,keys)=>Object.fromEntries(keys.map(k=>[k,structuredClone(r?.[k]??(
 const TRACKED=[['runtime.nodes',10,'node',NODE_KEYS.filter(k=>k!=='open'),true],['technology.domains',6,'failureDomain',DOMAIN_KEYS.filter(k=>k!=='open'),true],['runtime.zones',10,'zone',['nodeId','domainIds','reason'],false],['runtime.placements',10,'placement',['nodeId'],false]];
 const rows=(p,path)=>{const [a,b]=path.split('.');return list(p?.[a]?.[b]);};
 export function trackTopology(prior,next,command,at){
- const m=next?.runtime,was=prior?.runtime;if(!m?.topology)return;
+ const m=next?.runtime;if(!m?.topology)return;
  const started=chosenHere(next)&&!chosenHere(prior);
  // What this commit has journalled already: a second call for the same commit (a batch's inner command) adds nothing.
  const done=new Set(list(next.changes?.events).slice(list(prior?.changes?.events).length).map(e=>e?.source?.chapter+':'+e?.source?.id));

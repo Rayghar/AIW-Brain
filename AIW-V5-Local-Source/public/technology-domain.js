@@ -42,6 +42,9 @@ export function patchFields(old,raw,spec){const out={};for(const [f,k,a,label=f]
  if(k==='e'){if(!a.includes(v))throw Error('Choose the '+label+(a.includes('')?', or leave it not stated':'')+'.');out[f]=v;}else out[f]=fitText(v,a,'The '+label);}
  return out;}
 // A link list: whole, or {add, remove}; null clears it. Each id must exist, and more than `max` is refused by name.
+// (rc44, the lead's ruling L10: a defect since rc.10.73.42, where `fmt` was not defined here and a list past its limit
+// was answered with a general fault instead of this sentence.)
+const fmt=n=>n.toLocaleString('en-GB');
 export function patchLinks(old,raw,f,exists,noun,max){const cur=Array.isArray(old?.[f])?old[f]:[],v=raw?.[f];if(v===undefined)return cur;let next;
  if(v===null)next=[];else if(Array.isArray(v))next=v;else if(typeof v==='object'){const out=new Set(Array.isArray(v.remove)?v.remove:[]);next=[...cur.filter(id=>!out.has(id)),...(Array.isArray(v.add)?v.add:[])];}else throw Error('Choose existing '+noun+'.');
  const bad=[...new Set(next.filter(id=>typeof id!=='string'||!exists(id)))];if(bad.length)throw Error('Choose existing '+noun+'; '+bad.slice(0,3).map(String).join(', ')+(bad.length>3?' and '+(bad.length-3)+' more':'')+(bad.length>1?' are':' is')+' not in this project.');

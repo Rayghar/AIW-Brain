@@ -102,6 +102,47 @@ fail on the head the item started from, then the change. One line per item; deta
     `simulateRuntime` 10 B. The layout's bracket (`deploy-layout.js`) still groups adjacent columns by the zone's domain
     words: slice 6 (H12, R1). Case S1.17 (seen to fail: losing zone 1's typed domain lost zone 1 only).
     `deploy`, `runtime`, `rc42-g5-runtime`, `chapter-lines`, `not-stated`, `wire-merge` pass unchanged.
+- **Item 7, L8, L9, L10 second part (should-fix 7 to 11; concern 10):** done. Cases first, all six seen to fail on
+  `cf22c9e` (`bd94461`).
+  - L8 limits: every limit is reached through the commands in S1.18, with every field, open entry and history at its
+    limit (60 failure domains, a chain six deep, proposals past the bound, 12 domains on a zone, 120 nodes, a chain eight
+    deep, 20 trust boundaries a node). There the package's records take 3,740,460 characters with their stamps (about
+    20,800 a record; a node alone about 23,300, a domain about 17,700), the whole Tidewater document 3,762,903 of the
+    8,000,000-character document bound of rulings B8 and E3. So the limits are now `nodes: 120, domains: 60` (were 2,000
+    and 500: 2,000 nodes at their limits are about 46,600,000 characters); the package's counts bind first while the
+    rest of a project holds less than about 4,260,000 characters, and past that the document bound binds whatever the
+    package holds. Found: no code enforces a document bound for a project (the 8,000,000 characters are the knowledge
+    library's, `knowledge-governance.js`); the measurement uses it as the rulings do. A zone's typed fields add at most
+    753 characters; one change of a node at its limits journals 13,673 characters, kept apart from the document
+    (`project-storage.js` stores the journal in segments). The built-in limit of 2,000 zones is not the package's and
+    is not reachable at its own field limits either (about 10,000 characters a zone): noted for the lead.
+  - L8 input (S1.19): the jurisdiction is one of the 249 officially assigned ISO 3166-1 alpha-2 codes (`JURISDICTIONS`,
+    in the lazy module); `runtime.locate` naming a zone and a placement is refused; a text field sent as anything but a
+    string is refused ("The node name is words: send it as text."), for every text field of both records and the
+    reason of a locate; `treatment` on a domain whose cause is a location is refused (after the rules of the zones that
+    name it, so S1.2's refusal stays the first); an address is kept in its canonical text (dotted decimal; RFC 5952) and
+    the IPv4-mapped form is refused in hex as it was dotted. `parsePrefix` answers the parts slice 3's overlap check
+    compares. Replaced: S1.1 "refused as not two capital letters" -> "refused as no officially assigned code" (now also
+    ZZ and UK); S1.1 "the stored address is the text sent, lower-cased" -> "the canonical text"; S1.1 "2,000 nodes by
+    hand, the 2,001st refused" and S1.4 "498 domains by hand, proposals refused at 503, 500 by hand, the 501st refused"
+    -> S1.18, the same reached through the commands at 120 and 60.
+  - L9: the refusal before the marker says "This project's topology is not typed yet. A signed-in person chooses typed
+    topology for this project first." (S1.0, replaced; it named `runtime.topology-start`); S1.19 scans every refusal of
+    `topology-domain.js` for a command type. Not changed: the boundary's own refusal of a person-only step from an agent
+    account names the type ("runtime.topology-start is a signed-in person's step: …"); it is S0's sentence for every
+    package (`design-extension-boundary.js`), not this package's: for the lead. The size evidence is rewritten
+    (`audit/rc44/evidence/wp9a-s1-size.json`, schema v2): what was measured, against 9673661 and against the adoption
+    record, every byte itemised, the bookings of K6 and L10 apart, no "well under half". Replaced: S1.10 "delta < 250
+    against the base alone" and "the package's own under 150 B" -> "every byte against the adoption record itemised and
+    adding up; wp9a's own ≤ 500 B; K6 and L10 apart".
+  - L10 second part: `patchLinks` (`public/technology-domain.js`) has its `fmt` (`n.toLocaleString('en-GB')`, as
+    `assurance-domain.js` formats its counts), 34 B on the route, booked to the shared pool. Case S1.20 through the
+    server (seen to fail: "This action could not be completed. Your input is kept; reload the project and try
+    again."): a zone saved with 21 trust boundaries is answered "A record links up to 20 trust boundaries; 21 were
+    sent."; twenty are taken. `technology`, `interfaces`, `security`, `runtime`, `technology-realisation` pass unchanged.
+  - Route (S1.10, `--measure`): 3,230,500 B; +660 B against 9673661; +344 B against the adoption record (3,230,156 B, its
+    build at 25cc426); of these, wp9a's own 310 B (of 500), the baseline defect's fix 34 B; the registry's one-time cost
+    is in the adoption record's figure. 148 scripts, 53 under 10 KB, stylesheet unchanged, no gate changed.
 
 ## What was built
 
