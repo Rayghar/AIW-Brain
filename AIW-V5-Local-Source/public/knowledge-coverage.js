@@ -1,6 +1,6 @@
 // A projection of existing authorities, not a second fit or readiness evaluator.
 // Only the exact catalogue subjects the built-in crosswalk names under scheme aiw-method (knowledge-crosswalk.js; until
-// rc44 wp1 S2 a table of this module, MAPPINGS) have a reviewed built-in comparison: the option realises the subject.
+// rc44 wp1 S2 a private table of this module) have a reviewed built-in comparison: the option realises the subject.
 // Similar words, related concepts and repository seeds never supply a mapping.
 import {knowledgeStructures} from './knowledge-structure.js';
 import {catalogueRecord,knowledgeState,methodKnowledgeCurrent} from './knowledge-governance.js';
