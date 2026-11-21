@@ -1508,7 +1508,12 @@ await block('L3 restore rule', () => {
   assert.ok(boundary.extensionIssues({id: 'xy', canRestore: {'runtime.zones': () => {}}}).some(i => /restore rule of “runtime\.zones” is on a collection the package does not state in lifecycle/.test(i)), 'never on a built-in collection');
   assert.ok(boundary.extensionIssues({id: 'xy', lifecycle: {'journals.records': 3}, canRestore: {'journals.records': 1}}).some(i => /restore rule of “journals\.records” is a function/.test(i)));
   assert.ok(boundary.extensionIssues({id: 'xy', canRestore: []}).some(i => /canRestore is \{path/.test(i)));
-  pass('L3: a package states a restore rule (canRestore) for its own lifecycle collections only, as a function');
+  // (the lead's ruling M6, wp9a slice 1 second fix-up) quietProposals {path: true}: on the package's own lifecycle collections only
+  assert.deepEqual(boundary.extensionIssues({id: 'xy', lifecycle: {'journals.records': 3}, quietProposals: {'journals.records': true}}), [], 'quietProposals on the package\'s own collection');
+  assert.ok(boundary.extensionIssues({id: 'xy', quietProposals: {'runtime.zones': true}}).some(i => /quietProposals “runtime\.zones” is on a collection the package does not state in lifecycle/.test(i)), 'never on a built-in collection');
+  assert.ok(boundary.extensionIssues({id: 'xy', lifecycle: {'journals.records': 3}, quietProposals: {'journals.records': 1}}).some(i => /quietProposals “journals\.records” is true or not stated/.test(i)));
+  assert.ok(boundary.extensionIssues({id: 'xy', quietProposals: []}).some(i => /quietProposals is \{path: true\}/.test(i)));
+  pass('L3: a package states a restore rule (canRestore) for its own lifecycle collections only, as a function; and (M6) quietProposals for its own lifecycle collections only');
 });
 
 assert.deepEqual(failed, [], 'every rc44 S0 block passes');

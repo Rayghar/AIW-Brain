@@ -1147,7 +1147,9 @@ await block('S1.11 the parts of the package', async () => {
   // (ruling L3) and the restore rules of its own two collections
   assert.deepEqual(Object.keys(mine().canRestore).sort(), ['runtime.nodes', 'technology.domains']);
   // (ruling L5; was: the keys hold evidenceKeys and no design) the marker and the two collections are stated through the design row
-  assert.deepEqual(Object.keys(mine()).sort(), ['canRestore', 'checks', 'commands', 'design', 'designKeys', 'hops', 'id', 'layers', 'lifecycle', 'objectTypes', 'provenance', 'records', 'track'], 'slice 1 states one check, no upgrade step and no section');
+  // (ruling M6; was: the keys without quietProposals) and that its proposals say nothing to the design, on its two own collections
+  assert.deepEqual(Object.keys(mine()).sort(), ['canRestore', 'checks', 'commands', 'design', 'designKeys', 'hops', 'id', 'layers', 'lifecycle', 'objectTypes', 'provenance', 'quietProposals', 'records', 'track'], 'slice 1 states one check, no upgrade step and no section');
+  assert.deepEqual(mine().quietProposals, {'technology.domains': true, 'runtime.nodes': true});
   assert.deepEqual(Object.keys(mine().checks), ['10'], 'the check is Chapter 10\'s');
   pass('S1.11: the package is one registration assembled from five parts, of which slice 1 fills one: tables joined, lists in order, emitters, trackers and a chapter\'s findings of every part; a row two parts state and a part the assembly does not carry are refused');
 });
@@ -1161,7 +1163,7 @@ await block('S1.11 the parts of the package', async () => {
 const EVIDENCE = 'audit/rc44/evidence/wp9a-s1-size.json', HOST = 'public/deploy-view.js';
 const BASE = {commit: '9673661', chapters: 3229840, projects: 506829, scripts: 148, under10k: 53, css: 901873};
 const ADOPTION = {commit: 'a4c1690 (rc44/integration: the adoption record as closed)', chapters: 3230165, projects: 507069, scripts: 148, under10k: 53, css: 901873};
-const ITEMISED = {stubWithItsImport: 105, failureDomainKeyH1: 21, restoreRuleReadL3: 47, designRowChapterKeysL5: 64, simulateRuntimeH4: -10, modelViewH15: -5, aliasAndImportShifts: 88, baselineDefectFmtL10: 34};
+const ITEMISED = {stubWithItsImport: 105, failureDomainKeyH1: 21, restoreRuleReadL3: 47, quietProposalsReadM6: 96, designRowChapterKeysL5: 64, simulateRuntimeH4: -10, modelViewH15: -5, aliasAndImportShifts: 88, baselineDefectFmtL10: 34};
 // What is booked where (rulings K6, L10 and M8): the registry's one-time cost is in ADOPTION's figure (wp2's stub paid it,
 // and wp2's evidence records it in its own delta); the fix of the baseline defect (L10) and S0's design row that L5 needed
 // (M8) are the shared pool's; every other byte is wp9a's own, against its 500 B.
@@ -1172,7 +1174,7 @@ const BASE_OPENS = {route: 3229840, added: 833044, total: 4062884, files: 12};
 // from the measurement and itemised by module: each module's bytes in the entry's script (bytesInOutput), and the
 // script's import and export lists with the rest of the entry's closure (lists). The figures are in the notes.
 const ADOPTION_OPENS = {route: 3230165, added: 833120, total: 4063285, files: 12};
-const LAZY_SHARE = {modules: {'public/topology-blueprints.js': 10, 'public/topology-domain.js': 20843, 'public/topology-failures.js': 10, 'public/topology-fallback.js': 10, 'public/topology-gates.js': 10, 'public/topology.js': 1431}, lists: 178, total: 22492};
+const LAZY_SHARE = {modules: {'public/topology-blueprints.js': 10, 'public/topology-domain.js': 20903, 'public/topology-failures.js': 10, 'public/topology-fallback.js': 10, 'public/topology-gates.js': 10, 'public/topology.js': 1448}, lists: 178, total: 22569};
 await block('S1.10 the client build', async () => {
   need();
   const {bundleClient, BUDGET} = await import('./client-bundle.mjs');
@@ -1196,7 +1198,7 @@ await block('S1.10 the client build', async () => {
     caps: {chapters: BUDGET.routes.chapters, projects: BUDGET.routes.projects, scripts: BUDGET.scripts, under10k: BUDGET.tiny, css: BUDGET.css}, bases: {integrated: BASE, adoption: ADOPTION}, slice: measured,
     fromIntegrated: measured.chapters - BASE.chapters, fromAdoption, projectsFromAdoption: measured.projects - ADOPTION.projects, headroomAfter: BUDGET.routes.chapters - measured.chapters,
     itemised: ITEMISED, ownBytes: fromAdoption - Object.values(SHARED_POOL).reduce((n, x) => n + x, 0), sharedPoolBytes: SHARED_POOL, registryOnceK6: 'in the adoption record\'s figure (its stub brought registerExtension onto the route; wp2\'s evidence records it in its delta)',
-    onRoute: 'Against the adoption record as closed (a4c1690): the route stub with its import of registerExtension in design-package-routes.js (105 B); failureDomainKey reads the typed domain (runtime-model.js, H1, 21 B); the lifecycle reads a package\'s restore rule (record-lifecycle.js, L3, 47 B); S0\'s design row takes chapter.key (review-domain.js reviewSource, L5 and L6, 64 B, the shared pool\'s by M8); simulateRuntime reads the typed domain (runtime-domain.js, H4 of L7, -10 B) and the Chapter 10 Model view keys a zone by it (deploy-model.js, H15 of L7, -5 B); alias and import shifts of the route outputs whose imports and exports moved (88 B: the outputs\' import and export lists, with +3, -1 and -2 B in composition-design.js, model-impact.js and architecture-design.js); the definition of fmt in technology-domain.js that patchLinks named and the module lacked since rc.10.73.42 (L10, 34 B, the shared pool\'s). registerExtension itself reached the route with the adoption record\'s stub (K6: 110 to 123 B, measured by two reviewers; in the adoption record\'s figure).',
+    onRoute: 'Against the adoption record as closed (a4c1690): the route stub with its import of registerExtension in design-package-routes.js (105 B); failureDomainKey reads the typed domain (runtime-model.js, H1, 21 B); the lifecycle reads a package\'s restore rule (record-lifecycle.js, L3, 47 B) and its statement that a proposal\'s dismissal and restore are no design change (record-lifecycle.js, M6, 96 B); S0\'s design row takes chapter.key (review-domain.js reviewSource, L5 and L6, 64 B, the shared pool\'s by M8); simulateRuntime reads the typed domain (runtime-domain.js, H4 of L7, -10 B) and the Chapter 10 Model view keys a zone by it (deploy-model.js, H15 of L7, -5 B); alias and import shifts of the route outputs whose imports and exports moved (88 B: the outputs\' import and export lists, with +3, -1 and -2 B in composition-design.js, model-impact.js and architecture-design.js); the definition of fmt in technology-domain.js that patchLinks named and the module lacked since rc.10.73.42 (L10, 34 B, the shared pool\'s). registerExtension itself reached the route with the adoption record\'s stub (K6: 110 to 123 B, measured by two reviewers; in the adoption record\'s figure).',
     'opens with records': {gate: 'The chapters-route gate is unchanged and measures opening a document that holds no package records (ruling D10 of 2026-11-18).', host: HOST, ...opens, beforeThePackage: BASE_OPENS, atTheAdoptionRecord: ADOPTION_OPENS, packageShare: LAZY_SHARE, note: 'A document that holds the marker runtime.topology also loads the lazy entry of the Chapter 10 Model view, which holds the package, before it is first drawn: the route and the static closure of that entry, each script counted once.'}}, null, 1) + '\n'); }
   assert.ok(existsSync(EVIDENCE), 'the slice\'s measurement is kept (node rc44-wp9a-deployment-validate.mjs --measure)');
   const size = JSON.parse(readFileSync(EVIDENCE, 'utf8'));

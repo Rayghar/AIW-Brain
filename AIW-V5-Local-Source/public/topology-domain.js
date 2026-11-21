@@ -393,6 +393,8 @@ export const TOPOLOGY_PART={
  track:trackTopology,
  lifecycle:{'technology.domains':6,'runtime.nodes':10},
  canRestore:RESTORE,
+ // (ruling M6) a proposal says nothing to the design (L6): dismissing or restoring one moves no version and clears no check
+ quietProposals:{'technology.domains':true,'runtime.nodes':true},
  provenance:{nouns:{'technology.domains':'failure domain','runtime.nodes':'deployment node'},paths:{'technology.domain':['technology.domains'],'technology.domain-proposals':['technology.domains'],'runtime.node':['runtime.nodes']}},
  design:DESIGN,
  designKeys:['runtime.topology','technology.domains','runtime.nodes']

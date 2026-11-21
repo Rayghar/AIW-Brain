@@ -331,6 +331,7 @@ Every part is optional.
 | `track` | `(prior, next, command, at) => void`, or `[[as it was, as it is]]` for records of other collections it changed itself, which the boundary stamps as the commit's (ruling M1, wp9a slice 1 second fix-up) | `design-extension-boundary.js` `trackExtensions` (server), for every commit |
 | `lifecycle` | `{path: chapter}` | `record-lifecycle.js` `COLLECTIONS` |
 | `canRestore` | `{path: (p, record) => void}`, on the package's own `lifecycle` collections only; throws in a reader's words to refuse a restore | `record-lifecycle.js` restore, beside a chapter's own rule; ruling L3 (wp9a slice 1 fix-up); block "L3 restore rule" |
+| `quietProposals` | `{path: true}`, on the package's own `lifecycle` collections only: a proposal of the collection says nothing to the design, so retiring (dismissing) or restoring one moves no version and clears no check or handoff; a keep stays a design change | `record-lifecycle.js` retire and restore; ruling M6 (wp9a slice 1 second fix-up); block "L3 restore rule" |
 | `provenance` | `{nouns: {path: noun}, paths: {type or prefix: [path]}, records: {path: chapter}}` | `provenance.js`, `sdd-architecture.js` |
 | `designKeys`, `evidenceKeys` | `[key]` | `review-domain.js` `designOf` |
 | `design` | `{key: p => what the key says}`, a key of the document or `chapter.key` for a new key of a chapter's container | `review-domain.js` `reviewSource`, in place of the raw key; rulings J3, L5 |

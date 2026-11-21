@@ -35,39 +35,40 @@
   }
  },
  "slice": {
-  "chapters": 3230509,
-  "projects": 507242,
+  "chapters": 3230605,
+  "projects": 507338,
   "scripts": 148,
   "under10k": 53,
   "css": 901873
  },
- "fromIntegrated": 669,
- "fromAdoption": 344,
- "projectsFromAdoption": 173,
- "headroomAfter": 3283,
+ "fromIntegrated": 765,
+ "fromAdoption": 440,
+ "projectsFromAdoption": 269,
+ "headroomAfter": 3187,
  "itemised": {
   "stubWithItsImport": 105,
   "failureDomainKeyH1": 21,
   "restoreRuleReadL3": 47,
+  "quietProposalsReadM6": 96,
   "designRowChapterKeysL5": 64,
   "simulateRuntimeH4": -10,
   "modelViewH15": -5,
   "aliasAndImportShifts": 88,
   "baselineDefectFmtL10": 34
  },
- "ownBytes": 246,
+ "ownBytes": 342,
  "sharedPoolBytes": {
   "baselineDefectFmtL10": 34,
   "designRowChapterKeysL5": 64
  },
  "registryOnceK6": "in the adoption record's figure (its stub brought registerExtension onto the route; wp2's evidence records it in its delta)",
- "onRoute": "Against the adoption record as closed (a4c1690): the route stub with its import of registerExtension in design-package-routes.js (105 B); failureDomainKey reads the typed domain (runtime-model.js, H1, 21 B); the lifecycle reads a package's restore rule (record-lifecycle.js, L3, 47 B); S0's design row takes chapter.key (review-domain.js reviewSource, L5 and L6, 64 B, the shared pool's by M8); simulateRuntime reads the typed domain (runtime-domain.js, H4 of L7, -10 B) and the Chapter 10 Model view keys a zone by it (deploy-model.js, H15 of L7, -5 B); alias and import shifts of the route outputs whose imports and exports moved (88 B: the outputs' import and export lists, with +3, -1 and -2 B in composition-design.js, model-impact.js and architecture-design.js); the definition of fmt in technology-domain.js that patchLinks named and the module lacked since rc.10.73.42 (L10, 34 B, the shared pool's). registerExtension itself reached the route with the adoption record's stub (K6: 110 to 123 B, measured by two reviewers; in the adoption record's figure).",
+ "onRoute": "Against the adoption record as closed (a4c1690): the route stub with its import of registerExtension in design-package-routes.js (105 B); failureDomainKey reads the typed domain (runtime-model.js, H1, 21 B); the lifecycle reads a package's restore rule (record-lifecycle.js, L3, 47 B) and its statement that a proposal's dismissal and restore are no design change (record-lifecycle.js, M6, 96 B); S0's design row takes chapter.key (review-domain.js reviewSource, L5 and L6, 64 B, the shared pool's by M8); simulateRuntime reads the typed domain (runtime-domain.js, H4 of L7, -10 B) and the Chapter 10 Model view keys a zone by it (deploy-model.js, H15 of L7, -5 B); alias and import shifts of the route outputs whose imports and exports moved (88 B: the outputs' import and export lists, with +3, -1 and -2 B in composition-design.js, model-impact.js and architecture-design.js); the definition of fmt in technology-domain.js that patchLinks named and the module lacked since rc.10.73.42 (L10, 34 B, the shared pool's). registerExtension itself reached the route with the adoption record's stub (K6: 110 to 123 B, measured by two reviewers; in the adoption record's figure).",
  "opens with records": {
   "gate": "The chapters-route gate is unchanged and measures opening a document that holds no package records (ruling D10 of 2026-11-18).",
   "host": "public/deploy-view.js",
-  "route": 3230509,
-  "added": 855612,
-  "total": 4086121,
+  "route": 3230605,
+  "added": 855689,
+  "total": 4086294,
   "files": 12,
   "beforeThePackage": {
    "route": 3229840,
@@ -84,14 +85,14 @@
   "packageShare": {
    "modules": {
     "public/topology-blueprints.js": 10,
-    "public/topology-domain.js": 20843,
+    "public/topology-domain.js": 20903,
     "public/topology-failures.js": 10,
     "public/topology-fallback.js": 10,
     "public/topology-gates.js": 10,
-    "public/topology.js": 1431
+    "public/topology.js": 1448
    },
    "lists": 178,
-   "total": 22492
+   "total": 22569
   },
   "note": "A document that holds the marker runtime.topology also loads the lazy entry of the Chapter 10 Model view, which holds the package, before it is first drawn: the route and the static closure of that entry, each script counted once."
  }

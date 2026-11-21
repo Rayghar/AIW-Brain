@@ -149,7 +149,7 @@ export function packageCollections() {
 // An id is a key of the registry's own table, so the one lower-case name every object carries is no id.
 const ID = /^(?!constructor$)[a-z][a-z0-9-]{1,60}$/, TYPE = /^[A-Za-z][A-Za-z0-9]{0,40}$/, PATH = /^[a-z][A-Za-z]{0,40}(\.[a-z][A-Za-z]{0,40})?$/;
 export const COMMAND_TYPE = /^[a-z][A-Za-z0-9-]{0,60}\.[A-Za-z][A-Za-z0-9-]{0,60}$/;
-const PARTS = new Set(['id', 'objectTypes', 'prefixes', 'records', 'layers', 'hops', 'checks', 'commands', 'track', 'lifecycle', 'canRestore', 'provenance', 'designKeys', 'evidenceKeys', 'design', 'upgrade', 'upgradeNote', 'sections', 'needs', 'load']);
+const PARTS = new Set(['id', 'objectTypes', 'prefixes', 'records', 'layers', 'hops', 'checks', 'commands', 'track', 'lifecycle', 'canRestore', 'quietProposals', 'provenance', 'designKeys', 'evidenceKeys', 'design', 'upgrade', 'upgradeNote', 'sections', 'needs', 'load']);
 const HOP_PARTS = new Set(['layer', 'types', 'from', 'dir', 'ctx', 'only']);
 const COMMAND_PARTS = new Set(['apply', 'staged', 'person', 'second', 'validate', 'undo', 'large']);
 const LEVELS = new Set(Object.values(OBJECT_TYPES).map(t => t.level));
@@ -279,6 +279,13 @@ export function extensionIssues(e) {
   for (const [path, f] of Object.entries(plain(e.canRestore) ? e.canRestore : {})) {
     if (!fn(f)) say('the restore rule of “' + path + '” is a function (p, record) that refuses in words, or answers nothing.');
     if (!(plain(e.lifecycle) && Object.hasOwn(e.lifecycle, path))) say('the restore rule of “' + path + '” is on a collection the package does not state in lifecycle: a package rules on its own collections only.');
+  }
+  // (the lead's ruling M6 of 2026-11-21) quietProposals {path: true}: a proposal of the package's own lifecycle collection
+  // says nothing to the design, so dismissing or restoring one moves no version and clears no check (record-lifecycle.js).
+  if (e.quietProposals !== undefined && !plain(e.quietProposals)) say('quietProposals is {path: true}, on the package\'s own lifecycle collections.');
+  for (const [path, v] of Object.entries(plain(e.quietProposals) ? e.quietProposals : {})) {
+    if (v !== true) say('quietProposals “' + path + '” is true or not stated.');
+    if (!(plain(e.lifecycle) && Object.hasOwn(e.lifecycle, path))) say('quietProposals “' + path + '” is on a collection the package does not state in lifecycle: a package speaks for its own collections only.');
   }
   const pv = e.provenance;
   if (pv !== undefined && !(plain(pv) && Object.keys(pv).every(k => k === 'nouns' || k === 'paths' || k === 'records') && ['nouns', 'paths', 'records'].every(k => pv[k] === undefined || plain(pv[k])))) say('provenance is {nouns: {path: noun}, paths: {command type or prefix: [path]}, records: {path: chapter}}.');

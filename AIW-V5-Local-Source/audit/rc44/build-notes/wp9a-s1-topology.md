@@ -68,7 +68,21 @@ item started from, then the change. (Work in progress; this section is completed
   - S1.14 matches the exact sentence ("FD-nnn cannot come back yet: FD-mmm, which it lies in, is not standing in the
     design. Restore it first, or bring FD-nnn back elsewhere."), both refs read from the document that holds the
     records (old: `/FD-/i`, the parent's ref read from a document that did not hold it).
-- **Item 6, M6:** in progress.
+- **Item 6, M6:** done, case S1.23 (seen to fail on `81879af`: "dismissing AIW's proposal moves no version"). S0's
+  registration gains the row `quietProposals {path: true}` (start-checked: the package's own `lifecycle` collections
+  only, `true` or not stated; S0's block "L3 restore rule" holds the start check; the contract row is in
+  `s0-extensions.md`), read in `record-lifecycle.js`: a proposal of such a collection that is retired (dismissed) or
+  restored a proposal moves no version and clears no check or handoff; a keep stays a design change, and the retirement
+  of a record a person kept moves the version and clears the check as before. p30 states it for `technology.domains` and
+  `runtime.nodes`. Built-in seeds keep their rc.10.73.42 rule (S1.23 holds a seeded need's dismissal moving Chapter 6's
+  version and clearing its check and handoff): recorded for the lifecycle family's owner, wp9b. Route: 96 B in
+  `record-lifecycle.js`, booked to wp9a's own. Deviation: the statement is a row of its own beside `lifecycle` (as
+  `canRestore` is) rather than a new shape of the `lifecycle` row, so that `COLLECTIONS` and its readers stay as they
+  are; and it covers a proposal's restore as well as its retirement (a proposal restored says nothing to the design
+  either, ruling L6). Known limit, recorded in the case: the design stamp still moves by the dismissal's entry in
+  `retired.records`, which the design fingerprint reads for every retirement on rc.10.73.42 (with M9 (e); see
+  "Known limits" below). Old -> new: S1.11 the registration's keys gain `quietProposals`.
+- **Item 7, M7, M8, M9:** in progress.
 
 ## Fix-up (after the adversarial review; the lead's rulings L1 to L11, K1, K2, K6, and K7 to K9 since)
 
