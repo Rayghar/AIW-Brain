@@ -38,7 +38,7 @@ import {storageUpgradeNeeded} from './storage-upgrade.js';
 import {withFinalReview, inheritedFindings, reviewSource, designOf, reviewSourceStamp, reviewDesignStamp, evidenceStamp, CHAPTERS, reviewBlockers, nonWaivable, treatmentsFor, DISPOSITIONS, finalMilestones} from './public/review-domain.js';
 import * as rt from './public/runtime-domain.js';
 import * as runtimeModel from './public/runtime-model.js';
-import {technologyFindings} from './public/technology-domain.js';
+import {technologyFindings, technologyReviewCurrent, technologyHandoffCurrent} from './public/technology-domain.js';
 import {applyKnowledgeCommand} from './public/knowledge-governance.js';
 import {reasoningSource, planFacts} from './public/design-reasoning.js';
 import {recordGraph, OBJECT_TYPES} from './public/record-graph.js';
@@ -1049,6 +1049,45 @@ await block('S1.22 the error blocks as every non-waivable error does', async () 
     assert.deepEqual(before.filter(id => !reviewBlockers(d()).some(f => f.id === id)), [mine.id], 'the package\'s error is gone and no other blocker moved'); assert.ok(blocking(builtIn));
   } finally { h.close(); }
   pass('S1.22: through the server, topology-incomparable reads and blocks as the built-in non-waivable state-protection error of Chapter 10 does, step by step: the same treatments and no waiver (each refused, the package\'s in the words of ruling A1), fix before review keeps both blockers, the review\'s checks count them, no positive review is taken and a freeze is a working draft holding both; runtime.review and runtime.handoff keep their built-in rule, which reads no error, and are taken while both stand; changing the design removes exactly this blocker');
+});
+
+// (the lead's ruling M6; the verifier's new problem 9, as ruling L6 reads) Dismissing a package's proposal is no design
+// change: the retirement of a failure domain or a node that is a proposal moves no version and clears no check or
+// handoff, and its restore brings it back a proposal with neither moved, through the row quietProposals the package
+// states for its own lifecycle collections. A record a person kept is design: keeping it, and retiring it then, move the
+// version and clear the check, as before. Built-in seeds keep their rc.10.73.42 rule (the design fingerprint reads them
+// in their collections): recorded for the lifecycle family's owner, wp9b.
+await block('S1.23 dismissing a proposal is no design change', () => {
+  need();
+  const SOL = {kind: 'sol-draft', id: AGENT, account: 'agent'}, versions = q => [q.technology.version, q.runtime.version];
+  const checked = q => doc(doc(doc(doc(q, 'technology.review'), 'technology.handoff', {acknowledge: true}), 'runtime.review'), 'runtime.handoff', {acknowledge: true});
+  const current = q => [technologyReviewCurrent(q), technologyHandoffCurrent(q), rt.runtimeReviewCurrent(q), rt.runtimeHandoffCurrent(q)];
+  let p = doc(started(), 'technology.domain-proposals'); p = doc(p, 'runtime.node', {title: 'Drafted region', kind: 'region', origin: 'sol-draft'}, AGENT, SOL); p = checked(p);
+  const fd = p.technology.domains.find(d => d.state === 'proposed' && d.origin === 'seeded').id, dn = p.runtime.nodes.find(n => n.state === 'proposed').id;
+  assert.deepEqual(current(p), [true, true, true, true], 'Chapters 6 and 10 checked and handed off by a person');
+  assert.deepEqual(Object.keys(mine().quietProposals || {}).sort(), ['runtime.nodes', 'technology.domains'], 'the package states that its proposals say nothing to the design');
+  // AIW's proposal and Sol's drafted node are dismissed: no version moves, no check or handoff is cleared
+  let q = doc(p, 'record.retire', {id: fd, chapter: 6, reason: 'Not a failure domain of ours.'}, B);
+  assert.equal(domainOf(q, fd), undefined); assert.deepEqual(q.retired.records.filter(x => x.id === fd).map(x => x.priorState), ['proposed']);
+  assert.deepEqual(versions(q), versions(p), 'dismissing AIW\'s proposal moves no version'); assert.deepEqual(current(q), [true, true, true, true], 'and clears no check or handoff');
+  q = doc(q, 'record.retire', {id: dn, chapter: 10, reason: 'Not a node we run.'}, B);
+  assert.deepEqual([versions(q), current(q)], [versions(p), [true, true, true, true]], 'nor does dismissing Sol\'s drafted node');
+  // restored, each is a proposal again, with no version moved and nothing cleared
+  q = doc(doc(q, 'record.restore', {id: fd, chapter: 6}, B), 'record.restore', {id: dn, chapter: 10}, B);
+  assert.deepEqual([domainOf(q, fd).state, nodeOf(q, dn).state], ['proposed', 'proposed']); assert.deepEqual([versions(q), current(q)], [versions(p), [true, true, true, true]], 'a proposal restored moves nothing either');
+  // KNOWN LIMIT (for wp9b, with ruling M9 (e)): the retirement list is read by the design fingerprint on rc.10.73.42, for every retirement, so the
+  // design stamp moves by the dismissal's entry there although no version and no check does; the dismissal and its restore leave it as it was
+  { const out = doc(p, 'record.retire', {id: fd, chapter: 6, reason: 'Not a failure domain of ours.'}, B); assert.notEqual(reviewSourceStamp(out), reviewSourceStamp(p), 'KNOWN LIMIT: the design stamp moves by the retirement list'); }
+  // a record a person kept is design: keeping it moves the version and clears the check; retiring it then does too
+  { const kept = doc(p, 'record.keep', {id: fd, chapter: 6}, B); assert.equal(kept.technology.version, p.technology.version + 1, 'a keep is a design change'); assert.equal(kept.technology.review, null);
+    const again = checked(kept), out = doc(again, 'record.retire', {id: fd, chapter: 6, reason: 'Not a failure domain of ours.'}, B);
+    assert.deepEqual([out.technology.version, out.technology.review, out.technology.handoff], [again.technology.version + 1, null, null], 'retiring a kept record moves the version and clears the check and the handoff, as before'); }
+  // built-in seeds keep their rc.10.73.42 rule: AIW's proposed needs of a component, dismissed, move Chapter 6's version and clear its check
+  { const built = checked(doc(p, 'realisation.component', {title: 'Probe service', kind: 'service', purpose: 'Takes probes.', technologyNeeds: 'Persist each probe record and authenticate the caller.'}));
+    const seed = built.technology.needs.find(n => n.state === 'proposed' && n.origin === 'seeded'); assert.ok(seed, 'AIW proposed a need');
+    const out = doc(built, 'record.retire', {id: seed.id, chapter: 6, reason: 'Not a need of ours.'}, B);
+    assert.deepEqual([out.technology.version, out.technology.review, out.technology.handoff], [built.technology.version + 1, null, null], 'RECORDED FOR wp9b: a built-in seed\'s dismissal moves the version and clears the check and the handoff (rc.10.73.42)'); }
+  pass('S1.23: dismissing a failure domain AIW proposed and a node Sol drafted, and restoring them, moves no version and clears no check or handoff of Chapters 6 and 10 (the package\'s row quietProposals); a kept record\'s keep and retirement are design changes as before; built-in seeds keep their rc.10.73.42 rule (recorded for wp9b); the design stamp still moves by the retirement list (known limit, with M9 (e))');
 });
 
 await block('S1.9 staging; candidate knowledge reaches no topology reading', () => {
