@@ -10,7 +10,9 @@
 // rows that read unknown as unproven; the chosen profile, library entry or archetype is then saved through the
 // reviewed component form. Every step is a command of the selection (adoption-selection.js); nothing here writes,
 // weighs or orders a candidate, and it works with no provider configured. The library chooser
-// (component-library-ui.js) opens it through a dynamic import of this entry, so no second lazy entry holds it.
+// (component-library-ui.js) loads the comparison tools' entry by a dynamic import and opens it through the hook below
+// (window.aiwSelection), with its own dialog helper, so no second lazy entry holds it and no workbench module imports a
+// module of the package (rc44-s0-extensions-validate.mjs tells a package's modules by who imports them).
 import {esc} from './html-escape.js';
 import {selectionReading,selectableProfiles} from './adoption-selection.js';
 const list=v=>Array.isArray(v)?v:[];
@@ -32,8 +34,8 @@ export function selectionView(p,{decisionId='',responsibilityId=''}={}){
 }
 // Opens the selection in a dialog, from the library chooser or the comparison tools. The store sends each step as a
 // command; the view is drawn again from the document the server answers.
-export async function openSelection({store,decisionId='',responsibilityId=''}={}){
- const {modal}=await import('./workbench-ui.js'),doc=()=>store?.value?.document||{};let id=decisionId;
+export function openSelection({store,modal,decisionId='',responsibilityId=''}={}){
+ const doc=()=>store?.value?.document||{};let id=decisionId;
  const d=modal('Select a component',selectionView(doc(),{decisionId:id,responsibilityId})),redraw=()=>{const body=d.querySelector('.intake-body');if(body)body.innerHTML=selectionView(doc(),{decisionId:id,responsibilityId});};
  const send=async(type,payload)=>{const result=await store.command({type,payload});if(type==='selection.start')id=result?.selected||id;redraw();};
  const val=sel=>d.querySelector(sel)?.value||'';
@@ -47,3 +49,4 @@ export async function openSelection({store,decisionId='',responsibilityId=''}={}
   }catch(err){d.error?.(err);}finally{b.disabled=false;}});
  return d;
 }
+if(typeof window!=='undefined')window.aiwSelection=openSelection;

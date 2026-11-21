@@ -377,10 +377,11 @@ export default async function ({block, pass, load}) {
     assert.match(html, /data-selection-row="QD-007" data-state="pass"/); assert.match(html, /data-selection-row="QD-007" data-state="fail"/); assert.match(html, /data-selection-row="QD-008" data-state="unknown"/);
     assert.match(html, /MSG 004 Transactional outbox relay[\s\S]*?Candidate · not reviewed[\s\S]*?<button[^>]*disabled[^>]*title="Candidate knowledge can be read, not selected\."/, 'the candidate profile is read, labelled, and its Add is disabled with the reason');
     assert.ok(!/score|rank|weigh/i.test(html), 'the view weighs nothing');
-    const lib = readFileSync(new URL('../public/component-library-ui.js', import.meta.url), 'utf8'), host = readFileSync(new URL('../public/architecture-task-ui.js', import.meta.url), 'utf8');
-    assert.match(lib, /import\('\.\/architecture-task-ui\.js'\)/, 'the library chooser opens the selection by a dynamic import of the comparison tools\' entry');
+    const src = f => readFileSync(new URL('../public/' + f + '.js', import.meta.url), 'utf8'), lib = src('component-library-ui'), host = src('architecture-task-ui');
+    assert.match(lib, /await import\('\.\/architecture-task-ui\.js'\);window\.aiwSelection\?\.\(\{store:s,modal\}\)/, 'the library chooser loads the comparison tools\' entry by a dynamic import and opens the selection through the hook it sets');
     assert.ok(!/from '\.\/adoption-/.test(lib), 'it imports no adoption module statically (a second lazy chunk would split a shared one)');
-    assert.match(host, /from '\.\/adoption-ui\.js'/, 'the comparison tools\' entry holds the view');
+    assert.match(src('adoption-package'), /^import '\.\/adoption-ui\.js';/m, 'the package holds the view, so the comparison tools\' entry does (it imports the package)'); assert.ok(!/adoption-ui/.test(host), 'and no workbench module imports a module of the package but the package itself (S0 tells a package\'s modules by who imports them)');
+    assert.match(src('adoption-ui'), /window\.aiwSelection=openSelection/);
     pass('S5 surface: the selection view names the constraints, the candidates in order and each row\'s state; the candidate profile is shown labelled with its Add disabled and the reason; nothing is weighed; the library chooser opens it through a dynamic import of the comparison tools\' entry, which holds it');
   });
 

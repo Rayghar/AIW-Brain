@@ -27,6 +27,7 @@
 import {registerExtension} from './design-extensions.js';
 import {applyAdoptionCommand,acceptanceOf,adoptionFindings,adoptionDesign,emitAdoptions,adoptionRelation,trackAdoptionChange} from './adoption-domain.js';
 import {applySelectionCommand} from './adoption-selection.js';
+import './adoption-ui.js'; // the selection's surface, held in the same lazy entry; it opens through window.aiwSelection
 const step={apply:applyAdoptionCommand,person:true},propose={apply:applySelectionCommand},choose={apply:applySelectionCommand,person:true};
 export const ADOPTION_PACKAGE={
  id:'p40-adoption',
