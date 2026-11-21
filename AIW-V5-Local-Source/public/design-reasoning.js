@@ -478,7 +478,7 @@ export function patternKnowledge(texts, kind = 'pattern') {
 // ---------------------------------------------------------------- architecture style, as a decision
 
 export const STYLE_DECISION = {topic: 'style', question: 'Which architecture style should structure this design?', context: 'Compare the SA Playbook\'s architecture styles against the quality drivers this design must meet. The playbook\'s marks are qualitative judgements; test each against the recorded design before choosing.', owner: 'Architecture', source: 'SA Playbook › Arch Style Suitability Ass; Arch Style + Quality Props'};
-const STYLE_CATALOGUE = {'S-LAYERED': 'STYLE-LAYERED', 'S-MICROKERNEL': 'STYLE-MICROKERNEL', 'S-MODMONO': 'STYLE-MODULAR-MONOLITH', 'S-SOA': 'STYLE-SERVICE-ORIENTED', 'S-MICROSERVICES': 'STYLE-MICROSERVICES'};
+export const STYLE_CATALOGUE = {'S-LAYERED': 'STYLE-LAYERED', 'S-MICROKERNEL': 'STYLE-MICROKERNEL', 'S-MODMONO': 'STYLE-MODULAR-MONOLITH', 'S-SOA': 'STYLE-SERVICE-ORIENTED', 'S-MICROSERVICES': 'STYLE-MICROSERVICES'};
 export function styleMarks(R, style, driverIds) {
   return driverIds.map(id => R.driver(id)).filter(Boolean).map(d => ({driver: d, attr: d.attr, mark: d.attr ? style.effects[d.attr] || null : null}));
 }

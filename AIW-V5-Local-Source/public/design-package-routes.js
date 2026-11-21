@@ -15,6 +15,8 @@
 //
 // A slice that adds a package adds its line below, and nothing else in the shared machinery.
 import {registerExtension} from './design-extensions.js';
+// p10-knowledge (wp1): held in the lazy entry of the knowledge workspace (ruling D7.6), which imports knowledge-package.js.
+registerExtension({id:'p10-knowledge-route',needs:p=>p.knowledge?.crosswalk,load:()=>import('./knowledge-workspace-ui.js')});
 // p30-deployment (wp9a): held in the lazy entry of the Chapter 10 Model view (ruling A3), which imports topology.js.
 registerExtension({id:'p30-deployment-route',needs:p=>p.runtime?.topology,load:()=>import('./deploy-view.js')});
 // p40-adoption (wp2): held in the lazy entry of the comparison tools (ruling D7.6), which imports adoption-package.js.

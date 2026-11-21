@@ -17,9 +17,16 @@
 import {applyKnowledgeCommand,knowledgeState,knowledgeEligibility,KNOWLEDGE_LIMIT_TIERS,knowledgeLimits} from './knowledge-governance.js';
 import {verifierRefusal} from './architecture-obligations.js';
 import {QUALITY_TYPES} from './quality-domain.js';
-import {FORM_TYPES,FORM_CLAIM_TYPE,FORM_PREDICATE,CONCEPT_KINDS,CONCEPT_SCOPES,CONCEPT_ID,RECORD_REFERENCE,conceptFormIssues,conceptFormRecord} from './concept-form.js';
+import {FORM_TYPES,FORM_CLAIM_TYPE,FORM_PREDICATE,CONCEPT_KINDS,CONCEPT_SCOPES,CONCEPT_ID,RECORD_REFERENCE,ALIAS_SCHEMES,conceptFormIssues,conceptFormRecord} from './concept-form.js';
 import {recordGraph} from './record-graph.js';
-import {conceptRecords,conceptHash,conceptAuthors,conceptCovered,formIssues} from './knowledge-concepts.js';
+import {conceptRecords,conceptHash,conceptAuthors,conceptCovered,formIssues,crosswalkRecords,crosswalkRowHash,crosswalkCovered} from './knowledge-concepts.js';
+import {catalogue} from './catalogue-store.js';
+import {catalogueMark,catalogueRelation} from './catalogue-curation.js';
+import {templateFields} from './component-snapshot.js';
+import {knowledge as playbookEntry} from './playbook-knowledge.js';
+import {architectureOptions} from './architecture-knowledge.js';
+import {COMPOSITION_TOPICS} from './composition-knowledge.js';
+import {copy} from './util.js';
 import {digest} from './brain-integrity.js';
 import {list} from './util.js';
 
@@ -255,12 +262,117 @@ export function formCapability(author=null,limits=KNOWLEDGE_LIMIT_TIERS.project)
     if(c.authoredAs!=='person'&&c.review?.actor===actor)throw Error(actor+' verified '+c.id+', which was '+(c.authoredAs==='import'?'imported':'drafted')+': a third person releases it.');
    }
   },
+  // What a release of forms holds beside its claims (rc44, wp1 slice S2): the crosswalk rows a second person verified of
+  // the concepts it releases, as they read, without the boundary's stamps. The release's checksum covers them, so a row
+  // names an identity only as it was released (knowledge-concepts.js releasedCrosswalk). None: no parts at all, so a
+  // release of forms without rows is the release of rc44 S1, checksum and all. Parts of concepts and changes: slice S3.
+  parts(p,claims){const ids=new Set(claims.filter(c=>c.form).map(c=>c.subjectId)),rows=crosswalkRecords(p).filter(r=>r.state==='verified'&&ids.has(r.conceptId)).map(r=>Object.fromEntries(Object.entries(copy(r)).filter(([k])=>!RELEASE_LEAVES.includes(k))));return rows.length?{crosswalk:rows}:null;},
   command:context=>conceptCommand(context,author,limits)
  };
 }
+const RELEASE_LEAVES=['state','provenance','confirmed'];
 export function applyConceptCommand(input,command,at=new Date().toISOString(),actor='local-review',{author=null}={}){
  // The mark that makes a project a library is read against a library's history bound: a library recovered here without
  // its mark (recovery-service.js; ruling G5) may hold more history than a project, and a person marks it again.
  const tier=knowledgeLimits(input),limits=command?.type==='knowledge.library'&&command.payload?.enabled===true?{...tier,history:KNOWLEDGE_LIMIT_TIERS.library.history}:tier;
  return applyKnowledgeCommand(input,command,at,actor,{forms:formCapability(author,limits),limits});
 }
+
+// ---------------------------------------------------------------- the crosswalk (rc44, wp1 slice S2)
+// The commands of the design package p10-knowledge (knowledge-package-server.js registers them through S0's contract;
+// design-extension-boundary.js is their boundary), each run inside applyKnowledgeCommand as the register's own types
+// are: its copy of the document, its counter, its history line, its bounds.
+//   knowledge.crosswalk          proposes or edits a row                                      anyone, a draft
+//   knowledge.crosswalk-confirm  a person confirms a row as it reads (ruling F4: the step that puts a person behind a
+//                                row only an import, a draft by Sol or an agent account wrote)  a person
+//   knowledge.crosswalk-review   verifies or rejects a row                                    a second person
+//   knowledge.crosswalk-retire                                                                a person
+// Who may take a step is stated on the command and asked by the boundary (person, second): verifierRefusal on the row's
+// projection, then two persons (the lead's rulings D1 and D7.1). Nothing here checks it again: the review keeps who
+// took it and the kind of their account, and every read asks verifierRefusal and a person's account of that again
+// (knowledge-concepts.js crosswalkState). A row's standing is never taken from a request: what it says is checked, its
+// targetContent is read here from the catalogue, and its status is derived on every read.
+const RELATIONS=['same','narrower','broader','realises','distinct'],ALIAS=/^[A-Za-z0-9][A-Za-z0-9/-]*$/,ROWS_PER_CONCEPT=24,METHOD_TOPICS=['interaction','reads','persistence',...Object.keys(COMPOSITION_TOPICS)];
+// What the catalogue record a row points at holds, as the server reads it (design d.5: the template detector stays out of
+// the browser): marked (catalogue-curation.js), a relation stub, the generator's template, or the record's own words. The
+// record is the alias of an akr row, and the concept otherwise (a concept takes the id of the catalogue record that is
+// the same mechanism, design b.1). A target outside the catalogue has none.
+function targetContent(scheme,aliasId,conceptId){
+ const id=scheme==='akr'?aliasId:conceptId,record=catalogueRelation(id);
+ return !record?undefined:catalogueMark(id)?'marked':record.stub?'stub':templateFields(record).includes('summary')?'template':'authored';
+}
+function crosswalkInput(s,r,existing){
+ const scheme=r.scheme,aliasId=typeof r.aliasId==='string'?r.aliasId.trim():'',conceptId=text(r.conceptId,200);
+ if(scheme==='lens')throw Error('A lens row maps a quality lens to a Chapter 2 category: it is no crosswalk row of a concept (wp1 slice S4).');
+ if(!ALIAS_SCHEMES.includes(scheme))throw Error('Choose the alias\'s scheme ('+ALIAS_SCHEMES.filter(x=>x!=='lens').join(', ')+').');
+ if(!aliasId||aliasId.length>120||!ALIAS.test(aliasId))throw Error('Record the alias id: letters, digits and hyphens (a method alias also one slash), at most 120 characters.');
+ if(existing&&(existing.scheme!==scheme||existing.aliasId!==aliasId||existing.conceptId!==conceptId))throw Error('A crosswalk row keeps its alias and its concept: propose another row.');
+ const concept=list(s.concepts).find(c=>c.conceptId===conceptId);
+ if(!concept)throw Error(conceptId.slice(0,80)+' is not in the concept register: a crosswalk row names a registered concept.');
+ if(concept.retired)throw Error(conceptId+' is retired: a crosswalk row names a concept that stands.');
+ if(!RELATIONS.includes(r.relation))throw Error('Choose how the alias relates to the concept ('+RELATIONS.join(', ')+').');
+ const evidenceClaimId=r.evidenceClaimId??null,evidence=evidenceClaimId===null?null:s.claims.find(c=>c.id===evidenceClaimId),note=text(r.note,600);
+ if(evidenceClaimId!==null&&!evidence)throw Error(String(evidenceClaimId).slice(0,40)+' is not a claim of this project.');
+ if(scheme==='akr'&&!catalogueRelation(aliasId))throw Error(aliasId+' is neither a catalogue record nor a relation stub of '+catalogue().releaseId+'.');
+ if(scheme==='playbook'&&!playbookEntry(aliasId))throw Error(aliasId+' is not an entry of the SA Playbook.');
+ if(scheme==='aiw-method'){const [topic,optionId,...rest]=aliasId.split('/');if(rest.length||!METHOD_TOPICS.includes(topic)||!architectureOptions(topic).some(o=>o.id===optionId))throw Error(aliasId+' is not a built-in comparison option (topic/option).');}
+ if(scheme==='handbook'&&!list(s.topics).some(t=>t.topicId===aliasId)&&!String(evidence?.excerpt||'').includes(aliasId))throw Error(aliasId+' is neither a topic of this library nor named by the passage of the claim given as evidence.');
+ if(scheme==='external'&&!note)throw Error('Say where the external alias comes from (note).');
+ const target=targetContent(scheme,aliasId,conceptId);
+ return {conceptId,scheme,aliasId,label:required(r.label,'the alias\'s label',160),relation:r.relation,evidenceClaimId,note,...(target?{targetContent:target}:{})};
+}
+function crosswalkCommand({p,s,r,type,at,actor,next},author){
+ if(!type.startsWith('knowledge.crosswalk'))return undefined;
+ libraryOnly(s);
+ const find=()=>{const x=list(s.crosswalk).find(y=>y.id===r.id);if(!x)throw Error('Choose a crosswalk row of this library.');return x;};
+ switch(type){
+ case 'knowledge.crosswalk':{
+  const existing=r.id===undefined?null:find();
+  if(existing?.retired)throw Error(existing.id+' is retired: a retired crosswalk row is not edited. Propose another row.');
+  const x=crosswalkInput(s,r,existing);
+  if(!existing){
+   const same=list(s.crosswalk).find(y=>!y.retired&&y.scheme===x.scheme&&y.aliasId===x.aliasId&&y.conceptId===x.conceptId);
+   if(same)throw Error(x.scheme+' '+x.aliasId+' is already in the crosswalk of '+x.conceptId+' as '+same.id+': edit that row.');
+   if(list(s.crosswalk).filter(y=>y.conceptId===x.conceptId).length>=ROWS_PER_CONCEPT)throw Error(x.conceptId+' has '+ROWS_PER_CONCEPT+' crosswalk rows, the most a concept holds.');
+   s.crosswalk||=[];const id=next('KA');s.crosswalk.push({id,...x,revision:1,at,actor,lastEditor:actor,history:[{revision:1,at,actor,change:'Proposed'}]});return id;
+  }
+  // Saved again as it is, a row is not written: no revision, no new time, no new editor, no history line.
+  if(sameFields(existing,x))return {selected:existing.id,unchanged:true};
+  // A row a second person verified here, or a release holds, is changed by a signed-in person only (rulings B3, E1 and
+  // G2, read for rows); a request that is nobody's would add its sender to the row's editors and lapse the review.
+  const refusal=kindRefusal(author);if(refusal&&crosswalkCovered(p,existing))throw Error(existing.id+' was verified here or is in a release: only a signed-in person changes it. '+refusal);
+  if(existing.history.length>=200)throw Error(existing.id+' has 200 revisions. Propose another row.');
+  // An edit keeps the author and every earlier editor (they never review it); its review lapses on read (it covered the
+  // row's hash), and a confirmation was of what the row said before.
+  Object.assign(existing,x,{revision:existing.revision+1,lastEditor:actor});if(!x.targetContent)delete existing.targetContent;delete existing.confirmed;
+  existing.history.push({revision:existing.revision,at,actor,change:text(r.reason,300)||'Edited'});return existing.id;
+ }
+ case 'knowledge.crosswalk-confirm':{assertReview(r);const x=find();if(x.retired)throw Error(x.id+' is retired.');if(x.confirmed===true)return {selected:x.id,unchanged:true};x.confirmed=true;return x.id;}
+ case 'knowledge.crosswalk-review':{
+  assertReview(r);const x=find();
+  if(!['verified','rejected'].includes(r.decision))throw Error('Record a review outcome (verified or rejected).');
+  if(x.retired)throw Error(x.id+' is retired: it is not reviewed.');
+  if(r.decision==='verified'){
+   if(r.aliasChecked!==true)throw Error('Check the alias against its source and the concept before verifying the row (aliasChecked).');
+   const concept=list(s.concepts).find(c=>c.conceptId===x.conceptId);if(!concept||concept.retired)throw Error(x.conceptId+' is not a concept that stands in the register.');
+   // One verified `same` row per alias: one alias names one concept.
+   const other=x.relation==='same'&&crosswalkRecords(p).find(y=>y.id!==x.id&&y.state==='verified'&&y.relation==='same'&&y.scheme===x.scheme&&y.aliasId===x.aliasId&&y.conceptId!==x.conceptId);
+   if(other)throw Error(x.scheme+' '+x.aliasId+' is already the same as '+other.conceptId+' ('+other.id+', verified): one alias names one concept. Reject or retire that row first.');
+  }
+  // Kept under the record's key review (ruling F3), with who took it and the kind of their account as the boundary
+  // hands them (ruling D7.1). A rejection of a row verified here keeps who verified it (as a concept's does, ruling G2).
+  const before=x.review?.decision==='verified'&&x.review.actor&&x.review.account==='person'?{actor:x.review.actor,at:x.review.at}:x.review?.verifiedBefore;
+  x.review={decision:r.decision,actor,account:author?.account??null,reviewer:text(r.reviewer,180),at,reason:text(r.reason),aliasChecked:r.aliasChecked===true,rowHash:crosswalkRowHash(x),...(r.decision!=='verified'&&before?{verifiedBefore:before}:{})};return x.id;
+ }
+ case 'knowledge.crosswalk-retire':{assertReview(r);const x=find();if(x.retired)throw Error(x.id+' is already retired.');x.retired={at,actor,reviewer:text(r.reviewer,180),reason:text(r.reason)};return x.id;}
+ default:return undefined;
+ }
+}
+// The handler of the package's command types (design-extension-boundary.js calls it as every handler is called):
+// applyKnowledgeCommand with the form capability of the request and the crosswalk's command types.
+export function applyCrosswalkCommand(input,command,at=new Date().toISOString(),actor='local-review',{author=null}={}){
+ const limits=knowledgeLimits(input);
+ return applyKnowledgeCommand(input,command,at,actor,{forms:{...formCapability(author,limits),command:context=>crosswalkCommand(context,author)},limits});
+}
+// The projection a second person's review of a row reads (ruling D7.1), for the boundary.
+export const crosswalkSubject=(p,command)=>{const x=list(knowledgeState(p).crosswalk).find(y=>y?.id===command?.payload?.id);return x?{id:x.id,actor:x.actor,owner:'',history:list(x.history).map(h=>({revision:h?.revision,actor:h?.actor}))}:null;};
