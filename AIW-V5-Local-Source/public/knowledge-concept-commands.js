@@ -206,7 +206,7 @@ export function formCapability(author=null,limits=KNOWLEDGE_LIMIT_TIERS.project)
    if(type!=='applicability'&&Object.hasOwn(r,'architectureUnit'))throw Error(article(type)+' form carries no structured architecture unit: only an applicability form does.');
    if(type==='applicability'&&concept.kind!=='topic'&&!Object.hasOwn(r,'architectureUnit'))throw Error('An applicability form of '+article(concept.kind).toLowerCase()+' carries its structured architecture unit (kind, mechanism, effects, obligations).');
    // How it was authored: a person's, an import's, a draft by Sol or an agent account's; a request that states no author is never taken for a person's.
-   return {claimType:FORM_CLAIM_TYPE[type],form:conceptFormRecord(r.form,{...ctx,claim:{statement:r.statement,conditions:r.conditions,limitations:r.limitations}}),authoredAs:!author?'import':author.account==='agent'?'agent':author.kind==='person'&&author.account!=='person'?'import':author.kind};
+   return {claimType:FORM_CLAIM_TYPE[type],form:conceptFormRecord(r.form,{...ctx,claim:{statement:r.statement,conditions:r.conditions,limitations:r.limitations,architectureUnit:r.architectureUnit}}),authoredAs:!author?'import':author.account==='agent'?'agent':author.kind==='person'&&author.account!=='person'?'import':author.kind};
   },
   // A claim that would open a contradiction with a form (the same subject and predicate, another polarity), whether or
   // not it carries a form itself, makes the review of that form's concept lapse until a person resolves it. On a concept

@@ -21,7 +21,7 @@ const order=type=>FORM_TYPES.indexOf(type);
 // carries one: that is asked here, on every read, as it is at the command (ruling G4 of 2026-11-18), so a unit written
 // into a claim of any other form makes the form unusable and is handed to nobody.
 export const formIssues=claim=>{
- const type=claim?.form?.type,issues=conceptFormIssues(claim?.form,{excerpt:claim?.excerpt,lineStart:claim?.lineStart,claim:{statement:claim?.statement,conditions:claim?.conditions,limitations:claim?.limitations}});
+ const type=claim?.form?.type,issues=conceptFormIssues(claim?.form,{excerpt:claim?.excerpt,lineStart:claim?.lineStart,claim:{statement:claim?.statement,conditions:claim?.conditions,limitations:claim?.limitations,architectureUnit:claim?.architectureUnit}});
  return FORM_TYPES.includes(type)&&type!=='applicability'&&Object.hasOwn(claim,'architectureUnit')?[...issues,(/^[aeiou]/.test(type)?'An ':'A ')+type+' form carries no structured architecture unit: only an applicability form does.']:issues;
 };
 const sourceOf=(s,claim,release)=>release?.organizationId?list(release.sources).find(x=>x.id===claim.sourceId):s.sources.find(x=>x.id===claim.sourceId);
