@@ -463,7 +463,11 @@ import of `topology.js` in `deploy-view.js` the route is the same 3,230,089 B (t
 before); `rc44-wp2-adoption-validate.mjs` 19 of 20 blocks, its block `size` red ("this build is inside the allowance of
 wp2: 660 B": it counts every package's route bytes as wp2's, open question 11; it passed on `afaf616`, after item 5, where
 the route was 569 B over the base). `test:deploy-browser`, red at the baseline, fails as there ("unplaced parts wait in Not
-placed"). `rc44-wp9a-deployment-browser-validate.mjs` green against the built client. Existing suites of the files the
+placed"). For the fingerprint, the review and the readers of the design source (S0's row now takes `chapter.key`), on
+this head, green and unchanged: `review`, `rc42-g3c-evidence-fingerprint`, `baseline-size`, `recovery-authority`,
+`sdd-architecture`, `roadmap`, `architecture-case`, `rc42-g3b-trace-and-delivery`, `rc42-g7-data-contracts`,
+`readiness`, `model-alternatives`, `reference-projects`, `validation-confirmation`, `native-connection-ui`, `provenance`,
+`review-plan`. `rc44-wp9a-deployment-browser-validate.mjs` green against the built client. Existing suites of the files the
 fix-up items 6 and 7 changed, green and unchanged: `deploy`, `runtime`, `rc42-g5-runtime`, `chapter-lines`,
 `not-stated`, `wire-merge` (H4, H15), `technology`, `interfaces`, `security`, `technology-realisation` (`patchLinks`);
 those of the earlier items as their lines above say. `node check-syntax.mjs` passes; `node scripts/lint.mjs --summary`:
