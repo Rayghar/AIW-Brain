@@ -1,0 +1,12 @@
+{
+ "schema": "aiw.rc44.route-remeasure.v1",
+ "date": "2026-11-21",
+ "ruling": "N1 (re-measure of K6)",
+ "measuredWith": "node build.mjs; dist/client-size-report.json routes.chapters.code; each variant edits only public/design-package-routes.js in a detached worktree",
+ "trees": {
+  "a4c1690": {"name": "rc44/integration, the adoption record merged", "asBuilt": 3230165, "withoutAdoptionStubAndImport": 3230113, "adoptionStub": 52},
+  "5cae40a": {"name": "the typed deployment topology after its second fix-up, on a4c1690", "asBuilt": 3230605, "withoutAdoptionStub": 3230501, "withoutDeploymentStub": 3230426, "withoutBothStubsAndImport": 3230368, "adoptionStubMarginal": 104, "deploymentStubMarginal": 179, "bothStubs": 237, "sharedOnce": -46}
+ },
+ "conclusion": "No once-paid registry cost is separable: nothing is re-booked from wp2 to the shared pool. wp2 keeps 325 B as its own; the pool keeps 1,558 B.",
+ "productionAccepted": false
+}
