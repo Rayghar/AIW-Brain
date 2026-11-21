@@ -89,9 +89,12 @@ await block('S1.0 the marker', async () => {
   const h = await F.server(worker);
   try {
     // a signed-in person's step: an agent account, a draft by Sol and an import are refused
-    for (const [as, extra, who] of [[AGENT, {}, 'an agent account'], [A, {authorKind: 'sol-draft'}, 'a draft by Sol'], [A, {authorKind: 'import'}, 'an import']]) {
+    // (ruling M7; was: the refusal matched /person/) in the shared sentences, each from where it comes: authorship.js refuseUnreviewable for an agent
+    // account and a draft by Sol (before the project is read), S0's boundary (design-extension-boundary.js) for an import. They name the command type;
+    // KNOWN LIMIT (rulings L9 and M7): they are the workbench's and every package's, reworded with the other shared sentences in wp9b (ruling A5)
+    for (const [as, extra, who, words] of [[AGENT, {}, 'an agent account', 'An agent or service account does not review, confirm, accept or approve (runtime.topology-start). A person signs in to do that.'], [A, {authorKind: 'sol-draft'}, 'a draft by Sol', 'A draft by Sol does not review, confirm, accept or approve (runtime.topology-start). A person signs in to do that.'], [A, {authorKind: 'import'}, 'an import', 'runtime.topology-start is a signed-in person\'s step: an import, a draft by Sol and an agent account review, accept and approve nothing.']]) {
       const r = await h.send('runtime.topology-start', {}, as, extra);
-      assert.equal(r.status, 400, who + ' does not type a project\'s topology: ' + JSON.stringify(r.body).slice(0, 200)); assert.match(r.error, /person/);
+      assert.equal(r.status, 400, who + ' does not type a project\'s topology: ' + JSON.stringify(r.body).slice(0, 200)); assert.equal(r.error, words, who + ': the shared sentence');
       assert.equal((await h.read()).document.runtime.topology, undefined, 'nothing is written for ' + who);
     }
     assert.equal((await h.read()).document.workspace.packages, undefined, 'a refused step names no package in the document');

@@ -82,7 +82,22 @@ item started from, then the change. (Work in progress; this section is completed
   either, ruling L6). Known limit, recorded in the case: the design stamp still moves by the dismissal's entry in
   `retired.records`, which the design fingerprint reads for every retirement on rc.10.73.42 (with M9 (e); see
   "Known limits" below). Old -> new: S1.11 the registration's keys gain `quietProposals`.
-- **Item 7, M7, M8, M9:** in progress.
+- **Item 7, M7, M8, M9:** done.
+  - M7, which sentence naming a command type comes from where (S1.0 now pins each exactly; old: `/person/`):
+    an agent account's request gets `authorship.js` `refuseUnreviewable`, before the project is read: "An agent or
+    service account does not review, confirm, accept or approve (runtime.topology-start). A person signs in to do
+    that."; a draft by Sol gets the same function's "A draft by Sol does not review, confirm, accept or approve
+    (runtime.topology-start). A person signs in to do that."; an import (a person's account stating author kind
+    `import`) gets S0's boundary (`design-extension-boundary.js` `extensionHandler`): "runtime.topology-start is a
+    signed-in person's step: an import, a draft by Sol and an agent account review, accept and approve nothing."; a
+    request with no signed-in actor would get the boundary's "Sign in: runtime.topology-start is a signed-in person's
+    step." (the server's routes ask for a signed-in account before that). These are the workbench's and every
+    package's sentences; they are reworded with the other shared sentences in wp9b (ruling A5). The first fix-up's
+    notes attributed the agent account's refusal to the boundary: that was wrong, corrected here, under item 7 of the
+    first fix-up and in open question 10. The package's own refusals name no command type (S1.19).
+  - M8, the size evidence restated on this head after the merge with the adoption record (`node build.mjs`; S1.10
+    `--measure`; `audit/rc44/evidence/wp9a-s1-size.json` schema v3): see "Measurements" (second fix-up).
+  - M9, known limits added: (e) and (f), in "Known limits (rulings L11 and M9)" below.
 
 ## Fix-up (after the adversarial review; the lead's rulings L1 to L11, K1, K2, K6, and K7 to K9 since)
 
@@ -132,7 +147,7 @@ there (`assertBuiltInChainsUnchanged`; it held on the trial merge, and with `tra
 | L6 | done (item 6); a batch's own receipt still moves the stamp (rc.10.73.42, for every batch) | S1.4, S1.8, S1.16 |
 | L7 | done (item 6); `deploy-model.js` is on the route, not in the lazy entry as L7 says (it cost -5 B) | S1.17 |
 | L8 | done (item 7) | S1.18, S1.19 |
-| L9 | done (item 7); S0's boundary sentence for a person-only step still names the type (open question 10) | S1.0, S1.19, S1.10 |
+| L9 | done (item 7); the shared sentences for a person-only step still name the type (open question 10; ruling M7: wp9b) | S1.0, S1.19, S1.10 |
 | L10 | done (items 1 and 7): S0's suite with both packages; `assembleParts`; `fmt` in `patchLinks`, 34 B booked apart | S0 "D3 workbench keys"; S1.11; S1.20 |
 | L11 | recorded (see "What later slices inherit"): (a) slice 6, or nobody; (b) wp9b; (c) slice 6; (d) slice 2 | — |
 | K1, K2 | inherited through the merge: the package has no upgrade step, so its reads store nothing | — |
@@ -166,7 +181,7 @@ characters is enforced for the knowledge library, not for a project: I set the c
 - **Every later slice of wp9a:** the package's records at its slice-1 limits already take about 3,740,000 of a
   document's 8,000,000 characters (S1.18); a slice that adds records measures them at their limits through the commands
   (B8) against what is left, and sets its own counts so that the document bound is not what a person hits first. Route:
-  wp9a has 190 B left of its 500 B on the chapters route.
+  wp9a has 158 B left of its 500 B on the chapters route (after the second fix-up: 342 B its own, against `a4c1690`).
 
 ### By item
 
@@ -279,7 +294,9 @@ characters is enforced for the knowledge library, not for a project: I set the c
     topology for this project first." (S1.0, replaced; it named `runtime.topology-start`); S1.19 scans every refusal of
     `topology-domain.js` for a command type. Not changed: the boundary's own refusal of a person-only step from an agent
     account names the type ("runtime.topology-start is a signed-in person's step: …"); it is S0's sentence for every
-    package (`design-extension-boundary.js`), not this package's: for the lead. The size evidence is rewritten
+    package (`design-extension-boundary.js`), not this package's: for the lead. (Corrected by the second fix-up, ruling
+    M7: an agent account's request is refused by `authorship.js` `refuseUnreviewable`; only an import reaches S0's
+    boundary sentence. See "Second fix-up", item 7.) The size evidence is rewritten
     (`audit/rc44/evidence/wp9a-s1-size.json`, schema v2): what was measured, against 9673661 and against the adoption
     record, every byte itemised, the bookings of K6 and L10 apart, no "well under half". Replaced: S1.10 "delta < 250
     against the base alone" and "the package's own under 150 B" -> "every byte against the adoption record itemised and
@@ -467,9 +484,66 @@ slice 6 brings the surface that offers Keep and Retire (ruling J7). See open que
   browser suite `rc44-wp9a-deployment-browser-validate.mjs`.
 - **Done by the fix-up:** the marker, the nodes and the failure domains are stated through S0's row of ruling J3.
 
+## Known limits (rulings L11 and M9)
+
+- (a) A hand-made or hand-edited recovery package that carries typed fields without the marker is read by the
+  built-in key; the commands cannot produce it (slice 6, or nobody).
+- (b) An agent account retires and restores a person's node as it does a person's zone on rc.10.73.42, and an import by
+  a person writes authored records stamped as imported: the lifecycle family's rule, for wp9b.
+- (c) AIW's own proposals of the package are in no review plan until slice 6 gives them a surface; the SDD counts them.
+- (d) For slice 2: no calculated verdict reads as confirmed an ancestor chain that an unreviewed draft changed.
+- (e) A reviewed batch keeps its receipt in `workbench.history`, which the design fingerprint reads on rc.10.73.42: a
+  batch of proposals moves the design stamp by its receipt alone (S1.8 holds that nothing else moves). Likewise, found
+  by the second fix-up: a dismissal of a proposal moves no version and clears no check (M6), but the design stamp moves
+  by the dismissal's entry in `retired.records`, which the design fingerprint reads for every retirement on
+  rc.10.73.42 (S1.23 holds it, marked KNOWN LIMIT). Closing it means leaving such entries out of the design source
+  (`review-domain.js reviewSource`, on the route, about 100 to 150 B by estimate, not measured): for the lead.
+- (f) No document bound is enforced by code; the package's limits keep its worst case near 3.74 M of the 8 M characters
+  (S1.18), and later wp9a slices measure what they add against that.
+
 ## Measurements
 
-**After the fix-up** (this head; `node build.mjs` and S1.10 `--measure`, `audit/rc44/evidence/wp9a-s1-size.json`). Two
+**After the second fix-up** (this head; `node build.mjs`; S1.10 `--measure`, `audit/rc44/evidence/wp9a-s1-size.json`
+schema v3; ruling M8). Bases, each built with `node build.mjs` from an archive of its commit: the integrated base
+`9673661`, and `rc44/integration` at `a4c1690` (the adoption record as closed), which this branch merged.
+
+| | 9673661 | rc44/integration a4c1690 | This head | Cap |
+|---|---|---|---|---|
+| Chapters route (code) | 3,229,840 B | 3,230,165 B | 3,230,605 B (+765 / **+440**) | 3,233,792 B (unchanged; 3,187 B left) |
+| Projects route (code) | 506,829 B | 507,069 B | 507,338 B | 1,242,112 B (unchanged) |
+| Script files | 148 | 148 | 148 | 148 (unchanged) |
+| Files under 10 KB | 53 | 53 | 53 | 61 (unchanged) |
+| Stylesheet | 901,873 B | 901,873 B | 901,873 B | 902,144 B (unchanged) |
+| Opens with records (D10), entry of `deploy-view.js` | 4,062,884 B (833,044 B beside the route) | 4,063,285 B (833,120 B) | 4,086,294 B (855,689 B in 12 scripts) | — |
+
+The 440 B against `a4c1690`, by module of the route outputs (metafiles of the two builds):
+
+| What | Bytes | Booked to |
+|---|---|---|
+| The route stub with its import of `registerExtension` (`design-package-routes.js`) | 105 | wp9a |
+| H1, `failureDomainKey` reads the typed domain (`runtime-model.js`) | 21 | wp9a |
+| The lifecycle reads a package's restore rule (`record-lifecycle.js`, L3) | 47 | wp9a |
+| The lifecycle reads `quietProposals` (`record-lifecycle.js`, M6) | 96 | wp9a |
+| `simulateRuntime` reads the typed domain (`runtime-domain.js`, H4 of L7) | -10 | wp9a |
+| The Model view keys a zone by it (`deploy-model.js`, H15 of L7) | -5 | wp9a |
+| Import and export lists of the route outputs (+88), with `composition-design.js` +3, `model-impact.js` -1, `architecture-design.js` -2 | 88 | wp9a |
+| S0's design row takes `chapter.key` (`review-domain.js reviewSource`, L5, L6) | 64 | the shared pool (M8) |
+| `fmt` for `patchLinks` (`technology-domain.js`, the defect of rc.10.73.42, L10) | 34 | the shared pool (L10) |
+
+**wp9a's own: 342 B of its 500 B (158 B left).** The shared pool's bytes from this package: 98 B (34 + 64). M1's
+`stampTracked` (`provenance.js`) and M2's change (`recovery-service.js`) are server-only: the route does not grow by them
+(the itemised modules show no `provenance.js` byte). The registry's one-time cost (K6, 110 to 123 B) is in the
+adoption record's figure and in wp2's recorded `delta` (325 B), which wp2's evidence books to wp2; the lead re-books it
+to the shared pool under K6 if wished. The shared pool of the seven later packages (F1, H1: 1,656 B) has thus given
+98 B to wp9a's shared items, 1,558 B left, less the registry's 110 to 123 B once the lead books it there. Against
+`9673661` the route grew 765 B: wp2 325 B (with the registry's cost), wp9a 342 B, the shared pool's 98 B.
+
+The package's share of the lazy entry (ruling M5): 22,569 B against the adoption record's entry, itemised from the
+entry's script: `topology-domain.js` 20,903, `topology.js` 1,448, the four empty parts 10 each, import and export lists
+and the rest of the closure 178 (at item 5, before M6: 22,492 B, `topology-domain.js` 20,843, `topology.js` 1,431).
+
+**After the first fix-up** (head `1372785`, as that fix-up recorded it; superseded by the figures above: the 64 B of
+S0's design row are the shared pool's by M8, and the base is now `a4c1690`; `node build.mjs` and S1.10 `--measure`). Two
 bases, each built with `node build.mjs` from an archive of its commit: the integrated base `9673661`, and the adoption
 record at `25cc426` (`rc44/wp2-s1-lead`), which this branch merged. (The lead's later `ec0cd3c` measures 3,230,165 B,
 9 B more; the trial merge with it 3,230,509 B: the same 344 B, itemised alike.)
@@ -526,7 +600,7 @@ import of `topology.js` in `deploy-view.js` the route is the same 3,230,089 B (t
 
 ## Suites
 
-**After the fix-up** (this head, the adoption record of `25cc426`): `rc44-wp9a-deployment-validate.mjs` 21 blocks green
+**After the first fix-up** (head `1372785`, the adoption record of `25cc426`): `rc44-wp9a-deployment-validate.mjs` 21 blocks green
 (S1.10 with `--measure`); `rc44-s0-extensions-validate.mjs` 26 of 26; `rc44-wp1-knowledge` 34 of 34 (4 pending, as
 before); `rc44-wp2-adoption-validate.mjs` 19 of 20 blocks, its block `size` red ("this build is inside the allowance of
 wp2: 660 B": it counts every package's route bytes as wp2's, open question 11; it passed on `afaf616`, after item 5, where
@@ -582,22 +656,26 @@ Questions 1, 2, 4, 5 and 9 were closed by the rulings and the fix-up (L10 and it
 with the built-in collections left to slice 2; L10 and item 7; L5, L6 and item 6). 3, 6, 7 and 8 stand (8 is L11 (c)).
 New after the fix-up:
 
-10. **S0's boundary sentence for a person-only step names the type** ("runtime.topology-start is a signed-in person's
-    step: …", `design-extension-boundary.js`), for every package. L9 asks that no refusal name a command type; the
-    package's own refusals name none (S1.19), but this one is S0's. Change S0's words (the S0 and wp2 suites hold parts
-    of them), or let a package state its step's words?
+10. **The shared sentences for a person-only step name the type** (closed by ruling M7: reworded in wp9b with the
+    other shared sentences). Two places, not one as asked first: `authorship.js` `refuseUnreviewable` for an agent
+    account and a draft by Sol ("An agent or service account does not review, confirm, accept or approve
+    (runtime.topology-start). A person signs in to do that." and "A draft by Sol does not …"), and S0's boundary
+    (`design-extension-boundary.js`) for an import ("runtime.topology-start is a signed-in person's step: an import, a
+    draft by Sol and an agent account review, accept and approve nothing."). S1.0 pins all three.
 11. **wp2's suite on a branch that holds both packages.** Its block `size` asserts "this build is inside the allowance
     of wp2" as the whole route against the integrated base: with wp9a merged that is 660 B, over 600, though wp2's own
     figure (the adoption record against the base) is 316 B. It counts every package's bytes as wp2's; the lead
-    re-measures at each merge (K6). Not edited here.
+    re-measures at each merge (K6). Not edited here. (Closed by ruling M4 in the second fix-up, item 4: the block now
+    takes the other packages' own bytes and the shared pool's out, `rc44-s0-readings.mjs routeBookings`.)
 12. **A reviewed batch's receipt moves the design stamp.** `workspace.apply` keeps its receipt in `workbench.history`,
     which the design fingerprint reads on rc.10.73.42, so a batch of proposals moves the design stamp by its receipt
-    though the proposals say nothing (S1.8 holds the rest). Built-in; for every batch.
+    though the proposals say nothing (S1.8 holds the rest). Built-in; for every batch. (Recorded as known limit M9 (e).)
 14. **The adoption record's follow-up does not finish its own suite.** On `rc44/wp2-s1-lead` at `ec0cd3c` the block
     `upgrade` of `rc44-wp2-adoption-validate.mjs` runs without end, and `upgradeAdoptions(bankPaymentApplied())` does
     not return in 30 s: the loop that skips an id a record holds (`adoption-upgrade.js`, K9 (c)) seems never to find a
     free one (perhaps `typeOf` answers the adoption's own type for every `ADP-` id, through the minted prefix). Not
-    this package's code; this head keeps `25cc426` until the lead's merge.
+    this package's code; this head keeps `25cc426` until the lead's merge. (Closed: `a4c1690` checks a minted id
+    against the ids the document holds; merged in the second fix-up, item 0, and wp2's suite is green on this head.)
 13. **No document bound for a project in code.** The 8,000,000 characters of rulings B8 and E3 are the knowledge
     library's (`knowledge-governance.js`); a project's document has no bound of its own, and the built-in limit of
     2,000 zones is not reachable at its own field limits (about 10,000 characters a zone). The package's counts are set
