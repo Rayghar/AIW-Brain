@@ -427,7 +427,10 @@ export default async function ({block, pass, load}) {
       const breaks = q => decisionFindings(q).filter(f => f.decisionId === id && f.title === title && f.level === 'error');
       assert.ok(breaks(h.doc()).length > 0, 'an error says the working choice breaks a hard constraint');
       for (const payload of completion(decision(h.doc(), id), h.doc())) await h.ok('decision.alternative', payload); await h.ok('decision.record', {id, acknowledge: true});
-      for (const as of [B, C]) { const r = await h.send('selection.confirm', {id, note: 'Read the rows and the choice.'}, as); assert.equal(r.status, 400, as + ' does not confirm an ineligible choice: ' + JSON.stringify(r.body).slice(0, 200)); assert.match(r.error, /breaks a hard constraint/); }
+      // (B and C judged the chosen candidate's rows, so the one rule refuses them; a fourth person, who neither chose nor
+      // judged, is refused because the choice breaks a hard constraint)
+      const D4 = 'architect-d'; assert.equal((await h.api('/api/access' + h.q, 'POST', {actorId: D4, role: 'editor'})).status, 200);
+      for (const as of [B, C, D4]) { const r = await h.send('selection.confirm', {id, note: 'Read the rows and the choice.'}, as); assert.equal(r.status, 400, as + ' does not confirm an ineligible choice: ' + JSON.stringify(r.body).slice(0, 200)); if (as === D4) assert.match(r.error, /breaks a hard constraint \(QD-008, judged fail\): it is not confirmed/); }
       assert.ok(!decision(h.doc(), id).selection.confirm, 'nothing is confirmed');
       { const r = await h.send('decision.accept', {id, acknowledge: true}); assert.equal(r.status, 400, 'decision.accept is refused'); }
       // a document whose drivers no longer name the constraint (edited by hand: no command writes it): the chosen candidate
@@ -437,7 +440,7 @@ export default async function ({block, pass, load}) {
       assert.equal(S.candidateEligibility(hand, y, ya).state, 'ineligible', 'the constraint still reaches the responsibility');
       assert.deepEqual(decisionFindings(hand).filter(f => f.decisionId === id && f.code === 'breaks'), [], 'Chapter 3\'s own finding reads the drivers the decision names');
       assert.deepEqual(breaks(hand).map(f => [f.code, f.alternativeId, f.driverIds, f.detail]), [['selection-breaks', inbox, ['QD-008'], ya.title + ' breaks QD-008. Choose an alternative that meets it, or change the constraint in Chapter 1 and its driver in Chapter 2.']], 'the package raises the error, worded as the built-in');
-      assert.throws(() => send(hand, 'selection.confirm', {id, note: 'x'}, B), /breaks a hard constraint/, 'no confirm on it');
+      assert.throws(() => send(hand, 'selection.confirm', {id, note: 'x'}, D4), /breaks a hard constraint \(QD-008, judged fail\)/, 'no confirm on it, by a person who neither chose nor judged');
       assert.throws(() => applyDecisionCommand(hand, {type: 'decision.accept', payload: {id, acknowledge: true}}, AT), /Resolve this decision/, 'no acceptance');
       const acc = structuredClone(hand); decision(acc, id).status = 'accepted'; const accd = withFinalReview(acc, {upgrade: false});
       assert.equal(decisionCurrent(accd, decision(accd, id)), true, 'read as accepted as it stands');

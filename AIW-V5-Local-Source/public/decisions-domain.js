@@ -198,7 +198,8 @@ function normaliseOption(p,d,raw,old){
  return settle(a,old,ALTERNATIVE_NEW);}
 // rc44 wp2 S5 (ruling Q2): on a decision that holds a component selection, its choice, its candidates, their rejection
 // reasons and their effect on a hard constraint are the selection's: selection.* writes them through this handler as its
-// inner steps (SELECTION_STEP, a key no request can carry), and every other request for them is refused.
+// inner steps (SELECTION_STEP, a key no request can carry), and every other request for them is refused; so is a
+// decision.save that drops a hard constraint from its drivers (ruling U1).
 export const SELECTION_STEP=Symbol();
 export function applyDecisionCommand(input,command,at=new Date().toISOString()){
  const p=withDecisions(input),q=p.decisions,raw=command.payload||{},own=d=>{if(d.selection&&!command[SELECTION_STEP])throw Error('Change '+d.id+' through its selection.')};let selected=raw.id||null,mutated=true,created=null;
@@ -207,7 +208,7 @@ export function applyDecisionCommand(input,command,at=new Date().toISOString()){
   for(const k of DECISION_TEXT)next[k]=patchText(raw,k,d,k==='question'?200:k==='owner'?180:4000,'The '+fieldWords(k));
   if(!next.question)throw Error('Frame a design question.');
   const category=raw.category===undefined?d?.category??'':raw.category??'';if(category&&!DECISION_CATEGORIES.some(c=>c.id===category))throw Error('Choose a decision category, or leave it not stated.');next.category=category;
-  Object.assign(next,validateRefs(p,raw,d));next.recommendation=recommendationOf(raw,d,next.driverIds);next.topic=raw.topic===undefined&&d?d.topic:knownTopic(p,raw.topic)?raw.topic:'custom';next.open=raw.open===undefined?d?.open:cleanOpen(raw.open,DECISION_TEXT);
+  Object.assign(next,validateRefs(p,raw,d));if(d?.selection&&readDecision(p,d,{priorities:{}}).hard.some(id=>!next.driverIds.includes(id)))own(d);next.recommendation=recommendationOf(raw,d,next.driverIds);next.topic=raw.topic===undefined&&d?d.topic:knownTopic(p,raw.topic)?raw.topic:'custom';next.open=raw.open===undefined?d?.open:cleanOpen(raw.open,DECISION_TEXT);
   // A confirmation not sent again holds only while what it confirmed is unchanged.
   next.assumptionsResolved=raw.assumptionsResolved!==undefined?raw.assumptionsResolved===true:!!d?.assumptionsResolved&&next.assumptions===d.assumptions&&next.assumptionEvidence===d.assumptionEvidence&&sameIds(next.assumptionIds,d.assumptionIds);
   if(next.assumptionsResolved&&d?.selection?.choice?.unproven?.length)throw Error('A hard constraint is unproven: a second person judges it first.'); // rc44 wp2 S5 (ruling Q4)
