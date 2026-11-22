@@ -153,7 +153,11 @@ Route bytes, module by module: the stub's `needs` +26, KINDS (B10) +60, `knowled
   `brain-chain`, `brain-integration`, `brain-synthesis-retrieval`, `brain-tradeoffs`, `caller-resilience`, `composition`,
   `connected-design-projections`, `decision-reading`, `domain-lens`, `drafter-groups`, `driver-applicability`,
   `embedded-intelligence`, `execution-composition`, `execution-journey`, `outcome-contract`, `outcome-design-journey`,
-  `payment-knowledge-pilot`, `read-outcome`, `ui-modules`; `recovery-size` (see the result).
+  `payment-knowledge-pilot`, `read-outcome`, `ui-modules`, `rc44-wp9a-deployment-browser` (with the headless shell).
+- **Not completed: `recovery-size`.** It stopped with "Error: database or disk is full" (SQLite, errcode 13): the machine's
+  disk had 37 MB free (`df`: 100% used), not a failure of the suite. It was not run again, because it writes some
+  hundreds of MB and another agent shares the disk. `recovery-authority` (which imports `recovery-service.js`) and S3.8
+  pass; the lead's regression runs `recovery-size`.
 - Red, the same first failure as `audit/rc42/regression-2026-11-16.json` records at the baseline: `knowledge`
   ("The upstream inventory dependency can time out."), `stewardship` ("F:latency:QD-003 …"), `brain-ahead`
   ("… /\| Capacity \| Critical \|/"), `chapter-reasoning` ("These decisions do not fit in one request."),
