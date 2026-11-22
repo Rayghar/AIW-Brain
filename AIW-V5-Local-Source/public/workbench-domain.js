@@ -140,9 +140,12 @@ function applySeeding(p,raw,at,actor){if(!['off','on'].includes(raw.state))throw
 // Its history entry keeps who sent it, of what kind, whether a person reviewed it, and why.
 // rc44 (the lead's ruling Y3 of 2026-11-22): an alternative keeps who prepared each command it holds, authors[i]
 // {kind, by, account, at, session?} beside commands[i], from the commit's author as the server classified it; a revision
-// names its reviser for a command it changes or adds and keeps the preparer of one it carries as it was (the same command,
-// by digest), and its history entry keeps the list it replaced. An alternative saved before this build has no list, and a
-// command carried from one names nobody (null). merged(result, command, index): the server's stamping of what each command
+// names its reviser for a command it changes or adds and keeps the preparer of one it carries as it was, as stored or as
+// rebased onto the working design (the editor sends the rebased commands: ruling Z3), each stored command matched once by
+// digest; a command that differs from both is the reviser's, and names the kind of whoever prepared the command it
+// replaces (the same type and record, at its place first) as `from`, as settle names the words a person's write started
+// from: a revised draft by Sol is still disclosed as from Sol's draft. Its history entry keeps the list it replaced. An
+// alternative saved before this build has no list, and a command carried from one names nobody (null). merged(result, command, index): the server's stamping of what each command
 // of a merge wrote (provenance.js mergeStamper), called after each; merged.by(index), the account that prepared the
 // command when the alternative names it, is the domain's actor for it, as in a direct write (ruling Z1: the record's actor
 // and history name the preparer; the merger is named on the stamp and on the alternative's acceptance). Without an
@@ -172,7 +175,8 @@ export function applyWorkbenchCommand(input,command,at,actor,{diagramNodes=null,
   const r=rebaseWorkingAlternative(p,a);if(a.basis!==workingBasis(p)&&raw.basisStamp!==r.stamp)throw Error('The working design changed. Review the rebased alternative before revising it.');
   for(const f of r.conflicts){const choice=raw.resolutions?.[f.index+':'+f.field],old=a.commands[f.index],next=raw.commands?.find(c=>c.type===old.type&&c.payload?.id===old.payload?.id&&c.payload?.alternativeId===old.payload?.alternativeId&&c.payload?.option?.id===old.payload?.option?.id);if(!next&&choice==='remove')continue;if(!['current','proposed'].includes(choice)||f.field==='record'||(choice==='current'&&digest(readPath(next?.payload,f.field)??null)!==digest(f.current??null)))throw Error('Resolve every overlapping field explicitly before saving this revision.');}
   const q=previewScenarioAlternative(p,raw.commands,raw.scenario===undefined?a.scenario:raw.scenario);if(q.stamp!==raw.stamp||raw.reviewed!==true||!text(raw.title,180)||!text(raw.reason))throw Error('Review this revised alternative and explain the change.');
-  const old=(a.commands||[]).map((c,i)=>[digest(c),a.authors?.[i]||null]),authors=author&&raw.commands.map(c=>{const i=old.findIndex(([x])=>x===digest(c));return i<0?preparedBy(author,at):old.splice(i,1)[0][1];});
+  const key=c=>digest([c?.type,c?.payload?.id,c?.payload?.alternativeId,c?.payload?.option?.id]),old=(a.commands||[]).map((c,i)=>({i,d:[digest(c),digest(r.commands[i])],k:key(c),x:a.authors?.[i]||null})),take=f=>{const j=old.findIndex(f);return j<0?null:old.splice(j,1)[0];};
+  const kept=raw.commands.map(c=>take(o=>o.d.includes(digest(c)))),authors=author&&raw.commands.map((c,i)=>{if(kept[i])return kept[i].x;const e=preparedBy(author,at),w=(take(o=>o.i===i&&o.k===key(c))||take(o=>o.k===key(c)))?.x,from=w&&(w.kind!==e.kind?w.kind:w.from);return from?{...e,from}:e;});
   a.history??=[];a.history.push({revision:a.revision,title:a.title,reason:a.reason,commands:a.commands,targets:a.targets,basis:a.basis,scenario:a.scenario||null,at:a.at,actor:a.actor,...(a.authors?{authors:a.authors}:{})});if(authors)a.authors=authors;else delete a.authors;a.commands=structuredClone(raw.commands);a.targets=raw.commands.map(c=>structuredClone(targetSnapshot(p,c)));a.basis=q.basis;a.scenario=q.scenario;a.title=text(raw.title,180);a.reason=text(raw.reason);a.revision++;a.at=at;a.actor=actor;
  }else if(command.type==='workspace.merge'){
   const a=m.alternatives.find(a=>a.id===raw.id);if(!a||a.status!=='draft')throw Error('Choose a draft alternative.');const r=rebaseWorkingAlternative(p,a);if(raw.stamp!==r.stamp)throw Error('The alternative or current design changed. Compare again.');

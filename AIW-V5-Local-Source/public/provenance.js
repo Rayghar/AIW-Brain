@@ -470,7 +470,8 @@ export function stampTracked(was,now,author,at){
 // design packages hold), and as reviewed by the person who merged it (provenance.reviewed {by, at, how: 'merged'}): the
 // merge is their reviewed step. The author stamp names the merger too (mergedBy), so that while the merged words stand
 // the second-person rule refuses both (design-extension-boundary.js); a later change of what the record says is stamped
-// as any save is. A proposal a merge makes is stamped by nobody, as any proposal (settle): a person keeps it. An
+// as any save is; a reviser's command names whose draft it started from (from: ruling Z3), which the stamp keeps. A
+// proposal a merge makes is stamped by nobody, as any proposal (settle): a person keeps it. An
 // alternative that names nobody for a command (saved before this build) merges as before: null, and no stamp is
 // invented. No date decides it (ruling Z2): a recovery import moves every list aside (recovery-service.js
 // neutraliseImportedAuthority, importedAuthors) and a copy from a template keeps no alternative (project-lifecycle.js), so
@@ -491,7 +492,7 @@ export function mergeStamper(prior,command,merger,at,{fourEyes=false,collections
   for(const path of paths){const old=new Map(listAt(before,path).map(r=>[path===NARRATIVE?'':r?.id,r]));for(const r of listAt(next,path)){
    if(!plain(r))continue;const was=old.get(path===NARRATIVE?'':r.id),s=stampOf(r),v=plain(r.provenance?.reviewed)?r.provenance.reviewed:null,same=(x,y)=>JSON.stringify(x??null)===JSON.stringify(y??null);
    const wrote=!!s&&s.at===at&&!same(s,stampOf(was)),kept=!wrote&&!!v&&v.at===at&&!same(v,was?.provenance?.reviewed);if(!wrote&&!kept)continue;
-   const pv={...r.provenance};if(wrote){pv.author={...s,mergedBy:merger.id||null};if(reviewer)pv.reviewed={by:reviewer,at,how:'merged'};}else pv.reviewed={...v,mergedBy:merger.id||null};r.provenance=tidyProvenance(pv);
+   const pv={...r.provenance};if(wrote){pv.author={...s,...(x.from?{from:x.from}:{}),mergedBy:merger.id||null};if(reviewer)pv.reviewed={by:reviewer,at,how:'merged'};}else pv.reviewed={...v,mergedBy:merger.id||null};r.provenance=tidyProvenance(pv);
   }}
   before=snap(next);
  };

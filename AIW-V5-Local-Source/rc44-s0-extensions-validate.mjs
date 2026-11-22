@@ -1339,6 +1339,45 @@ await block('Z2 an import forges no preparer', async () => {
   pass('Z2: a recovery import moves each alternative\'s list of preparers, and its history\'s, aside as importedAuthors, with or without finalReview: future-dated authors naming a third person, an agent account\'s entry relabelled as a person\'s and a preparer relabelled who then takes the second person\'s step (refused in the words for a record no person stands behind) merge stamping nothing as anyone\'s; an alternative saved here after the restore is stamped as its preparer\'s');
 });
 
+// Z3. A revision keeps a preparer through a rebase: the editor sends the rebased commands (public/alternative-editor.js).
+await block('Z3 a revision keeps a preparer through a rebase', async () => {
+  need();
+  const k = await mergeKit(), {d, ok, send, stage, merge, stamps} = k, decision = id => d().decisions.records.find(x => x.id === id), list3 = a => a.authors.map(x => [x.kind, x.by, x.account]);
+  const revise = async (a, commands, as, title = a.title + ' (revised)') => { await k.h.read(as); const x = d().workbench.alternatives.find(y => y.id === a.id), r = rebaseWorkingAlternative(d(), x);
+    ok(await send('workspace.revise-alternative', {id: x.id, revision: x.revision, commands: commands(r, x), stamp: previewScenarioAlternative(d(), commands(r, x), x.scenario).stamp, basisStamp: r.stamp, resolutions: {}, reviewed: true, title, reason: 'Revised by a person.'}, as), 'revised'); return d().workbench.alternatives.find(y => y.id === a.id); };
+  try {
+    // the reviewer's case: A writes a decision; the agent account stages a redraft of it; C changes its owner directly;
+    // A revises the alternative as the editor sends it (the rebased commands, only the title changed, nothing to resolve)
+    ok(await send('decision.save', {question: 'Which queue holds the retries?', owner: 'Payments team'}, A)); const target = d().decisions.records.at(-1).id;
+    const a = await stage([{type: 'decision.save', payload: {id: target, question: 'Which queue holds the retries, as the agent account redrafted it?', owner: 'Payments team'}}], AGENT);
+    ok(await send('decision.save', {id: target, owner: 'Platform team'}, C));
+    { const r = rebaseWorkingAlternative(d(), d().workbench.alternatives.find(x => x.id === a.id)); assert.equal(r.conflicts.length, 0); assert.notDeepEqual(r.commands[0], a.commands[0], 'the rebased command carries C\'s owner'); }
+    const b = await revise(a, r => structuredClone(r.commands), A);
+    assert.deepEqual(list3(b), [['sol-draft', AGENT, 'agent']], 'a command carried as rebased keeps its preparer: ' + JSON.stringify(b.authors));
+    await merge(a.id, B);
+    assert.deepEqual([decision(target).question, decision(target).owner, ...stamps(decision(target))], ['Which queue holds the retries, as the agent account redrafted it?', 'Platform team', 'sol-draft', AGENT, B, B, 'merged'], 'the agent\'s words stay the agent\'s');
+    // each stored command is matched once: two the agent prepared alike, and a third alike that the reviser adds
+    { const same = {type: 'synthetic.save', payload: {title: 'Prepared alike'}}, x = await stage([same, same], AGENT), y = await revise(x, () => [same, same, same], C);
+      assert.deepEqual(list3(y), [['sol-draft', AGENT, 'agent'], ['sol-draft', AGENT, 'agent'], ['person', C, 'person']], 'the third is the reviser\'s'); }
+    // a command that differs from both is the reviser's, and says whose draft it started from, as settle says of a direct edit
+    // (a command that names no record pairs with a stored one of its type that nothing matched: a new one has none left)
+    { const x = await stage([{type: 'synthetic.save', payload: {title: 'Drafted by Sol in A\'s session'}}], A, {authorKind: 'sol-draft'});
+      const y = await revise(x, () => [{type: 'synthetic.save', payload: {title: 'Drafted by Sol, rewritten by C'}}, {type: 'synthetic.save', payload: {title: 'Added by C'}}], C);
+      assert.deepEqual(y.authors.map(e => [e.kind, e.by, e.from]), [['person', C, 'sol-draft'], ['person', C, undefined]], 'the rewrite names Sol\'s draft as where it started; what C added names none');
+      await merge(x.id, B); const [rewritten, added] = d().synthetic.records.slice(-2);
+      assert.deepEqual([rewritten.provenance.author.from, authorship(rewritten).kind, authorship(rewritten).from], ['sol-draft', 'person', 'sol-draft'], 'the merged record is C\'s, from Sol\'s draft: ' + JSON.stringify(rewritten.provenance));
+      assert.deepEqual([added.provenance.author.from, authorship(added).from], [undefined, null]); }
+    // and the reviewer's case with a change: A rewrites the agent's redraft, so the merged decision is A's, from Sol's draft
+    { ok(await send('decision.save', {question: 'Which store keeps the drafts?', owner: 'Payments team'}, A)); const t2 = d().decisions.records.at(-1).id;
+      const x = await stage([{type: 'decision.save', payload: {id: t2, question: 'Which store keeps the drafts, as the agent account redrafted it?', owner: 'Payments team'}}], AGENT);
+      ok(await send('decision.save', {id: t2, owner: 'Platform team'}, C));
+      const y = await revise(x, r => { const c = structuredClone(r.commands); c[0].payload.question = 'Which store keeps the drafts, as A rewrote the agent\'s redraft?'; return c; }, A);
+      assert.deepEqual(y.authors.map(e => [e.kind, e.by, e.from]), [['person', A, 'sol-draft']]); await merge(x.id, B);
+      assert.deepEqual([...stamps(decision(t2)), decision(t2).provenance.author.from], ['person', A, B, B, 'merged', 'sol-draft']); }
+  } finally { k.h.close(); }
+  pass('Z3: a revision keeps the preparer of a command it carries as stored or as rebased (the editor\'s payload after another person\'s direct edit of the target), each stored command matched once; a command that differs from both is the reviser\'s and names the earlier preparer\'s kind as from, which the merged record keeps (a revised draft by Sol is still disclosed as from Sol\'s draft)');
+});
+
 // ---------------------------------------------------------------- should-fix 3, 6, 11 and ruling D7.5: the start check
 await block('SF start check', () => {
   need();
