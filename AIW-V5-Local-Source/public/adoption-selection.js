@@ -190,7 +190,8 @@ const failsOf=(p,d,a)=>a?candidateEligibility(p,d,a).rows.filter(r=>r.state==='f
 // candidate; an error while a choice stands that no second person confirmed (ruling Q4); and an error, in the built-in
 // words, while the chosen candidate reads ineligible, whatever the decision's drivers name (ruling U1: the selection's
 // row is the authority for a hard constraint, and a constraint that reaches the selection is read whether or not the
-// decision names it).
+// decision names it). That error is hard, in the one non-waivable class the built-in 'breaks' belongs to (ruling V2,
+// with A1, D11 and M3): review-domain.js nonWaivable reads it, so no waiver treats it.
 export function selectionFindings(p){
  const out=[],add=(code,d,title,detail,extra={})=>out.push({id:code+':'+d.id,code,decisionId:d.id,title,detail,level:'error',...extra});
  for(const d of list(p?.decisions?.records)){
@@ -200,7 +201,7 @@ export function selectionFindings(p){
   // finding the guided path got through its concern adoption (S1, adoption-definition-withdrawn), on the decision
   const ca=s.choice&&list(d.alternatives).find(a=>a.id===s.choice.alternativeId&&a.candidate),gone=ca&&standingOf(p,d,ca.candidate),fails=failsOf(p,d,ca);
   if(gone)add('selection-withdrawn',d,'Review the knowledge the selection rests on',ca.title+': '+gone+' Choose again, or review it with the knowledge steward, before '+d.id+' is accepted or approved.',{alternativeId:ca.id});
-  if(fails.length)add('selection-breaks',d,'The working choice breaks a hard constraint',ca.title+' breaks '+fails.join(', ')+'. Choose an alternative that meets '+(fails.length===1?'it':'them')+', or change the constraint in Chapter 1 and its driver in Chapter 2.',{alternativeId:ca.id,driverIds:fails});
+  if(fails.length)add('selection-breaks',d,'The working choice breaks a hard constraint',ca.title+' breaks '+fails.join(', ')+'. Choose an alternative that meets '+(fails.length===1?'it':'them')+', or change the constraint in Chapter 1 and its driver in Chapter 2.',{alternativeId:ca.id,driverIds:fails,hard:true});
   if(s.choice&&!confirmStands(p,d)){const who=confirmSubject(p,d).history.map(x=>x.actor);add('selection-confirm',d,'A second person confirms the selection',(s.confirm?'The confirm of '+d.id+' no longer covers what the selection says. ':'')+'Before '+d.id+' is accepted, a signed-in person who is not '+who.join(' or ')+' (the chooser and the judges of the chosen candidate\'s rows) confirms the selection.');}
   if((d.selectedAlternativeId||null)!==(s.choice?.alternativeId||null)||chosen&&!chosen.candidate)add('selection-choice',d,'The working choice is not the selection\'s',(chosen?chosen.title+(chosen.candidate?' is the working choice in Chapter 3, and the selection chose '+(list(d.alternatives).find(a=>a.id===s.choice?.alternativeId)?.title||'nothing'):' is no candidate of the selection'):'Chapter 3 holds no working choice, and the selection chose one')+'. Choose through the selection: its choice is the decision\'s.',{alternativeId:d.selectedAlternativeId||null});
  }

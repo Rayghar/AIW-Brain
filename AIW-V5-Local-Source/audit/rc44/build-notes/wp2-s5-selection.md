@@ -806,4 +806,12 @@ fail on the head it started from, then the change; a WIP commit after each item.
   anything. And the redraw dropped the dialog's error line (`[data-error]`, which `workbench-ui.js` `modal`'s `error`
   writes into), so a refusal after a first step could not be shown (`n` null in `dialog.error`); the redraw now keeps that
   line, cleared once a step is taken. The U3 gate in `selection.candidate` is unchanged (V1 keeps it as strict as it was).
-- **In progress:** item 3 (V2).
+- **Done:** item 3 (V2). `S5 U1 hard constraint` extended on the verifier's hand-made document (drivers that no longer
+  name QD-008, so only `selection-breaks` stands): `nonWaivable` reads the package's error; `treatmentsFor` offers "Fix
+  before review" and "Carry as action" only (the dialogs of `review-ui.js` and `app.js` read it); each of the three waivers
+  is refused in the words of ruling A1 ("“The working choice breaks a hard constraint” cannot be waived: change the design.
+  Until then, fix it before review or carry it as an action."), for the finding and for a treatment of its cause; the
+  finding blocks the review, and "Fix before review" is taken and keeps it a blocker. It failed at 3d0b43d
+  (`nonWaivable` answered null). The change: `selection-breaks` carries `hard: true` (`public/adoption-selection.js`
+  selectionFindings, off the route, 0 route bytes); one class, one reader (A1, D11, M3).
+- **In progress:** item 4 (V4).
