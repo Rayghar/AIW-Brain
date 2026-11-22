@@ -15,23 +15,25 @@
 // reads unknown is named unproven by the person, row by row (a box of its own, none ticked: ruling Q4). Once chosen, a
 // second person confirms the selection, and a person other than the chooser may judge a row named unproven; the chosen
 // profile, library entry or archetype is then saved through the reviewed component form. The options of a released concern each
-// take a note on every released criterion, checked here before anything is sent; a selection of them partly started offers each
+// take a note on every released criterion, checked here before anything is sent (not blank, within the text limit: rulings V1, W3); a selection of them partly started offers each
 // option not yet compared, with its note fields (ruling V1). Every step is a command of the selection (adoption-selection.js); nothing here writes,
 // weighs or orders a candidate, and it works with no provider configured. The library chooser
 // (component-library-ui.js) loads the comparison tools' entry by a dynamic import and opens it through the hook below
 // (window.aiwSelection), with its own dialog helper, so no second lazy entry holds it and no workbench module imports a
 // module of the package (rc44-s0-extensions-validate.mjs tells a package's modules by who imports them).
 import {esc} from './html-escape.js';
-import {selectionReading,selectableProfiles,confirmStands} from './adoption-selection.js';
+import {selectionReading,selectableProfiles,confirmStands,SELECTION_LIMITS} from './adoption-selection.js';
 import {releasedDesignConcern} from './domain-knowledge.js';
 const list=v=>Array.isArray(v)?v:[];
 const STATE={pass:'pass',fail:'fail',unknown:'unknown'},KIND={profile:'Profile',library:'Library entry',archetype:'Catalogue archetype',existing:'Existing component',build:'Build',buy:'Buy',option:'Released option'};
 const btn=(action,label,attrs='',cls='btn')=>`<button type="button" class="${cls}" data-sel-action="${action}" ${attrs}>${esc(label)}</button>`;
 const decisionOf=(p,id)=>list(p?.decisions?.records).find(d=>d.id===id)||null;
 // (ruling V1) the note fields of an option, one per released criterion, and the view's check of every note before it sends anything: an
-// option is compared once it is assessed on every released criterion (selection.candidate's gate, ruling U3), so a blank note writes nothing
+// option is compared once it is assessed on every released criterion (selection.candidate's gate, ruling U3), so a blank note writes nothing;
+// (ruling W3) nor does a note over the server's text limit, refused here naming the option and the criterion
 const noteFields=(c,o)=>c.criteria.map(k=>`<label class="brain-field"><span>${esc(o.title+' · '+k.label+': '+k.question)}</span><textarea data-sel-note="${esc(o.id+'|'+k.id)}" rows="2"></textarea></label>`).join('');
-const assessed=(c,options,note)=>{const open=options.map(o=>{const x=c.criteria.filter(k=>!String(note(o.id,k.id)).trim()).map(k=>k.label);return x.length?o.title+' · '+x.join(', '):'';}).filter(Boolean);if(open.length)throw Error('Assess every released approach before it is compared: '+open.join('; ')+'.');};
+const assessed=(c,options,note)=>{const at=f=>options.map(o=>{const x=c.criteria.filter(k=>f(String(note(o.id,k.id)))).map(k=>k.label);return x.length?o.title+' · '+x.join(', '):'';}).filter(Boolean),open=at(v=>!v.trim()),long=at(v=>v.length>SELECTION_LIMITS.text);
+ const say=[open.length?'Assess every released approach before it is compared: '+open.join('; ')+'.':'',long.length?'Record each criterion\'s note as text of at most '+SELECTION_LIMITS.text+' characters: '+long.join('; ')+'.':''].filter(Boolean);if(say.length)throw Error(say.join(' '));};
 // The selection view of one decision, or the start of one for a responsibility.
 export function selectionView(p,{decisionId='',responsibilityId='',concernId='',driverId=''}={}){
  const d=decisionOf(p,decisionId),r=selectionReading(p,d);
