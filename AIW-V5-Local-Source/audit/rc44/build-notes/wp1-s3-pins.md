@@ -12,8 +12,9 @@ Resumable: read this file and `git log` first. Suite: `npm run test:rc44-wp1-kno
 
 - **Done:** every item below, each case written first (commit `8308a3b`, all 19 red on `c709ae3`); S3.20 added later and
   seen red by mutation. The final commit is on the branch.
-- **In progress:** the fix-up of the adversarial review (rulings X1 to X5), on `rc44/wp1-s3-pins-fix`; see "Fix-up" below.
-- **Next:** the fix-up's items in order (0 merge, 1 X1, 2 X2, 3 X3, 4 X4, 5 X5, 6 notes, size and suites), then the lead.
+- **Fix-up:** done on `rc44/wp1-s3-pins-fix` (rulings X1 to X5, items 0 to 6, each committed); see "Fix-up" below.
+- **In progress:** nothing.
+- **Next:** the verifier of the fix-up, then the lead's merge.
 
 ## What was built, case by case (`rc44-wp1-cases-pins.mjs`)
 
@@ -46,7 +47,7 @@ Resumable: read this file and `git log` first. Suite: `npm run test:rc44-wp1-kno
 - `objectTypes`: `concept` (Knowledge concept, Chapter 11, level intent, prefix KU); `records`: each pin that is active
   or that an active link names, as a `concept` object, and each active link as a relation `informs` from the pin to the
   record, asked `has(id)` first (J2). No layer, no hop: no trail moves (S3.7).
-- `checks: {11: conceptLinkFindings}`: one finding per active link whose pin is not current, id `knowledge:<link id>`,
+- `checks: {11: conceptLinkFindings}` (held back until S5 by the fix-up, ruling X5 a: the reader stays): one finding per active link whose pin is not current, id `knowledge:<link id>`,
   chapter 11, chapterTitle "Knowledge support", level warning, objectId the record. It reads the stored currency.
 - `commands` (server): `knowledge.concept-pin`, `-link`, `-unlink`, `-unpin`, `-migration-confirm` (`person`),
   `knowledge.concept-migration` (anyone: a proposal), `knowledge.concept-repin` (`second`, projection: the proposal and
@@ -184,6 +185,8 @@ Route bytes, module by module: the stub's `needs` +26, KINDS (B10) +60, `knowled
    a document with pins gain one object a pin.
 
 ## Contracts for later slices, as they now are
+
+(As built by the slice; the fix-up changed some of them: see "Contracts changed by the fix-up" at the end.)
 
 - `conceptReceipt(p, conceptId, releaseId)` -> `{kind:'governed-concept', conceptId, releaseId, releaseHash, version,
   conceptHash, forms:[{type, claimId, claimHash}], organizationId?, scoring:false}`; `conceptReceiptCurrent(p, r)`.
@@ -400,3 +403,114 @@ red before with, the change.
   and `.library`, `.pinCurrency`, `.organizationNotices` bookkeeping, so they leave the design source), and no released
   document does: no document of rc.10.73.42 or earlier holds those keys (S3.17 reads the three references and the
   review-list document as at 94dbd4f).
+
+### Item 6: the line-by-line account, size, suites
+
+One line per must-fix, should-fix, design concern and ruling (cases in `rc44-wp1-cases-pins.mjs` unless named).
+
+| Review item | Ruling | Done, with its case |
+|---|---|---|
+| must-fix 1: an agent account takes the organisation's knowledge steps | X1 | done: S3.21 (route: publish, withdraw, pin refused for bot; a person's taken; `publishRefusal` reads the real kind) |
+| must-fix 2: publication does not check what the library holds now | X2 | done: S3.22 (withdrawn by id, retired concept, retired row; nothing signed) |
+| must-fix 3: the one-alias rule misses organisation rows at verification; two functions | X3 | done: S3.23 (reverse order at the verification and the edit door), S3.15 kept; `organizationAliasRefusal` retired into `oneAlias` |
+| should-fix 1: recovery keeps the notices | X4 | done: S3.8 extended |
+| should-fix 2: a withdrawn successor is offered as newer | X4 | done: S3.24 (both branches, and the next successor that stands) |
+| should-fix 3: the stored impact names pins only for the concept's id | X4 | done: S3.25 (release, form claims, source; `pinRests`) |
+| should-fix 4: the reading takes the identity from the register | X4, B10 | done: S3.26 |
+| should-fix 5: the history panel drops the package's steps | X4 | done: S3.27 (the panel reads the activity; `packageStep`) |
+| should-fix 6: the successor notice follows a direct supersedes only | X4 | done: S3.28 (unpublished intermediate, a release published twice) |
+| should-fix 7: the fails-before evidence is thin | X4 | done: a mutation each for S3.4, S3.6, S3.15, S3.16, S3.19 (item 4 (g)) |
+| should-fix 8: S2.12 hard-codes the later bookings | X4 | done: `bookingsAtStart` in wp1-s2-size.json, S2.12 reads it (old -> new); S3.10 likewise in wp1-s3-size.json |
+| should-fix 9: bounds count history | X4, B8 | done: S3.29 (pins, links, migrations count what stands) |
+| concern 1: J7, the list-11 finding before its surface | X5 (a) | done: the check row held back until S5; S3.1 asserts the reader and Appendix E (old -> new) |
+| concern 2: B10 partly reached (built-in commands move a library's design stamp) | X5 (b) | recorded: the lead's at the close of wave 2, with D10 |
+| concern 3: two stored caches | X5 (c) | done as a listing: every server reader, with the known limits owned by S4 (operation-service.js once S5 registers the row; repository-transfer.js; risk 5) |
+| concern 4: `knowledge.conceptLinks` beside `knowledge.links` | X5 (d) | recorded: wp2 S2's brief confirms contract f.2 against it |
+| concern 5: the concept record is not in the release-actor rule | X5 (e) | done: S3.30 (project and organisation release) |
+| concern 6: a `concept` object in the model (risk 3) | X5 (f) | recorded: wp7's |
+| concern 7: a library's stamps move at their first read under S3 | X5 (g) | recorded for the merge evidence: development documents only, no released one |
+
+**Size (node build.mjs, dist/client-size-report.json).** Chapters route: 3,230,723 B at the start c709ae3, 3,230,831 B at
+the slice's head ada5954 (+108 B), 3,228,648 B after the merge of e96abef (item 0) and 3,228,648 B at the fix-up's head:
+the fix-up moved no route byte, S3 books 108 B (`ownBytes` 108), wp1 369 B of 660 B left, headroom 5,144 B under the
+unchanged cap 3,233,792 B. Projects route 508,269 B. Scripts 148 (gate 148). Buckets 52 / 51 / 45 (under 10 KB at its
+ceiling). Stylesheet 901,873 B. No violation. Opens with records (D10): route + 147,292 B in 2 scripts (3,375,940 B),
+458 B less than the merged tree before the fix-up (route + 147,750 B): knowledge-pins.js 1,976 -> 769 B (the finding not
+registered in the browser), knowledge-package.js 365 -> 448 B, knowledge-workspace-ui.js 48,645 -> 49,311 B.
+`audit/rc44/evidence/wp1-s3-size.json` keeps `base` and `slice` as measured on the slice's own tree and gains
+`bookingsAtStart` (c709ae3) and `atMerge` (this head); S0's block "O1 the bookings add up" passes on this build
+(-1,192 = 1,649 of the other packages + 108 of S3's - 2,949 of the shared pool).
+
+**Replaced assertions of this fix-up** (each recorded where it stands, at least as strict):
+- S2.4 (ruling S8 block, X3): b's verification while the release holding a's verified copy is active, accepted -> refused
+  naming a by project and row id; the pair then made with that release deactivated during b's verification.
+- S2.12 (X4): the live bookings less a list of later ones -> the bookings recorded at S2's start, each still on the books.
+- S2.10 and S3.17 (X5 a): the package's parts with `checks` -> without.
+- S3.1, S3.5, S3.6, S3.19 (X5 a): the finding read in the review's list -> read at the package's reader, the review's list
+  asserted empty; S3.1 also asserts Appendix E.
+- S3.10 (as X4 for S2.12): the equalities over every booking -> over `bookingsAtStart`, plus the head's route less every
+  booking is S3's; the measure mode compares the build with `atMerge` instead of `slice`.
+- Of S3's own first build, S3.21's and S3.24's empty review list -> the empty package reader (written in this fix-up).
+
+**Deviations and my view.**
+- X1's words are worker.js's for the organisation's review and releases ("… does not review or release library
+  entries. A person signs in to do that."), as ruled, for a pin and a withdrawal too. They fit a pin less well than a
+  publication; I kept them because the ruling names them. `publishRefusal` has no default account any more and refuses
+  anything but a person's first: stricter than ruled, so that a later caller who forgets the kind fails closed.
+- X3 reads the project's own active releases' rows too, as ruled. This is stricter than the resolver needs (a row of an
+  own release resolves only while the register holds it as copied), and it is why S2.4's S8 block had to make its pair by
+  deactivating the release. I agree with it: it fails closed and makes the rule one rule.
+- X4 (b): beyond the ruling, a withdrawn successor is passed over to the next one that stands (own chain, at most 31
+  steps; the organisation's notices, at most 8 hops), so that a withdrawal of v2 does not hide v3.
+- X4 (f): `from.supersedes` is the one id as before when one organisation release is superseded and the list of ids when
+  several are; the refresh reads either. A design project's pinned release keeps its signed bytes either way.
+- X5 (e): the release-actor rule reads the concept record's author and every editor (as the rows' rule does), not only
+  the last editor; it is asked after the forms and rows, so S1.11's and S3.13's words for a form's author stand. It applies
+  to every release of a concept's forms, with or without `conceptIds`.
+
+**What later slices must know.**
+- S4: `oneAlias(document, rows)` is the one alias rule for an import that makes rows read verified; `admit(document,
+  conceptId, row)` the bound. The two caches' readers (X5 c) are listed above; operation-service.js must refresh first
+  once the list-11 row returns.
+- S5: register the check row again (`checks:{11:conceptLinkFindings}` in knowledge-package.js) with the concept view that
+  offers relink, migration, repin and unpin; S3.1's held-back assertion then turns around, recorded old -> new.
+- wp2 S2: confirm contract f.2 against `knowledge.conceptLinks` (X5 d). wp7: the `concept` object (X5 f).
+- The lead: B10's remaining part (X5 b); the merge evidence's sentence on stamps (X5 g); S2.12 and S3.10 now need no edit
+  at a merge.
+
+**Suites (on the head, after the last product change).**
+- The four rc44 suites: `rc44-s0-extensions` green (every block, "O1 the bookings add up" on the merged build included),
+  `rc44-wp1-knowledge` green (87 cases: S1 34, S2 23, S3 30; S4 and S5 pending; S3.10 also green with
+  `AIW_RC44_WP1_MEASURE=1`; S2.12 fails in that mode only, which is valid at S2's own commit only, as before),
+  `rc44-wp2-adoption` green, `rc44-wp9a-deployment` green.
+- Named by the task: `architecture-intelligence` green; `recovery-size` green (359 s, TMPDIR in the worktree's scratch);
+  `design-concern` red at design-concern-validate.mjs:199 (QD-002's released consequence), the runner's classification
+  "red at l.199 after wp2 S5's U3": the same output, line for line, on the merged tree before the fix-up (138382f, built
+  from an archive of it in the worktree's scratch), so not this fix-up's.
+- Organisation and recovery: `recovery-authority`, `enterprise-references`, `rc42-g2-library`, `component-library`,
+  `provenance`, `reconciliation`, `ui-modules`, `knowledge-retrieval`, `hosted-knowledge` green.
+- Importers of the changed files (worker.js aside): `intake`, `knowledge-coverage`, `operations`, `rc42-g3a`, `rc42-g3b`,
+  `repository-sync`, `service-routes`, `knowledge-repository`, `repository-transfer`, `rc42-g1-tech-approval`, `rc42-g7`,
+  `rc42-g4-trace-kernel`, `knowledge-structure`, `architecture-knowledge-unit`, `knowledge-boundaries`,
+  `repository-service`, `sdd-architecture`, `sdd-content` green. `brain-ahead` red with its baseline first failure
+  ("/\| Capacity \| Critical \|/", in the runner's list).
+- worker.js is imported by 113 suites; its change is one list of the organisation route's agent gate, so the suites that
+  reach that route were run (above), not the 113 (the full regression is the lead's).
+- `node check-syntax.mjs`: 945 modules. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, new 0.
+  `node build.mjs`: no violation; chapters route 3,228,648 B; 148 scripts; buckets 52 / 51 / 45.
+- Not run: the browser suites (red on this machine at the baseline), the full regression (the lead's).
+- Scratch: the worktree's `.aiw-local` stores of the suite runs and the mutation helper were removed at the end.
+
+### Contracts changed by the fix-up
+
+- `publishRefusal(p, releaseId, actor, account)`: the account kind is required (organization-service.js passes
+  `accountKind(env, actor)`, and worker.js refuses an agent account before it); it refuses anything but a person's account, then the forms, rows and concept records'
+  authors (P1, X5 e), then what the library does not stand behind (X2).
+- `oneAlias(p, rows, release = null)` (knowledge-concept-commands.js): one row or a list; with `release` (an organisation
+  release being pinned) its rows are known by `release.from.projectId`. Throws in words; `organizationAliasRefusal` is gone.
+- `pinRests(p, pin)` -> `{release, org, part, sources, ids}` (knowledge-concepts.js): what a withdrawal reaches a pin by.
+- `packageStep(type)` (knowledge-package.js): whether a command type is one of the package's quiet steps.
+- `renderKnowledgeReleases(p, steps = null)` (knowledge-workspace-ui.js): `steps` are /api/activity events.
+- An organisation knowledge release's `from.supersedes`: a release id, or a list of ids when it supersedes several.
+- The package `p10-knowledge` states no `checks` until S5 (X5 a); `conceptLinkFindings` stays exported as its reader.
+- The bounds: 200 active pins, 2,000 active links, 200 open migrations a project.
