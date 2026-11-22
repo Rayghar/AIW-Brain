@@ -1,0 +1,1821 @@
+{
+ "schema": "aiw.rc44.merge-evidence.v1",
+ "release": "AIW v0.10.0-rc.10.73.44 (working number, not confirmed by the owner)",
+ "date": "2026-11-22",
+ "what": "Merge of releases, pins, currency and findings (wp1 S3) into the development line, and the full regression that closes wave 2 (wp9a slice 1, wp1 S2, wp2 S5, wp1 S3)",
+ "mergeCommit": "20c768e5a31b23288658b74550c9ad365be8d754",
+ "integrationCommit": "c3226be (the full regression ran at 53ce4cf; c3226be adds only settings.js and .env.example)",
+ "slices": [
+  {
+   "id": "wp1-s3-pins",
+   "branch": "rc44/wp1-s3-lead",
+   "head": "53ce4cf",
+   "suite": "rc44-wp1-knowledge-validate.mjs",
+   "result": "87 cases passed, 2 pending (S4, S5) on the merged tree",
+   "reviews": "adversarial review (rulings X), a fix-up with its verifier (19 of 20), the lead's follow-up and a narrow review (approved)"
+  }
+ ],
+ "wave2": {
+  "slices": [
+   "wp9a slice 1 (typed deployment topology)",
+   "wp1 S2 (crosswalk and one identity)",
+   "wp2 S5 (component selection)",
+   "wp1 S3 (releases, pins, currency, findings)"
+  ],
+  "open": [
+   "S0-D12, who wrote what a merge writes (rulings Y3 and Z): in its fix-up round, merged when verified"
+  ],
+  "decided": [
+   "D10: a shared first-draw reader entry, slice S0-D10 first in wave 3 (ruling Y1)",
+   "B10, the rest: slice S0-B10 in wave 3 (ruling Y2)",
+   "imported stamps decided by date: slice S0-import in wave 3 (ruling Z8), a known limit until then"
+  ]
+ },
+ "rulings": "audit/rc44/RULINGS-2026-11-18.md sections X and Y (and Z for the open slice)",
+ "size": {
+  "baselineChaptersRoute": 3229840,
+  "chaptersRoute": 3228648,
+  "growth": -1192,
+  "bookings": {
+   "wp2-s1": 325,
+   "wp2-s5": 864,
+   "wp9a-s1": 342,
+   "wp1-s2": 118,
+   "wp1-s3": 108,
+   "sharedPool": 98,
+   "leadRetirementQ8": -3047
+  },
+  "cap": 3233792,
+  "headroom": 5144,
+  "scriptFiles": 148,
+  "under10k": 52,
+  "violations": [],
+  "opensWithRecords": {
+   "knowledge (knowledge workspace entry)": 147315,
+   "adoption (comparison tools entry)": "about 133,700",
+   "deployment (Chapter 10 Model view entry)": 855689,
+   "note": "bytes beyond the route a document holding the package's records loads before it is first drawn (ruling D10); ruling Y1 moves the first-draw readers to one shared entry in wave 3"
+  }
+ },
+ "syntax": "passed (945 modules)",
+ "lint": {
+  "problems": 162,
+  "baseline": 162,
+  "new": 0
+ },
+ "regression": {
+  "scope": "every test:* script of package.json (338), browser suites included, one at a time, on rc44/integration 53ce4cf",
+  "passed": 299,
+  "failed": 39,
+  "newlyRed": [
+   "test:server-hardening (fixed by c3226be, passes after it)"
+  ],
+  "notes": [
+   "the round27 and connected-architecture suites rewrite tracked screenshot and result files when they run; those changes were restored, not committed",
+   "the 22 non-browser red suites were compared line by line with the earlier merges' runs (same first line); the browser suites are classified by the rc.10.73.42 record"
+  ],
+  "suites": [
+   {
+    "script": "test:browser",
+    "status": "failed",
+    "seconds": 9,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:requirements",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "script": "test:module-model",
+    "status": "passed",
+    "seconds": 59
+   },
+   {
+    "script": "test:architecture-modules",
+    "status": "passed",
+    "seconds": 58
+   },
+   {
+    "script": "test:module-scope",
+    "status": "passed",
+    "seconds": 5
+   },
+   {
+    "script": "test:module-scope-browser",
+    "status": "passed",
+    "seconds": 111
+   },
+   {
+    "script": "test:requirements-browser",
+    "status": "passed",
+    "seconds": 59
+   },
+   {
+    "script": "test:quality",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "script": "test:rc42-g3a-risk-and-limits",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:rc42-g3a-risk-and-limits-browser",
+    "status": "passed",
+    "seconds": 7
+   },
+   {
+    "script": "test:rc42-g3c-evidence-fingerprint",
+    "status": "passed",
+    "seconds": 76
+   },
+   {
+    "script": "test:rc42-g5-runtime",
+    "status": "passed",
+    "seconds": 14
+   },
+   {
+    "script": "test:rc42-g4-trace-kernel",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "script": "test:rc44-s0-extensions",
+    "status": "passed",
+    "seconds": 88
+   },
+   {
+    "script": "test:rc44-wp9a-deployment",
+    "status": "passed",
+    "seconds": 14
+   },
+   {
+    "script": "test:rc44-wp9a-deployment-browser",
+    "status": "passed",
+    "seconds": 6
+   },
+   {
+    "script": "test:rc44-wp2-adoption",
+    "status": "passed",
+    "seconds": 128
+   },
+   {
+    "script": "test:decision-reading",
+    "status": "passed",
+    "seconds": 11
+   },
+   {
+    "script": "test:decisions",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "script": "test:logical",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:rc42-g1-tech-approval",
+    "status": "passed",
+    "seconds": 5
+   },
+   {
+    "script": "test:rc42-g2-library",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:rc42-g7-data-contracts",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "script": "test:rc42-lazy-dossier-browser",
+    "status": "passed",
+    "seconds": 7
+   },
+   {
+    "script": "test:rc42-g7-data-contracts-browser",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "script": "test:realisation",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:technology",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:technology-realisation",
+    "status": "passed",
+    "seconds": 7
+   },
+   {
+    "script": "test:interfaces",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:security",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:runtime",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:review",
+    "status": "passed",
+    "seconds": 17
+   },
+   {
+    "script": "test:workspace",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:chapter-records",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:pattern-dna",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "script": "test:design-questions",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:shell-notices",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "script": "test:projects",
+    "status": "passed",
+    "seconds": 14
+   },
+   {
+    "script": "test:rc42-g6-import",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:reference-projects",
+    "status": "passed",
+    "seconds": 40
+   },
+   {
+    "script": "test:brief-interpreter",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:journey-drafter",
+    "status": "passed",
+    "seconds": 28
+   },
+   {
+    "script": "test:journey-draft-browser",
+    "status": "passed",
+    "seconds": 313
+   },
+   {
+    "script": "test:sdd-documents-browser",
+    "status": "passed",
+    "seconds": 9
+   },
+   {
+    "script": "test:changes",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:fingerprint",
+    "status": "passed",
+    "seconds": 5
+   },
+   {
+    "script": "test:command-equivalence",
+    "status": "failed",
+    "seconds": 1,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:export-build",
+    "status": "passed",
+    "seconds": 11
+   },
+   {
+    "script": "test:journal-archive",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "script": "test:interface-impact",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:evidence",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:journey",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:model-impact",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:model-alternatives",
+    "status": "passed",
+    "seconds": 5
+   },
+   {
+    "script": "test:design-tasks",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:exchange-design",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:security-design",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "script": "test:brain",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:intelligence",
+    "status": "failed",
+    "seconds": 11,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:contextual-intelligence",
+    "status": "passed",
+    "seconds": 7
+   },
+   {
+    "script": "test:co-design",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:architecture",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:rc42-g3b-trace-and-delivery",
+    "status": "passed",
+    "seconds": 5
+   },
+   {
+    "script": "test:reads",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:persistence",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:brain-integration",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:knowledge-ingestion",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "script": "test:knowledge-second-brain",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:repository-sync",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:reversal",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:knowledge-design",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:composition",
+    "status": "passed",
+    "seconds": 14
+   },
+   {
+    "script": "test:grounding-review",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:enhancements",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:intake",
+    "status": "passed",
+    "seconds": 38
+   },
+   {
+    "script": "test:reconciliation",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:operations",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "script": "test:development",
+    "status": "passed",
+    "seconds": 10
+   },
+   {
+    "script": "test:architecture-case",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:architecture-case-scope",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:focused-case-validate",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:focused-case-browser",
+    "status": "passed",
+    "seconds": 13
+   },
+   {
+    "script": "test:payment-case-journey",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:payment-knowledge-pilot",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "script": "test:payment-case-journey-browser",
+    "status": "passed",
+    "seconds": 7
+   },
+   {
+    "script": "test:architecture-case-browser",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "script": "test:architecture-whatif",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "script": "test:architecture-whatif-browser",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "script": "test:architecture-drafting",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:drafter-groups",
+    "status": "passed",
+    "seconds": 155
+   },
+   {
+    "script": "test:connected-model",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "script": "test:investigation",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:anatomy",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "script": "test:anatomy-browser",
+    "status": "failed",
+    "seconds": 7,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:exchange",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:exchange-browser",
+    "status": "failed",
+    "seconds": 4,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:deploy",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:deploy-browser",
+    "status": "failed",
+    "seconds": 4,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:threat",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:threat-browser",
+    "status": "passed",
+    "seconds": 35
+   },
+   {
+    "script": "test:realise",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:realise-browser",
+    "status": "passed",
+    "seconds": 50
+   },
+   {
+    "script": "test:platform",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:platform-browser",
+    "status": "passed",
+    "seconds": 36
+   },
+   {
+    "script": "test:stack",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:stack-browser",
+    "status": "failed",
+    "seconds": 16,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:responsibility",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:responsibility-browser",
+    "status": "failed",
+    "seconds": 21,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:model-views",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "script": "test:reference-resolution",
+    "status": "passed",
+    "seconds": 7
+   },
+   {
+    "script": "test:reference-route-browser",
+    "status": "passed",
+    "seconds": 15
+   },
+   {
+    "script": "test:canvas-draft-browser",
+    "status": "passed",
+    "seconds": 175
+   },
+   {
+    "script": "test:model-views-browser",
+    "status": "passed",
+    "seconds": 229
+   },
+   {
+    "script": "test:notation",
+    "status": "passed",
+    "seconds": 6
+   },
+   {
+    "script": "test:notation-layout",
+    "status": "passed",
+    "seconds": 29
+   },
+   {
+    "script": "test:notation-metrics",
+    "status": "passed",
+    "seconds": 15
+   },
+   {
+    "script": "test:notation-browser",
+    "status": "passed",
+    "seconds": 237
+   },
+   {
+    "script": "test:model-canvas-refinement-browser",
+    "status": "failed",
+    "seconds": 24,
+    "classification": "red at the rc.10.73.42 baseline (its baseline field in audit/rc42/regression-2026-11-16.json: failed); browser suite, flaky on this runner"
+   },
+   {
+    "script": "test:readiness",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:validate-browser",
+    "status": "passed",
+    "seconds": 59
+   },
+   {
+    "script": "test:story",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:story-browser",
+    "status": "passed",
+    "seconds": 51
+   },
+   {
+    "script": "test:utility",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:utility-browser",
+    "status": "passed",
+    "seconds": 41
+   },
+   {
+    "script": "test:tradeoff",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "script": "test:tradeoff-browser",
+    "status": "passed",
+    "seconds": 73
+   },
+   {
+    "script": "test:wire-merge",
+    "status": "passed",
+    "seconds": 18
+   },
+   {
+    "script": "test:chapter-lines",
+    "status": "passed",
+    "seconds": 20
+   },
+   {
+    "script": "test:layers-corridors",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:layers-overview",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:design-spec",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:component-library",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:design-resources-browser",
+    "status": "passed",
+    "seconds": 33
+   },
+   {
+    "script": "test:technology-catalogue",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:technology-capability-handoff-browser",
+    "status": "passed",
+    "seconds": 13
+   },
+   {
+    "script": "test:technology-selection-ux-browser",
+    "status": "passed",
+    "seconds": 36
+   },
+   {
+    "script": "test:selection-consistency",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:technology-choice-browser",
+    "status": "passed",
+    "seconds": 16
+   },
+   {
+    "script": "test:ars",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:output-stage",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "script": "test:desk",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "script": "test:desk-browser",
+    "status": "failed",
+    "seconds": 11,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:product-choice",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:desk-fixes",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:brain-reasoning",
+    "status": "failed",
+    "seconds": 2,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:brain-reasoning-browser",
+    "status": "failed",
+    "seconds": 9,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:chapter-reasoning",
+    "status": "failed",
+    "seconds": 5,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:chapter-sol-browser",
+    "status": "failed",
+    "seconds": 7,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:stewardship",
+    "status": "failed",
+    "seconds": 3,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:stewardship-browser",
+    "status": "passed",
+    "seconds": 36
+   },
+   {
+    "script": "test:repository-service",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:knowledge-repository",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:knowledge-repository-browser",
+    "status": "passed",
+    "seconds": 32
+   },
+   {
+    "script": "test:repository-acquire",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "script": "test:brain-ahead",
+    "status": "failed",
+    "seconds": 1,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:sol-evaluation",
+    "status": "passed",
+    "seconds": 28
+   },
+   {
+    "script": "test:sol-checks",
+    "status": "failed",
+    "seconds": 3,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:sol-live-check",
+    "status": "passed",
+    "seconds": 17
+   },
+   {
+    "script": "test:sol-coverage",
+    "status": "passed",
+    "seconds": 135
+   },
+   {
+    "script": "test:sol-coverage-browser",
+    "status": "passed",
+    "seconds": 191
+   },
+   {
+    "script": "test:local-accounts",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:server-hardening",
+    "status": "failed",
+    "seconds": 12,
+    "classification": "new at this run: nine AIW_* switches the rc44 suites read were not in settings.js; documented in c3226be (merged here), after which the suite passes"
+   },
+   {
+    "script": "test:xss-browser",
+    "status": "passed",
+    "seconds": 75
+   },
+   {
+    "script": "test:sol-disclosure",
+    "status": "failed",
+    "seconds": 11,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:durability",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:knowledge",
+    "status": "failed",
+    "seconds": 1,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:knowledge-retrieval",
+    "status": "passed",
+    "seconds": 9
+   },
+   {
+    "script": "test:design-concern",
+    "status": "failed",
+    "seconds": 1,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:architecture-ui",
+    "status": "failed",
+    "seconds": 1,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:brain-governance-ui",
+    "status": "passed",
+    "seconds": 5
+   },
+   {
+    "script": "test:brain-ui",
+    "status": "passed",
+    "seconds": 11
+   },
+   {
+    "script": "test:brain-companion",
+    "status": "failed",
+    "seconds": 3,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:composition-ui",
+    "status": "failed",
+    "seconds": 1,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:design-task-ui",
+    "status": "passed",
+    "seconds": 9
+   },
+   {
+    "script": "test:exchange-task-ui",
+    "status": "passed",
+    "seconds": 7
+   },
+   {
+    "script": "test:intelligence-ui",
+    "status": "failed",
+    "seconds": 6,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:providers",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:provider-quota",
+    "status": "passed",
+    "seconds": 13
+   },
+   {
+    "script": "test:architecture-job",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:sol-architecture",
+    "status": "passed",
+    "seconds": 9
+   },
+   {
+    "script": "test:sol-sdd",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:architecture-service",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:requirement-storage",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "script": "test:architecture-model-browser",
+    "status": "passed",
+    "seconds": 14
+   },
+   {
+    "script": "test:sdd-content",
+    "status": "passed",
+    "seconds": 28
+   },
+   {
+    "script": "test:sdd-modules",
+    "status": "passed",
+    "seconds": 49
+   },
+   {
+    "script": "test:sdd-authoring-browser",
+    "status": "passed",
+    "seconds": 9
+   },
+   {
+    "script": "test:repository-transfer",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:repository-transfer-browser",
+    "status": "passed",
+    "seconds": 7
+   },
+   {
+    "script": "test:model-dossier",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:model-conformance",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:view-experience-dom",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:model-dossier-browser",
+    "status": "passed",
+    "seconds": 9
+   },
+   {
+    "script": "test:model-alternatives-ui",
+    "status": "passed",
+    "seconds": 26
+   },
+   {
+    "script": "test:security-task-ui",
+    "status": "failed",
+    "seconds": 5,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:workbench-ui",
+    "status": "passed",
+    "seconds": 5
+   },
+   {
+    "script": "test:ux-shell",
+    "status": "failed",
+    "seconds": 163,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:ui-proportion",
+    "status": "passed",
+    "seconds": 211
+   },
+   {
+    "script": "test:journey-audit",
+    "status": "failed",
+    "seconds": 1,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:theme",
+    "status": "failed",
+    "seconds": 25,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:style-tokens",
+    "status": "failed",
+    "seconds": 0,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:ui-variants",
+    "status": "failed",
+    "seconds": 18,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:bundle-browser",
+    "status": "failed",
+    "seconds": 36,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:scale-browser",
+    "status": "passed",
+    "seconds": 24
+   },
+   {
+    "script": "test:scale",
+    "status": "failed",
+    "seconds": 1242,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:size-speed",
+    "status": "passed",
+    "seconds": 29
+   },
+   {
+    "script": "test:baseline-size",
+    "status": "passed",
+    "seconds": 61
+   },
+   {
+    "script": "test:recovery-size",
+    "status": "passed",
+    "seconds": 57
+   },
+   {
+    "script": "test:scale-design",
+    "status": "passed",
+    "seconds": 12
+   },
+   {
+    "script": "test:studio-dialog-browser",
+    "status": "passed",
+    "seconds": 35
+   },
+   {
+    "script": "test:field-kit-browser",
+    "status": "passed",
+    "seconds": 26
+   },
+   {
+    "script": "test:field-spark",
+    "status": "passed",
+    "seconds": 7
+   },
+   {
+    "script": "test:field-spark-browser",
+    "status": "passed",
+    "seconds": 14
+   },
+   {
+    "script": "test:field-spark-pages",
+    "status": "passed",
+    "seconds": 20
+   },
+   {
+    "script": "test:coauthor",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:dialog",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "script": "test:ui-modules",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:recovery-authority",
+    "status": "passed",
+    "seconds": 21
+   },
+   {
+    "script": "test:retention",
+    "status": "failed",
+    "seconds": 0,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:service-routes",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:notation-code",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "script": "test:diagram-arrangement",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:brain-subject-browser",
+    "status": "passed",
+    "seconds": 97
+   },
+   {
+    "script": "test:brain-chain",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:repository-video",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:model-interpreter",
+    "status": "passed",
+    "seconds": 6
+   },
+   {
+    "script": "test:model-import-browser",
+    "status": "passed",
+    "seconds": 62
+   },
+   {
+    "script": "test:roadmap",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:roadmap-browser",
+    "status": "passed",
+    "seconds": 11
+   },
+   {
+    "script": "test:sdd-mermaid",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:sdd-architecture",
+    "status": "passed",
+    "seconds": 11
+   },
+   {
+    "script": "test:sdd-formats",
+    "status": "passed",
+    "seconds": 7
+   },
+   {
+    "script": "test:sdd-size",
+    "status": "passed",
+    "seconds": 111
+   },
+   {
+    "script": "test:sdd-layout-cache",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:figures-at-size",
+    "status": "passed",
+    "seconds": 99
+   },
+   {
+    "script": "test:figures-integrity",
+    "status": "passed",
+    "seconds": 228
+   },
+   {
+    "script": "test:figures-at-size-browser",
+    "status": "passed",
+    "seconds": 84
+   },
+   {
+    "script": "test:screens-at-size",
+    "status": "failed",
+    "seconds": 45,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:screens-at-size-model",
+    "status": "passed",
+    "seconds": 28
+   },
+   {
+    "script": "test:madr",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "script": "test:technology-icons",
+    "status": "passed",
+    "seconds": 6
+   },
+   {
+    "script": "test:notation-build-browser",
+    "status": "passed",
+    "seconds": 50
+   },
+   {
+    "script": "test:brain-tradeoffs",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "script": "test:scale-readings",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:tray",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "script": "test:resilience",
+    "status": "passed",
+    "seconds": 9
+   },
+   {
+    "script": "test:trace-narrative",
+    "status": "passed",
+    "seconds": 11
+   },
+   {
+    "script": "test:process-semantics",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "script": "test:open-fields",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "script": "test:sol-open-fields",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "script": "test:not-stated",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:seeded-proposals",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:provenance",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:review-plan",
+    "status": "passed",
+    "seconds": 33
+   },
+   {
+    "script": "test:design-links",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "script": "test:domain-lens",
+    "status": "passed",
+    "seconds": 13
+   },
+   {
+    "script": "test:driver-kinds",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:design-records",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:order-independence",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:lifecycle-browser",
+    "status": "passed",
+    "seconds": 32
+   },
+   {
+    "script": "test:chapter-header",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:round27-model",
+    "status": "failed",
+    "seconds": 1,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:model-chrome",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:model-lifecycle",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "script": "test:component-needs",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:link-pickers",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:action-undo",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:action-undo-api",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:action-undo-ui",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "script": "test:validation-confirmation",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:round27-work-browser",
+    "status": "failed",
+    "seconds": 6,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:round27-validate-browser",
+    "status": "passed",
+    "seconds": 40
+   },
+   {
+    "script": "test:work-sections",
+    "status": "passed",
+    "seconds": 23
+   },
+   {
+    "script": "test:work-glance",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:details-toggle",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:work-review-readability",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "script": "test:model-tab-refinement",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:validate-output-refinement",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:validate-output-refinement-browser",
+    "status": "passed",
+    "seconds": 35
+   },
+   {
+    "script": "test:decision-prerequisite",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:model-tab-refinement-browser",
+    "status": "failed",
+    "seconds": 55,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:model-work-routes-browser",
+    "status": "passed",
+    "seconds": 13
+   },
+   {
+    "script": "test:ground-reference-browser",
+    "status": "passed",
+    "seconds": 13
+   },
+   {
+    "script": "test:runtime-form-validation-browser",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:refinement-walkthrough",
+    "status": "passed",
+    "seconds": 940
+   },
+   {
+    "script": "test:model-history-work-route-browser",
+    "status": "passed",
+    "seconds": 7
+   },
+   {
+    "script": "test:inspector-toggle-browser",
+    "status": "passed",
+    "seconds": 16
+   },
+   {
+    "script": "test:studio-work",
+    "status": "passed",
+    "seconds": 17
+   },
+   {
+    "script": "test:studio-model",
+    "status": "passed",
+    "seconds": 33
+   },
+   {
+    "script": "test:studio-validation-output",
+    "status": "passed",
+    "seconds": 34
+   },
+   {
+    "script": "test:validation-capabilities",
+    "status": "passed",
+    "seconds": 13
+   },
+   {
+    "script": "test:runtime-assistance",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:governance-review-wording",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:driver-applicability",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:driver-design-ui",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:driver-knowledge-ui",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:driver-solution",
+    "status": "passed",
+    "seconds": 0
+   },
+   {
+    "script": "test:driver-spec-view",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:driver-product-ui",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:architecture-grounding",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:architecture-evaluation",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:deferred-case",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:deferred-intake",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:knowledge-structure",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:embedded-intelligence",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "script": "test:architecture-intelligence",
+    "status": "passed",
+    "seconds": 5
+   },
+   {
+    "script": "test:contextual-intelligence-ui",
+    "status": "failed",
+    "seconds": 4,
+    "classification": "red in the rc.10.73.42 regression record (audit/rc42/regression-2026-11-16.json)"
+   },
+   {
+    "script": "test:architecture-operation-continuation",
+    "status": "passed",
+    "seconds": 60
+   },
+   {
+    "script": "test:architecture-obligations",
+    "status": "passed",
+    "seconds": 11
+   },
+   {
+    "script": "test:execution-composition",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:sol-current-evaluation",
+    "status": "passed",
+    "seconds": 26
+   },
+   {
+    "script": "test:native-editor-loading",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:architecture-arrangement",
+    "status": "passed",
+    "seconds": 9
+   },
+   {
+    "script": "test:coordinated-options",
+    "status": "passed",
+    "seconds": 57
+   },
+   {
+    "script": "test:caller-resilience",
+    "status": "passed",
+    "seconds": 7
+   },
+   {
+    "script": "test:outcome-contracts",
+    "status": "passed",
+    "seconds": 23
+   },
+   {
+    "script": "test:model-journey-continuity",
+    "status": "passed",
+    "seconds": 10
+   },
+   {
+    "script": "test:driver-led-journey",
+    "status": "passed",
+    "seconds": 27
+   },
+   {
+    "script": "test:read-outcomes",
+    "status": "passed",
+    "seconds": 14
+   },
+   {
+    "script": "test:diagram-export-context",
+    "status": "passed",
+    "seconds": 6
+   },
+   {
+    "script": "test:execution-journey",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "script": "test:execution-journey-ui",
+    "status": "passed",
+    "seconds": 5
+   },
+   {
+    "script": "test:architecture-scenarios",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:architecture-scenarios-ui",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:architecture-verification",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "script": "test:architecture-verification-ui",
+    "status": "passed",
+    "seconds": 4
+   },
+   {
+    "script": "test:knowledge-coverage",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:rc44-wp1-knowledge",
+    "status": "passed",
+    "seconds": 153
+   },
+   {
+    "script": "test:hosted-knowledge",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:model-reconciliation",
+    "status": "passed",
+    "seconds": 1
+   },
+   {
+    "script": "test:enterprise-references",
+    "status": "passed",
+    "seconds": 2
+   },
+   {
+    "script": "test:connected-architecture-ui",
+    "status": "passed",
+    "seconds": 3
+   },
+   {
+    "script": "test:connected-design-projections",
+    "status": "passed",
+    "seconds": 8
+   },
+   {
+    "script": "test:connected-architecture",
+    "status": "passed",
+    "seconds": 128
+   },
+   {
+    "script": "test:diagram-readability",
+    "status": "passed",
+    "seconds": 100
+   },
+   {
+    "script": "test:native-connections",
+    "status": "passed",
+    "seconds": 14
+   },
+   {
+    "script": "test:specification-reading",
+    "status": "passed",
+    "seconds": 5
+   },
+   {
+    "script": "test:specification-reasoning",
+    "status": "passed",
+    "seconds": 2
+   }
+  ]
+ },
+ "stampsMoved": "rc44 development documents with concepts, topics or a library mark take new design and evidence stamps at their first read under wp1 S3 (ruling X5 g); no released document does",
+ "knownLimits": [
+  "imported stamps are decided \"from elsewhere\" by a date comparison (ruling Z8, slice S0-import)",
+  "the merge-author slice S0-D12 is not merged yet: a record a merge writes still carries no author stamp on this line (D12)"
+ ],
+ "productionAccepted": false,
+ "externalAuthorities": {
+  "licenceCounsel": "not engaged",
+  "fourEyesKnowledgeApprover": "not assigned",
+  "independentArchitectureReview": "not started",
+  "productionAcceptanceAuthority": "none"
+ }
+}
