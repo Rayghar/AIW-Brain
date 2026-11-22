@@ -1233,9 +1233,12 @@ const BASE_OPENS = {route: 3229840, added: 833044, total: 4062884, files: 12};
 // a4c1690: 51,789 B, 49,415 B of modules, 2,374 B of lists): 168 B. The modules are pinned as before. The script's two
 // other modules moved 12 B with the package beside them (deploy-view.js +6: wp9a's own edit, L7's H15; deploy-layout.js
 // +6, a renamed identifier) and the rest of the entry's closure -2 B; they are no part of the share (notes, item 4).
+// (ruling T1, the fifth fix-up; was: topology-domain.js 20,903 B, topology.js 1,503 B and the total 22,614 B) trackPaths
+// is a map of the paths with the fields the mend changes there (topology-domain.js +34 B) and the assembly joins the
+// parts' maps (topology.js +26 B); the lists are 168 B as before, and the route is unchanged.
 const ADOPTION_OPENS = {route: 3230165, added: 833120, total: 4063285, files: 12};
 const ADOPTION_HOLDER = {bytes: 51789, modules: 49415, lists: 2374};
-const LAZY_SHARE = {modules: {'public/topology-blueprints.js': 10, 'public/topology-domain.js': 20903, 'public/topology-failures.js': 10, 'public/topology-fallback.js': 10, 'public/topology-gates.js': 10, 'public/topology.js': 1503}, lists: 168, total: 22614};
+const LAZY_SHARE = {modules: {'public/topology-blueprints.js': 10, 'public/topology-domain.js': 20937, 'public/topology-failures.js': 10, 'public/topology-fallback.js': 10, 'public/topology-gates.js': 10, 'public/topology.js': 1529}, lists: 168, total: 22674};
 await block('S1.10 the client build', async () => {
   need();
   const {bundleClient, BUDGET} = await import('./client-bundle.mjs');
@@ -1269,7 +1272,7 @@ await block('S1.10 the client build', async () => {
     const past = structuredClone(meta); past.outputs[held].bytes += LAZY_SHARE.lists - shareOf(meta).lists + 1; assert.ok(withinShare(past).some(x => /^its import and export lists grew/.test(x)), 'its own import and export lists one byte past the measure fail it');
     const grown = structuredClone(meta); grown.outputs[held].inputs['public/topology.js'].bytesInOutput += 1; grown.outputs[held].bytes += 1; assert.ok(withinShare(grown).some(x => /^the modules are/.test(x)), 'a module one byte past its pin fails it'); }
   const stub = readFileSync('public/design-package-routes.js', 'utf8'); assert.match(stub, /registerExtension\(\{id:'p30-deployment-route',needs:[^\n]+load:\(\)=>import\('\.\/deploy-view\.js'\)\}\);/, 'the route stub loads the host entry');
-  if (process.argv.includes('--measure')) { mkdirSync('audit/rc44/evidence', {recursive: true}); const fromAdoption = measured.chapters - ADOPTION.chapters; writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v3', name: 'wp9a slice 1 after its fourth fix-up: typed failure domains, nodes and registration (p30-deployment)',
+  if (process.argv.includes('--measure')) { mkdirSync('audit/rc44/evidence', {recursive: true}); const fromAdoption = measured.chapters - ADOPTION.chapters; writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v3', name: 'wp9a slice 1 after its fifth fix-up: typed failure domains, nodes and registration (p30-deployment)',
     measuredWith: 'client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code, scripts, buckets)',
     whatWasMeasured: 'The chapters route of this build, against two bases each built with node build.mjs from an archive of its commit: the integrated base the slice started from, and the adoption record the branch merged. The itemised bytes are read from the metafiles of this build and of the adoption record\'s, route output by route output (a module\'s bytes in its output, and the import and export lists of each output).',
     allowance: {chapters: 500, of: 'all of wp9a on the chapters route', scripts: 148, rulings: 'A4 of 2026-11-18 (500 B for wp9a); K6 (the registry\'s one-time cost to the shared pool); L10 (the baseline defect\'s fix to the shared pool); M4 (a package\'s size case: the route\'s growth less the integrated base, less every other package\'s own bytes and the shared pool\'s); M8 (S0\'s design row to the shared pool)'},
