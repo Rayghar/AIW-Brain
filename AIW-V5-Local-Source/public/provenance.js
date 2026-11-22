@@ -482,7 +482,8 @@ export function mergeStamper(prior,command,merger,at,{fourEyes=false,collections
  const paths=[...new Set([...cs.flatMap(pathsOfCommand),...collections])],reviewer=personAuthor(merger)?merger.id||null:null;
  const snap=p=>{const s={retired:{records:structuredClone(list(p?.retired?.records))}};for(const path of paths){const v=path===NARRATIVE?p?.finalReview?.narrative:null,[k,sub]=path.split('.');if(path===NARRATIVE){if(plain(v))s.finalReview={narrative:structuredClone(v)};continue;}const x=sub?p?.[k]?.[sub]:p?.[k];if(!Array.isArray(x))continue;if(sub)(s[k]=plain(s[k])?s[k]:{})[sub]=structuredClone(x);else s[k]=structuredClone(x);}return s;};
  let before=snap(prior);
- return (q,c,i)=>{
+ // (ruling Z1) the account that prepared command i: workbench-domain.js applies it as that account, as a direct write.
+ const stamp=(q,c,i)=>{
   const x=by[i],author={kind:x.kind,id:x.by,account:x.account,...(x.session?{session:x.session}:{})},next=q?.document;if(!next)return;
   stampAuthorship(before,next,c,q,author,at,{fourEyes});also?.(before,next,author);
   // What this command stamped: a write (the author stamp), or only a keep or a confirmation its preparer sent (the
@@ -494,6 +495,7 @@ export function mergeStamper(prior,command,merger,at,{fourEyes=false,collections
   }}
   before=snap(next);
  };
+ stamp.by=i=>by[i].by||null;return stamp;
 }
 // The provenance block a command carries (round 12, GR-GOV-09): the source, citations and basis of payload.provenance,
 // checked (provenanceBlock: each citation must name a row, a source version or a record the project holds) and set on the

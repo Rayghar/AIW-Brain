@@ -136,7 +136,8 @@ export function extensionHandler(type) {
       const subject = c.second(p, command), records = (Array.isArray(subject) ? subject : [subject]).filter(r => r && typeof r === 'object');
       if (!records.length) throw Error(type + ' names no record a second person could act on.');
       for (const r of records) {
-        const refusal = verifierRefusal(r, actor, author.account) || mergedRefusal(storedRecord(p, e, type, r.id), actor); if (refusal) throw Error(refusal);
+        // (ruling Z1) a merge's stamp is read first, in its own words: the preparer is also the record's writer to the domain
+        const refusal = mergedRefusal(storedRecord(p, e, type, r.id), actor) || verifierRefusal(r, actor, author.account); if (refusal) throw Error(refusal);
         if (!personBehind(p, storedRecord(p, e, type, r.id), actor)) throw Error('A second person\'s step needs two persons: no person other than ' + actor + ' stands behind ' + r.id + ' as it stands (it was written by an agent account, drafted by Sol, imported or restored, or it names no author). A second signed-in person saves or confirms ' + r.id + ' first.');
       }
     }

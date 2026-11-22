@@ -143,8 +143,10 @@ function applySeeding(p,raw,at,actor){if(!['off','on'].includes(raw.state))throw
 // names its reviser for a command it changes or adds and keeps the preparer of one it carries as it was (the same command,
 // by digest), and its history entry keeps the list it replaced. An alternative saved before this build has no list, and a
 // command carried from one names nobody (null). merged(result, command, index): the server's stamping of what each command
-// of a merge wrote (provenance.js mergeStamper), called after each. Without an author (a caller that is not the server)
-// none of it is written.
+// of a merge wrote (provenance.js mergeStamper), called after each; merged.by(index), the account that prepared the
+// command when the alternative names it, is the domain's actor for it, as in a direct write (ruling Z1: the record's actor
+// and history name the preparer; the merger is named on the stamp and on the alternative's acceptance). Without an
+// author (a caller that is not the server) none of it is written.
 const preparedBy=(author,at)=>({kind:author.kind,by:author.id||null,account:author.account,at,...(author.session?{session:author.session}:{})});
 export function applyWorkbenchCommand(input,command,at,actor,{diagramNodes=null,baselineSource=null,author=null,release=null,merged=null}={}){
  if(command.type==='workspace.diagram-arrangement')return applyDiagramArrangement(structuredClone(input),command.payload||{},at,actor,diagramNodes);
@@ -176,7 +178,7 @@ export function applyWorkbenchCommand(input,command,at,actor,{diagramNodes=null,
   const a=m.alternatives.find(a=>a.id===raw.id);if(!a||a.status!=='draft')throw Error('Choose a draft alternative.');const r=rebaseWorkingAlternative(p,a);if(raw.stamp!==r.stamp)throw Error('The alternative or current design changed. Compare again.');
   for(const f of r.conflicts){const choice=raw.resolutions?.[f.index+':'+f.field];if(!['current','proposed'].includes(choice)||f.field==='record')throw Error('Resolve every changed field explicitly. Removed records require a new alternative.');if(choice==='current')setChangeField(r.commands[f.index].payload,f.field,f.current);}
   if(raw.reviewed!==true||!text(raw.reason))throw Error('Review the merge and record its rationale.');
-  r.commands.forEach((c,i)=>{const q=applyCanonical(p,c,at,actor);p=q.document;merged?.(q,c,i);});const saved=p.workbench.alternatives.find(x=>x.id===a.id);saved.status='accepted';saved.revision++;saved.accepted={at,actor,reason:text(raw.reason),commands:r.commands,basis:workingBasis(input),resolutions:raw.resolutions||{}};
+  r.commands.forEach((c,i)=>{const q=applyCanonical(p,c,at,merged?.by?.(i)||actor);p=q.document;merged?.(q,c,i);});const saved=p.workbench.alternatives.find(x=>x.id===a.id);saved.status='accepted';saved.revision++;saved.accepted={at,actor,reason:text(raw.reason),commands:r.commands,basis:workingBasis(input),resolutions:raw.resolutions||{}};
  }else if(command.type==='workspace.set-aside'){
   const a=m.alternatives.find(a=>a.id===raw.id);if(!a||a.status!=='draft'||!text(raw.reason))throw Error('Choose a draft alternative and explain why it is not selected.');a.status='not selected';a.revision++;a.disposition={at,actor,reason:text(raw.reason)};
  }else if(command.type==='workspace.analysis'){
