@@ -10,6 +10,9 @@ Resumable: read this file and `git log` first. Suite: `npm run test:rc44-wp1-kno
 ## State
 
 - **Done:** every item below, each case first and seen red on the start commit (S2.7 is a guard and passed there too).
+- **Fix-up (the lead's rulings P1 to P8 of 2026-11-22):** done on `rc44/wp1-s2-crosswalk-fix`, cases S2.13 to S2.22 and the
+  extended S2.2, S2.4, S2.9 and S2.10; see the section "Fix-up" at the end, which also corrects deviations 10 and 11 and
+  open question 4 below.
 - **In progress:** nothing.
 - **Next:** the lead's review and merge. S3 (pins, currency, release parts of concepts and changes) builds on this.
 
@@ -207,7 +210,7 @@ Branch `rc44/wp1-s2-crosswalk-fix`, from `37520d6`. Review: `/home/user/hb-revie
 (four must-fix, eight should-fix, eight design concerns). Order of work, each case first and seen red on `37520d6`, a WIP
 commit after each item: 1 P1; 2 P2; 3 P3 and P4; 4 P5 (a) to (h); 5 P6; 6 P7; 7 P8 (notes only); 8 notes, size, suites.
 
-- **State:** items 1 to 7 done; item 8 (notes, size, suites, the final commit) in progress.
+- **State:** every item done (1 to 8); the final commit is on the branch. **Next:** the verifier, then the lead's merge.
 
 | Item | Done, with its case (red on `37520d6` with) |
 |---|---|
@@ -226,6 +229,36 @@ commit after each item: 1 P1; 2 P2; 3 P3 and P4; 4 P5 (a) to (h); 5 P6; 6 P7; 7 
 | P6 (design concern 4): built-in rows are navigation by construction | done: `resolveConcept` answers governed identities only (its answers always carry `authority: 'governed'`); the built-in rows are read through `builtInNavigation(id, scheme?)`, `{navigation: [{scheme, aliasId, targetId, relation}], authority: 'built-in', label: '… navigation only, never an identity'}`, with no `conceptId` at its top level. S2.21 (red: "KC.builtInNavigation is not a function"; before that, S-LAYERED answered the resolver). Old -> new in S2.2: `resolveConcept(blank, alias)` deep-equal to the built-in answer (conceptId, relation same, via, authority built-in, label) -> `resolveConcept(blank, alias) === null` and `builtInNavigation(alias)` deep-equal to the same row as navigation (scheme, alias, target, relation, authority, label); `resolveConcept(blank, 'S-MODMONO').conceptId === 'STYLE-MODULAR-MONOLITH'` -> `builtInNavigation('S-MODMONO').navigation[0].targetId === 'STYLE-MODULAR-MONOLITH'`. No product module reads either reader (S2's readers are the server's and the suites') |
 | P7 (design concern 5): a governed identity traces to a source passage | done (`traced`, at the proposal, on an edit and at verification, on the row as it stands): a `same` row of scheme `handbook` or `external` names `evidenceClaimId`, a claim of this library whose passage holds the alias as a whole token (a handbook alias, as P5 e asks, a whole identifier; a topic id alone is no passage); an `akr` row is verified only while the catalogue record it names exists and reads as the row's `targetContent` ("… reads authored in the catalogue AKR-0.10.73.5, not template as KA-0005 says: a person saves the row again"). S2.22 (red: "knowledge.crosswalk by architect {} was accepted" for an external `same` row with no evidence). Fixture change: S2.6's external row `EXT-OWN-WORDS` relates `narrower`, not `same` (a `same` row with a note only is now refused; S2.6 holds what the server reads of targetContent, which a relation does not change; no assertion changed). Reading: an external alias needs only a whole token of the passage (any shape the alias rule allows), a handbook alias an identifier (P5 e) |
 | P8: left to named owners | no code, as ruled. **S3:** organisation releases carry `parts` inside the signed checksum (`orgContent` copies none yet, so a design project that pins an organisation release resolves no governed row); the release-actor rule of P1 for an organisation's release (`releaseRows` is the one list to read); the recovery of an organisation release's parts (project releases' parts are neutralised here, S2.11); the knowledge keys and the library's fingerprint (B10, P5 b): S2.16 states today's limit and S3 replaces it with its opposite, recorded old -> new. **Close of wave 2 (the lead, D10):** where a library's package readers load; a document with rows opens with the route + 145,475 B in 2 scripts. **The lead at the merge:** wp9a's exact bound on its lazy entry should read wp9a's own modules and import and export lists, not the entry's whole growth; every size case should read the files-under-10-KB bucket as a ceiling (S0's, wp2's and wp9a's size cases compare it with 53 on their evidence; this slice moves it to 52, so a `--measure` of any of them after this merge fails with no file added). Neither is this slice's to edit, and none of their files was touched |
+
+### Measurements and suites of the fix-up (item 8)
+
+- `node build.mjs` at the fix-up's head: chapters route **3,230,723 B**, as at `37520d6` (0 B moved by the fix-up) and
+  **+118 B against `5cae40a`** (the route stub only); projects 507,456 B; 148 script files; buckets 52 / 51 / 45; stylesheet
+  901,873 B; no violation. The fix-up changes server modules only (`public/knowledge-concepts.js` and
+  `public/knowledge-concept-commands.js`, which no client module imports, S1.14; S0's `project-lifecycle.js`), so no client
+  output moved and "opens with records" is still route + 145,475 B in 2 scripts. S2.12 with `AIW_RC44_WP1_MEASURE=1`
+  measures exactly the evidence. `audit/rc44/evidence/wp1-s2-size.json` keeps `ownBytes` 118 (an integer of at least 0)
+  and gains a `fixUp` block. **wp1's own bytes: S1 65 B, S2 118 B; 477 B of the 660 B are left for S3.**
+- `rc44-wp1-knowledge-validate.mjs`: 57 passed (S1 34, S2 23), 0 failed, 3 pending (S3 to S5).
+- Green: `rc44-s0-extensions` (26), `rc44-wp2-adoption` (20), `rc44-wp9a-deployment` (24), `knowledge-coverage`,
+  `knowledge-structure`, `architecture-knowledge-unit`, `candidate-import`, `knowledge-boundaries`, `knowledge-retrieval`,
+  `recovery-authority`, `recovery-size`, `rc42-g2-library`, `rc42-g3a-risk-and-limits`, `rc42-g3b-trace-and-delivery`,
+  `rc42-g7-data-contracts`, `rc42-g4-trace-kernel`, `rc42-g1-tech-approval`, `service-routes`, `intake`, `operations`,
+  `enhancements`, `repository-sync`, `repository-transfer`, `repository-service`.
+- Red at the baseline, the same way: `stewardship-validate.mjs` (imports `worker.js`): first failure "F:latency:QD-003:
+  knowledge captured from a disagreement is read with the record it is linked to, not wherever its words match", as
+  `audit/rc42/regression-2026-11-16.json` records it.
+- `node check-syntax.mjs`: 942 modules. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, new 0.
+- Not run: the browser suites (red on this machine at the baseline), `test:scale`, the full regression (the lead's).
+- Assertions replaced (old -> new, each at least as strict), all in this slice's own case file (none of a suite on
+  `5cae40a`): S2.9 `sent === 2 * 6 * 3` -> `sent === 2 * 6 * (KINDS.length + NOBODY.length)` with nine kinds; S2.2
+  `resolveConcept(blank, alias)` deep-equal to the built-in answer -> `null`, with `builtInNavigation(alias)` deep-equal to
+  the same row as navigation; S2.2 `resolveConcept(blank, 'S-MODMONO').conceptId` -> `builtInNavigation('S-MODMONO')
+  .navigation[0].targetId`. Fixture changes, no assertion changed: the release helper reviews the concept again before a
+  release (P5 c); S2.6's external row relates `narrower` (P7); S2.10's message (P5 b).
+- External authorities: unchanged. No four-eyes knowledge approver is assigned, licence counsel is not engaged, no
+  independent architecture review has started, no production acceptance authority exists. Nothing here reviews,
+  releases or promotes knowledge; every row is synthetic or a candidate; `productionAccepted` stays false.
 
 ### One line per item of the review
 

@@ -246,5 +246,91 @@
   "checkSyntax": "passed (942 modules)",
   "lint": "162 problems, baseline 162, new 0",
   "build": "node build.mjs: no violation; chapters route 3,230,723 B; 148 script files"
+ },
+ "fixUp": {
+  "rulings": "P1 to P8 of 2026-11-22",
+  "branch": "rc44/wp1-s2-crosswalk-fix",
+  "from": "37520d6",
+  "newCases": [
+   "S2.13 (P1)",
+   "S2.14 (P4)",
+   "S2.15 (P5 a)",
+   "S2.16 (P5 b, a characterisation of a known limit for S3)",
+   "S2.17 (P5 c)",
+   "S2.18 (P5 d)",
+   "S2.19 (P5 e)",
+   "S2.20 (P5 g, a guard)",
+   "S2.21 (P6)",
+   "S2.22 (P7)"
+  ],
+  "extendedCases": [
+   "S2.4 (P3, both orderings)",
+   "S2.9 (P5 f, nine kinds of request)",
+   "S2.10 (P2, the template copy and the recovered library; P5 b, the message)",
+   "S2.2 (P6, the built-in rows through builtInNavigation)"
+  ],
+  "redBeforeTheChange": {
+   "S2.13": "knowledge.release by architect {} was accepted",
+   "S2.10": "a copy that keeps no record of p10-knowledge names no package (ruling P2)",
+   "S2.4": "knowledge.crosswalk by architect {} was accepted",
+   "S2.14": "knowledge.crosswalk by architect (the refusal read 'has 24 crosswalk rows, the most a concept holds.')",
+   "S2.15": "Expected values to be strictly deep-equal (no register or release on the alias entry)",
+   "S2.17": "the review records each row that stands, with its hash and its state",
+   "S2.18": "knowledge.crosswalk by bot {} was accepted",
+   "S2.19": "knowledge.crosswalk by architect {} was accepted",
+   "S2.9": "reviewed: knowledge.crosswalk-confirm by an author that names no account was accepted at the boundary",
+   "S2.2": "S-LAYERED is no identity",
+   "S2.21": "KC.builtInNavigation is not a function",
+   "S2.22": "knowledge.crosswalk by architect {} was accepted",
+   "greenBefore": "S2.16 and S2.20 state today's behaviour (a known limit; the refusals that make a merged or copied row impossible); the recovered-library part of S2.10 is a guard"
+  },
+  "finalRun": [
+   {
+    "suite": "rc44-wp1-knowledge-validate.mjs",
+    "result": "pass",
+    "note": "57 passed (S1 34, S2 23), 0 failed, 3 pending (S3 to S5), 158 s"
+   },
+   {
+    "suite": "rc44-s0-extensions-validate.mjs",
+    "result": "pass",
+    "note": "26 checks (project-lifecycle.js changed for P2)"
+   },
+   {
+    "suite": "rc44-wp2-adoption-validate.mjs",
+    "result": "pass",
+    "note": "20 checks"
+   },
+   {
+    "suite": "rc44-wp9a-deployment-validate.mjs",
+    "result": "pass",
+    "note": "24 checks; its exact bound on its lazy entry holds (no client output moved)"
+   },
+   {
+    "suite": "knowledge-coverage, knowledge-structure, architecture-knowledge-unit, candidate-import, knowledge-boundaries, knowledge-retrieval, recovery-authority, recovery-size, rc42-g2-library, rc42-g3a-risk-and-limits, rc42-g3b-trace-and-delivery, rc42-g7-data-contracts, rc42-g4-trace-kernel, rc42-g1-tech-approval, service-routes, intake, operations, enhancements, repository-sync, repository-transfer, repository-service",
+    "result": "pass",
+    "note": "the suites that import or exercise project-lifecycle.js, the knowledge readers and commands, recovery or the worker's knowledge routes"
+   },
+   {
+    "suite": "stewardship-validate.mjs",
+    "result": "fail (baseline)",
+    "note": "first failure identical to audit/rc42/regression-2026-11-16.json: 'F:latency:QD-003: knowledge captured from a disagreement is read with the record it is linked to, not wherever its words match'"
+   },
+   {
+    "suite": "node check-syntax.mjs",
+    "result": "pass",
+    "note": "942 modules"
+   },
+   {
+    "suite": "node scripts/lint.mjs --summary",
+    "result": "pass",
+    "note": "162 problems, baseline 162, new 0"
+   },
+   {
+    "suite": "node build.mjs",
+    "result": "pass",
+    "note": "no violation; chapters 3,230,723 B (unchanged from 37520d6; +118 B on 5cae40a); 148 scripts; buckets 52/51/45; stylesheet 901,873 B"
+   }
+  ],
+  "notRun": "browser suites (red on this machine at the baseline), test:scale and the full regression (the lead's)"
  }
 }
