@@ -723,7 +723,7 @@ await block('S1.14 nothing left naming what is not there', async () => {
 
 // (the lead's ruling L4; the review's must-fix 5) A command answers the record it wrote: runtime.locate on a placement
 // answers the placement, so that a batch restamps it as the commit's. A zone or a placement a merged alternative
-// relocates keeps its earlier stamp until the lead's slice for ruling D12 (a merge stamps no author).
+// relocates is stamped as its preparer's and reviewed by the merger (the lead's slice S0-D12, ruling Y3).
 await block('S1.15 a locate answers what it wrote', async () => {
   need();
   const I = F.ids(), h = await F.server(worker), d = () => h.state.document, ok = (r, why) => assert.equal(r.status, 200, (why || 'accepted') + ': ' + JSON.stringify(r.body).slice(0, 300));
@@ -739,14 +739,17 @@ await block('S1.15 a locate answers what it wrote', async () => {
     { const l = d().runtime.placements.find(x => x.id === placement.id); assert.deepEqual([l.nodeId, l.provenance?.author?.kind, authorship(l).kind], [b, 'sol-draft', 'sol-draft'], 'restamped as the commit\'s, in a batch too'); }
     // a zone in a batch likewise
     ok(await batch([{type: 'runtime.locate', payload: {zoneId: I.zone1, reason: 'Drafted reason.'}}], AGENT)); assert.equal(zoneOf(d(), I.zone1).provenance?.author?.kind, 'sol-draft');
-    // a merged alternative (ruling D12): the placement and the zone it relocates keep their earlier stamps; the case says so
+    // a merged alternative (rulings D12 and Y3, slice S0-D12): the placement and the zone it relocates are stamped as
+    // written by whoever prepared the commands (B) and as reviewed by the person who merged them (C)
+    // (was, until slice S0-D12: both kept their earlier stamps, ['sol-draft', 'sol-draft'], marked as a known limit)
     { const commands = [{type: 'runtime.locate', payload: {placementId: placement.id, nodeId: a}}, {type: 'runtime.locate', payload: {zoneId: I.zone1, reason: 'Merged reason.'}}];
       ok(await h.send('workspace.alternative', {commands, stamp: previewScenarioAlternative(d(), commands, undefined).stamp, title: 'Back to A', reason: 'Back.'}, B)); const alt = d().workbench.alternatives.at(-1);
       ok(await h.send('workspace.merge', {id: alt.id, stamp: rebaseWorkingAlternative(d(), alt).stamp, reviewed: true, reason: 'Merged.'}, C));
-      const l = d().runtime.placements.find(x => x.id === placement.id); assert.equal(l.nodeId, a);
-      assert.deepEqual([l.provenance?.author?.kind, zoneOf(d(), I.zone1).provenance?.author?.kind], ['sol-draft', 'sol-draft'], 'KNOWN LIMIT (ruling D12): a merge stamps no author, so the relocated placement and zone keep the stamp they had'); }
+      const l = d().runtime.placements.find(x => x.id === placement.id), z = zoneOf(d(), I.zone1), stamps = r => [r.provenance?.author?.kind, r.provenance?.author?.by, r.provenance?.author?.mergedBy, r.provenance?.reviewed?.by, r.provenance?.reviewed?.how, authorship(r).kind];
+      assert.deepEqual([l.nodeId, z.reason], [a, 'Merged reason.']);
+      assert.deepEqual([stamps(l), stamps(z)], [['person', B, C, C, 'merged', 'person'], ['person', B, C, C, 'merged', 'person']], 'stamped as written by whoever prepared them and as reviewed by the merger'); }
   } finally { h.close(); }
-  pass('S1.15: runtime.locate on a placement answers the placement as the record it wrote, alone and in a batch, so the agent\'s batch restamps it as the draft it is (a zone likewise); a placement and a zone a merged alternative relocates keep their earlier stamps until the slice of ruling D12');
+  pass('S1.15: runtime.locate on a placement answers the placement as the record it wrote, alone and in a batch, so the agent\'s batch restamps it as the draft it is (a zone likewise); a placement and a zone a merged alternative relocates are stamped as written by whoever prepared the commands and as reviewed by the person who merged them (ruling Y3)');
 });
 
 // (the lead's rulings L5 and L6; the review's should-fix 1, 2 and 6) The choice to type a project is design; who chose
