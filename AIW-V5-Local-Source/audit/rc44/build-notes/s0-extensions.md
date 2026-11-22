@@ -87,7 +87,9 @@ suite was touched):
 
 **What later slices must know.**
 1. *A second person's step needs a stamped person behind the record.* Records written by `workspace.merge` (D12;
-   since slice S0-D12 only from an alternative saved before it) or by an upgrade step carry no author stamp, and a
+   since slice S0-D12 only by a command its alternative names no preparer for: an alternative saved before it, a command
+   carried from one, or a restored alternative, whose list the import moves aside: rulings Z2 and Z5) or by an upgrade
+   step carry no author stamp, and a
    stamp made before the project was restored here does not count. A
    package with a `second` type gives a person a way to confirm such a record: a person's command that sets
    `confirmed: true` on it, in a collection of the type's `provenance.paths` (the boundary then stamps who
@@ -328,6 +330,16 @@ notes, `s0-d12-merge-author.md`, say how). Route: 0 B (booked in the lead's file
 | Y3, D1 | A merge's review counts as a person behind the record (`personBehind`); while a merge's stamps stand, the preparer and the merger are refused as the second person, in words that fit any package (`mergedRefusal`) | `design-extension-boundary.js` | same block |
 | H3 | An event a package's staged handler adds inside a reviewed batch or a merge states no author fields (`unstatedStaged`, after the apply, before the trackers) | `design-extension-boundary.js`, `worker.js` | "H3 a staged handler states no author" |
 
+After its review (the lead's rulings Z1 to Z8; the fix-up, on `rc44/s0-d12-merge-author-fix`; the slice's notes say
+what each changed and its case, blocks "Z1" to "Z7"): a merged command whose preparer is known is applied with the
+preparer as the domain's actor, so the record's actor and history name them as a direct write would (Z1); the obligation
+verifier (`verifierRefusal`) and the boundary refuse the merger while the merge's stamp stands (Z1); a recovery import
+moves each alternative's list aside as `importedAuthors` and no date decides (Z2); a revision keeps a preparer through a
+rebase and names `from` (Z3); a merge has one path: a command its alternative names no preparer for stamps what it
+writes as nobody's, and the merge-level stamping as the merger's is retired (Z5); a merge request carries no commands of
+its own (Z6); a merge is no review of a record's words (`reviewOf` answers none for `how: 'merged'`; `personBehind` reads
+the stamp), so the SDD counts no merged record as confirmed and the review plan lists a merged draft by Sol (Z7).
+
 ## Contract for packages
 
 A package is an optional part of the design model that lives in its own modules. It tells the shared machinery what it
@@ -553,11 +565,13 @@ are taken. Until the server has installed its resolver no type is free. The type
      (`provenance.author`) is a person's, or a person has confirmed or kept it as it now reads
      (`provenance.reviewed`, or a judgement of the review plan that kept it). One person accepting what only an agent
      account or a draft by Sol wrote is one person, not two. A record with no author stamp has no person behind it
-     (one a merge wrote before slice S0-D12, or from an alternative saved before it: ruling D12), and neither has one
+     (one a merge wrote before slice S0-D12, or by a command its alternative names no preparer for: an alternative
+     saved before it, a command carried from one, or a restored one: rulings D12, Z2 and Z5), and neither has one
      whose stamp was made before the project was restored here. Since slice S0-D12 (ruling Y3) a record a merge
      writes is stamped as written by whoever prepared the command in the alternative and as reviewed by the person who
-     merged it (`provenance.reviewed.how` `'merged'`, which counts as a person behind it); while those stamps stand
-     neither the preparer nor the merger is the second person (section "With slice S0-D12" above).
+     merged it (`provenance.reviewed.how` `'merged'`, which counts as a person behind it, though it confirms no record's
+     words: ruling Z7); while those stamps stand neither the preparer nor the merger is the second person, and the
+     preparer is the record's writer to the domain for good (ruling Z1; section "With slice S0-D12" above).
      The refusal says what must happen first: "A second person's step needs two persons: no person other than <actor>
      stands behind <id> as it stands (…). A second signed-in person saves or confirms <id> first."
 

@@ -682,16 +682,19 @@ async function route(request,env,ctx){
       // (rc44; the lead's rulings Y3 and Z5: provenance.js mergeStamper, which the merge calls with each command's result).
       let merged=null;
       try{merged=type==='workspace.merge'?mergeStamper(prior,input.command,author,at,{fourEyes:prior.workspace?.governance?.fourEyes===true,collections:stampedCollections(),also:(before,next,by)=>stampExtensions(before,next,by,at)}):null;if(type==='knowledge.link'&&!journeyIndex(prior).nodes.has(input.command.payload?.objectId))throw Error('Choose an existing object in this project.');const own=documentCopy(prior),packaged=extensionHandler(type);validateExtensions(prior,input.command,{at,actor,author});result=packaged?packaged(own,input.command,at,actor,{author,revision:input.revision}):type==='knowledge.fetch'?await acquireRepositorySource(own,input.command.payload||{},env,actor,at):type.startsWith('knowledge.')?applyConceptCommand(own,input.command,at,actor,{author}):type==='intelligence.adopt'?await adoptSavedIntelligence(env,owner,projectId,own,input.command.payload||{},at,actor):type==='workspace.view'?applyWorkbenchCommand(own,input.command,at,actor,{baselineSource:id=>frozenSources.get(id)||null}):commandHandler(type)(own,input.command,at,actor,{author,revision:input.revision,...(merged?{merged}:{})});result.document=withFinalReview(result.document===prior?result.document:handOver(result.document));carryProvenance(prior,result.document,at);recordSuggestions(result.document,carriers,{actor,at,selected:result.selected??null,prior});
+        // What the commit applied, as the readers below read it: a reconciliation's applied commands, or the command
+        // (rc44; the lead's ruling Z6: one form for unstatedStaged, markPackages and stampAuthorship).
+        const applied=type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command;
         // An event a design package's staged handler added inside a reviewed batch or a merge states no author fields (rc44;
         // rulings H3 and Y3): the commit's stamp below is the only one.
-        unstatedStaged(prior,result.document,input.command);
+        unstatedStaged(prior,result.document,applied);
         // A design package whose command this commit applied (its own, one a batch carries, one a merge applies) is
         // named in the document it wrote (rc44, slice S0; ruling D2: workspace.packages).
-        if(result.document!==prior)markPackages(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command);
+        if(result.document!==prior)markPackages(prior,result.document,applied);
         // The records the commit wrote are stamped as its, and a brief it changed is kept as a new version of its source.
         // (one merge path, ruling Z5: a merge is stamped by the stamper above alone, command by command, and never as the
         // merger's, by what its request says of itself or by the packages' restamp of what it changed)
-        if(type!=='workspace.merge'){stampAuthorship(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command,result,author,at,{fourEyes:prior.workspace?.governance?.fourEyes===true});stampExtensions(prior,result.document,author,at);}attachProvenanceBlocks(prior,result.document,input.command,result);versionBrief(prior,result.document,author,at)}catch(e){const message=publicMessage(e);return json({error:message,...(/^Unknown .* action\.$/.test(message)?{code:'unknown_command'}:{})},400)}
+        if(type!=='workspace.merge'){stampAuthorship(prior,result.document,applied,result,author,at,{fourEyes:prior.workspace?.governance?.fourEyes===true});stampExtensions(prior,result.document,author,at);}attachProvenanceBlocks(prior,result.document,input.command,result);versionBrief(prior,result.document,author,at)}catch(e){const message=publicMessage(e);return json({error:message,...(/^Unknown .* action\.$/.test(message)?{code:'unknown_command'}:{})},400)}
       let impact;
       // The trackers derive journal and impact records from the change; a fault in them is a programming fault
       // (answered as such, round 2, B2-06), never a storage outage. A design package's tracker that the boundary refuses (rc44,

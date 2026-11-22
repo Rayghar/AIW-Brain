@@ -984,7 +984,9 @@ await block('D5 SDD provenance', () => {
   { const q = documentCopy(p0); q.synthetic = {version: 1, counter: 2, records: [1, 2].map(n => ({id: 'SYN-00' + n, ref: 'SYN-00' + n, title: 'Written by an upgrade ' + n, requirementIds: [], componentId: 'none', revision: 1}))}; Object.assign(q.synthetic.records[1], {confirmed: true, provenance: {reviewed: {by: A, at: AT, how: 'confirmed'}}});
     const u = provenanceReading(withFinalReview(q)), t = architectureMarkdown(withFinalReview(q)).markdown;
     assert.equal(u.total, r0.total + 2); assert.equal(u.by.person, r0.by.person, 'an unstamped record of a package is not counted as written by a person'); assert.equal(u.by.upgrade, 2); assert.ok(!('upgrade' in r0.by), 'a document without such a record has no such count');
-    assert.match(t.slice(t.indexOf('## E. Provenance')), /Written by an upgrade of the project or by a merge, with no author stamp: 2 records\. No person wrote them; 1 is confirmed by a person since\./, 'on a line of their own');
+    // (the lead's ruling Z6, slice S0-D12; was: /Written by an upgrade of the project or by a merge, with no author stamp: 2 records\. …/) a merge
+    // stamps what it writes unless its alternative names no preparer for the command, and the line says so
+    assert.match(t.slice(t.indexOf('## E. Provenance')), /Written by an upgrade of the project or by a merge of an alternative that names no preparer, with no author stamp: 2 records\. No person wrote them; 1 is confirmed by a person since\./, 'on a line of their own');
     // an unstamped built-in record reads as it always did (rc.10.73.42 documents hold many)
     const b = documentCopy(p0); b.realisation.components = b.realisation.components.map(({provenance, ...c}) => c); assert.equal(provenanceReading(withFinalReview(b)).by.upgrade, undefined, 'the count is of the packages\' collections only'); }
   // a row a package states over a built-in collection is not read a second time (the hostile package states decisions.records)
@@ -1090,11 +1092,13 @@ await block('D12 a record a merge wrote', async () => {
       { const r = await step('vouch.accept', dec.id, C); ok(r, who + ': and the built-in one'); assert.equal(decision(dec.id).review.actor, C); }
     }
     // a merge request that carries commands of its own (a merge names none: workbench-domain.js applies the alternative's)
-    // restamps nothing as the merger's
+    // restamps nothing as the merger's: (the lead's ruling Z6; was: either outcome, a 200 whose stamp stood or a 400 and a
+    // merge again) one outcome, refused in words, and the merge without them stamps as the alternative names
     { const a = await stage([{type: 'decision.save', payload: {question: 'Which store keeps the drafts, as a person prepared it?'}}], A); await h.read(B);
       const x = d().workbench.alternatives.find(y => y.id === a.id), r = await send('workspace.merge', {id: a.id, stamp: rebaseWorkingAlternative(d(), x).stamp, reviewed: true, reason: 'Merged by a person.', commands: [{type: 'decision.save', payload: {id: 'ADR-001'}}]}, B);
-      if (r.status === 200) { const dec = d().decisions.records.find(y => y.question === 'Which store keeps the drafts, as a person prepared it?'); assert.deepEqual(stamps(dec), ['person', A, B, B, 'merged'], 'the stamp stands: ' + JSON.stringify(dec.provenance)); }
-      else { assert.equal(r.status, 400, JSON.stringify(r.body).slice(0, 200)); ok(await send('workspace.merge', {id: a.id, stamp: rebaseWorkingAlternative(d(), x).stamp, reviewed: true, reason: 'Merged by a person.'}, B)); } }
+      assert.equal(r.status, 400, JSON.stringify(r.body).slice(0, 200)); assert.equal(r.error, 'A merge applies the commands the alternative holds: send none with it.');
+      ok(await send('workspace.merge', {id: a.id, stamp: rebaseWorkingAlternative(d(), x).stamp, reviewed: true, reason: 'Merged by a person.'}, B));
+      const dec = d().decisions.records.find(y => y.question === 'Which store keeps the drafts, as a person prepared it?'); assert.deepEqual(stamps(dec), ['person', A, B, B, 'merged'], 'the stamp stands: ' + JSON.stringify(dec.provenance)); }
     // 2. per command: a revision names the reviser for what it changes or adds and keeps the preparer of what it carries
     { const a = await stage([{type: 'synthetic.save', payload: {title: 'Kept as the agent account prepared it'}}, {type: 'synthetic.save', payload: {title: 'Changed in the revision'}}], AGENT), r = rebaseWorkingAlternative(d(), a);
       const commands = [a.commands[0], {type: 'synthetic.save', payload: {title: 'Changed in the revision by a person'}}, {type: 'synthetic.save', payload: {title: 'Added in the revision'}}];
@@ -1125,7 +1129,8 @@ await block('D12 a record a merge wrote', async () => {
     { ok(await send('decision.save', {question: 'Which store holds the drafts, as Sol proposes it?'}, AGENT)); const prop = d().decisions.records.at(-1).id; await rewrite(p => { p.decisions.records.find(x => x.id === prop).state = 'proposed'; });
       const a = await stage([{type: 'record.keep', payload: {id: prop, chapter: 3}}], A); await merge(a.id, B); const pv = decision(prop).provenance;
       assert.deepEqual([decision(prop).state === 'proposed', pv.author.kind, pv.author.by, pv.author.mergedBy, pv.reviewed.by, pv.reviewed.how, pv.reviewed.mergedBy], [false, 'sol-draft', AGENT, undefined, A, 'kept', B], 'kept by its preparer, merged by the merger: ' + JSON.stringify(pv));
-      await refused('vouch.accept', prop, B, MERGED(prop, A, B), 'the merger of a keep'); await refused('vouch.accept', prop, A, NO_PERSON(prop), 'the one who kept it is one person');
+      // (the lead's ruling Z6; was: MERGED(prop, A, B), which said A prepared the record, where A prepared the keep) worded as kept
+      await refused('vouch.accept', prop, B, new RegExp('^A second person.s step needs two persons: ' + prop + ' reads as ' + A + ' kept it in an alternative and ' + B + ' merged it\\. A signed-in person who neither kept nor merged ' + prop + ' takes this step\\.$'), 'the merger of a keep'); await refused('vouch.accept', prop, A, NO_PERSON(prop), 'the one who kept it is one person');
       ok(await step('vouch.accept', prop, C), 'a third person'); }
     // 4. a topology node, a package's record of its own kind: a person's is stamped as theirs and reviewed by the merger; a
     // node a draft by Sol or an agent account prepared arrives as their proposal, which no merge stands behind (a person

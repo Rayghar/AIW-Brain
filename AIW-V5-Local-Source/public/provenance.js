@@ -137,6 +137,9 @@ export function reviewOf(p,r,chapter=null){
  const j=judgementOf(p,r,chapter);
  if(j)return {by:j.actor||null,at:j.at||null,how:'judgement',id:j.id,outcome:j.outcome};
  const s=plain(r?.provenance?.reviewed)?r.provenance.reviewed:null;
+ // A merge is a person's review of the alternative, not of the record's words (rc44; the lead's ruling Z7): no review of
+ // the record. (The second-person rule counts it, from the stamp: design-extension-boundary.js personBehind.)
+ if(s?.how==='merged')return null;
  if(s&&!historicalReview(p,s.at)&&(s.how!=='confirmed'||confirmedNow(r)))return {by:s.by||null,at:s.at||null,how:s.how||'confirmed'};
  // Legacy flags have no signed-in reviewer stamp. They remain readable in their original project, but after restore
  // they are historical assertions; a local judgement or confirmation is required to count them on this workbench.
@@ -152,7 +155,7 @@ export function confirmedByPerson(p,r,chapter=null){const rv=reviewOf(p,r,chapte
 
 // ---------------------------------------------------------------- one record, in words
 export function recordProvenance(p,r,chapter){
- const {kind,from:came}=authorship(r),a=stampOf(r),reviewed=reviewOf(p,r,chapter),from=kind==='person'&&came&&came!=='person'?came:null;
+ const {kind,from:came}=authorship(r),a=stampOf(r),reviewed=reviewOf(p,r,chapter),from=kind==='person'&&came&&came!=='person'?came:null,merged=!reviewed&&r?.provenance?.reviewed?.how==='merged'?r.provenance.reviewed.by:null;
  // Who applied Sol's draft and when (GR-GOV-25): the commit's stamp, else the mark workstream E's drafter leaves
  // (provenance.draft {appliedBy, appliedAt}), on the draft and on the person's record it became.
  const draft=solDraftOf(r),stampedDraft=a?.kind==='sol-draft';
@@ -162,7 +165,7 @@ export function recordProvenance(p,r,chapter){
  const own=a?.kind==='person'?a:null;
  // AIW's reference example (the teaching project's own records) says so, and guidance says where its words came from (the
  // component library, a catalogue archetype).
- const rp={kind,word:AUTHOR_WORDS[kind]+(kind==='seeded'&&r?.origin==='reference'&&r?.state!=='proposed'?' (reference example)':''),by:own?.by||null,at:own?.at||null,from,fromWords:from?(from==='guidance'&&GUIDANCE_FROM[r?.origin]?GUIDANCE_FROM[r.origin].replace(/^from /,''):FROM_WORDS[from]):null,edited:!!(own&&from&&from!=='guidance'),session:a?.session||null,applied,reviewed,citations:recordCitations(p,r)};
+ const rp={kind,word:AUTHOR_WORDS[kind]+(kind==='seeded'&&r?.origin==='reference'&&r?.state!=='proposed'?' (reference example)':''),by:own?.by||null,at:own?.at||null,from,fromWords:from?(from==='guidance'&&GUIDANCE_FROM[r?.origin]?GUIDANCE_FROM[r.origin].replace(/^from /,''):FROM_WORDS[from]):null,edited:!!(own&&from&&from!=='guidance'),session:a?.session||null,applied,reviewed,...(merged?{merged}:{}),citations:recordCitations(p,r)};
  rp.label=provenanceLabel(rp);rp.line=provenanceLine(rp);return rp;
 }
 // "Drafted by Sol · not reviewed", "Imported · confirmed by architect-a", "Written by architect-a (from Sol's draft)",
@@ -172,6 +175,8 @@ export function provenanceLabel(rp){
  const who=rp.kind==='person'?(rp.by?'Written by '+rp.by:AUTHOR_WORDS.person)+(rp.from?' (from '+(rp.fromWords||FROM_WORDS[rp.from])+')':''):rp.word||AUTHOR_WORDS[rp.kind]||AUTHOR_WORDS.person;
  const r=rp.reviewed;
  if(r)return who+' · '+(HOW_WORDS[r.how]||'reviewed')+(r.by?' by '+r.by:'')+(r.how==='judgement'&&r.outcome==='follow-up'?' (follow-up required)':'');
+ // (ruling Z7) a merged record names who merged it, which reviews none of its words
+ if(rp.merged)return who+' · merged by '+rp.merged+(rp.kind==='person'?'':', not reviewed');
  return rp.kind==='person'?who:who+' · not reviewed';
 }
 export const recordLabel=(p,r,chapter)=>recordProvenance(p,r,chapter).label;

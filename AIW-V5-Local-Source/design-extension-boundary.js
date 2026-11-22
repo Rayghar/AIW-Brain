@@ -90,18 +90,22 @@ function personBehind(p, record, actor) {
   // (ruling F3: a project copied from a template carries the template's stamps; they were made in another project)
   const a = record.provenance?.author, review = reviewOf(p, record), from = [p?.finalReview?.imported?.at, p?.workspace?.templateOrigin?.at].filter(Boolean).sort().pop(), here = at => !(from && !(at > from));
   if (a?.kind === 'person' && a.by && a.by !== actor && here(a.at)) return true;
-  // (ruling Y3: a merge is the merger's reviewed step, so the person who merged the record stands behind it as it reads)
-  return !!review?.by && review.by !== actor && here(review.at) && (review.how === 'confirmed' || review.how === 'kept' || review.how === 'merged' || review.how === 'judgement' && review.outcome === 'kept');
+  // (rulings Y3 and Z7: a merge is the merger's reviewed step, so the person who merged the record stands behind it as it
+  // reads; it is no review of the record's words, which reviewOf reads, so it is read from its stamp)
+  const merged = record.provenance?.reviewed?.how === 'merged' ? record.provenance.reviewed : null;
+  if (merged?.by && merged.by !== actor && here(merged.at)) return true;
+  return !!review?.by && review.by !== actor && here(review.at) && (review.how === 'confirmed' || review.how === 'kept' || review.how === 'judgement' && review.outcome === 'kept');
 }
-// Who a merge's stamp names while what it wrote stands (the lead's ruling Y3 of 2026-11-22; public/provenance.js
+// Who a merge's stamp names while what it wrote stands (the lead's rulings Y3 and Z1 of 2026-11-22; public/provenance.js
 // mergeStamper): whoever prepared the command in the alternative and the person who merged it, on the author stamp of a
-// record the merge wrote, or beside a keep or a confirmation it applied. Neither is the second person; a third signed-in
-// person takes the step. A later change of what the record says is stamped as any save is, and the stamp then names its
-// writer only.
+// record the merge wrote, or beside a keep or a confirmation it applied (worded as kept or confirmed: ruling Z6). Neither
+// is the second person; a third signed-in person takes the step. A later change of what the record says is stamped as any
+// save is, and the stamp then names its writer only (who wrote any revision stays named by the record's own history:
+// the preparer is the domain's actor in a merge, ruling Z1).
 function mergedRefusal(record, actor) {
   const pv = record?.provenance, a = pv?.author, v = pv?.reviewed;
-  const by = a?.mergedBy && (a.by === actor || a.mergedBy === actor) ? [a.by, a.mergedBy] : v?.mergedBy === actor || v?.how === 'merged' && v.by === actor ? [v.how === 'merged' ? a?.by : v.by, v.mergedBy || v.by] : null;
-  return by && 'A second person\'s step needs two persons: ' + record.id + ' reads as ' + by[0] + ' prepared it in an alternative and ' + by[1] + ' merged it. A signed-in person who neither prepared nor merged ' + record.id + ' takes this step.';
+  const by = a?.mergedBy && (a.by === actor || a.mergedBy === actor) ? [a.by, a.mergedBy, 'prepared'] : v?.mergedBy === actor ? [v.by, v.mergedBy, v.how === 'kept' ? 'kept' : 'confirmed'] : v?.how === 'merged' && v.by === actor ? [a?.by, v.by, 'prepared'] : null;
+  return by && 'A second person\'s step needs two persons: ' + record.id + ' reads as ' + by[0] + ' ' + by[2] + ' it in an alternative and ' + by[1] + ' merged it. A signed-in person who neither ' + by[2] + ' nor merged ' + record.id + ' takes this step.';
 }
 // The stored record a second person's step acts on, by its id, in the collections the package states for the type
 // or for its prefix (provenance.paths): `second` may answer a projection, and the stamps are the stored record's.

@@ -179,6 +179,9 @@ export function applyWorkbenchCommand(input,command,at,actor,{diagramNodes=null,
   const kept=raw.commands.map(c=>take(o=>o.d.includes(digest(c)))),authors=author&&raw.commands.map((c,i)=>{if(kept[i])return kept[i].x;const e=preparedBy(author,at),w=(take(o=>o.i===i&&o.k===key(c))||take(o=>o.k===key(c)))?.x,from=w&&(w.kind!==e.kind?w.kind:w.from);return from?{...e,from}:e;});
   a.history??=[];a.history.push({revision:a.revision,title:a.title,reason:a.reason,commands:a.commands,targets:a.targets,basis:a.basis,scenario:a.scenario||null,at:a.at,actor:a.actor,...(a.authors?{authors:a.authors}:{})});if(authors)a.authors=authors;else delete a.authors;a.commands=structuredClone(raw.commands);a.targets=raw.commands.map(c=>structuredClone(targetSnapshot(p,c)));a.basis=q.basis;a.scenario=q.scenario;a.title=text(raw.title,180);a.reason=text(raw.reason);a.revision++;a.at=at;a.actor=actor;
  }else if(command.type==='workspace.merge'){
+  // A merge applies the commands the alternative holds, never any its request carries (rc44, the lead's ruling Z6: one
+  // outcome; no client sends any, and markPackages would read them as applied).
+  if(raw.commands!==undefined)throw Error('A merge applies the commands the alternative holds: send none with it.');
   const a=m.alternatives.find(a=>a.id===raw.id);if(!a||a.status!=='draft')throw Error('Choose a draft alternative.');const r=rebaseWorkingAlternative(p,a);if(raw.stamp!==r.stamp)throw Error('The alternative or current design changed. Compare again.');
   for(const f of r.conflicts){const choice=raw.resolutions?.[f.index+':'+f.field];if(!['current','proposed'].includes(choice)||f.field==='record')throw Error('Resolve every changed field explicitly. Removed records require a new alternative.');if(choice==='current')setChangeField(r.commands[f.index].payload,f.field,f.current);}
   if(raw.reviewed!==true||!text(raw.reason))throw Error('Review the merge and record its rationale.');

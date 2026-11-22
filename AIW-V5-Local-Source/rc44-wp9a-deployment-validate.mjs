@@ -547,7 +547,8 @@ await block('S1.8 a draft by Sol and an agent account', async () => {
     { const n = d().runtime.nodes.length; r = await batch([{type: 'runtime.node', payload: {title: 'Iceland', kind: 'region'}}], AGENT, {reviewed: false}); assert.equal(r.status, 400); assert.match(r.error, /as its proposal \(origin: sol-draft\)/); assert.equal((await h.read()).document.runtime.nodes.length, n, 'nothing of the refused batch is kept'); }
     r = await batch([{type: 'runtime.node', payload: {title: 'Norway West', kind: 'region', origin: 'sol-draft', jurisdiction: 'NO'}}], A, {reviewed: false, authorKind: 'sol-draft'}); assert.equal(r.status, 400); assert.match(r.error, /A jurisdiction is stated by a signed-in person/);
     // kept as an alternative by an agent account: saved only with its records as proposals; a person merges it, and the
-    // record arrives as Sol's proposal, journalled once with who merged (a merge stamps no author: the lead's ruling D12)
+    // record arrives as Sol's proposal, journalled once with who merged (a proposal a merge makes is stamped by nobody, as
+    // any proposal: a person keeps it; rulings D12, Y3 and Z1 to Z5, slice S0-D12)
     { const alternative = commands => h.send('workspace.alternative', {commands, stamp: previewScenarioAlternative(d(), commands, undefined).stamp, title: 'A drafted region', reason: 'Drafted by the agent account.'}, AGENT);
       r = await alternative([{type: 'runtime.node', payload: {title: 'Iceland', kind: 'region'}}]); assert.equal(r.status, 400); assert.match(r.error, /as its proposal \(origin: sol-draft\)/);
       r = await alternative([{type: 'runtime.node', payload: {title: 'Iceland', kind: 'region', origin: 'sol-draft'}}]); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300));
@@ -605,8 +606,9 @@ await block('S1.12 keeping a proposal is a person\'s step', async () => {
     assert.deepEqual(proposals().map(x => [x.state, x.provenance?.reviewed?.by, x.provenance?.reviewed?.how, authorship(x).kind]), [[undefined, B, 'kept', 'person'], [undefined, B, 'kept', 'person']]);
     assert.equal((await h.send('runtime.locate', {zoneId: I.zone3, nodeId: node})).status, 200);
   } finally { h.close(); }
-  // No record is authored on the strength of a keep that carries no person's stamp (a keep inside a merged alternative
-  // stamps nobody: ruling D12): a node or a domain of AIW's or Sol's words that is no proposal and that no person's stamp
+  // No record is authored on the strength of a keep that carries no person's stamp (a keep from a merged alternative that
+  // names no preparer for it stamps nobody: rulings D12 and Z5; one a person prepared is that person's keep, merged by
+  // another: slice S0-D12): a node or a domain of AIW's or Sol's words that is no proposal and that no person's stamp
   // stands behind binds nothing.
   { const {p, made} = typedTidewater(), q = structuredClone(p); q.runtime.nodes.push({id: 'dn-090', ref: 'DN-090', revision: 1, title: 'Kept by nobody', kind: 'region', parentId: '', domainId: '', jurisdiction: '', place: '', provider: '', tier: '', exposure: '', address: '', reason: '', owner: '', basis: '', boundaryIds: [], origin: 'sol-draft', history: []});
     q.technology.domains.push({id: 'fd-090', ref: 'FD-090', revision: 1, title: 'Kept by nobody', scope: '', cause: 'location', basis: '', owner: '', recoveryOwner: '', treatment: '', parentId: '', origin: 'suggestion', history: []});
