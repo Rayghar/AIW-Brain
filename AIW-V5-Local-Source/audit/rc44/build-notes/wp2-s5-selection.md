@@ -999,5 +999,29 @@ first, seen to fail on the head it started from, then the change; a WIP commit a
   copy with the key deleted. Not compared by time (`j.at` against `choice.at`), which the fixtures' fixed clock defeats.
   0 route bytes (the selection module is in the lazy entry; the basis is on the server). `test:rc44-wp2-adoption`: 45
   blocks green.
-- **In progress:** item 2 (W2).
-- **Next:** items 3 (W3), 4 (notes, suites, syntax, lint, build, final commit).
+- **Done:** item 2 (W2). S2.12 (`rc44-wp1-cases-crosswalk.mjs`, the one case the lead gave leave to edit) was red on this
+  branch's build at ad8204b (seen: "the start commit is the integrated base and what the other packages and the pool
+  booked", 3,228,422 B against 3,230,605 B). Its two assertions now read the bookings filed at wp1 S2's start: each
+  booking filed after it is named in the case and left out (`audit/rc44/evidence/wp2-s5-size.json`, this slice's own
+  864 B, and the lead's `guidedConcernRetirementQ8`, −3,047 B), as S1's size block leaves out the later wp2 slices'
+  bookings; every other booking is read as before. Old -> new below. At least as strict at wp1's own head: on scratch
+  archives of `c709ae3` (rc44/integration, where wp1 S2 is merged) and `af6aa37` (rc44/wp1-s2-lead), with the change
+  patched in and the client built, the new S2.12 passes where the old one passes, and on `c709ae3` the old and the new
+  fail alike on each hostile edit of the books (wp2-s1's `delta` +1; a stray size file of 5 B; a stray pool item of
+  −7 B in the lead's file). On this branch the new one fails on the same three edits; an edit of the later booking
+  (wp2-s5 +1) leaves S2.12 green by design and is caught by `S5 size` and S0's merge check. `test:rc44-wp1-knowledge`:
+  57 passed, 3 pending, 0 failed (was 56 / 3 / 1).
+- **Done:** item 3 (W3). (a) Case first in `S5 V1 view` (commit 138cf83; failed at e89538e: "nothing is sent (a note
+  over the text limit)", the view sent `selection.start`): a note of 2,001 characters at the start, a blank note and a
+  long one together, and a long note on an offered option are each refused by the view before anything is sent, in
+  words naming the option and the criterion ("Record each criterion's note as text of at most 2000 characters: Separate
+  service · Operations."; with a blank note too, both sentences); nothing is written and no empty selection decision is
+  left; a note of exactly 2,000 characters is sent and taken (the view's limit is the server's `SELECTION_LIMITS.text`,
+  imported, not restated). The change: `public/adoption-ui.js` `assessed` (the lazy entry; 0 route bytes). (b) The
+  evidence: the top-level `opens with records` of `wp2-s5-size.json` gains `measuredOn` (abfdb56, the slice's own tree
+  before the third round, as `slice`; the `--measure` writer writes the same statement in general words); `atMerge`'s
+  `opens with records` is restated by `--measure-merge` at this round's head (3,362,022 -> 3,362,259 B; the lazy entry
+  +237 B for W1 and W3, the route unchanged at 3,228,540 B); `S5 size` holds that on the build `atMerge` names its
+  `opens with records` is this build's (case first: failed with 133,482 B against 133,719 B) and that the top-level block
+  says which tree it measures; the pass line prints the merge's figure, then the slice's own tree's.
+- **In progress:** item 4 (the notes line by line, the suites, syntax, lint, build, the final commit).

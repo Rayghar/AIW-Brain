@@ -48,6 +48,7 @@
  "headroomAfter": 5370,
  "opens with records": {
   "gate": "The chapters-route gate measures opening a document that holds no package records (ruling D10).",
+  "measuredOn": "abfdb56 (the second fix-up's head): the slice's own tree before the third round, as slice is (ruling W3). On the merged build (rc44/integration c709ae3 merged in the third round, which added wp1 S2's 118 B to the route; the third and fourth rounds moved only the lazy entry) it is restated in atMerge['opens with records'], re-measured at each round's head.",
   "host": "public/architecture-task-ui.js",
   "route": 3228422,
   "added": 132338,
@@ -89,8 +90,8 @@
   "opens with records": {
    "host": "public/architecture-task-ui.js",
    "route": 3228540,
-   "added": 133482,
-   "total": 3362022,
+   "added": 133719,
+   "total": 3362259,
    "files": 2
   },
   "note": "slice, withRetirementPutBack, ownBytes, routeDelta and retirementSaving are measured on the slice's own tree before the merge (abfdb56; no route module changed after 9df762c), where the put-back was built: S5 books its gross additions there, and the lead books the saving there. This block restates the merged build: its route less the integrated base is wp2's own bytes, the other packages' own and the shared pool's, exactly (the lead's merge check, assertBookingsAddUp)."
