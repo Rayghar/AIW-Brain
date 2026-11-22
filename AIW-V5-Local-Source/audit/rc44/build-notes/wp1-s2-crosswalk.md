@@ -335,7 +335,7 @@ The verifier's verdict on 7008c39 is *merge*, with two new problems; the lead cl
   released navigation and resolves no identity (`resolves: false`). Case: S2.4, the row-first ordering, after the
   adapter concept's release (seen red: the entry read `released`, `resolves: true`).
 - **An edit of a rejected row passed the bound.** An edit lapses a rejection, so the row stands again: it is now held to
-  the bound of 24 standing rows as a proposal is, in the same words. Case: S2.14, with 24 rows standing the person's
+  the bound of 24 standing rows as a proposal is. Case: S2.14, with 24 rows standing the person's
   edit of the rejected row is refused and writes nothing, and is taken once a row is retired; never more than 24 stand
   (seen red: the edit was accepted).
 - Both changes are in server-only modules (knowledge-concepts.js, knowledge-concept-commands.js): no route bytes.
@@ -372,4 +372,32 @@ S1 to S5 of 2026-11-22 settle them, and all are done on rc44/wp1-s2-lead, cases 
 - **S5, one resolver, read once** (should-fix 2). resolveConcept and conceptAliases share `resolveIn(rows, concepts, id,
   scheme)`; the view reads the released rows and concepts once, not once per row.
 - Wording (should-fix 4): done with S1.
+- Suites on this head: rc44-wp1-knowledge 57 passed, 0 failed, 3 pending.
+
+### After the second narrow review (2026-11-22)
+
+The narrow review of 950d98f asked for changes (two must-fix, three should-fix, two design concerns); the lead's rulings
+S6 to S9 settle them, done on rc44/wp1-s2-lead, cases first.
+
+- **S6, the one-alias rule at every door to verified** (must-fix 1). `oneAlias(document, row)`, exported from
+  knowledge-concept-commands.js, is asked at a second person's verification and at an edit that revives a standing
+  review (an edit back to the content the review covered). Case S2.4: an external row edited away and back while a
+  handbook row of the same alias was verified for another concept, and the same in one scheme (playbook), are each
+  refused in the rule's words and write nothing (seen red on 950d98f: the edit back was accepted and the row read
+  verified). `admit(knowledgeState, conceptId, row)` is exported at module scope too: S3's organisation releases and S4's
+  import call both.
+- **S7, the review door's guard pinned** (should-fix 1). S2.14: at the bound a second person's verification of a proposed
+  row is taken and 24 still stand.
+- **S8, one reading of an alias** (must-fix 2, design concern 2). resolveIn answers an alias a scheme names only when the
+  bare id names the same concept. Case S2.4 grafts a pair held from before (two verified, released `same` rows of
+  SYN-S001 in the external and handbook schemes for two concepts): resolveConcept answers null with no scheme, with
+  'external' and with 'handbook'; each view entry reads verified, register verified, release resolves false, releaseId
+  null; neither concept's reading lists the row as released. Mutation: without the bare-id agreement, S2.4 fails
+  ('SYN-S001 names no concept (scheme external)'); restored. The notes' earlier 'seen red on 043c128' line is about the
+  five-relation assertion only.
+- **S9, reading once** (should-fix 3). resolveConcept and conceptAliases read the released concepts once per call and
+  pass them to releasedCrosswalk; the stale comment and the duplicate guard are gone.
+- Contracts for later slices: the bound is 24 rows that stand per concept, asked through `admit`; one alias names one
+  concept in every scheme, asked through `oneAlias`, wherever a row comes to stand or to read verified; the known limit of
+  S4 (recovery) stands.
 - Suites on this head: rc44-wp1-knowledge 57 passed, 0 failed, 3 pending.

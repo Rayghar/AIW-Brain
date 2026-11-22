@@ -296,6 +296,52 @@ add('S2.4 (one identity): a second verified `same` row for one (scheme, alias) i
       const b = await S.ok('knowledge.crosswalk', {conceptId: 'PAT-ADAPTER', scheme: 'handbook', aliasId: 'SYN-S001', label: 'Adapter (synthetic handbook)', relation: 'same', evidenceClaimId: evidence}, 'architect');
       await S.refused(/^handbook SYN-S001 is already the same as PAT-STRANGLER-FIG in the external scheme \(KA-\d{4}, verified\): one alias names one concept\. Reject or retire that row first\.$/, 'knowledge.crosswalk-review', {...ROW_REVIEW, id: b}, 'reviewer');
     } finally { S.close(); } }
+  // (rulings S6 and S7) every way a row comes to read verified asks the one-alias rule: an edit back to the content a
+  // standing review covered revives that review, so it is refused when another concept bears the alias meanwhile, in
+  // another scheme and in the same one; a refused edit writes nothing
+  { const {S, sourceId} = await strangler({second: true});
+    try {
+      const evidence = await S.ok('knowledge.claim', {sourceId, lineStart: 1, lineEnd: 1, subjectId: 'The synthetic handbook entry', predicate: 'names', statement: 'The entry is SYN-S001, the strangler fig.', claimType: 'definition'}, 'importer');
+      const A = {conceptId: 'PAT-STRANGLER-FIG', scheme: 'external', aliasId: 'SYN-S001', label: 'Strangler fig (an external register)', relation: 'same', note: 'The register names it so.', evidenceClaimId: evidence};
+      const a = await S.ok('knowledge.crosswalk', A, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: a}, 'reviewer');
+      await S.ok('knowledge.crosswalk', {...A, id: a, label: 'Strangler fig (renamed)', reason: 'A clearer label.'}, 'architect'); assert.equal(KC.crosswalkRecords(S.document).find(r => r.id === a).state, 'proposed');
+      const b = await S.ok('knowledge.crosswalk', {conceptId: 'PAT-ADAPTER', scheme: 'handbook', aliasId: 'SYN-S001', label: 'Adapter (synthetic handbook)', relation: 'same', evidenceClaimId: evidence}, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: b}, 'reviewer');
+      await S.refused(/^external SYN-S001 is already the same as PAT-ADAPTER in the handbook scheme \(KA-\d{4}, verified\): one alias names one concept\. Reject or retire that row first\.$/, 'knowledge.crosswalk', {...A, id: a, reason: 'Back to the first label.'}, 'architect');
+      assert.equal(KC.crosswalkRecords(S.document).find(r => r.id === a).state, 'proposed', 'the refused edit back revived nothing');
+      const c = await S.ok('knowledge.crosswalk', P_STRANGLER, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: c}, 'reviewer');
+      await S.ok('knowledge.crosswalk', {...P_STRANGLER, id: c, label: 'Strangler (renamed)', reason: 'A clearer label.'}, 'architect');
+      const d = await S.ok('knowledge.crosswalk', {...P_STRANGLER, conceptId: 'PAT-ADAPTER', label: 'Strangler as an adapter'}, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: d}, 'reviewer');
+      await S.refused(/^playbook P-STRANGLER is already the same as PAT-ADAPTER \(KA-\d{4}, verified\): one alias names one concept\. Reject or retire that row first\.$/, 'knowledge.crosswalk', {...P_STRANGLER, id: c, reason: 'Back to the first label.'}, 'architect');
+    } finally { S.close(); } }
+  // (ruling S8) a pair held from before (two verified, released `same` rows of one alias in two schemes for two concepts,
+  // as a document written before S2 may hold): no form of the resolver names either concept, and the concept view reads
+  // neither row as released
+  { const {S, sourceId, release} = await strangler();
+    try {
+      const evidence = await S.ok('knowledge.claim', {sourceId, lineStart: 1, lineEnd: 1, subjectId: 'The synthetic handbook entry', predicate: 'names', statement: 'The entry is SYN-S001, the strangler fig.', claimType: 'definition'}, 'importer');
+      const A = {conceptId: 'PAT-STRANGLER-FIG', scheme: 'external', aliasId: 'SYN-S001', label: 'Strangler fig (an external register)', relation: 'same', note: 'The register names it so.', evidenceClaimId: evidence};
+      const a = await S.ok('knowledge.crosswalk', A, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: a}, 'reviewer'); await release();
+      const verifiedA = clone(row(S.document, a));
+      await S.ok('knowledge.crosswalk', {...A, id: a, label: 'Strangler fig (renamed)', reason: 'A clearer label.'}, 'architect');
+      // another concept, with a handbook row of the same alias verified while the first reads proposed, then released
+      const record = await S.ok('knowledge.concept', {...STRANGLER, conceptId: 'PAT-CIRCUIT-BREAKER', title: 'Circuit breaker'}, 'importer');
+      const claim = await S.ok('knowledge.claim', {...DEFINITION, sourceId, subjectId: 'PAT-CIRCUIT-BREAKER'}, 'importer');
+      await S.ok('knowledge.concept', {...STRANGLER, conceptId: 'PAT-CIRCUIT-BREAKER', title: 'Circuit breaker', id: record, forms: [{type: 'definition', claimId: claim}]}, 'importer');
+      await S.ok('knowledge.review', {...F.REVIEW, formChecked: true, id: claim}, 'reviewer');
+      const b = await S.ok('knowledge.crosswalk', {conceptId: 'PAT-CIRCUIT-BREAKER', scheme: 'handbook', aliasId: 'SYN-S001', label: 'Circuit breaker (synthetic handbook)', relation: 'same', evidenceClaimId: evidence}, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: b}, 'reviewer');
+      await S.ok('knowledge.concept-review', {...CONCEPT_REVIEW, id: record}, 'reviewer');
+      const rel = await S.ok('knowledge.release', {...F.REVIEW, title: 'Synthetic circuit breaker 1', claimIds: [claim]}, 'releaser'); await S.ok('knowledge.activate', {...F.REVIEW, id: rel, stamp: K.knowledgeStamp(S.document)}, 'releaser');
+      // the pair, as a document from before holds it: the first row back as it was verified and released
+      const q = clone(S.document); q.knowledge.crosswalk = q.knowledge.crosswalk.map(r => r.id === a ? verifiedA : r);
+      assert.deepEqual(KC.crosswalkRecords(q).filter(r => r.aliasId === 'SYN-S001').map(r => [r.scheme, r.conceptId, r.state]), [['external', 'PAT-STRANGLER-FIG', 'verified'], ['handbook', 'PAT-CIRCUIT-BREAKER', 'verified']], 'the pair is there, both verified');
+      assert.deepEqual(KC.releasedCrosswalk(q).filter(h => h.row.aliasId === 'SYN-S001').map(h => h.row.id).sort(), [a, b].sort(), 'and both released');
+      for (const scheme of [null, 'external', 'handbook']) assert.equal(KC.resolveConcept(q, 'SYN-S001', scheme), null, 'SYN-S001 names no concept (scheme ' + scheme + ')');
+      for (const [conceptId, id] of [['PAT-STRANGLER-FIG', a], ['PAT-CIRCUIT-BREAKER', b]]) {
+        const e = KC.conceptAliases(q, conceptId).find(x => x.rowId === id);
+        assert.deepEqual([e.state, e.register, e.release?.relation, e.release?.resolves, e.releaseId], ['verified', 'verified', 'same', false, null], conceptId + ': the view reads the pair as the resolver does: ' + JSON.stringify(e));
+        assert.ok(!KC.conceptReading(q, conceptId).aliases.some(x => x.rowId === id && x.state === 'released'), conceptId + ': the concept view lists the row as no released alias');
+      }
+    } finally { S.close(); } }
 });
 
 // ------------------------------------------------------------------------------------------------ 5
@@ -641,6 +687,10 @@ add('S2.14 (ruling P4): the bound of 24 rows per concept counts the rows that st
     // a second person's verification of a rejected row, at the bound and once a place is free
     await S.ok('knowledge.crosswalk-confirm', {...PERSON_STEP, id: more[1]}, 'steward'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, decision: 'rejected', id: more[1], reason: 'Not a mechanism of this concept.'}, 'reviewer');
     await S.ok('knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'external', aliasId: 'EXT-FILL-48', label: 'Filler 48', relation: 'narrower', note: 'Proposed by an agent account.'}, 'bot'); assert.equal(standing(), 24);
+    // (the review's should-fix 1) a second person's verification of a proposed row is taken at the bound: it changes what
+    // stands by nothing
+    await S.ok('knowledge.crosswalk-confirm', {...PERSON_STEP, id: more[3]}, 'steward'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: more[3], reason: 'A mechanism of this concept.'}, 'reviewer');
+    assert.deepEqual([KC.crosswalkRecords(S.document).find(r => r.id === more[3]).state, standing()], ['verified', 24], 'a verification of a row that stands is taken at the bound');
     await S.refused(AGAIN(more[1]), 'knowledge.crosswalk-review', {...ROW_REVIEW, id: more[1], reason: 'On reflection it is.'}, 'reviewer');
     assert.equal(KC.crosswalkRecords(S.document).find(r => r.id === more[1]).state, 'rejected', 'the refused verification wrote nothing');
     await S.ok('knowledge.crosswalk-retire', {...PERSON_STEP, id: more[2], reason: 'Not a mechanism of this concept.'}, 'steward');
