@@ -1574,7 +1574,11 @@ await block('L3 restore rule', () => {
 // of the suite, so no earlier block reads it).
 const TRACKING = {
   id: 'zt-tracking',
-  commands: {'tracking.mode': {apply(p, command, at) { const raw = command.payload || {}; p.trackingProbe = {mode: String(raw.mode || ''), target: String(raw.target || ''), at}; return {document: p}; }}},
+  commands: {'tracking.mode': {apply(p, command, at) { const raw = command.payload || {}; p.trackingProbe = {mode: String(raw.mode || ''), target: String(raw.target || ''), at};
+    // (ruling R2; set-up only, by the package's own command, not its tracker) a decision made AIW's proposal; a contract made one by the chapter's reading
+    if (raw.mode === 'propose') p.decisions.records.find(r => r.id === raw.target).state = 'proposed';
+    if (raw.mode === 'seed') { const c = p.interfaces.contracts.find(r => r.id === raw.target); c.origin = 'inherited'; c.revision = 1; delete c.state; }
+    return {document: p}; }}},
   track(prior, next, command, at) {
     const t = next.trackingProbe; if (!t || command.type !== 'tracking.mode') return;
     const records = next.decisions.records, target = records.find(r => r.id === t.target), was = structuredClone(target);
@@ -1588,6 +1592,14 @@ const TRACKING = {
     if (t.mode === 'stamp') { target.provenance = {...target.provenance, author: {kind: 'person', by: C, at}}; return; }
     // it confirms a record: a tracker's call is no person's confirmation, whoever sent the commit
     if (t.mode === 'confirm') { target.confirmed = true; return; }
+    // (ruling R2: a tracker mends content; it decides nothing and makes nothing) it mends a record and moves every lifecycle and review field of it
+    if (t.mode === 'decide') { Object.assign(target, {rationale: target.rationale + ' (decided by the tracker)', state: 'proposed', origin: 'suggestion', keptAt: at, confirmed: true, targetConfirmed: true, review: {actor: C, account: 'person', at, note: 'Kept by the tracker.'}, reviews: [{by: C, at, outcome: 'kept'}], provenance: {...target.provenance, reviewed: {by: C, at, how: 'confirmed'}, draft: {by: 'sol', job: 'tracker'}, source: 'Written by the tracker'}}); return; }
+    // it mends AIW's proposal and keeps it on the way
+    if (t.mode === 'keep') { target.rationale += ' (mended while proposed)'; delete target.state; return; }
+    // it makes a contract that is AIW's proposal by the chapter's reading (inherited, at its first revision) a person's by moving its revision
+    if (t.mode === 'unseed') { const c = next.interfaces.contracts.find(r => r.id === t.target); c.purpose += ' (mended by the tracker)'; c.revision += 1; return; }
+    // it removes a record of a path it states
+    if (t.mode === 'remove') { records.splice(records.indexOf(target), 1); return; }
     // what assertTrackerStaysInPaths refuses: a built-in collection it does not state, the journal rewritten, prior changed
     if (t.mode === 'outside') next.quality.drivers[0].title += ' (changed outside its paths)';
     if (t.mode === 'rewrite') next.changes.events[0].title = 'Rewritten by the tracker';
@@ -1595,7 +1607,7 @@ const TRACKING = {
     if (t.mode === 'prior') prior.decisions.records[0].rationale += ' (prior changed)';
     if (t.mode === 'journal') { next.changes.events.push({id: 'CHG-' + String(++next.changes.counter).padStart(3, '0'), source: {chapter: 3, id: target.id, kind: 'tracking'}, title: 'Read again', at, fields: [], items: []}); target.rationale += ' (mended and journalled)'; }
   },
-  trackPaths: ['decisions.records'],
+  trackPaths: ['decisions.records', 'interfaces.contracts'],
   designKeys: ['trackingProbe']
 };
 await block('O2 tracked paths', async () => {
@@ -1631,14 +1643,22 @@ await block('O2 tracked paths', async () => {
   const {assertTrackerStaysInPaths} = R; assert.equal(typeof assertTrackerStaysInPaths, 'function', 'rc44-s0-readings.mjs states assertTrackerStaysInPaths(extension, cases)');
   { const base = reference('bank-payment'), id = base.decisions.records[0].id; base.changes.events.push({id: 'CHG-001', title: 'An earlier change', at: AT, fields: [], items: []}); base.changes.counter = 1;
     const kase = mode => { const command = {type: 'tracking.mode', payload: {mode, target: id}}; return {prior: base, next: withFinalReview(TRACKING.commands['tracking.mode'].apply(structuredClone(base), command, AT).document), command, at: AT}; };
-    const read = assertTrackerStaysInPaths(TRACKING, [kase('mend'), kase('journal'), kase('fabricate'), kase('')]); assert.deepEqual(read, {cases: 4, changed: {'decisions.records': 2}, journalled: 1}, 'what the tracker changed in its paths and its journal: ' + JSON.stringify(read));
+    // (ruling R2: the package now also states interfaces.contracts; was: changed {'decisions.records': 2}) what the tracker changed in its paths and its journal
+    const read = assertTrackerStaysInPaths(TRACKING, [kase('mend'), kase('journal'), kase('fabricate'), kase('')]); assert.deepEqual(read, {cases: 4, changed: {'decisions.records': 2, 'interfaces.contracts': 0}, journalled: 1}, 'what the tracker changed in its paths and its journal: ' + JSON.stringify(read));
     for (const [mode, re] of [['outside', /zt-tracking's tracker changed “quality\.drivers” outside its own keys, its trackPaths and the change journal \(case 1, tracking\.mode\)/], ['rewrite', /zt-tracking's tracker changed the change journal's earlier events \(case 1, tracking\.mode\): a tracker only adds to the journal/], ['counter', /zt-tracking's tracker moved the change journal's counter by 1 for 0 events it added \(case 1, tracking\.mode\)/], ['prior', /zt-tracking's tracker changed the document as the request found it \(prior, case 1, tracking\.mode\)/]]) assert.throws(() => assertTrackerStaysInPaths(TRACKING, [kase(mode)]), re, mode);
-    assert.equal(assertTrackerStaysInPaths(TRACKING, [kase('add')]).changed['decisions.records'], 1, 'a record added to a path it states is inside its paths');
+    // (ruling R2; was: "a record added to a path it states is inside its paths", changed['decisions.records'] equal to 1) inside its paths a tracker
+    // adds no record and removes none, and none of the lifecycle and review fields of a record moves: the fields the boundary restores
+    assert.deepEqual(R.TRACKED_STANDING, boundary.TRACKED_STANDING, 'the helper holds the fields the boundary restores (rc44-s0-readings.mjs TRACKED_STANDING)');
+    assert.deepEqual(boundary.TRACKED_STANDING, ['state', 'origin', 'keptAt', 'confirmed', 'targetConfirmed', 'review', 'reviews', 'provenance'], 'the lifecycle and review fields, with the fields the lifecycle family reads as standing and the provenance, which is the server\'s');
+    const PATHS_ONLY = 'a tracker mends the records of its trackPaths; it makes none and removes none\\.$', FIELDS_ONLY = 'a tracker mends content; whether and how a record stands, its confirmations, reviews and provenance are the lifecycle family\'s and the boundary\'s\\.$';
+    for (const [mode, re] of [['add', new RegExp('^Error: zt-tracking\'s tracker added ADR-990 to “decisions\\.records” \\(case 1, tracking\\.mode\\): ' + PATHS_ONLY)], ['remove', new RegExp('^Error: zt-tracking\'s tracker removed ' + id + ' from “decisions\\.records” \\(case 1, tracking\\.mode\\): ' + PATHS_ONLY)],
+      ['confirm', new RegExp('^Error: zt-tracking\'s tracker changed “confirmed” of ' + id + ' in “decisions\\.records” \\(case 1, tracking\\.mode\\): ' + FIELDS_ONLY)], ['decide', new RegExp('^Error: zt-tracking\'s tracker changed “state”, “origin”, “keptAt”, “confirmed”, “targetConfirmed”, “review”, “reviews”, “provenance” of ' + id + ' in “decisions\\.records” \\(case 1, tracking\\.mode\\): ' + FIELDS_ONLY)]])
+      assert.throws(() => assertTrackerStaysInPaths(TRACKING, [kase(mode)]), re, mode);
     assert.throws(() => assertTrackerStaysInPaths({id: 'xy'}, [kase('mend')]), /xy states no tracker/); assert.throws(() => assertTrackerStaysInPaths(TRACKING, []), /no case/); }
   // through the server: who sent the commit stamps what the tracker changed; an answer is ignored; an added record is no one's
   const h = await harness(), d = () => h.state.document, ok = (r, why) => assert.equal(r.status, 200, why + ': ' + JSON.stringify(r.body).slice(0, 300)), dec = id => d().decisions.records.find(r => r.id === id), stamp = id => dec(id).provenance?.author;
   try {
-    const [one, two] = d().decisions.records.map(r => r.id);
+    const [one, two, three] = d().decisions.records.map(r => r.id);
     // B saves both decisions first, so each is a person's other than the one who commits next
     for (const id of [one, two]) ok(await h.send('decision.save', {...dec(id), rationale: dec(id).rationale + ' (B\'s wording)'}, B), 'B saves ' + id);
     assert.deepEqual([stamp(one)?.kind, stamp(one)?.by, stamp(two)?.by], ['person', B, B], 'both are B\'s');
@@ -1651,16 +1671,40 @@ await block('O2 tracked paths', async () => {
     check('an agent account\'s commit', () => assert.deepEqual([stamp(one)?.kind, stamp(one)?.by, stamp(one)?.at, authorship(dec(one)).kind], ['sol-draft', AGENT, d().trackingProbe.at, 'sol-draft'], 'the record the tracker mended is stamped as the commit\'s, the agent account\'s draft'));
     // a fabricated answer that names a record the call did not change stamps nothing
     { const was = JSON.stringify(dec(two)); ok(await h.send('tracking.mode', {mode: 'fabricate', target: two}), 'a fabricated answer'); check('a fabricated answer', () => assert.equal(JSON.stringify(dec(two)), was, 'the record the answer names is as it was, B\'s')); }
-    // a record the tracker adds to a path it states is no one's, whatever stamp it wrote and whatever it answered
-    ok(await h.send('tracking.mode', {mode: 'add', target: two}), 'an added record');
-    check('an added record', () => { const added = dec('ADR-990'); assert.ok(added, 'the tracker added it'); assert.deepEqual([added.provenance?.author, added.provenance?.reviewed], [undefined, undefined], 'the record a tracker adds is stamped as no one\'s: ' + JSON.stringify(added.provenance)); });
+    // (ruling R2; was: the record a tracker adds to a path it states is stamped as no one's) a tracker call that adds a record to a path it states is
+    // refused, in a person's commit and in an agent account's: the commit is not stored, and the answer names the package (a mend changes records; it
+    // does not make them); so is one that removes a record (it does not unmake them either)
+    const REFUSED = what => new RegExp('^This action could not be completed: the design package zt-tracking\'s tracker ' + what + '\\. A tracker mends the records of the collections it states \\(trackPaths\\); it decides nothing and makes nothing, so nothing was saved\\.$');
+    const read = (doc, path) => JSON.stringify(path.split('.').reduce((v, k) => v?.[k], doc));
+    const refusedCall = async (why, payload, as, what, paths) => { const before = structuredClone(await h.read()), r = await h.send('tracking.mode', payload, as), after = await h.read();
+      check(why, () => { assert.equal(r.status, 500, 'refused: ' + JSON.stringify(r.body).slice(0, 300)); assert.equal(r.body.code, 'fault'); assert.match(r.error, REFUSED(what)); assert.equal(after.revision, before.revision, 'the commit is not stored'); for (const path of paths) assert.equal(read(after.document, path), read(before.document, path), path + ' is as it was'); }); };
+    for (const as of [A, AGENT]) await refusedCall('an added record (' + as + ')', {mode: 'add', target: two}, as, 'added ADR-990 to decisions\\.records', ['decisions.records', 'trackingProbe']);
+    await refusedCall('a removed record', {mode: 'remove', target: one}, A, 'removed ' + one + ' from decisions\\.records', ['decisions.records', 'trackingProbe']);
     // a stamp a tracker writes on a record whose content it leaves is not kept: the stamp is the boundary's
     { const was = JSON.stringify(stamp(two)); ok(await h.send('tracking.mode', {mode: 'stamp', target: two}), 'a stamp of its own'); check('a stamp of the tracker\'s own', () => assert.equal(JSON.stringify(stamp(two)), was, 'B\'s stamp stands')); }
-    // (not a defect of 5cae40a, where nothing stamped it: what the boundary's stamp must not do) a confirmation the tracker sets is no person's review
-    { const was = JSON.stringify(dec(two).provenance); ok(await h.send('tracking.mode', {mode: 'confirm', target: two}), 'a confirmation of its own'); check('a confirmation the tracker sets', () => { assert.equal(dec(two).confirmed, true); assert.equal(JSON.stringify(dec(two).provenance), was, 'A, who sent the commit, confirmed nothing: ' + JSON.stringify(dec(two).provenance)); }); }
+    // (ruling R2; was: "a confirmation the tracker sets is no person's review": confirmed stays true and the provenance is as it was) a confirmation the
+    // tracker sets is restored from the boundary's copy, in a person's commit and in an agent account's: the record is as it was, byte for byte, B's
+    for (const as of [A, AGENT]) { const was = JSON.stringify(dec(two)); ok(await h.send('tracking.mode', {mode: 'confirm', target: two}, as), 'a confirmation of its own (' + as + ')'); check('a confirmation the tracker sets (' + as + ')', () => assert.equal(JSON.stringify(dec(two)), was, 'the confirmation is restored and nothing is stamped: ' + JSON.stringify(dec(two)).slice(0, 300))); }
+    // (ruling R2) a tracker call that mends a record and moves its lifecycle and review fields: the boundary restores each of them from its copy and stamps
+    // the content change as the commit's, a person's and an agent account's; nothing of the tracker's provenance stands
+    ok(await h.send('decision.save', {...dec(three), rationale: dec(three).rationale + ' (B\'s wording)'}, B), 'B saves ' + three);
+    for (const [as, kind] of [[A, 'person'], [AGENT, 'sol-draft']]) { const was = structuredClone(dec(three)); ok(await h.send('tracking.mode', {mode: 'decide', target: three}, as), 'a decision the tracker makes (' + as + ')');
+      check('the lifecycle and review fields restored (' + as + ')', () => { const now = dec(three); assert.ok(now.rationale.endsWith(' (decided by the tracker)'), 'the tracker mended it');
+        for (const k of ['state', 'origin', 'keptAt', 'confirmed', 'targetConfirmed', 'review', 'reviews']) assert.deepEqual(now[k], was[k], '“' + k + '” is as the record had it: ' + JSON.stringify(now[k]));
+        const {author, ...rest} = now.provenance || {}, {author: earlier, ...wasRest} = was.provenance || {};
+        assert.deepEqual([author?.kind, author?.by, author?.at, rest], [kind, as, d().trackingProbe.at, wasRest], 'its provenance is the boundary\'s: the content change stamped as the commit\'s, nothing of the tracker\'s (' + JSON.stringify(now.provenance) + ', was ' + JSON.stringify(earlier) + ')');
+        assert.equal(authorship(now).kind, kind, 'and read as the commit\'s'); }); }
+    // a tracker that keeps AIW's proposal while it mends it keeps nothing: the record stays a proposal, its content change stamped as the commit's
+    ok(await h.send('tracking.mode', {mode: 'propose', target: three}, B), 'the package\'s own command makes ' + three + ' a proposal'); assert.equal(dec(three).state, 'proposed');
+    ok(await h.send('tracking.mode', {mode: 'keep', target: three}), 'a keep the tracker makes');
+    check('a proposal the tracker keeps', () => { assert.ok(dec(three).rationale.endsWith(' (mended while proposed)'), 'the tracker mended it'); assert.equal(dec(three).state, 'proposed', 'it is AIW\'s proposal still'); assert.deepEqual([stamp(three)?.kind, stamp(three)?.by, dec(three).provenance?.reviewed], ['person', A, undefined], 'stamped as A\'s commit, kept by no one'); });
+    // where the chapter's reading of AIW's proposal rests on a field that is content or bookkeeping (an inherited contract at its first revision), what
+    // cannot be restored without undoing the mend is refused instead: the tracker would decide that the proposal is a person's record
+    const contract = d().interfaces.contracts[0]; ok(await h.send('tracking.mode', {mode: 'seed', target: contract.id}, B), 'the package\'s own command makes ' + contract.id + ' AIW\'s proposal by the chapter\'s reading');
+    await refusedCall('a proposal the tracker unmakes by its revision', {mode: 'unseed', target: contract.id}, A, 'would change whether ' + contract.ref + ' in interfaces\\.contracts is AIW\'s proposal', ['interfaces.contracts', 'trackingProbe']);
     assert.deepEqual(misses, [], 'the boundary, not the package, says what a tracker changed: ' + misses.join(' | '));
   } finally { h.close(); }
-  pass('O2: trackPaths is checked at start (it needs track, is a list of chapter.collection paths, names no collection of the package\'s own); through the server the record a tracker mends in a path it states, answering nothing, is stamped as the commit\'s, a person\'s and an agent account\'s; a fabricated answer stamps nothing; a record the tracker adds is no one\'s; a stamp the tracker writes itself is not kept, and a confirmation it sets is no person\'s review; assertTrackerStaysInPaths refuses a tracker that changes a built-in collection it does not state, rewrites the journal, moves its counter without an event or changes prior');
+  pass('O2, R1, R2: trackPaths is checked at start (it needs track, is a list of chapter.collection paths, each a built-in record collection the lifecycle family keeps and the provenance reader reads, never the review\'s, the change journal\'s, the workbench\'s or the members\', never a collection a registered package states, each once); through the server the record a tracker mends in a path it states, answering nothing, is stamped as the commit\'s, a person\'s and an agent account\'s; a fabricated answer stamps nothing; a stamp the tracker writes itself is not kept; a confirmation it sets, and every lifecycle and review field it moves while it mends, is restored from the boundary\'s copy, a person\'s commit and an agent account\'s alike, and a proposal stays one; a call that adds or removes a record, or that moves the chapter\'s reading of a proposal through content or bookkeeping, is refused, nothing is stored and the answer names the package; assertTrackerStaysInPaths refuses a tracker that changes a built-in collection it does not state, rewrites the journal, moves its counter without an event or changes prior, and inside its paths one that adds or removes a record or moves a lifecycle or review field');
 });
 
 assert.deepEqual(failed, [], 'every rc44 S0 block passes');

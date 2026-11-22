@@ -95,10 +95,15 @@ export function assertBuiltInChainsUnchanged(base, withRecords) {
 // unseen. For each case {prior, next, command, at} (next: the commit's document as the command left it) it runs
 // extension.track(prior, a copy of next, command, at) and compares: prior is as it was; the events of next stand as
 // they were, in their order, and the journal's counter moves by the events the tracker added; the whole document
-// outside those keys is as it was. Throws with the key and the case named; answers {cases, changed: {path: the cases
-// whose call changed it}, journalled: the events the calls added}.
+// outside those keys is as it was. And inside its trackPaths (the lead's ruling R2 of 2026-11-22: a tracker mends
+// content; it decides nothing and makes nothing): no record is added and none removed, and none of TRACKED_STANDING
+// moves on a record (the fields the boundary restores from its copy: design-extension-boundary.js TRACKED_STANDING,
+// which S0's suite holds equal to this list; stated here because this file imports only modules of the baseline).
+// Throws with the key, the record and the case named; answers {cases, changed: {path: the cases whose call changed it},
+// journalled: the events the calls added}.
+export const TRACKED_STANDING = Object.freeze(['state', 'origin', 'keptAt', 'confirmed', 'targetConfirmed', 'review', 'reviews', 'provenance']);
 export function assertTrackerStaysInPaths(extension, cases) {
-  const name = extension?.id || 'the package', plainOf = v => (v && typeof v === 'object' && !Array.isArray(v) ? v : {}), list = v => (Array.isArray(v) ? v : []);
+  const name = extension?.id || 'the package', plainOf = v => (v && typeof v === 'object' && !Array.isArray(v) ? v : {}), list = v => (Array.isArray(v) ? v : []), refOf = r => (r && typeof r === 'object' ? r.ref || r.code || r.id : null) || 'a record';
   if (typeof extension?.track !== 'function') throw Error('assertTrackerStaysInPaths: ' + name + ' states no tracker.');
   if (!Array.isArray(cases) || !cases.length) throw Error('assertTrackerStaysInPaths: no case for ' + name + '\'s tracker.');
   const paths = list(extension.trackPaths).filter(x => typeof x === 'string'), out = {cases: 0, changed: Object.fromEntries(paths.map(x => [x, 0])), journalled: 0};
@@ -115,6 +120,18 @@ export function assertTrackerStaysInPaths(extension, cases) {
     if (added < 0 || JSON.stringify(after.slice(0, before.length)) !== JSON.stringify(before)) throw Error(name + '\'s tracker changed the change journal\'s earlier events ' + where + ': a tracker only adds to the journal.');
     const moved = (next.changes?.counter ?? 0) - (c.next.changes?.counter ?? 0); if (moved !== added) throw Error(name + '\'s tracker moved the change journal\'s counter by ' + moved + ' for ' + added + ' events it added ' + where + '.');
     const key = keyOf(outside(c.next, 'changes' in c.next), outside(next, 'changes' in c.next)); if (key) throw Error(name + '\'s tracker changed “' + key + '” outside its own keys, its trackPaths and the change journal ' + where + ': state the built-in collections it mends as trackPaths, so that the boundary stamps what it changes, or leave them as they are.');
+    for (const path of paths) {
+      const was = new Map(), loose = [], made = ' to “' + path + '” ' + where + ': a tracker mends the records of its trackPaths; it makes none and removes none.';
+      for (const r of list(at(c.next, path))) if (r && typeof r === 'object' && r.id != null) was.set(r.id, [...was.get(r.id) || [], r]); else loose.push(JSON.stringify(r));
+      for (const r of list(at(next, path))) {
+        const id = r && typeof r === 'object' ? r.id : null, old = id != null ? was.get(id)?.shift() : undefined;
+        if (old === undefined) { const i = id == null ? loose.indexOf(JSON.stringify(r)) : -1; if (i < 0) throw Error(name + '\'s tracker added ' + refOf(r) + made); loose.splice(i, 1); continue; }
+        const moved = TRACKED_STANDING.filter(k => JSON.stringify(old[k]) !== JSON.stringify(r[k]));
+        if (moved.length) throw Error(name + '\'s tracker changed ' + moved.map(k => '“' + k + '”').join(', ') + ' of ' + refOf(old) + ' in “' + path + '” ' + where + ': a tracker mends content; whether and how a record stands, its confirmations, reviews and provenance are the lifecycle family\'s and the boundary\'s.');
+      }
+      const gone = [...was.values()].flat()[0] ?? (loose.length ? JSON.parse(loose[0]) : undefined);
+      if (gone !== undefined) throw Error(name + '\'s tracker removed ' + refOf(gone) + made.replace(' to “', ' from “'));
+    }
     out.cases++; out.journalled += added; for (const path of paths) if (JSON.stringify(at(c.next, path)) !== JSON.stringify(at(next, path))) out.changed[path]++;
   });
   return out;

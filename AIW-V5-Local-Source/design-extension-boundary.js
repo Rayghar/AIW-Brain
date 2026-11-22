@@ -37,7 +37,7 @@ import {verifierRefusal} from './public/architecture-obligations.js';
 import {registerReviewTypes} from './authorship.js';
 import {registerUndoExtensions} from './public/action-undo-domain.js';
 import {innerCommands, listAt, reviewOf, stampChanged, stampTracked} from './public/provenance.js';
-import {isRetiredCommand} from './public/canonical-command.js';
+import {isRetiredCommand, LIFECYCLE_RULES} from './public/canonical-command.js';
 import {inheritedFindings, findingCause} from './public/review-domain.js';
 import {createProject} from './shared/projects-domain.js';
 import {withFinalReview} from './public/review-domain.js';
@@ -189,21 +189,50 @@ export function markPackages(prior, next, command) {
 // that names a record no longer there) states those collections as trackPaths. Before each call of a tracker the
 // boundary copies the records of those paths, and after it stamps as the commit's each record whose content the call
 // changed (provenance.js stampTracked, with the copy as `was`), as it stamps a package's own records: its stamp says who
-// sent the commit that changed it, never who wrote it before, and a stamp or a review the tracker writes is not kept. A
-// record the call adds to such a path is no one's. What a tracker answers is ignored. That a tracker changes no other
-// built-in collection is held by each package's suite (rc44-s0-readings.mjs assertTrackerStaysInPaths).
+// sent the commit that changed it, never who wrote it before, and a stamp or a review the tracker writes is not kept.
+// What a tracker answers is ignored. That a tracker changes no other built-in collection, and inside its trackPaths adds
+// and removes no record and moves none of TRACKED_STANDING, is held by each package's suite (rc44-s0-readings.mjs
+// assertTrackerStaysInPaths).
+// A tracker mends content; it decides nothing and makes nothing (the lead's ruling R2 of 2026-11-22). For each record of
+// its trackPaths that a call changed, the boundary puts back from its copy what says whether and how the record stands
+// (TRACKED_STANDING: its state and origin and a need's keptAt, which the lifecycle family reads, its confirmations and
+// reviews, and its provenance, which is the server's) and then stamps the content change as the commit's. A call that
+// adds a record to such a path, or removes one, is refused, and so is one whose change of content or bookkeeping moves
+// the chapter's reading of whether the record is AIW's proposal (canonical-command.js LIFECYCLE_RULES seed, as
+// record-lifecycle.js reads it), which no copy can put back without undoing the mend: the commit is not stored, and
+// the answer names the package (worker.js answers isTrackerRefusal in its words).
+export const TRACKED_STANDING = Object.freeze(['state', 'origin', 'keptAt', 'confirmed', 'targetConfirmed', 'review', 'reviews', 'provenance']);
+const TRACKER_REFUSAL = 'package_tracker';
+export const isTrackerRefusal = error => error?.code === TRACKER_REFUSAL;
+const refuseTracker = (e, what) => { throw Object.assign(Error('This action could not be completed: the design package ' + e.id + '\'s tracker ' + what + '. A tracker mends the records of the collections it states (trackPaths); it decides nothing and makes nothing, so nothing was saved.'), {code: TRACKER_REFUSAL, package: e.id}); };
+const proposalOf = (p, path, r) => !!(typeof LIFECYCLE_RULES[path]?.seed === 'function' ? LIFECYCLE_RULES[path].seed(p, r) : r?.state === 'proposed');
+const refOf = r => (r && typeof r === 'object' ? r.ref || r.code || r.id : null) || 'a record';
 const AUTHOR_FIELDS = ['actor', 'authorKind', 'reviewed', 'account', 'session', 'reason'];
 const eventsOf = p => (Array.isArray(p?.changes?.events) ? p.changes.events : []);
 function unstated(next, from) { for (const event of eventsOf(next).slice(from)) if (event && typeof event === 'object') for (const k of AUTHOR_FIELDS) delete event[k]; }
 // The records of a package's trackPaths in `p`, by id, each as a copy in its JSON text (a document is JSON; in the order
-// they stand, should an id stand twice), read back as a record only where a call changed it.
-const tracked = (p, paths) => paths.map(path => { const out = new Map(); for (const r of listAt(p, path)) if (r && typeof r === 'object' && r.id != null) out.set(r.id, [...out.get(r.id) || [], JSON.stringify(r)]); return [path, out]; });
+// they stand, should an id stand twice), read back as a record only where a call changed it; an entry with no id is
+// kept by its text alone.
+const tracked = (p, paths) => paths.map(path => { const out = new Map(), loose = []; for (const r of listAt(p, path)) if (r && typeof r === 'object' && r.id != null) out.set(r.id, [...out.get(r.id) || [], JSON.stringify(r)]); else loose.push(JSON.stringify(r)); return [path, out, loose]; });
 export function trackExtensions(prior, next, command, at, {author = null} = {}) {
   const inner = innerCommands(command);
   for (const c of inner.includes(command) ? inner : [command, ...inner]) for (const e of EXTENSIONS) if (typeof e.track === 'function') {
     const paths = Array.isArray(e.trackPaths) ? e.trackPaths.filter(x => typeof x === 'string') : [], before = tracked(next, paths), from = eventsOf(next).length;
     e.track(prior, next, c, at); unstated(next, from);
-    for (const [path, was] of before) for (const now of listAt(next, path)) if (now && typeof now === 'object' && now.id != null) { const old = was.get(now.id)?.shift(); if (old === undefined) stampTracked(null, now, author, at); else if (old !== JSON.stringify(now)) stampTracked(JSON.parse(old), now, author, at); }
+    for (const [path, was, loose] of before) {
+      for (const now of listAt(next, path)) {
+        const id = now && typeof now === 'object' ? now.id : null, old = id != null ? was.get(id)?.shift() : undefined;
+        if (old === undefined) { const i = id == null ? loose.indexOf(JSON.stringify(now)) : -1; if (i < 0) refuseTracker(e, 'added ' + refOf(now) + ' to ' + path); loose.splice(i, 1); continue; }
+        if (old === JSON.stringify(now)) continue;
+        const copy = JSON.parse(old);
+        for (const k of TRACKED_STANDING) if (!Object.hasOwn(copy, k)) delete now[k]; else if (JSON.stringify(now[k]) !== JSON.stringify(copy[k])) now[k] = copy[k];
+        if (JSON.stringify(now) === old) continue;
+        if (proposalOf(next, path, copy) !== proposalOf(next, path, now)) refuseTracker(e, 'would change whether ' + refOf(copy) + ' in ' + path + ' is AIW\'s proposal');
+        stampTracked(copy, now, author, at);
+      }
+      const gone = [...was.values()].flat()[0] ?? loose[0];
+      if (gone !== undefined) refuseTracker(e, 'removed ' + refOf(JSON.parse(gone)) + ' from ' + path);
+    }
   }
 }
 // Whether a request of this type may be large (worker.js, beside LARGE_COMMAND_PREFIXES).

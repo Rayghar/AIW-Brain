@@ -281,6 +281,21 @@ Route: the row's name is in `design-extension-parts.js`, which is in no client b
 `stampTracked` and `settle` are server-only; the bytes the build measures are booked in the lead's file (see wp9a's
 notes, "Third fix-up", item 4).
 
+## With wp9a slice 1's fourth fix-up (rulings R1 to R4; 2026-11-22)
+
+Done on `rc44/wp9a-s1-topology-fix-c7`, each case first and seen to fail on `ce6eb90` (the notes of wp9a slice 1,
+"Fourth fix-up", say how). R2 replaces O2's "a record a tracker adds is no one's": such a call is refused.
+
+| Ruling | What S0 gained | Where | Case |
+|---|---|---|---|
+| R1 | The `trackPaths` start check accepts a built-in record collection only: one in both `COLLECTIONS` and `RECORD_PATHS`, none of `finalReview.*` (the narrative with them), `changes.*`, `workbench.*` or `members.*`, no collection a registered package states as its own, each once | `design-extension-parts.js` | block "O2 tracked paths" |
+| R2 | `trackExtensions` restores `TRACKED_STANDING` (state, origin, keptAt, confirmed, targetConfirmed, review, reviews, provenance) of each changed record from its copy, then stamps the content change as the commit's; a call that adds or removes a record of its paths, or moves the chapter's reading of a proposal, is refused (`isTrackerRefusal`; `worker.js` answers its words, 500 `fault`, nothing stored); `assertTrackerStaysInPaths` holds the same inside the paths | `design-extension-boundary.js`, `worker.js` (server only), `rc44-s0-readings.mjs` | block "O2 tracked paths" |
+| R3 | `routeBookings` refuses, with its path, a size file that is not valid JSON or no JSON object | `rc44-s0-readings.mjs` | block "O1 the bookings add up" |
+| R4 | Block 8 reads the files-under-10-KB bucket as a ceiling (at most the gate, at most the base's count plus the script files the slice adds) | `rc44-s0-extensions-validate.mjs` | block "8 client build" |
+
+Route: nothing of this reaches the client (`design-extension-parts.js` is in no bundle; the boundary and `worker.js`
+are the server's).
+
 ## Contract for packages
 
 A package is an optional part of the design model that lives in its own modules. It tells the shared machinery what it
@@ -345,7 +360,7 @@ Every part is optional.
 | `checks` | `{chapter: p => [finding]}` | `document-memo.js` `sharedList`: the chapter's checks, the review, readiness |
 | `commands` | `{type: {apply, staged?, person?, second?, validate?, undo?, large?}}` | `design-extension-boundary.js` (server), `canonical-command.js` `stagedBy` |
 | `track` | `(prior, next, command, at) => void`; it answers nothing, and an answer is ignored (ruling O2, which retired the `[[as it was, as it is]]` answer of ruling M1) | `design-extension-boundary.js` `trackExtensions` (server), for every commit |
-| `trackPaths` | `['chapter.collection']`, beside `track`: the built-in collections the tracker mends; the boundary copies their records before each call and stamps as the commit's each record whose content the call changed; checked at start (it needs `track`, each entry is a `chapter.collection` path, none is the package's own collection) | `design-extension-boundary.js` `trackExtensions`, `provenance.js` `stampTracked` (server); ruling O2 (wp9a slice 1 third fix-up); block "O2 tracked paths" |
+| `trackPaths` | `['chapter.collection']`, beside `track`: the built-in record collections the tracker mends; the boundary copies their records before each call, restores what says how each changed record stands (`TRACKED_STANDING`) and stamps the content change as the commit's; a call that adds or removes a record there, or moves the chapter's reading of a proposal, is refused; checked at start (it needs `track`, each entry is a `chapter.collection` path in both `COLLECTIONS` and `RECORD_PATHS`, none is the review's, the change journal's, the workbench's or the members', none is a registered package's own collection, each once) | `design-extension-boundary.js` `trackExtensions`, `provenance.js` `stampTracked` (server); rulings O2, R1, R2 (wp9a slice 1 third and fourth fix-ups); block "O2 tracked paths" |
 | `lifecycle` | `{path: chapter}` | `record-lifecycle.js` `COLLECTIONS` |
 | `canRestore` | `{path: (p, record) => void}`, on the package's own `lifecycle` collections only; throws in a reader's words to refuse a restore | `record-lifecycle.js` restore, beside a chapter's own rule; ruling L3 (wp9a slice 1 fix-up); block "L3 restore rule" |
 | `quietProposals` | `{path: true}`, on the package's own `lifecycle` collections only: a proposal of the collection says nothing to the design, so retiring (dismissing) or restoring one moves no version and clears no check or handoff; a keep stays a design change | `record-lifecycle.js` retire and restore; ruling M6 (wp9a slice 1 second fix-up); block "L3 restore rule" |
@@ -555,12 +570,19 @@ The boundary, not the package, says what a tracker changed (the lead's rulings H
 tracker it copies the records of those paths, and after the call it stamps as the commit's (`provenance.js
 stampTracked`, with the boundary's own copy as `was`) each record whose content the call changed, so its stamp names
 who sent the commit, never who wrote it before. A stamp or a review the tracker writes on such a record is not kept (a
-tracker's call confirms and keeps nothing, whoever sent the commit), and a record the call adds to such a path is no
-one's: it keeps no author or review stamp. The start check refuses `trackPaths` without `track`, an entry that is no
-`chapter.collection` path, and a collection of the package's own (its `lifecycle`, `provenance.records` or
-`provenance.paths` collections, which the boundary stamps already: `stampExtensions`). A tracker changes no other
-built-in collection: the package's suite calls `assertTrackerStaysInPaths(extension, cases)` (`rc44-s0-readings.mjs`)
-on its tracker's cases (below).
+tracker's call confirms and keeps nothing, whoever sent the commit). A tracker mends content; it decides nothing and
+makes nothing (ruling R2): before the stamp the boundary puts back from its copy what says whether and how each changed
+record stands (`TRACKED_STANDING`: `state`, `origin`, `keptAt`, `confirmed`, `targetConfirmed`, `review`, `reviews`
+and `provenance`), and a call that adds a record to such a path or removes one, or whose change of content or
+bookkeeping moves the chapter's reading of whether the record is AIW's proposal (`canonical-command.js
+LIFECYCLE_RULES` seed), is refused: the commit is not stored, and the answer (500, `fault`) names the package. The
+start check (rulings O2 and R1) refuses `trackPaths` without `track`, an entry that is no `chapter.collection` path, a
+collection of the package's own (its `lifecycle`, `provenance.records` or `provenance.paths` collections, which the
+boundary stamps already: `stampExtensions`), one another registered package states as its own, one of
+`finalReview.*`, `changes.*`, `workbench.*` or `members.*`, one that is not in both `COLLECTIONS` and `RECORD_PATHS`,
+and an entry named twice. A tracker changes no other built-in collection, and inside its paths adds and removes no
+record and moves none of `TRACKED_STANDING`: the package's suite calls `assertTrackerStaysInPaths(extension, cases)`
+(`rc44-s0-readings.mjs`) on its tracker's cases (below).
 
 **`lifecycle`.** `{path: chapter}`, the path `container.list` (a list inside a container: a single-segment path is
 refused at start, because a retirement keeps the owning container's `version`, `review` and `handoff`), the chapter 1
@@ -783,8 +805,9 @@ A package with a tracker calls `assertTrackerStaysInPaths(extension, cases)` (ru
 `{prior, next, command, at}` with `next` the commit's document as the command left it: the tracker is run on a copy
 of `next`, and the whole document outside the package's own keys, its `trackPaths` and the change journal must be as
 it was; `prior` must not move; the journal's earlier events stand as they were and its counter moves by the events the
-tracker added. It answers `{cases, changed: {path: cases whose call changed it}, journalled}`, so the suite can assert
-that its cases reach the mend.
+tracker added; inside its `trackPaths` no record is added or removed and none of `TRACKED_STANDING` moves (ruling R2;
+the helper states the list itself, and S0's suite holds it equal to the boundary's). It answers `{cases, changed:
+{path: cases whose call changed it}, journalled}`, so the suite can assert that its cases reach the mend.
 
 A package's size case reads the bookings of every size file with `routeBookings(ownFile)` (rulings M4 and O1): an own
 figure (`ownBytes`, or `delta`) is an integer of at least 0, a shared-pool item an integer that one file books, a

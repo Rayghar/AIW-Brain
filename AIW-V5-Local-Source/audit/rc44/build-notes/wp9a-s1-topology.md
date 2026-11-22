@@ -49,8 +49,44 @@ files, buckets 53/50/45, stylesheet 901,873 B, no violation.
   `record-lifecycle.js COLLECTIONS` and `provenance.js RECORD_PATHS`, is none of `finalReview.*` (the narrative with
   them), `changes.*`, `workbench.*` or `members.*`, is no collection a registered package states as its own, and is named
   once; each refusal in its own words. The case also holds that every built-in record collection of a chapter's container
-  (35 of them) is accepted together, so the check refuses nothing it should take. wp9a S1.11 and S1.24 pass unchanged.
-- Item 2: in progress.
+  (34 of them in this build) is accepted together, so the check refuses nothing it should take. wp9a S1.11 and S1.24 pass unchanged.
+- **Item 2, R2: done.** Cases: S0's block "O2", the helper part and the server part, and wp9a's S1.24 (unchanged, green
+  under the stricter helper). Seen to fail on `ce6eb90` (`.aiw-local/fixup4/r2-before-1.log`, and `r2-before-2.log` from a
+  scratch copy of the suite whose helper assertions only log, so the server part ran too): the helper accepted a tracker
+  that adds a record, removes one, sets `confirmed`, or moves every lifecycle and review field; through the server an
+  added record was stored (A's and the agent account's commit), a removed record was stored, a confirmation the tracker
+  set stood, `state`, `keptAt` and the rest the tracker set while it mended stood, a proposal the tracker kept stopped
+  being one, and an inherited contract whose revision the tracker moved stopped being AIW's proposal. What was built:
+  - `design-extension-boundary.js trackExtensions`: for each record of the package's `trackPaths` that a call changed,
+    the boundary puts back from its copy `TRACKED_STANDING` (`state`, `origin`, `keptAt`, `confirmed`,
+    `targetConfirmed`, `review`, `reviews`, `provenance`), then stamps the content change as the commit's
+    (`stampTracked`, as before); a call that adds a record to such a path, or removes one, is refused; so is one whose
+    change of content or bookkeeping moves the chapter's reading of whether the record is AIW's proposal
+    (`canonical-command.js LIFECYCLE_RULES` seed, or `state` where a chapter states no rule), which no copy can put back
+    without undoing the mend. A refusal is an error tagged for `isTrackerRefusal`; `worker.js` answers it in its own
+    words (500, `fault`, logged as every tracker fault is), so nothing is stored and the answer names the package:
+    "This action could not be completed: the design package zt-tracking's tracker added ADR-990 to decisions.records.
+    A tracker mends the records of the collections it states (trackPaths); it decides nothing and makes nothing, so
+    nothing was saved."
+  - `rc44-s0-readings.mjs`: `TRACKED_STANDING` (the same list; this file imports only modules of the baseline, so S0's
+    suite holds the two equal) and `assertTrackerStaysInPaths` also holds, inside the package's `trackPaths`, that no
+    record is added or removed and none of those fields moves on a record, naming the fields, the record and the case.
+  - S0's synthetic package gains modes (`decide`, `keep`, `unseed`, `remove`, and the set-up `propose` and `seed` done
+    by its own command) and states `interfaces.contracts` beside `decisions.records`.
+  - Old -> new (S0's suite, block "O2"): (1) "a confirmation the tracker sets is no person's review": `confirmed` stays
+    `true` and the provenance is as it was -> the confirmation is restored: the record is byte for byte as it was, B's,
+    for A's commit and the agent account's (stricter: the whole record, not the provenance alone). (2) "a record the
+    tracker adds is no one's" (stored, unstamped) -> the call is refused, the commit not stored (revision, the decisions
+    and the probe as they were), the answer naming the package, for A and the agent account. (3) The helper: "a record
+    added to a path it states is inside its paths" (`changed['decisions.records']` equal to 1) -> the helper throws,
+    naming the record. (4) The helper's answer on four cases: `changed {'decisions.records': 2}` -> `changed
+    {'decisions.records': 2, 'interfaces.contracts': 0}` (the package now states the second path; equally strict).
+  - `settle`'s `tracked` flag and `stampTracked`'s replacement of a stamp a tracker wrote are kept, as R2 confirms; with
+    the provenance put back before the stamp, a stamp the tracker writes never reaches `settle`.
+  - The S0 contract text (`s0-extensions.md`: the `trackPaths` row and paragraph, the helper, a section for this
+    fix-up) and the comments of `design-extension-boundary.js`, `provenance.js` and `worker.js` say the same.
+  - S0 28 of 28; wp9a S1.5, S1.6, S1.8, S1.11, S1.12, S1.14, S1.15, S1.21 to S1.24 green.
+- Item 3: in progress.
 
 ## Third fix-up (after the second verifier; the lead's rulings O1 to O5, with K to N)
 
