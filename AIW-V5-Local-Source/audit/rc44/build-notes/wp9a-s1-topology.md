@@ -177,8 +177,14 @@ case first and seen to fail on the head the item started from, a WIP commit afte
     file) + 0 B (the lead's file), so of the pool of the seven later packages (1,656 B after H1) 1,558 B are left, as
     ruling N1 states.
 
-State: item 5 in progress. Measured before any change (`node build.mjs` on `5cae40a`): chapters route 3,230,605 B,
-projects 507,338 B, 148 script files, buckets 53/50/45, stylesheet 901,873 B, no violation.
+- **Item 5: done.** The notes (this section, "State", "Measurements", "Suites"); on the final code (`e87faa6`, whose
+  code is the final head's: the commits after it change these notes only) the four rc44 suites, the browser case and
+  the suites that import or exercise the changed files, `node check-syntax.mjs`, `node scripts/lint.mjs --summary` and
+  `node build.mjs` (see "Suites", after the third fix-up); the lead's merge check by hand on the final build
+  (`assertBookingsAddUp(3230605, 9673661)`: grew 765, own 667, pool 98); the final commit.
+
+Measured before any change (`node build.mjs` on `5cae40a`): chapters route 3,230,605 B, projects 507,338 B, 148 script
+files, buckets 53/50/45, stylesheet 901,873 B, no violation.
 
 ## Second fix-up (after the verifier; the lead's rulings M1 to M9, with K and L)
 
@@ -862,6 +868,33 @@ Measured with scratch builds: with a second package's stub beside this one the r
 import of `topology.js` in `deploy-view.js` the route is the same 3,230,089 B (the package's modules add no export).
 
 ## Suites
+
+**After the third fix-up** (the final code; logs under `.aiw-local/third-fixup/`, not committed). The rc44 suites, run
+again on the final head one after another: `rc44-wp9a-deployment-validate.mjs` 25 of 25 (S1.10 with `--measure` at
+item 4; S1.24 new; S1.11 as replaced; S1.21 unchanged); `rc44-s0-extensions-validate.mjs` 28 of 28 (blocks "O1 the
+bookings add up" and "O2 tracked paths" new); `rc44-wp1-knowledge` 34 of 34 (4 pending); `rc44-wp2-adoption-validate.mjs`
+20 of 20 (its block `size` green under M4 and O1); `rc44-wp9a-deployment-browser-validate.mjs` 1 of 1 against the client
+`node build.mjs` built on this head (port from 4100, its own `.aiw-local` database, no server left running). The suites
+that import a changed file (`provenance.js`, the boundary, `design-extension-parts.js`, `design-extensions.js`, the
+package's modules, `rc44-s0-readings.mjs`) or run the server that does (`worker.js` imports the boundary and
+`provenance.js`), green and unedited: `provenance`, `seeded-proposals`, `evidence`, `changes`, `design-records`,
+`validation-confirmation`, `deploy`, `runtime`, `workspace`, `fingerprint`, `action-undo`, `recovery-authority` and
+`review-plan`, run again on the final head; and, run on `e87faa6` (the same code) after its commit, `action-undo-api`,
+`drafter-groups`, `technology`, `model-alternatives`, `rc42-g7-data-contracts`, `wire-merge`, `sdd-architecture`,
+`rc42-g3c-evidence-fingerprint`, `review`, `interfaces`, `security`, `technology-realisation`, `service-routes`,
+`journal-archive`, `rc42-g1-tech-approval`, `rc42-g4-trace-kernel`, `rc42-g5-runtime`, `readiness`,
+`reference-projects`, `not-stated`, `chapter-lines`, `platform`, `component-needs`, `model-lifecycle`,
+`execution-journey`, `quality`, `driver-kinds`. Red, each as on the baseline: `test:command-equivalence` and
+`test:sol-disclosure` (both among the 37 of `audit/rc42/regression-2026-11-16.json`; they import `provenance.js` and
+`design-extensions.js`) fail with the baseline's own line ("a working choice made: the saved document is the one the
+route saved before round 12 · $.workbench.history[1]" and "The desk no longer holds F:capacity:run-001,
+F:capacity:run-008"), and fail the same way on a copy of `94dbd4f`. `test:requirements` (not among the 37) is
+intermittent under load: a timer of `public/requirements.js` `showTip` reads `innerWidth` after the suite's window is
+gone (`ReferenceError: innerWidth is not defined`); on this code it passed 2 of 5 runs, and on copies of `94dbd4f` and
+`5cae40a` it failed the same way in 1 of 2 runs each; the fix-up touches neither the module nor the suite. `node
+check-syntax.mjs`: 938 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, 0 new. `node
+build.mjs`: built, no size violation (chapters route 3,230,605 B, 148 script files, buckets 53/50/45). None of the other
+suites red at the baseline was run, and no full regression (the lead runs it).
 
 **After the second fix-up** (the final head; the machine shared, so times are long): `rc44-wp9a-deployment-validate.mjs`
 24 of 24 (S1.10 with `--measure` at item 6, the last code change); `rc44-s0-extensions-validate.mjs` 26 of 26;
