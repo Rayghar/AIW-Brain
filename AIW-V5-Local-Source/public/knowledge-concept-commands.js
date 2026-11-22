@@ -14,7 +14,7 @@
 // agent, not the author or an editor of any revision) and by the commit's author kind (authorship.js): an agent account,
 // a draft by Sol and a request marked as an import review nothing, and neither does a request that states no author.
 // Saving a concept, a form or a topic reviews nothing: each is a candidate until that review, and reaches no check.
-import {applyKnowledgeCommand,knowledgeState,knowledgeEligibility,KNOWLEDGE_LIMIT_TIERS,knowledgeLimits} from './knowledge-governance.js';
+import {applyKnowledgeCommand,knowledgeState,knowledgeEligibility,KNOWLEDGE_LIMIT_TIERS,knowledgeLimits,organizationRef} from './knowledge-governance.js';
 import {verifierRefusal} from './architecture-obligations.js';
 import {QUALITY_TYPES} from './quality-domain.js';
 import {FORM_TYPES,FORM_TIER,FORM_CLAIM_TYPE,FORM_PREDICATE,CONCEPT_KINDS,CONCEPT_SCOPES,CONCEPT_ID,RECORD_REFERENCE,ALIAS_SCHEMES,conceptFormIssues,conceptFormRecord} from './concept-form.js';
@@ -302,7 +302,17 @@ export function applyConceptCommand(input,command,at=new Date().toISOString(),ac
  const tier=knowledgeLimits(input),limits=command?.type==='knowledge.library'&&command.payload?.enabled===true?{...tier,history:KNOWLEDGE_LIMIT_TIERS.library.history}:tier;
  // A release of concepts (rc44, wp1 S3) names its concepts; the claims it releases are their forms, whole.
  const sent=command?.type==='knowledge.release'&&command.payload?.conceptIds!==undefined?{...command,payload:releaseOfConcepts(input,command.payload)}:command;
- return withCurrency(applyKnowledgeCommand(input,sent,at,actor,{forms:formCapability(author,limits),limits}),at);
+ return withCurrency(withPinImpact(input,sent,applyKnowledgeCommand(input,sent,at,actor,{forms:formCapability(author,limits),limits})),at);
+}
+// A withdrawal of a concept (its id, or an organisation's release-qualified id) also records, in its stored impact, the
+// pins on that concept and the records that rely on them (design c, knowledge.withdraw): who must review what.
+function withPinImpact(input,command,out){
+ if(command?.type!=='knowledge.withdraw')return out;
+ const s=knowledgeState(out.document),w=list(s.withdrawals).find(x=>x?.targetId===command.payload?.id),had=list(knowledgeState(input).withdrawals).some(x=>x?.targetId===command.payload?.id);
+ if(!w||had)return out;
+ const ref=(r,id)=>r?.organizationId?organizationRef(r,id):id,pins=list(s.conceptPins).filter(x=>x?.status!=='retired'&&ref([...s.releases,...list(s.organizationReleases)].find(r=>r?.id===x.releaseId),x.conceptId)===w.targetId);
+ if(pins.length)w.impact=[...list(w.impact),...pins.flatMap(x=>[{kind:'concept pin',id:x.id,title:x.conceptId+' v'+x.version},...list(s.conceptLinks).filter(l=>l?.status==='active'&&l.pinId===x.id).map(l=>({kind:'record that relies on a pin',id:l.objectId,title:l.reason||x.conceptId}))])];
+ return out;
 }
 // Every knowledge command ends with the pins' currency read again (refreshConceptPins, its one writer): a withdrawal, an
 // activation or a successor release changes what a pin rests on. A document with no pin is not touched.

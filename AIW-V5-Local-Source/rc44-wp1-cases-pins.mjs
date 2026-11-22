@@ -145,6 +145,9 @@ add('S3.1 (fails today): a design project pins an organisation release, links a 
     const raised = findings11(doc);
     assert.deepEqual(raised.map(f => [f.title, f.objectId, f.level]), [['Review a newer knowledge version', 'api-pod', 'warning']], 'the component raises the version finding');
     assert.deepEqual((await packageFindings(doc)).map(f => f.id), ['knowledge:' + linkId], 'one finding per link, named by the link');
+    // (The finding is the package's, in the review's own list with the knowledge findings (rulings E5 and D7.4): the
+    // reader of plain claim links, which the Brain reads too, is not handed a form (rulings B1 and E2).)
+    assert.deepEqual(K.knowledgeFindings(doc), [], 'knowledgeFindings, the reader of plain claim links, is as it was');
     assert.match(raised[0].detail, /SYN-P001 v1/); assert.match(raised[0].detail, /v2/);
     assert.deepEqual(KC.conceptDecisionReading(doc, pinId), before.forms, 'the pinned forms are unchanged: still version 1');
     assert.deepEqual(doc.realisation.components.find(c => c.id === 'api-pod'), before.component, 'nothing in the linked record changed');
@@ -287,6 +290,9 @@ add('S3.6 (migration): a migration is proposed (by Sol, or by a person) and acce
     // Linked again through the new pin, by a person: the finding is gone, the old link and the old pin stay in the document.
     await D.ok('knowledge.concept-link', {pinId: moved, objectId: 'api-pod', ...STEP}, 'architect');
     doc = D.document; assert.deepEqual(findings11(doc), []); assert.ok(pins(doc).some(p => p.id === pinId) && links(doc).some(l => l.id === linkId));
+    // S0's helpers: the repin, a second person's step, is kept under the migration's key review, which a template copy
+    // clears (it drops the knowledge whole); no step moves a design stamp (ruling J3).
+    R.assertTemplateCopyClearsSteps(doc, d => migrations(d)); assert.equal(R.assertStepsMoveNoStamp(doc, d => [...pins(d), ...links(d), ...migrations(d)]), pins(doc).length + links(doc).length + migrations(doc).length);
     // A person's proposal: refused to that person, accepted by a second.
     const v3 = await lib.successor(v2, 'Synthetic integration concepts 3', {reviewDue: '2028-06-30'}), OR3 = await lib.publish(v3, 'Synthetic integration concepts 3');
     await D.read(); { const r = await W.orgApi('knowledge-pin', {releaseId: OR3.id, revision: D.state.revision, reviewed: true, reason: 'The third edition.', reviewer: 'Synthetic architect'}, 'architect', D.id); assert.equal(r.status, 200); }
@@ -582,4 +588,16 @@ add('S3.19 (a person\'s steps): a pin, a link through a pin, an unlink and an un
     assert.deepEqual(KC.conceptDecisionForms(doc, pinId), []);
     await D.ok('knowledge.concept-unlink', {id: linkId, ...STEP}, 'architect'); assert.deepEqual(findings11(D.document), [], 'an unlinked record raises nothing');
   } finally { W.close(); }
+});
+
+// ------------------------------------------------------------------------------------------------ 20 (a withdrawal of a concept)
+add('S3.20 (design c, knowledge.withdraw of a concept): a person withdraws a pinned concept by its id: the pin reads withdrawn, the stored impact names the pin and the records that rely on it; the same withdrawal sent as an import is refused (ruling E1)', async () => {
+  const {KC, CC} = await mods(), L = await libraryDoc();
+  let p = (await packaged(L.document, 'knowledge.concept-pin', {conceptId: 'SYN-P001', releaseId: L.releaseId, ...STEP}, 'architect')).document;
+  p = (await packaged(p, 'knowledge.concept-link', {pinId: pins(p)[0].id, objectId: 'REQ-001', ...STEP}, 'architect')).document;
+  const W = {...F.REVIEW, id: 'SYN-P001', stamp: K.knowledgeImpactStamp(p, 'SYN-P001')};
+  assert.throws(() => CC.applyConceptCommand(p, {type: 'knowledge.withdraw', payload: W}, AT, 'architect', F.importedBy('architect')), /SYN-P001 is reviewed or in a release: only a signed-in person changes what its review covered \(the withdrawal of SYN-P001/);
+  const out = CC.applyConceptCommand(p, {type: 'knowledge.withdraw', payload: W}, AT, 'steward', F.person('steward')).document, w = out.knowledge.withdrawals.at(-1);
+  assert.equal(w.targetId, 'SYN-P001'); assert.deepEqual(w.impact.map(x => [x.kind, x.id]), [['concept pin', pins(p)[0].id], ['record that relies on a pin', 'REQ-001']]);
+  assert.equal(out.knowledge.pinCurrency[pins(p)[0].id].state, 'withdrawn'); assert.deepEqual(KC.conceptDecisionForms(out, pins(p)[0].id), [], 'a withdrawn concept hands over nothing');
 });

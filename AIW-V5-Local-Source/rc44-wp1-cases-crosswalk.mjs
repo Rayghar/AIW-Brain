@@ -625,8 +625,11 @@ add('S2.12 (size, ruling A4 and M4): the client build passes every gate with the
   const booked = R.routeBookings(EVIDENCE);
   assert.equal(booked.others['audit/rc44/evidence/wp9a-s1-size.json'], 342, 'the other packages\' evidence is read');
   // The integrated base of ruling M4 (S0 and wp1 S1, 3,229,840 B), the other packages' own bytes and the shared pool's: what is left is wp1 S2's.
-  assert.equal(3229840 + booked.othersTotal + booked.poolTotal, size.base.chapters, 'the start commit is the integrated base and what the other packages and the pool booked');
-  assert.equal(size.slice.chapters - 3229840 - booked.othersTotal - booked.poolTotal, size.ownBytes, 'the route at the slice\'s head, less the base and the others, is what S2 books');
+  // (rc44 wp1 S3, old -> new: the two equalities read every size file; they now read the files booked at S2's head, that
+  // is every file but the later slices' built on it, here wp1 S3's, whose bytes the measured check below still counts.)
+  const later = ['audit/rc44/evidence/wp1-s3-size.json'].reduce((n, f) => n + (booked.others[f] || 0), 0), atS2 = booked.othersTotal - later;
+  assert.equal(3229840 + atS2 + booked.poolTotal, size.base.chapters, 'the start commit is the integrated base and what the other packages and the pool booked');
+  assert.equal(size.slice.chapters - 3229840 - atS2 - booked.poolTotal, size.ownBytes, 'the route at the slice\'s head, less the base and the others, is what S2 books');
   assert.ok(size.slice.chapters <= BUDGET.routes.chapters); assert.deepEqual([size.slice.scripts, size.slice.css], [148, size.base.css]); assert.ok(size.slice.under10k <= size.base.under10k, 'no new file under 10 KB');
   { const w = size['opens with records']; assert.ok(w && w.host === 'public/knowledge-workspace-ui.js' && w.total === w.route + w.added && w.route === size.slice.chapters && w.files >= 1, 'opens with records'); }
   if (existsSync('dist/client-size-report.json') && existsSync('dist/client-metafile.json')) {
