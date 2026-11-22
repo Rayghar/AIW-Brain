@@ -1,0 +1,71 @@
+{
+ "schema": "aiw.rc44.slice-size.v3",
+ "name": "wp1 slice S3: releases with parts, pins, currency and findings (p10-knowledge)",
+ "measuredWith": "client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code, scripts, buckets)",
+ "whatWasMeasured": "The chapters route of this build against the slice's start commit c709ae3, each built with node build.mjs in this worktree; the itemised bytes are read from the two metafiles, module by module (a module's bytes in its output).",
+ "allowance": {
+  "chapters": 477,
+  "of": "wp1's 660 B (ruling A4) less S1's 65 B (ruling B1) and S2's 118 B: at most 477 B for S3",
+  "scripts": 148,
+  "rulings": "A4 of 2026-11-18 (660 B for wp1); B1 (S1's 65 B); E6 (the release digested once per read, inside wp1's allowance); B10 (KINDS extended before S4); M4 and O1 (a package's size case: the route's growth less the integrated base, less every other package's own bytes and the shared pool's)"
+ },
+ "caps": {
+  "chapters": 3233792,
+  "projects": 1242112,
+  "scripts": 148,
+  "under10k": 61,
+  "css": 902144
+ },
+ "base": {
+  "commit": "c709ae3",
+  "chapters": 3230723,
+  "projects": 507456,
+  "scripts": 148,
+  "under10k": 52,
+  "css": 901873,
+  "measured": "node build.mjs on the branch's start commit, 2026-11-22"
+ },
+ "integratedBase": {
+  "chapters": 3229840,
+  "note": "S0 and wp1 S1 merged: ruling M4's base. The start commit is it, plus the adoption record's 325 B, the typed topology's 342 B and the crosswalk's 118 B of their own, plus the shared pool's 98 B, as their evidence books them."
+ },
+ "slice": {
+  "chapters": 3230831,
+  "projects": 507564,
+  "scripts": 148,
+  "under10k": 52,
+  "css": 901873
+ },
+ "delta": 108,
+ "ownBytes": 108,
+ "itemised": {
+  "routeStubNeedsPins": 26,
+  "unitKindsB10": 60,
+  "organisationPartsAndOnceARead": 22,
+  "minifierRenamesAndLists": 0,
+  "note": "Module by module against c709ae3: design-package-routes.js 327 -> 353 B (needs reads knowledge.conceptPins too), architecture-knowledge-unit.js 5,327 -> 5,387 B (KINDS: component, technique, composition, deployment-topology), knowledge-governance.js 8,132 -> 8,154 B (orgContent carries parts; knowledgeEligibility takes the release check read once, ruling E6), stewardship-ui.js and product-comparison.js -2 B each (names the minifier chose); 4 B of import and export lists. Sum 108 B."
+ },
+ "onRoute": "The route stub's needs (a document that holds concept pins loads the knowledge workspace's lazy entry before it is drawn), the four unit kinds of ruling B10, and two lines of knowledge-governance.js the client holds (organisation releases carry parts inside their checksum; the release check of knowledgeEligibility can be read once for a whole release). The pins' readers (the record graph's emitter, the list-11 finding, the design statements) are in the knowledge workspace's lazy entry (public/knowledge-pins.js, imported only by public/knowledge-package.js); the commands, the currency, the receipts, the basis and the organisation's notices are the server's.",
+ "wp1": {
+  "s1": 65,
+  "s2": 118,
+  "s3": 108,
+  "left": 369
+ },
+ "headroomAfter": 2961,
+ "opens with records": {
+  "gate": "The chapters-route gate is unchanged and measures opening a document that holds no package records (ruling D10 of 2026-11-18).",
+  "host": "public/knowledge-workspace-ui.js",
+  "route": 3230831,
+  "added": 147750,
+  "total": 3378581,
+  "files": 2,
+  "beforeTheSlice": {
+   "route": 3230723,
+   "added": 145475,
+   "total": 3376198,
+   "files": 2
+  },
+  "note": "A document that holds crosswalk rows or concept pins loads the knowledge workspace's entry (2 scripts) before it is drawn: 2,275 B more than at c709ae3 (knowledge-pins.js 1,976 B, knowledge-package.js 69 -> 365 B)."
+ }
+}

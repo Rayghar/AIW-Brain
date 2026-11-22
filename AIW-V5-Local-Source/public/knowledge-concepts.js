@@ -169,8 +169,9 @@ export function conceptDecisionReading(p,pinId){
  const held=releasedConcepts(p).find(c=>c.conceptId===pin.conceptId&&c.release.id===pin.releaseId),at={pinId:pin.id,conceptId:pin.conceptId,releaseId:pin.releaseId};
  if(!held)return {...at,forms:[],reasons:[pin.releaseId+' is not an active release that holds '+pin.conceptId+' in this project.']};
  if(!held.eligible)return {...at,forms:[],reasons:held.reasons};
- // The pin names the version it was taken on: the release as made then, the concept at that hash (fail closed).
- if(held.conceptHash!==pin.conceptHash||held.release.checksum!==pin.releaseHash)return {...at,forms:[],reasons:[pin.id+' names '+pin.conceptId+' as it was released at another hash or in another release: the release now reads otherwise.']};
+ // The pin names the version it was taken on: the release as made then, the concept at that hash (fail closed). A
+ // release without parts (made without conceptIds, as in slices S1 and S2) names no version; no command pins one.
+ if(held.part&&(held.conceptHash!==pin.conceptHash||held.release.checksum!==pin.releaseHash))return {...at,forms:[],reasons:[pin.id+' names '+pin.conceptId+' as it was released at another hash or in another release: the release now reads otherwise.']};
  return {...at,forms:held.forms.filter(f=>f.tier==='decision').map(f=>({type:f.type,content:f.content,architectureUnit:f.architectureUnit,receipt:f.receipt})),reasons:[]};
 }
 export const conceptDecisionForms=(p,pinId)=>conceptDecisionReading(p,pinId).forms;
@@ -293,7 +294,7 @@ export function conceptPinCurrency(p,pin,{today=null,held=null}={}){
  if(record?.retired)return {state:'retired',title:'Review retired knowledge',detail:name+' is retired in this project: '+(record.retired.reason||'no reason recorded')+'.'};
  if(!release||!s.pins.includes(release.id))return {state:'replaced',title:'Review changed architectural support',detail:name+' is no longer active in this project.'};
  const h=list(held||releasedConcepts(p)).find(c=>c.release.id===release.id&&c.conceptId===pin.conceptId);
- if(!h||!h.eligible||h.conceptHash!==pin.conceptHash||release.checksum!==pin.releaseHash)return {state:'changed',title:'Review changed architectural support',detail:name+' no longer has eligible support: '+(h&&!h.eligible?h.reasons.join(' '):'the release no longer holds the version the pin names')+'.'};
+ if(!h||!h.eligible||h.part&&(h.conceptHash!==pin.conceptHash||release.checksum!==pin.releaseHash))return {state:'changed',title:'Review changed architectural support',detail:name+' no longer has eligible support: '+(h&&!h.eligible?h.reasons.join(' '):'the release no longer holds the version the pin names')+'.'};
  const own=org?null:s.releases.filter(r=>r.supersedes===release.id).map(r=>[r,list(r.parts?.concepts).find(c=>c?.conceptId===pin.conceptId)]).find(([,c])=>c&&c.conceptHash!==pin.conceptHash);
  const theirs=org?list(notice?.successor?.concepts).find(c=>c?.conceptId===pin.conceptId&&c.conceptHash!==pin.conceptHash):null;
  if(own||theirs){const successor=own?{releaseId:own[0].id,title:own[0].title,version:own[1].version,conceptHash:own[1].conceptHash}:{releaseId:notice.successor.id,title:notice.successor.title,version:theirs.version,conceptHash:theirs.conceptHash};

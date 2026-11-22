@@ -571,7 +571,6 @@ function newPin(s,held,{at,actor,r,next}){
 }
 const PIN_BOUND=200,numbered=(prefix,n)=>prefix+'-'+String(n).padStart(4,'0');
 function pinCommand({p,s,r,type,at,actor,next},author){
- if(!type.startsWith('knowledge.concept-'))return undefined;
  const migration=()=>{const m=list(s.conceptMigrations).find(x=>x?.id===r.id);if(!m||m.review||m.closed)throw Error('Choose an open migration of this project.');return m;};
  switch(type){
  case 'knowledge.concept-pin':{

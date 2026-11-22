@@ -554,8 +554,11 @@ add('S2.10 (old documents and S0\'s helpers): with ' + PACKAGE + ' registered, t
   await import('./worker.js');
   const mine = () => X.EXTENSIONS.find(e => e.id === PACKAGE);
   assert(mine(), PACKAGE + ' is registered'); assert.deepEqual(boundary.extensionIssues(mine()), [], 'the package conforms to the registration contract'); assert.deepEqual(boundary.extensionConflicts(), []);
-  assert.deepEqual(Object.keys(mine()).sort(), ['commands', 'design', 'id', 'provenance'], 'the package states its commands, the collection they write and what its rows say to the fingerprint, nothing more');
-  assert.deepEqual(Object.keys(mine().commands).sort(), [...TYPES].sort());
+  // (rc44 wp1 S3, old -> new: the parts were commands, design, id, provenance and the commands the crosswalk's four) S3
+  // adds the pins' object type, emitter, finding, section and knowledge keys, and seven types: the exact sets, as strict.
+  assert.deepEqual(Object.keys(mine()).sort(), ['checks', 'commands', 'design', 'evidenceKeys', 'id', 'objectTypes', 'provenance', 'records', 'sections'], 'the package states its commands, the collections they write, what its records say to the fingerprint, the pins\' type, emitter, finding and section, nothing more');
+  assert.deepEqual(Object.keys(mine().commands).sort(), [...TYPES, 'knowledge.concept-pin', 'knowledge.concept-link', 'knowledge.concept-unlink', 'knowledge.concept-migration', 'knowledge.concept-migration-confirm', 'knowledge.concept-repin', 'knowledge.concept-unpin'].sort());
+  for (const t of TYPES) assert.deepEqual(mine().provenance.paths[t], ['knowledge.crosswalk'], t + ' writes the crosswalk only');
   const golden = JSON.parse(readFileSync('rc44-s0-extensions-baseline.json', 'utf8')); assert.equal(golden.capturedFrom, '94dbd4f');
   for (const t of R.REFERENCES) {
     const q = R.reference(t), now = R.digests(q);
@@ -566,7 +569,7 @@ add('S2.10 (old documents and S0\'s helpers): with ' + PACKAGE + ' registered, t
   }
   { const listed = R.reviewListDocument(), now = R.digests(listed); for (const k of Object.keys(golden.reviewList.readings)) assert.equal(now[k], golden.reviewList.readings[k], 'a document with a review list: ' + k); }
   // The browser can open a document that names the package: its route stub is registered under <id>-route.
-  const routes = readFileSync('public/design-package-routes.js', 'utf8'); assert.match(routes, /registerExtension\(\{id:'p10-knowledge-route',needs:p=>p\.knowledge\?\.crosswalk,load:\(\)=>import\('\.\/knowledge-workspace-ui\.js'\)\}\);/);
+  const routes = readFileSync('public/design-package-routes.js', 'utf8'); assert.match(routes, /registerExtension\(\{id:'p10-knowledge-route',needs:p=>p\.knowledge\?\.crosswalk\|\|p\.knowledge\?\.conceptPins,load:\(\)=>import\('\.\/knowledge-workspace-ui\.js'\)\}\);/); // (S3, old -> new: needs reads the concept pins as well)
   assert.match(readFileSync('design-packages.js', 'utf8'), /^import '\.\/knowledge-package-server\.js'; \/\/ p10-knowledge/m);
   assert.match(readFileSync('public/knowledge-workspace-ui.js', 'utf8'), /import '\.\/knowledge-package\.js';/, 'the host entry registers the package in the browser');
   const {S} = await strangler();
@@ -749,21 +752,26 @@ add('S2.15 (ruling P5 a): a released row whose register row no longer has the re
 });
 
 // ------------------------------------------------------------------------------------------------ 16 (ruling P5 b)
-// What a crosswalk step does to the library's design stamp, through the commands: the rows' own steps move no stamp (S2.10,
-// assertStepsMoveNoStamp, which writes the steps into the row in place), but every knowledge command, the crosswalk's
-// included, appends to knowledge.history and moves knowledge.version, which the design fingerprint reads on rc.10.73.42:
-// a known limit, owned by S3 with the knowledge keys (rulings B10 and P5 b). This case states it; S3 turns it around.
-add('S2.16 (ruling P5 b, a known limit for S3): through the commands, a person\'s confirmation and a second person\'s review of a row move the library\'s design stamp only through knowledge.history and knowledge.version', async () => {
+// What a crosswalk step does to the library's design stamp, through the commands. Until slice S3 every knowledge command,
+// the crosswalk's included, appended to knowledge.history and moved knowledge.version, which the design fingerprint reads
+// on rc.10.73.42, so a person's confirmation and a second person's review moved the stamp (a known limit, rulings B10 and
+// P5 b). S3 turns it around, as ruled: a step of the design package writes no line into the family's log and moves no
+// version (the boundary's activity row records it, and the row keeps who took it), and the rows say to the fingerprint
+// what they say, never their steps (S2.10). Old -> new (rc44 wp1 S3): "moves the library's design stamp (the known
+// limit)", history + 1, version moved, and the stamp back with the log put back -> the stamp does not move, the history
+// and the version do not move, the row keeps who took the step, and the boundary's activity row names it.
+add('S2.16 (ruling P5 b, turned around by S3 with the knowledge keys, ruling B10): through the commands, a person\'s confirmation and a second person\'s review of a row move no design stamp of the library: the package\'s step writes no line into knowledge.history and moves no knowledge.version, and the row and the activity keep who took it', async () => {
   const {S} = await strangler();
   const stamp = d => { const q = rv.withFinalReview(clone(d), {upgrade: false}); return rv.reviewSourceStamp(q) + ' ' + rv.reviewDesignStamp(q); };
   try {
     const id = await S.ok('knowledge.crosswalk', {...P_STRANGLER, aliasId: 'P-FACADE', label: 'Facade', relation: 'narrower'}, 'importer', {authorKind: 'import'});
     for (const [type, payload, as] of [['knowledge.crosswalk-confirm', {...PERSON_STEP, id}, 'steward'], ['knowledge.crosswalk-review', {...ROW_REVIEW, id}, 'reviewer']]) {
       const before = clone(S.document); await S.ok(type, payload, as);
-      assert.notEqual(stamp(S.document), stamp(before), type + ' moves the library\'s design stamp (the known limit)');
-      assert.equal(S.document.knowledge.history.length, before.knowledge.history.length + 1); assert.notEqual(S.document.knowledge.version, before.knowledge.version);
-      const back = clone(S.document); back.knowledge.history = before.knowledge.history; back.knowledge.version = before.knowledge.version;
-      assert.equal(stamp(back), stamp(before), type + ': with the family\'s log and version put back, the stamp is the earlier one');
+      assert.equal(stamp(S.document), stamp(before), type + ' moves no design stamp of the library');
+      assert.equal(S.document.knowledge.history.length, before.knowledge.history.length, type + ' writes no line into knowledge.history'); assert.equal(S.document.knowledge.version, before.knowledge.version, type + ' moves no knowledge.version');
+      const r = row(S.document, id); assert.ok(type.endsWith('-confirm') ? r.confirmed === true && r.provenance?.reviewed?.by === 'steward' : r.review?.actor === 'reviewer' && r.review.account === 'person', type + ': the row keeps who took the step');
+      const activity = await S.api('/api/activity?project=' + S.projectId, null, 'importer');
+      assert.equal(activity.status, 200, JSON.stringify(activity.data).slice(0, 200)); assert.ok(JSON.stringify(activity.data).includes(type), type + ': the boundary\'s activity row names the step');
     }
   } finally { S.close(); }
 });
