@@ -23,6 +23,8 @@
 //   S5 U4 proposal   a selection before a person's choice says nothing to the context of the requirement it answers (U4);
 //   S5 U3 concern    a candidate concern offers no comparison; a released option is compared only once it is assessed on
 //                    every released criterion (what design-concern-validate.mjs held of the guided path, ruling U3);
+//   S5 V1 view       the view keeps that gate: it checks every note before selection.start (a blank note writes nothing),
+//                    and a partly started option selection offers each option not yet compared, with its notes (V1);
 //   S5 Q5 instantiate creates  a payload with an id is refused; the component's source names its release, claim, hash and
 //                    decision, and every reader finds them (ruling Q5);
 //   S5 Q6 elsewhere  a recovery import moves the selection's steps aside; facts and standing read on each read (Q6);
@@ -518,10 +520,10 @@ export default async function ({block, pass, load}) {
   await block('S5 V1 view', async () => {
     pkg(); const U = await load(new URL('../public/adoption-ui.js', import.meta.url).href), {Window} = await import('happy-dom');
     const w = new Window({url: 'http://fixture.local/'});
-    // the dialog helper a caller hands the view (architecture-task-ui.js, component-library-ui.js), and a store that sends each step as the
-    // server applies it; the view is drawn again from what the store answers
+    // the dialog helper a caller hands the view, built as workbench-ui.js modal builds it (the body, then the error line it writes a
+    // refusal into), and a store that sends each step as the server applies it; the view is drawn again from what the store answers
     const open = (p, opts) => { const sent = [], errors = [], store = {value: {document: p}, async command({type, payload}) { sent.push([type, payload]); const r = send(store.value.document, type, payload); store.value = {document: doc(r)}; return r; }};
-      const modal = (title, html) => { const d = w.document.createElement('div'); d.innerHTML = '<div class="intake-body">' + html + '</div>'; w.document.body.appendChild(d); d.error = e => errors.push(e.message); return d; };
+      const modal = (title, html) => { const d = w.document.createElement('div'); d.innerHTML = '<div class="intake-body">' + html + '<p data-error role="alert" hidden></p></div>'; w.document.body.appendChild(d); d.error = e => { errors.push(e.message); const n = d.querySelector('[data-error]'); n.hidden = false; n.textContent = e.message || e; }; return d; };
       return {store, sent, errors, d: U.openSelection({store, modal, ...opts})}; };
     const settle = async () => { for (let i = 0; i < 40; i++) await new Promise(r => setTimeout(r, 0)); };
     const click = async (v, sel) => { const b = v.d.querySelector(sel); assert.ok(b, 'the view offers ' + sel); b.click(); await settle(); };
@@ -536,6 +538,7 @@ export default async function ({block, pass, load}) {
       ['the first option\'s note missing', {local: {operations: CONCERN_NOTES.local.operations}, separate: CONCERN_NOTES.separate}, /^Assess every released approach before it is compared: One application · Recovery\.$/]]) {
       const v = open(p, {concernId: 'schedule-ownership', driverId: 'QD-001'}); start(v, notes); await click(v, '[data-sel-action="start-option"]');
       assert.deepEqual(v.sent.map(([t]) => t), [], 'nothing is sent (' + why + ')'); assert.equal(v.errors.length, 1, 'the view says why (' + why + ')'); assert.match(v.errors[0], words, why);
+      { const n = v.d.querySelector('[data-error]'); assert.ok(n && !n.hidden && words.test(n.textContent), 'in the dialog\'s error line (' + why + ')'); }
       assert.equal(JSON.stringify(v.store.value.document), before, 'and nothing is written (' + why + ')'); assert.ok(!v.store.value.document.decisions.records.some(d => d.selection), 'no empty selection decision is left (' + why + ')'); }
     // assessed on every criterion, the view starts the selection and adds each released option, in the concern's order
     { const v = open(p, {concernId: 'schedule-ownership', driverId: 'QD-001'}); start(v, CONCERN_NOTES); await click(v, '[data-sel-action="start-option"]');
@@ -555,6 +558,7 @@ export default async function ({block, pass, load}) {
       assert.deepEqual(v.sent.map(([t, x]) => [t, x.id, x.candidate.ref.optionId, x.notes]), [['selection.candidate', id, 'separate', CONCERN_NOTES.separate]], 'assessed, the option is added with its notes');
       const d = decision(v.store.value.document, id); assert.deepEqual(d.alternatives.map(a => [a.candidate.ref.optionId, a.summary]), [['local', 'Recovery: Restore one process and reconcile reservations. Operations: Facilities runs the rebuild.'], ['separate', 'Recovery: Coordinate partial failure across services. Operations: A platform team runs the rebuild.']], 'the selection is complete, as a start from the view makes it');
       assert.ok(!v.d.querySelector('[data-sel-action="add-option"]'), 'and the view offers no option any more');
+      { const n = v.d.querySelector('[data-error]'); assert.ok(n && n.hidden && n.textContent === '', 'the dialog keeps its error line through the redraw, cleared once the step is taken'); }
       // once a candidate is chosen, no option is offered (a further candidate is compared in a selection of its own)
       const c = decision(v.store.value.document, id), local = c.alternatives[0]; const chosen = doc(send(v.store.value.document, 'selection.choose', {id, alternativeId: local.id, reason: 'Fits.', unproven: [], rejections: {[c.alternatives[1].id]: 'Not this one.'}}));
       assert.ok(!/data-sel-action="add-option"/.test(U.selectionView(chosen, {decisionId: id})), 'a chosen selection offers no option'); }

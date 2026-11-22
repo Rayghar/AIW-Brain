@@ -791,4 +791,19 @@ fail on the head it started from, then the change; a WIP commit after each item.
   `retirementSaving` stay as measured on the slice's own tree before the merge (the put-back is that tree's); `--measure`
   carries `atMerge` through. The lead's file restates the same (`addsUp` at 3,228,540 B). wp9a's S1.10 re-run on the
   merge: green, and its lists bound did not move (lists 168 B, share 22,674 B, modules as pinned): nothing to re-measure.
-- **In progress:** item 2 (V1).
+- **Done:** item 2 (V1). Case `S5 V1 view` (new; drives `openSelection` in node through happy-dom, with a dialog built as
+  `workbench-ui.js` `modal` builds it and a store that applies each step as the server does); it failed at 18a7c8a
+  ("nothing is sent (no note at all)": the view sent `selection.start` with every note blank). The view
+  (`public/adoption-ui.js`, the lazy entry, 0 route bytes) now checks every note of every option before it sends
+  `selection.start`, and refuses in the gate's own words naming each option and criterion ("Assess every released approach
+  before it is compared: One application · Recovery, Operations; Separate service · Operations."), so a blank note writes
+  nothing and leaves no empty selection decision; an option selection that is not chosen offers each released option not
+  yet compared ("Released options not yet compared"), with a note field on each released criterion and "Add as candidate",
+  checked the same way before `selection.candidate` is sent, so a selection partly started is completed from the view.
+  Found on the way, and fixed with it (the case holds both): at abfdb56 the start flow failed **even with every note
+  filled**, because the dialog redrew its body after `selection.start` (the workbench dialog has `.intake-body`) and the
+  candidates' notes were then read from the redrawn view, which had none; the view now reads the notes before it sends
+  anything. And the redraw dropped the dialog's error line (`[data-error]`, which `workbench-ui.js` `modal`'s `error`
+  writes into), so a refusal after a first step could not be shown (`n` null in `dialog.error`); the redraw now keeps that
+  line, cleared once a step is taken. The U3 gate in `selection.candidate` is unchanged (V1 keeps it as strict as it was).
+- **In progress:** item 3 (V2).
