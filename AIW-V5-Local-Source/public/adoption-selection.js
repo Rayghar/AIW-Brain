@@ -31,7 +31,7 @@
 // only and only while it is current: pass, fail or unknown. Unknown is never neutral. A row that reads unknown may be
 // judged by a signed-in person. Knowledge is read through the existing rule only (knowledge-governance.js
 // releasedClaims, claimReceiptCurrent): a candidate or unreleased claim reaches no row, gate or reading.
-import {applyDecisionCommand,decisionCurrent} from './decisions-domain.js';
+import {applyDecisionCommand,decisionCurrent,SELECTION_STEP} from './decisions-domain.js';
 import {applyRealisationCommand} from './realisation-domain.js';
 import {constraintForce} from './decision-reading.js';
 import {driverKind} from './quality-domain.js';
@@ -53,7 +53,9 @@ const words=(v,what,max=SELECTION_LIMITS.text)=>{if(typeof v!=='string'||!v.trim
 const optional=(v,max=SELECTION_LIMITS.text)=>v===undefined||v===null||v===''?'':words(v,'',max);
 const decisionOf=(p,id)=>list(p?.decisions?.records).find(d=>d?.id===id)||null;
 const need=(p,id)=>{const d=decisionOf(p,id);if(!d||!plain(d.selection))throw Error('Choose a selection.');return d;};
-const decide=(p,type,payload,at)=>applyDecisionCommand(p,{type,payload},at).document;
+// The decision's own fields, through the chapter's own handler, as an inner step of the selection (ruling Q2): the one
+// way its choice, candidates, rejection reasons and effect on a hard constraint are written.
+const decide=(p,type,payload,at)=>applyDecisionCommand(p,{type,payload,[SELECTION_STEP]:true},at).document;
 const person=author=>author?.kind==='person'&&author?.account==='person';
 
 // ---------------------------------------------------------------- component profiles in the project's knowledge
@@ -109,6 +111,36 @@ export function selectionReading(p,d){
   candidates:list(d.alternatives).filter(a=>a?.candidate).map(a=>({alternativeId:a.id,title:a.title,kind:a.candidate.kind,ref:copy(a.candidate.ref),facts:copy(a.candidate.facts||{}),eligibility:candidateEligibility(p,d,a),outcome:a.candidate.outcome||'open',rejection:a.rejectionReason||'',...(a.candidate.by?{by:a.candidate.by}:{})})),
   choice:s.choice?{alternativeId:s.choice.alternativeId,unproven:copy(list(s.choice.unproven)),by:s.choice.actor,at:s.choice.at}:null,instantiated:s.instantiated?{componentId:s.instantiated.componentId,adoptionId:s.instantiated.adoptionId||null,by:s.instantiated.actor,at:s.instantiated.at}:null,
   considered:['the hard constraints that reach the decision','the facts released knowledge states of each candidate','a signed-in person\'s judgement of a row that reads unknown'],notConsidered:['quality effects','cost','measured behaviour','anything a candidate does not state']};
+}
+
+// ---------------------------------------------------------------- the rows in Chapter 3 (ruling Q2)
+// In a selection decision the selection's row is the authority for a hard constraint, and Chapter 3 shows it: each
+// candidate's effect on each hard constraint is its row, written through the chapter's own handler as an inner step
+// (so the decision is revised and its history keeps it): a person's judgement as "supports" (pass) or "breaks it" (fail)
+// with its reason and evidence, a row that reads unknown as "needs evidence". A hard constraint the decision does not yet
+// name is added to its drivers first. The effect on every other driver stays as it was, marks included.
+const effectOf=r=>r.state==='unknown'?{effect:'unknown',reason:'',evidence:''}:{effect:r.state==='pass'?'supports':'violates',reason:(r.state==='pass'?'Meets it':'Breaks it')+', as '+r.by+' judged: '+r.reason,evidence:r.evidence};
+function rowsToChapter(p,id,at){
+ const d=decisionOf(p,id),missing=selectionConstraints(p,d).map(k=>k.id).filter(k=>!list(d.driverIds).includes(k));
+ if(missing.length)p=decide(p,'decision.save',{id,driverIds:[...list(d.driverIds),...missing]},at);
+ for(const a of decisionOf(p,id).alternatives.filter(x=>x.candidate)){
+  const next=Object.fromEntries(candidateEligibility(p,decisionOf(p,id),a).rows.map(r=>[r.constraintId,effectOf(r)]));
+  if(Object.entries(next).every(([k,v])=>JSON.stringify(a.assessments?.[k])===JSON.stringify(v)))continue;
+  p=decide(p,'decision.alternative',{id,alternativeId:a.id,assessments:next},at);
+  const x=decisionOf(p,id).alternatives.find(y=>y.id===a.id);x.assessments=Object.fromEntries(Object.keys(x.assessments).map(k=>[k,k in next?x.assessments[k]:a.assessments?.[k]??x.assessments[k]]));
+ }
+ return p;
+}
+// The selection's findings on Chapter 3 (registered as the package's checks of chapter 3, so decision.accept and
+// decision.governance read them): an error while Chapter 3's working choice is not the selection's, or names no candidate.
+export function selectionFindings(p){
+ const out=[],add=(code,d,title,detail,extra={})=>out.push({id:code+':'+d.id,code,decisionId:d.id,title,detail,level:'error',...extra});
+ for(const d of list(p?.decisions?.records)){
+  const s=d?.selection;if(!plain(s)||d.status==='superseded')continue;
+  const chosen=d.selectedAlternativeId?list(d.alternatives).find(a=>a.id===d.selectedAlternativeId):null;
+  if((d.selectedAlternativeId||null)!==(s.choice?.alternativeId||null)||chosen&&!chosen.candidate)add('selection-choice',d,'The working choice is not the selection\'s',(chosen?chosen.title+(chosen.candidate?' is the working choice in Chapter 3, and the selection chose '+(list(d.alternatives).find(a=>a.id===s.choice?.alternativeId)?.title||'nothing'):' is no candidate of the selection'):'Chapter 3 holds no working choice, and the selection chose one')+'. Choose through the selection: its choice is the decision\'s.',{alternativeId:d.selectedAlternativeId||null});
+ }
+ return out;
 }
 
 // ---------------------------------------------------------------- the commands
@@ -196,8 +228,8 @@ function judge(p,raw,at,actor,author){
  if(read)throw Error('Only a row that reads unknown is judged: “'+k.label+'” reads '+read+' for '+a.title+' from what it states.');
  const evidence=words(raw.evidence,'Record the evidence for the judgement.'),reason=words(raw.reason,'Record the reason for the judgement.');
  s.judgements=[...list(s.judgements),{alternativeId:a.id,constraintId:k.id,state:raw.state,evidence,reason,actor:actor||null,at,account:author?.account??null}];
- step(s,actor,at,author);p.decisions.version++;p.decisions.review=null;p.decisions.handoff=null;
- return {document:p,selected:d.id};
+ step(s,actor,at,author);
+ return {document:rowsToChapter(p,d.id,at),selected:d.id};
 }
 function choose(p,raw,at,actor,author){
  let d=need(p,raw.id);const id=d.id;
@@ -213,6 +245,7 @@ function choose(p,raw,at,actor,author){
  const reason=words(raw.reason,'Say why '+a.title+' is chosen.'),rejections=plain(raw.rejections)?raw.rejections:{};
  for(const x of cs)if(x!==a)words(rejections[x.id],'Record the reason '+x.title+' is not chosen: each other candidate has one.');
  for(const x of cs){const why=x===a?'':rejections[x.id].trim();if((x.rejectionReason||'')!==why)p=decide(p,'decision.alternative',{id,alternativeId:x.id,rejectionReason:why},at);}
+ p=rowsToChapter(p,id,at);
  d=decisionOf(p,id);
  const earlier=d.selection.choice?.sentence||'',base=earlier?String(d.assumptions||'').replace(earlier,'').trim():String(d.assumptions||''),sentence=unknown.length?'Unproven for '+a.title+': '+unknown.map(label).join('; ')+'.':'';
  p=decide(p,'decision.save',{id,rationale:reason,...(d.selection.kind==='option'?{risks:a.costs||''}:{}),...(sentence||earlier?{assumptions:(base&&sentence?base+' ':base)+sentence}:{}),...(sentence?{assumptionsResolved:false}:{})},at);

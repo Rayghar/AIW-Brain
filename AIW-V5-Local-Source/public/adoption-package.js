@@ -26,7 +26,7 @@
 // which a second person accepts (adoption.accept).
 import {registerExtension} from './design-extensions.js';
 import {applyAdoptionCommand,acceptanceOf,adoptionFindings,adoptionDesign,emitAdoptions,adoptionRelation,trackAdoptionChange} from './adoption-domain.js';
-import {applySelectionCommand} from './adoption-selection.js';
+import {applySelectionCommand,selectionFindings} from './adoption-selection.js';
 import './adoption-ui.js'; // the selection's surface, held in the same lazy entry; it opens through window.aiwSelection
 const step={apply:applyAdoptionCommand,person:true},propose={apply:applySelectionCommand},choose={apply:applySelectionCommand,person:true};
 export const ADOPTION_PACKAGE={
@@ -36,7 +36,7 @@ export const ADOPTION_PACKAGE={
  layers:{mechanism:'pattern'},
  hops:[{layer:'mechanism',types:['addresses'],from:['requirement'],dir:'in',ctx:true,only:adoptionRelation},
   {layer:'mechanism',types:['binds','scopes'],from:['responsibility','component','capability','realization','contract','data','plan','control'],dir:'in',ctx:true,only:adoptionRelation}],
- checks:{5:adoptionFindings},
+ checks:{3:selectionFindings,5:adoptionFindings}, // (S5: the selection's findings on its decision, ruling Q2)
  commands:{'adoption.reassess':step,'adoption.deviation':step,'adoption.accept':{apply:applyAdoptionCommand,second:acceptanceOf},
   'selection.start':propose,'selection.candidate':propose,'selection.judge':choose,'selection.choose':choose,'selection.instantiate':choose},
  track:trackAdoptionChange,

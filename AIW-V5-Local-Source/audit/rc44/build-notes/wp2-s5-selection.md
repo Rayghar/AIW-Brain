@@ -193,9 +193,11 @@ from, then the change; a WIP commit after each item.
 
 ### Progress
 
-- **Done:** item 1 (Q7), item 2 (Q1).
-- **In progress:** item 3 (Q2).
-- **Next:** items 4 to 9 in the order of the task (Q3, Q4, Q5 and Q6, Q8, Q9, notes and size).
+- **Done:** item 1 (Q7), item 2 (Q1), item 3 (Q2).
+- **In progress:** item 4 (Q3). At the WIP commit of item 3, `S5 server`, `S5 instantiate` and `S5 old documents` are
+  red until item 4: a row read against a typed reading has no judge and no evidence, so its effect in Chapter 3 asks
+  for support; and S1's `size` block is red until item 9 (wp2's allowance is 800 B since Q10).
+- **Next:** items 5 to 9 in the order of the task (Q4, Q5 and Q6, Q8, Q9, notes and size).
 
 ### Items
 
@@ -225,3 +227,23 @@ from, then the change; a WIP commit after each item.
    the reading weighs nothing (no driver with a class or a weight, no total or part, no lead, no sensitivity point, no
    firmness), and a decision without a selection is weighed, both before and after the choice. A row a person judged
    fail is written into Chapter 3 as "breaks it" by the selection itself (item 3), so the same error holds for it.
+3. **Q2, must-fix 2, design concern 1 — done.** One truth for the choice. `decisions-domain.js` exports
+   `SELECTION_STEP`, a symbol: a key a request cannot carry (a request is JSON; the boundary, a reviewed batch and a
+   saved alternative pass on what was sent). On a decision that holds `selection`, `decision.choose`,
+   `decision.clear-choice`, a `decision.alternative` that adds an alternative, changes a candidate's rejection reason or
+   changes its effect on a hard constraint (the reading's `hard` drivers) are refused, "Change ADR-nnn through its
+   selection.", unless sent with that key, which only `adoption-selection.js` does (its `decide`). The selection's row is
+   the authority for a hard constraint and Chapter 3 shows it: `rowsToChapter` writes each candidate's row as its effect
+   on each hard constraint through the chapter's own handler (a person's pass as "supports", fail as "breaks it", with
+   the judgement's reason, judge and evidence; unknown as "needs evidence"), adding to the decision's drivers a hard
+   constraint it does not yet name; the effect on every other driver, Sol's and the rules' marks included, is kept as it
+   was. It runs after every judgement and at the choice. Chapter 3 asks no support of a row the selection named unproven
+   for its chosen candidate (`decisionFindings`, `support-…`), so a selection with unproven rows can be accepted and
+   approval evidence is still refused (item 5). The package states its first check of chapter 3,
+   `selectionFindings` (`adoption-package.js` checks `{3, 5}`): the error `selection-choice` when Chapter 3's working
+   choice is not the selection's, or names no candidate; `decision.accept` and `decision.governance` read it as every
+   chapter-3 error. Case `S5 Q2 one truth` (new, through the server; failed first on "the judged row is written into
+   Chapter 3"): each of the five paths refused to a person, an agent account and a draft by Sol, in words, with nothing
+   changed; the effect on a driver that is no hard constraint stays Chapter 3's; both mismatches are errors that refuse
+   acceptance. The suite's `completion` helper (this slice's own) no longer states "neutral" for the hard constraints of a
+   selection: it sends them back as the selection wrote them (old -> new recorded in the code).

@@ -123,7 +123,7 @@ function decisionFindingsOf(p){const out=[],add=(code,d,title,detail,level='erro
   if(!a)add('choice',d.id,'Choose a working alternative','Preview and compare alternatives before recording a choice.');
   if(!d.rationale)add('rationale',d.id,'Explain the choice','State why this option is preferred and why the alternatives were not selected.');
   for(const o of d.alternatives){if(!o.summary||!o.consequences||!o.benefits||!o.costs)add('option-'+o.id,d.id,'Describe '+o.title,'Record the approach, benefits, costs, and consequences.','error',{alternativeId:o.id});if(!o.responsibilityIds.length||o.responsibilityIds.some(id=>!responsibilityIds.has(id))||o.relationships.some(e=>!o.responsibilityIds.includes(e.from)||!o.responsibilityIds.includes(e.to)))add('impact-'+o.id,d.id,'Connect the impact of '+o.title,'Identify affected responsibilities and repair relationship endpoints.','error',{alternativeId:o.id});}
-  if(a)for(const id of d.driverIds){const v=a.assessments[id];if(!v||v.effect==='unknown'||!v.reason||!v.evidence)add('support-'+id,d.id,'Support the choice against '+id,'Explain the effect and cite evidence or an explicit analytical basis for the selected alternative.','error',{alternativeId:a.id,driverId:id});}
+  if(a)for(const id of d.driverIds){const v=a.assessments[id];if((!v||v.effect==='unknown'||!v.reason||!v.evidence)&&!d.selection?.choice?.unproven?.includes(id))add('support-'+id,d.id,'Support the choice against '+id,'Explain the effect and cite evidence or an explicit analytical basis for the selected alternative.','error',{alternativeId:a.id,driverId:id});}
   // Round 25 (D-25-03, D-25-07): what the decision reading says of the working choice. Breaking a hard constraint is an
   // error, so the decision cannot be accepted or approved; another alternative dominating it is a warning to answer.
   if(a){const r=readDecision(p,d),c=r?.choice;
@@ -196,8 +196,12 @@ function normaliseOption(p,d,raw,old){
  if(raw.assessments!==undefined)for(const id of d.driverIds){if(raw.assessments?.[id]?.effect==='violates'&&driverKind(driverOf(p,id))!=='constraint')throw Error('“Breaks it” is for a constraint. Record the effect of '+(clean(raw.title)||old?.title||'this alternative')+' on '+id+' as tension instead.');}
  for(const id of d.driverIds){const v=given?.[id]||{};a.assessments[id]={effect:EFFECTS.some(e=>e[0]===v.effect)?v.effect:'unknown',reason:clean(v.reason),evidence:clean(v.evidence),...(marked&&(solAssessed(v)||rulesAssessed(v))?{by:v.by}:{})};}
  return settle(a,old,ALTERNATIVE_NEW);}
+// rc44 wp2 S5 (ruling Q2): on a decision that holds a component selection, its choice, its candidates, their rejection
+// reasons and their effect on a hard constraint are the selection's: selection.* writes them through this handler as its
+// inner steps (SELECTION_STEP, a key no request can carry), and every other request for them is refused.
+export const SELECTION_STEP=Symbol();
 export function applyDecisionCommand(input,command,at=new Date().toISOString()){
- const p=withDecisions(input),q=p.decisions,raw=command.payload||{};let selected=raw.id||null,mutated=true,created=null;
+ const p=withDecisions(input),q=p.decisions,raw=command.payload||{},own=d=>{if(d.selection&&!command[SELECTION_STEP])throw Error('Change '+d.id+' through its selection.')};let selected=raw.id||null,mutated=true,created=null;
  if(command.type==='decision.save'){
   const d=raw.id?findDecision(p,raw.id):null,prior=d&&clone(d),next={};
   for(const k of DECISION_TEXT)next[k]=patchText(raw,k,d,k==='question'?200:k==='owner'?180:4000,'The '+fieldWords(k));
@@ -216,11 +220,11 @@ export function applyDecisionCommand(input,command,at=new Date().toISOString()){
    for(const a of r.alternatives)a.assessments=Object.fromEntries(r.driverIds.map(id=>[id,a.assessments?.[id]||{effect:'unknown',reason:'',evidence:''}]));
    r.sourceSnapshot=sourceSnapshot(p,r);selected=r.id;}
  }else if(command.type==='decision.alternative'){
-  const d=findDecision(p,raw.id),old=raw.alternativeId?d.alternatives.find(a=>a.id===raw.alternativeId):null;if(raw.alternativeId&&!old)throw Error('This alternative no longer exists.');if(!old&&d.alternatives.length>=DECISION_LIMITS.alternatives)throw Error(`Compare up to ${DECISION_LIMITS.alternatives} alternatives for one question.`);const a=normaliseOption(p,d,raw,old);
+  const d=findDecision(p,raw.id),old=raw.alternativeId?d.alternatives.find(a=>a.id===raw.alternativeId):null;if(raw.alternativeId&&!old)throw Error('This alternative no longer exists.');if(!old&&d.alternatives.length>=DECISION_LIMITS.alternatives)throw Error(`Compare up to ${DECISION_LIMITS.alternatives} alternatives for one question.`);const a=normaliseOption(p,d,raw,old);if(d.selection&&(!old||(a.rejectionReason||'')!==(old.rejectionReason||'')||readDecision(p,d,{priorities:{}}).hard.some(id=>sig(a.assessments[id])!==sig(old.assessments[id]))))own(d);
   if(old&&altAsSaved(old)===altAsSaved(a)&&!decisionSourceChanged(p,d)){mutated=false;selected=d.id;}else{revise(p,d,at);if(old)d.alternatives[d.alternatives.indexOf(old)]=a;else d.alternatives.push(a);}
  }else if(command.type==='decision.choose'){
-  const d=findDecision(p,raw.id);if(!d.alternatives.some(a=>a.id===raw.alternativeId))throw Error('Choose an existing alternative.');revise(p,d,at);d.selectedAlternativeId=raw.alternativeId;
- }else if(command.type==='decision.clear-choice'){const d=findDecision(p,raw.id);revise(p,d,at);d.selectedAlternativeId=null;
+  const d=findDecision(p,raw.id);own(d);if(!d.alternatives.some(a=>a.id===raw.alternativeId))throw Error('Choose an existing alternative.');revise(p,d,at);d.selectedAlternativeId=raw.alternativeId;
+ }else if(command.type==='decision.clear-choice'){const d=findDecision(p,raw.id);own(d);revise(p,d,at);d.selectedAlternativeId=null;
  }else if(command.type==='decision.record'){
   const d=findDecision(p,raw.id);if(d.status==='accepted'||d.status==='superseded')throw Error('Revise this decision before recording another choice.');if(!chosen(d)||!d.rationale||!d.owner||d.alternatives.length<2||!d.requirementIds.length&&!d.requirementGroupIds?.length||!d.driverIds.length||decisionSourceChanged(p,d))throw Error('Choose an alternative, compare at least two, link the current inputs, and record the owner and rationale.');d.status='recorded';remember(d,'Decision recorded',at);
  }else if(command.type==='decision.accept'){
