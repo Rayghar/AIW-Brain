@@ -63,6 +63,9 @@ nit). Order of work, each case first and seen to fail on the head the item start
 Measured before any change (`node build.mjs` on `ce6eb90`): chapters route 3,230,605 B, projects 507,338 B, 148 script
 files, buckets 53/50/45, stylesheet 901,873 B, no violation.
 
+Its open questions are 15 to 17 of "Open questions (for the lead)" (numbered 11 to 13 when first written and in the
+fourth fix-up's report; renumbered after the existing 14 in the fifth fix-up, ruling T2).
+
 ### One line each (fourth fix-up)
 
 | Item | State | Case (suite `rc44-s0-extensions-validate.mjs` unless named) |
@@ -1280,15 +1283,19 @@ Earlier questions, as asked at the slice:
    step is kept out of both fingerprints as an evidence key (decision 3). A node's and a failure domain's `history`
    is read by the design fingerprint as a built-in record's is; neither carries a person's step.
 
-New after the fourth fix-up (each stated plainly under "Fourth fix-up", "Where I read a ruling otherwise"):
+New after the fourth fix-up (each stated plainly under "Fourth fix-up", "Where I read a ruling otherwise"; numbered 11 to
+13 when first written, beside the 11 to 13 above, and renumbered 15 to 17 in the fifth fix-up by ruling T2; the fourth
+fix-up's report, `wp9a-s1-topology.fixup4.json`, names them by their first numbers):
 
-11. **Two refusals beyond R2's words.** A tracker call that removes a record of its `trackPaths`, and one whose change
+15. **Two refusals beyond R2's words.** A tracker call that removes a record of its `trackPaths`, and one whose change
     of content or bookkeeping moves the chapter's reading of whether a record is AIW's proposal (an inherited contract at
     its first revision, a need whose description is the catalogue's), are refused as an added record is. Neither fires
-    for wp9a. Confirm, or rule that a removal (or such a move) should be restored or allowed instead.
-12. **The status of a refused tracker call.** It is answered 500 with code `fault`, as every tracker fault is, in its own
-    words naming the package; nothing is stored. Confirm 500 (the package's fault, not the request's) over a 4xx.
-13. **R4's share at the merge.** The share reads the deploy-view chunk's lists against `a4c1690`'s same script
+    for wp9a. Confirm, or rule that a removal (or such a move) should be restored or allowed instead. (Closed by ruling
+    T3: confirmed.)
+16. **The status of a refused tracker call.** It is answered 500 with code `fault`, as every tracker fault is, in its own
+    words naming the package; nothing is stored. Confirm 500 (the package's fault, not the request's) over a 4xx. (Closed
+    by ruling T3: confirmed.)
+17. **R4's share at the merge.** The share reads the deploy-view chunk's lists against `a4c1690`'s same script
     (`ADOPTION_HOLDER`). If the merge with wp2 S5 or wp1 S2 changes what that chunk imports (an alias that moves in a
     shared chunk shows in its import list), S1.10's lists bound (168 B) may need re-measuring at the merge; the modules
     are unaffected.

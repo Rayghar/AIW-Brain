@@ -296,12 +296,13 @@ export function extensionIssues(e) {
       // lifecycle, provenance.records and provenance.nouns rows, and a list of its provenance.paths that is no key the
       // workbench writes); (ruling T1) never one whose records a chapter accepts, approves or marks reviewed
       // (TRACK_REFUSED_PATHS); each with one or more content fields, each once, none of them a field a tracker never
-      // changes (trackFieldRefused).
+      // changes (trackFieldRefused). (Ruling T2) WHOSE is read by its own keys only: a chapter named after what every object
+      // carries (constructor, toString) is no container of the review's or the journal's, and no built-in record collection.
       const part = v => (plain(v) ? v : {}), rows = x => [...Object.keys(part(x.lifecycle)), ...Object.keys(part(x.provenance?.records)), ...Object.keys(part(x.provenance?.nouns)), ...Object.values(part(x.provenance?.paths)).flatMap(v => list(v))];
       const own = new Set([...Object.keys(part(e.lifecycle)), ...Object.keys(part(e.provenance?.records)), ...Object.values(part(e.provenance?.paths)).flatMap(v => list(v))]);
       const WHOSE = {finalReview: 'the review\'s', changes: 'the change journal\'s', workbench: 'the workbench\'s', members: 'the members\''}, table = (t, path) => t.some(r => r[0] === path);
       for (const [path, fields] of entries) {
-        const whose = WHOSE[path.split('.')[0]], theirs = EXTENSIONS.find(x => x.id !== e.id && rows(x).some(k => k === path && !workbenchKey(k)));
+        const head = path.split('.')[0], whose = Object.hasOwn(WHOSE, head) ? WHOSE[head] : undefined, theirs = EXTENSIONS.find(x => x.id !== e.id && rows(x).some(k => k === path && !workbenchKey(k)));
         if (own.has(path)) say('trackPaths “' + path + '” is the package\'s own collection: the boundary stamps those already; trackPaths names built-in collections only.');
         else if (theirs) say('trackPaths “' + path + '” is ' + theirs.id + '\'s collection: a tracker mends built-in collections only, never another package\'s.');
         else if (whose) say('trackPaths “' + path + '” is ' + whose + ': a tracker mends a chapter\'s records, never the review, the change journal, the workbench or the members.');
