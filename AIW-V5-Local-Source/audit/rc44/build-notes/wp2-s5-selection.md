@@ -1000,8 +1000,8 @@ first, seen to fail on the head it started from, then the change; a WIP commit a
   0 route bytes (the selection module is in the lazy entry; the basis is on the server). `test:rc44-wp2-adoption`: 45
   blocks green.
 - **Done:** item 2 (W2). S2.12 (`rc44-wp1-cases-crosswalk.mjs`, the one case the lead gave leave to edit) was red on this
-  branch's build at ad8204b (seen: "the start commit is the integrated base and what the other packages and the pool
-  booked", 3,228,422 B against 3,230,605 B). Its two assertions now read the bookings filed at wp1 S2's start: each
+  branch's build (seen at e89538e, whose route is ad8204b's, as the verifier saw it at ad8204b: "the start commit is the
+  integrated base and what the other packages and the pool booked", 3,228,422 B against 3,230,605 B). Its two assertions now read the bookings filed at wp1 S2's start: each
   booking filed after it is named in the case and left out (`audit/rc44/evidence/wp2-s5-size.json`, this slice's own
   864 B, and the lead's `guidedConcernRetirementQ8`, −3,047 B), as S1's size block leaves out the later wp2 slices'
   bookings; every other booking is read as before. Old -> new below. At least as strict at wp1's own head: on scratch
@@ -1025,3 +1025,103 @@ first, seen to fail on the head it started from, then the change; a WIP commit a
   `opens with records` is this build's (case first: failed with 133,482 B against 133,719 B) and that the top-level block
   says which tree it measures; the pass line prints the merge's figure, then the slice's own tree's.
 - **In progress:** item 4 (the notes line by line, the suites, syntax, lint, build, the final commit).
+
+### Fourth fix-up, line by line
+
+New problems (third verifier):
+1. V4 regression: the SDD basis misstated the choice after a re-choice (a judgement taken after any earlier choice stayed
+   "after the choice" for good) — done (W1, item 1): `S5 U5 SDD basis`, the verifier's two flows, failed on ad8204b's
+   product; `selection.choose` writes `judgementsFrom` on the new choice and basisOf reads as late only the judgements at
+   or after it; a choice without the key reads as before.
+2. `test:rc44-wp1-knowledge` red on the merged head (S2.12 summed every size file's bookings) — done (W2, item 2): S2.12's
+   two assertions read the bookings filed at wp1 S2's start; the four rc44 suites pass on this branch's build ("Suites").
+3. Nit (V1): a note over 2,000 characters passed the view's check, the start was taken and an empty selection decision
+   was left — done (W3, item 3): `S5 V1 view`, failed at e89538e; the view's pre-check refuses it, naming the option and
+   the criterion, before anything is sent.
+4. Nit: `wp2-s5-size.json`'s top-level `opens with records` read abfdb56's tree and the pass line printed it — done (W3,
+   item 3): the block says which tree it is (`measuredOn`); `atMerge` is restated at this head and checked against the
+   build it names; the pass line prints the merge's figure.
+
+The items the third verifier read as partly:
+- Should-fix 9 / Q9 (9) (the SDD prints the current reading beside the rows stored at the choice; partly because of new
+  problem 1) — done with W1: after a re-choice, "at the choice" prints what was stored with the choice that stands.
+- Ruling V4 (b) (the SDD basis names a row judged after the choice; partly because of new problem 1) — done with W1:
+  "after the choice" means after the choice that stands, and the chooser's naming is kept beside a later judgement of the
+  current choice only.
+
+Rulings:
+- W1 — done (item 1). W2 — done (item 2). W3 — done (item 3), both parts (the view's pre-check; the evidence and the pass
+  line).
+
+### Replaced assertions in this round, old -> new
+
+- `rc44-wp1-cases-crosswalk.mjs` S2.12 (wp1's case; the lead's leave in W2, for this case only), recorded beside the
+  assertions ("the lead's ruling W2 of 2026-11-22; was: …"):
+  - `3229840 + booked.othersTotal + booked.poolTotal === size.base.chapters` -> `3229840 + atStart.others + atStart.pool ===
+    size.base.chapters`;
+  - `size.slice.chapters - 3229840 - booked.othersTotal - booked.poolTotal === size.ownBytes` -> `size.slice.chapters -
+    3229840 - atStart.others - atStart.pool === size.ownBytes`;
+  - where `atStart` is every booking `routeBookings` reads, less the bookings filed after wp1 S2's start, named in the case
+    (`wp2-s5-size.json`'s own bytes; the lead's `guidedConcernRetirementQ8`). At wp1's own head neither is on the books, so
+    `atStart` is the old sum there: the same assertions (shown on archives of c709ae3 and af6aa37, item 2). The third check
+    of the case on this build (`mine <= 250`, every booking read) is unchanged.
+- No other assertion of an existing suite was changed. This slice's own suite gained cases (W1 in `S5 U5 SDD basis`; W3 in
+  `S5 V1 view` and `S5 size`); the pass lines of `S5 U5 SDD basis`, `S5 V1 view` and `S5 size` say what they now hold.
+
+### Measurements (node build.mjs, dist/client-size-report.json)
+
+| | ad8204b (start of this round; an archive built here) | this round's head |
+|---|---|---|
+| Chapters route (`routes.chapters.code`) | 3,228,540 B | **3,228,540 B** (cap 3,233,792 B unchanged) |
+| Projects route | 508,161 B | 508,161 B |
+| Script files | 148 | 148 |
+| Buckets (under 10 KB / 10–50 / over 50) | 52 / 51 / 45 | 52 / 51 / 45 |
+| Stylesheet | 901,873 B | 901,873 B |
+| Opens with records (host `architecture-task-ui.js`) | 3,362,022 B (133,482 B in 2 scripts) | 3,362,259 B (133,719 B in 2 scripts) |
+
+This round adds nothing to the route. In the lazy entry (metafiles of both builds): `adoption-selection.js` 26,704 ->
+26,752 B (+48, W1's `judgementsFrom`), `adoption-ui.js` 10,125 -> 10,314 B (+189, W3's check); the SDD basis (W1) is on
+the server. Bookings unchanged: the route less 9673661, −1,300 B, = lead 0 + wp1 S2 118 + wp2 S1 325 + wp2 S5 864 + wp9a
+342 + the pool (−2,949 B). wp2 1,189 of 1,200 B (11 B left). Route headroom 5,252 B. No gate was raised; `client-bundle.mjs`
+and `build.mjs` are unchanged.
+
+### Deviations, and my view
+
+1. **W2 is built as a list of the later bookings, not of the start's.** The case names the two bookings filed after wp1
+   S2's start and leaves them out; every other booking is read. That is the ruling's letter and is the old assertion at
+   wp1's own head (an allow-list of the start's bookings would let a stray booking at wp1's head pass, which the old
+   assertion refuses). The consequence, which I want the lead to see plainly: every booking filed later (wp1 S3's size
+   file, a wp9a or wp2 slice after this one, a new item of the lead's) turns S2.12 red again until it is named in the
+   case. That fails closed (a red suite, never a silent pass), but it is a recurring edit of wp1's case at each merge. My
+   view: the durable form is the verifier's second option, the start's bookings recorded in `wp1-s2-size.json` and S2.12
+   asserting against them; that needs leave to edit wp1's evidence, which W2 does not give, so I did not do it.
+2. **W3: the pre-check, not `maxlength`.** The ruling allows either; the pre-check names the option and the criterion,
+   which a truncating field would not. The view's limit is the server's constant (`SELECTION_LIMITS.text`, imported), and
+   the length is read on the note as sent (untrimmed), as the server reads it.
+3. **W3, the evidence: `atMerge` re-measured, and checked.** Beyond the ruling's wording: `S5 size` now holds that on the
+   build `atMerge` names (the same route), its `opens with records` is this build's, as it already held for projects,
+   scripts, buckets and stylesheet, so the figure the pass line prints cannot go stale silently. A later round that moves
+   the lazy entry runs `--measure-merge` (`AIW_WP2_ONLY='S5 size' node rc44-wp2-adoption-validate.mjs --measure-merge`).
+4. **W1's key name.** `judgementsFrom` (the index in `decision.selection.judgements` where the choice's own judgements
+   begin), written by `selection.choose` on every new choice object; `selection.judge` keeps the choice and its key. The
+   verifier warned that comparing times fails under the fixtures' fixed clock; the index does not.
+
+### What later slices must know (this round)
+
+- A choice carries `judgementsFrom` (written only by `selection.choose`, on a new choice). A judgement is after the choice
+  that stands when it carries `afterChoice` and its index is at or after the choice's `judgementsFrom`; a choice without
+  the key reads every judgement marked `afterChoice` as after it, as before. A recovery import moves the choice, the key
+  with it, aside (Q6).
+- The selection view refuses a note over `SELECTION_LIMITS.text` before it sends a step, naming the option and the
+  criterion, beside the blank-note refusal of V1; both sentences when both apply.
+- `wp2-s5-size.json`: the top-level `opens with records` names its tree (`measuredOn`); `atMerge['opens with records']`
+  is this branch's head's, held by `S5 size` on the build `atMerge` names.
+- S2.12 lists the bookings filed after wp1 S2's start; each later booking is added there at its merge (deviation 1).
+
+### Open points for the lead
+
+1. S2.12's list of later bookings grows with each merge that books route bytes (deviation 1); recording the start's
+   bookings in `wp1-s2-size.json` would end that, with leave to edit wp1's evidence.
+2. Carried from the third fix-up: `design-concern-validate.mjs`'s baseline red line is l.199 (V5), and the baseline
+   bookkeeping that names l.119 (`audit/rc42/regression-2026-11-16.json`) is the lead's to update; wp2 has 11 B of route
+   headroom; the owner's decision on candidate profile content in design projects (Q11) is pending.
