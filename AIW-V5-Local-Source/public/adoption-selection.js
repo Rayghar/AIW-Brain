@@ -18,11 +18,19 @@
 //                         option: a released option of the selection's concern. Candidate knowledge can be read, not
 //                         selected.
 //   selection.judge       {id, alternativeId, constraintId, state, evidence, reason}   a signed-in person's, for a row
-//                         that reads unknown; the judgement keeps its actor and account kind.
+//                         that reads unknown; the judgement keeps its actor and account kind. After the choice, only a
+//                         row of the chosen candidate, by a person other than the chooser (ruling Q4): the choice's
+//                         rows follow, and the confirm and the decision's acceptance lapse.
 //   selection.choose      {id, alternativeId, reason, rejections: {alternativeId: reason}, unproven?}   a signed-in
 //                         person's; a candidate that fails a hard constraint is not chosen, each row that reads
 //                         unknown is named unproven and written into the decision's assumptions (approval evidence is
 //                         then refused while it is open: decision.governance's existing rule).
+//   selection.confirm     {id, note?}   a second signed-in person's (ruling Q4): stated `second` on the command, its
+//                         projection (confirmSubject) names the chooser, who named each unproven row, and every judge
+//                         of the chosen candidate's rows, so the one rule refuses each of them. Kept as
+//                         selection.confirm {actor, at, account, basis, note}; it stands while what it covers (the
+//                         choice, the chosen candidate's rows, the rows named unproven, the hard constraints) is as it
+//                         was, and decision.accept of a selection is refused without it (selectionFindings).
 //   selection.instantiate {id, reviewed: true, component}   a signed-in person's, once the decision is accepted as it
 //                         stands: the chosen profile, library entry or archetype is saved through realisation.candidate
 //                         with its pinned reference and the decision; a profile is applied as an adoption of kind
@@ -47,6 +55,7 @@ import {cleanLibraryRef,proposalSource,COMPONENT_ARCHETYPES} from './component-l
 import {adoptionRecords,ADOPTION_LIMITS} from './adoption-domain.js';
 import {COLLECTIONS} from './record-lifecycle.js';
 import {digest} from './brain-integrity.js';
+import {verifierRefusal} from './architecture-obligations.js';
 
 const list=v=>Array.isArray(v)?v:[],plain=v=>!!v&&typeof v==='object'&&!Array.isArray(v),copy=v=>v===undefined?undefined:JSON.parse(JSON.stringify(v)),uniq=xs=>[...new Set(xs)];
 export const SELECTION_LIMITS=Object.freeze({text:2000,responsibilities:12});
@@ -130,13 +139,37 @@ function rowsToChapter(p,id,at){
  }
  return p;
 }
+// ---------------------------------------------------------------- the second person (ruling Q4)
+// Who stands behind the persons' words a confirm covers: the chooser (who also named each unproven row), and every judge
+// of the chosen candidate's rows. The projection the boundary hands the one rule (verifierRefusal), and the rule reads at
+// read time on the stored confirm (ruling D7.1).
+export function confirmSubject(p,d){
+ const s=d?.selection,c=s?.choice,a=c&&list(d.alternatives).find(x=>x.id===c.alternativeId),seen=new Set(),history=[];
+ for(const actor of [c?.actor,...(a?candidateEligibility(p,d,a).rows.map(r=>r.by):[])])if(actor&&!seen.has(actor)){seen.add(actor);history.push({revision:1,actor});}
+ return {id:d?.id,actor:c?.actor||null,owner:typeof d?.owner==='string'?d.owner:'',history};
+}
+export const confirmOf=(p,command)=>{const d=decisionOf(p,command?.payload?.id);return plain(d?.selection)&&d.selection.choice?confirmSubject(p,d):null;};
+// What a confirm covers: the choice, the chosen candidate's rows as they read (state and judge), the rows named unproven
+// and the hard constraints that reach the selection.
+const basisOf=(p,d)=>{const s=d.selection,a=list(d.alternatives).find(x=>x.id===s.choice?.alternativeId);return digest({choice:s.choice?.alternativeId||null,rows:a?candidateEligibility(p,d,a).rows.map(r=>[r.constraintId,r.state,r.by||null,r.at||null]):[],unproven:list(s.choice?.unproven),constraints:selectionConstraints(p,d).map(k=>k.id)});};
+// A step taken before the project was restored here or copied from a template is history from elsewhere.
+const here=(p,at)=>{const from=[p?.finalReview?.imported?.at,p?.workspace?.templateOrigin?.at].filter(Boolean).sort().pop();return !(from&&!(at>from));};
+// Whether a second person's confirm stands: a signed-in person's, taken here, of what the selection says now, and
+// independent by the one rule on the projection as it reads now.
+export function confirmStands(p,d){
+ const c=d?.selection?.confirm;
+ return plain(c)&&c.account==='person'&&!!c.actor&&here(p,c.at)&&!!d.selection.choice&&c.basis===basisOf(p,d)&&!verifierRefusal(confirmSubject(p,d),c.actor,c.account);
+}
+
 // The selection's findings on Chapter 3 (registered as the package's checks of chapter 3, so decision.accept and
-// decision.governance read them): an error while Chapter 3's working choice is not the selection's, or names no candidate.
+// decision.governance read them): an error while Chapter 3's working choice is not the selection's, or names no
+// candidate; and an error while a choice stands that no second person confirmed (ruling Q4).
 export function selectionFindings(p){
  const out=[],add=(code,d,title,detail,extra={})=>out.push({id:code+':'+d.id,code,decisionId:d.id,title,detail,level:'error',...extra});
  for(const d of list(p?.decisions?.records)){
   const s=d?.selection;if(!plain(s)||d.status==='superseded')continue;
   const chosen=d.selectedAlternativeId?list(d.alternatives).find(a=>a.id===d.selectedAlternativeId):null;
+  if(s.choice&&!confirmStands(p,d)){const who=confirmSubject(p,d).history.map(x=>x.actor);add('selection-confirm',d,'A second person confirms the selection',(s.confirm?'The confirm of '+d.id+' no longer covers what the selection says. ':'')+'Before '+d.id+' is accepted, a signed-in person who is not '+who.join(' or ')+' (the chooser and the judges of the chosen candidate\'s rows) confirms the selection.');}
   if((d.selectedAlternativeId||null)!==(s.choice?.alternativeId||null)||chosen&&!chosen.candidate)add('selection-choice',d,'The working choice is not the selection\'s',(chosen?chosen.title+(chosen.candidate?' is the working choice in Chapter 3, and the selection chose '+(list(d.alternatives).find(a=>a.id===s.choice?.alternativeId)?.title||'nothing'):' is no candidate of the selection'):'Chapter 3 holds no working choice, and the selection chose one')+'. Choose through the selection: its choice is the decision\'s.',{alternativeId:d.selectedAlternativeId||null});
  }
  return out;
@@ -211,8 +244,11 @@ function candidate(p,raw,at,actor,author){
  return {document:p,selected:d.id};
 }
 function judge(p,raw,at,actor,author){
- const d=need(p,raw.id),s=d.selection;if(s.choice)throw Error('A candidate of '+d.id+' is chosen: its rows were read when it was chosen.');
+ const d=need(p,raw.id),s=d.selection;
  const a=list(d.alternatives).find(x=>x.id===raw.alternativeId&&x.candidate);if(!a)throw Error('Choose a candidate of the selection.');
+ // After the choice only a row of the chosen candidate that reads unknown is judged, by a person other than the chooser.
+ if(s.choice&&a.id!==s.choice.alternativeId)throw Error(d.id+' has a choice: only a row of the chosen candidate is judged now.');
+ if(s.choice&&actor===s.choice.actor)throw Error('The chooser named this row unproven: a person other than '+actor+' judges it.');
  const k=selectionConstraints(p,d).find(x=>x.id===raw.constraintId);if(!k)throw Error('Choose a hard constraint of the selection.');
  if(!['pass','fail'].includes(raw.state))throw Error('Judge the row pass or fail.');
  const read=candidateEligibility(p,d,a).rows.find(r=>r.constraintId===k.id).state;
@@ -220,6 +256,12 @@ function judge(p,raw,at,actor,author){
  const evidence=words(raw.evidence,'Record the evidence for the judgement.'),reason=words(raw.reason,'Record the reason for the judgement.');
  s.judgements=[...list(s.judgements),{alternativeId:a.id,constraintId:k.id,state:raw.state,evidence,reason,actor:actor||null,at,account:author?.account??null}];
  step(s,actor,at,author);
+ if(s.choice){
+  // the choice's rows follow; the row is no longer unproven; the decision's assumptions no longer name it
+  const label=x=>selectionConstraints(p,d).find(y=>y.id===x)?.label||x,unproven=list(s.choice.unproven).filter(x=>x!==k.id),earlier=s.choice.sentence||'',sentence=unproven.length?'Unproven for '+a.title+': '+unproven.map(label).join('; ')+'.':'';
+  s.choice.unproven=unproven;s.choice.sentence=sentence;s.choice.rows=Object.fromEntries(d.alternatives.filter(x=>x.candidate).map(x=>{const r=candidateEligibility(p,d,x);return [x.id,{state:r.state,rows:r.rows}];}));
+  if(earlier)p=decide(p,'decision.save',{id:d.id,assumptions:String(d.assumptions||'').replace(earlier,sentence).trim()},at);
+ }
  return {document:rowsToChapter(p,d.id,at),selected:d.id};
 }
 function choose(p,raw,at,actor,author){
@@ -247,6 +289,12 @@ function choose(p,raw,at,actor,author){
  step(d.selection,actor,at,author);
  return {document:p,selected:id};
 }
+function confirm(p,raw,at,actor,author){
+ const d=need(p,raw.id),s=d.selection;if(!s.choice)throw Error('Choose a candidate first: a second person confirms the choice and its rows.');
+ s.confirm={actor:actor||null,at,account:author?.account??null,basis:basisOf(p,d),note:optional(raw.note,400)};
+ step(s,actor,at,author);p.decisions.version++;p.decisions.review=null;p.decisions.handoff=null;
+ return {document:p,selected:d.id};
+}
 // An id no record of the document holds (a retired record's included), as the adoption upgrade mints one.
 function mint(p,adoptions){
  const held=new Set([...COLLECTIONS.flatMap(([path])=>{const [k,l]=path.split('.'),v=l?p?.[k]?.[l]:p?.[k];return list(v).map(x=>x?.id);}),...list(p?.retired?.records).map(x=>x?.id),...list(adoptions.records).map(x=>x?.id)]);
@@ -256,7 +304,7 @@ function instantiate(p,raw,at,actor,author){
  let d=need(p,raw.id);const id=d.id,s=d.selection;
  if(s.instantiated)throw Error(id+' is already instantiated as '+s.instantiated.ref+'.');
  const a=s.choice&&list(d.alternatives).find(x=>x.id===s.choice.alternativeId&&x.candidate);if(!a)throw Error('Choose a candidate first: nothing is instantiated before the choice is made and accepted.');
- if(!decisionCurrent(p,d)||d.selectedAlternativeId!==a.id)throw Error('Accept '+id+' as it stands before its chosen candidate is instantiated.');
+ if(!decisionCurrent(p,d)||d.selectedAlternativeId!==a.id||!confirmStands(p,d))throw Error('Accept '+id+' as it stands, confirmed by a second person, before its chosen candidate is instantiated.');
  const kind=a.candidate.kind;if(!['profile','library','archetype'].includes(kind))throw Error('A profile, a library entry or an archetype is instantiated; '+a.title+' is '+(kind==='existing'?'a component of the project already':'no reviewed proposal')+'.');
  if(raw.reviewed!==true||!plain(raw.component))throw Error('Review the proposed component before it is saved (reviewed).');
  const e=candidateEligibility(p,d,a);if(e.rows.some(r=>r.state==='fail')||e.rows.some(r=>r.state==='unknown'&&!list(s.choice.unproven).includes(r.constraintId)))throw Error('The rows of '+a.title+' changed since it was chosen: choose again.');
@@ -287,7 +335,7 @@ function instantiate(p,raw,at,actor,author){
  d.selection.instantiated={componentId:c.id,ref:c.ref,adoptionId,actor:actor||null,at,account:author?.account??null};step(d.selection,actor,at,author);
  return {document:p,selected:c.id,selectedIds:[id,...(adoptionId?[adoptionId]:[])]};
 }
-const STEPS={'selection.start':start,'selection.candidate':candidate,'selection.judge':judge,'selection.choose':choose,'selection.instantiate':instantiate};
+const STEPS={'selection.start':start,'selection.candidate':candidate,'selection.judge':judge,'selection.choose':choose,'selection.confirm':confirm,'selection.instantiate':instantiate};
 export function applySelectionCommand(p,command,at,actor,options={}){
  const run=STEPS[command?.type];if(!run)throw Error('Unknown selection action.');
  return run(p,plain(command.payload)?command.payload:{},at,actor,options?.author);

@@ -16,6 +16,11 @@
 //                    built-in 'breaks' error holds for a selection (ruling Q1);
 //   S5 Q2 one truth  Chapter 3's own commands are refused on a selection's choice, candidates, rejection reasons and
 //                    hard constraints, except as the selection's inner steps; the mismatch finding (ruling Q2);
+//   S5 Q4 second person  selection.confirm (a second person's), decision.accept refused without it for every kind of
+//                    candidate, approval refused while a row is unproven, a judgement after the choice (ruling Q4);
+//   S5 Q5 instantiate creates  a payload with an id is refused; the component's source names its release, claim, hash and
+//                    decision, and every reader finds them (ruling Q5);
+//   S5 Q6 elsewhere  a recovery import moves the selection's steps aside; facts and standing read on each read (Q6);
 //   S5 candidate knowledge  a candidate profile is read by the chooser, refused by selection.candidate, and reaches no
 //                    constraint, eligibility row, finding or reading (plan ruling 6);
 //   S5 Sol           a draft by Sol proposes (a selection, a candidate marked by Sol) and states no typed reading of a
@@ -40,7 +45,7 @@ import assert from 'node:assert/strict';
 import {readFileSync, existsSync, writeFileSync, mkdirSync} from 'node:fs';
 import worker, {commandHandler, commandShape} from '../worker.js';
 import * as R from '../rc44-s0-readings.mjs';
-import {server, A, B, C, AGENT, SELECTION_AT, CONCERN_NOTES, CONCERN_ANSWERS, concernProject, guidedConcernPreview, decisionSays, selectionProject, PROFILE_FACTS, ARCHETYPE, bankPaymentApplied, governedConcernApplied, otherKindApplied} from '../rc44-wp2-fixtures.mjs';
+import {server, A, B, C, AGENT, SELECTION_AT, CONCERN_NOTES, CONCERN_ANSWERS, CONCERN_TAGS, concernProject, guidedConcernPreview, decisionSays, selectionProject, PROFILE_FACTS, ARCHETYPE, bankPaymentApplied, governedConcernApplied, otherKindApplied} from '../rc44-wp2-fixtures.mjs';
 import {withFinalReview, CHAPTERS, inheritedFindings, reviewSourceStamp} from '../public/review-domain.js';
 import {EXTENSIONS} from '../public/design-extensions.js';
 import {extensionIssues, extensionConflicts, builtInType} from '../design-extension-boundary.js';
@@ -50,6 +55,11 @@ import {readDecision} from '../public/decision-reading.js';
 import {applyKnowledgeCommand, knowledgeStamp, claimReceiptCurrent} from '../public/knowledge-governance.js';
 import {architectureMarkdown} from '../public/sdd-architecture.js';
 import {instantiateTemplate} from '../project-lifecycle.js';
+import {neutraliseImportedAuthority} from '../recovery-service.js';
+import {componentSheet} from '../public/component-sheet.js';
+import {componentSpecDocument} from '../public/component-spec-document.js';
+import {componentSnapshot} from '../public/component-snapshot.js';
+import {snapshotText} from '../public/component-library.js';
 import {readingLines} from '../public/decision-reading.js';
 import {tradeoffSource, readingStanding} from '../public/tradeoff-model.js';
 import {deskModel, decisionProbe} from '../public/desk-model.js';
@@ -98,8 +108,11 @@ export default async function ({block, pass, load}) {
   // Now the selection's rows are Chapter 3's reading of each hard constraint, written by the selection; the architect
   // states the effect on the other drivers, and the hard ones are sent back as they stand.)
   const hardOf = (p, d) => new Set(readDecision(p, d).hard);
-  const completion = (d, p) => { const hard = p ? hardOf(p, d) : new Set(['QD-007', 'QD-008']); return d.alternatives.map(a => ({id: d.id, alternativeId: a.id, summary: a.summary || 'The candidate ' + a.title + '.', benefits: a.benefits || 'Stated by the architect.', costs: a.costs || 'Stated by the architect.', consequences: a.consequences || 'Stated by the architect.', ...(a.id === d.selectedAlternativeId ? {assessments: Object.fromEntries(d.driverIds.map(x => [x, hard.has(x) ? a.assessments[x] : {effect: 'neutral', reason: 'Read against the driver by the architect.', evidence: 'Architect review RV-1.'}]))} : {})})); };
-  const acceptDecision = (p, id) => { for (const payload of completion(decision(p, id), p)) p = withFinalReview(applyDecisionCommand(p, {type: 'decision.alternative', payload}, AT).document, {upgrade: false}); for (const type of ['decision.record', 'decision.accept']) p = withFinalReview(applyDecisionCommand(p, {type, payload: {id, acknowledge: true}}, AT).document, {upgrade: false}); return p; };
+  const completion = (d, p) => { const hard = p ? hardOf(p, d) : new Set(['QD-007', 'QD-008']); return d.alternatives.map(a => ({id: d.id, alternativeId: a.id, summary: a.summary || 'The candidate ' + a.title + '.', benefits: a.benefits || 'Stated by the architect.', costs: a.costs || 'Stated by the architect.', consequences: a.consequences || 'Stated by the architect.', ...(list(a.responsibilityIds).length ? {} : {responsibilityIds: ['api']}), ...(a.id === d.selectedAlternativeId ? {assessments: Object.fromEntries(d.driverIds.map(x => [x, hard.has(x) ? a.assessments[x] : {effect: 'neutral', reason: 'Read against the driver by the architect.', evidence: 'Architect review RV-1.'}]))} : {})})); };
+  // (ruling Q4: decision.accept of a selection needs a standing confirm by a second person. The confirm is applied here as
+  // the boundary applies it once its checks pass; the boundary's refusals are held through the server, S5 Q4.)
+  const confirmed = (p, id, by = C) => doc(S.applySelectionCommand(p, {type: 'selection.confirm', payload: {id, note: 'Read the rows and the choice.'}}, AT, by, {author: person(by)}));
+  const acceptDecision = (p, id) => { p = confirmed(p, id); for (const payload of completion(decision(p, id), p)) p = withFinalReview(applyDecisionCommand(p, {type: 'decision.alternative', payload}, AT).document, {upgrade: false}); for (const type of ['decision.record', 'decision.accept']) p = withFinalReview(applyDecisionCommand(p, {type, payload: {id, acknowledge: true}}, AT).document, {upgrade: false}); return p; };
 
   // ------------------------------------------------------------ the case that fails before the slice
   await block('S5 fails today', async () => {
@@ -124,8 +137,10 @@ export default async function ({block, pass, load}) {
     const e = pkg();
     assert.deepEqual([...extensionIssues(e), ...extensionConflicts()], [], 'the package conforms to the registration contract');
     const types = Object.keys(e.commands).filter(t => t.startsWith('selection.')).sort();
-    assert.deepEqual(types, ['selection.candidate', 'selection.choose', 'selection.instantiate', 'selection.judge', 'selection.start'], 'the five steps of the selection');
-    for (const t of types) { assert.equal(builtInType(t), false, t + ' is no built-in type'); assert.equal(typeof commandHandler(t), 'function'); assert.ok(!e.commands[t].staged, t + ' is no plain design edit a reviewed batch carries'); assert.ok(!e.commands[t].second, t + ': the slice states no second-person step of its own'); }
+    // (ruling Q4; was: five steps, none a second person's. Now six: selection.confirm is a second person's, the rest not.)
+    assert.deepEqual(types, ['selection.candidate', 'selection.choose', 'selection.confirm', 'selection.instantiate', 'selection.judge', 'selection.start'], 'the six steps of the selection');
+    for (const t of types) { assert.equal(builtInType(t), false, t + ' is no built-in type'); assert.equal(typeof commandHandler(t), 'function'); assert.ok(!e.commands[t].staged, t + ' is no plain design edit a reviewed batch carries'); assert.equal(typeof e.commands[t].second === 'function', t === 'selection.confirm', t + (t === 'selection.confirm' ? ' is a second person\'s step' : ' is no second person\'s step')); }
+    assert.equal(isReviewCommand('selection.confirm'), true, 'the confirm: an agent account and a draft by Sol are refused before the project is read');
     for (const t of ['selection.judge', 'selection.choose', 'selection.instantiate']) { assert.equal(e.commands[t].person, true, t + ' is a signed-in person\'s step'); assert.equal(isReviewCommand(t), true, t + ': an agent account and a draft by Sol are refused before the project is read'); }
     for (const t of ['selection.start', 'selection.candidate']) { assert.ok(!e.commands[t].person, t + ' may be proposed by a draft by Sol'); assert.equal(isReviewCommand(t), false); }
     // the one accept step a selection leads to is the adoption's, a second person's (rulings D1, D7.1)
@@ -302,6 +317,139 @@ export default async function ({block, pass, load}) {
     } finally { h.close(); }
   });
 
+  // ------------------------------------------------------------ a second person stands behind every person's word (ruling Q4)
+  await block('S5 Q4 second person', async () => {
+    pkg(); const {h, id, inbox} = await serverSelection();
+    try {
+      const findingOf = code => decisionFindings(h.doc()).filter(f => f.decisionId === id && f.code === code);
+      const complete = async k => { for (const payload of completion(decision(h.doc(), k), h.doc())) await h.ok('decision.alternative', payload); await h.ok('decision.record', {id: k, acknowledge: true}); };
+      await complete(id);
+      // no acceptance without a standing confirm
+      assert.deepEqual(findingOf('selection-confirm').map(f => f.level), ['error'], 'a chosen selection nobody confirmed is an error');
+      { const r = await h.send('decision.accept', {id, acknowledge: true}); assert.equal(r.status, 400, 'decision.accept is refused without a confirm'); }
+      // the confirm's projection names the chooser (who named the unproven row) and the judge of the chosen candidate's row
+      for (const [who, actor, extra] of [['the chooser', A, {}], ['the judge', B, {}], ['an agent account', AGENT, {}], ['a draft by Sol', A, {authorKind: 'sol-draft'}]]) { const r = await h.send('selection.confirm', {id}, actor, extra); assert.equal(r.status, 400, who + ' does not confirm: ' + JSON.stringify(r.body).slice(0, 200)); }
+      assert.ok(!decision(h.doc(), id).selection.confirm, 'nothing is written');
+      await h.ok('selection.confirm', {id, note: 'Read the rows and the choice.'}, C);
+      assert.deepEqual(findingOf('selection-confirm'), [], 'the confirm stands');
+      assert.deepEqual(decisionFindings(h.doc()).filter(f => f.decisionId === id && f.level === 'error').map(f => f.code + ': ' + f.detail), [], 'no error stands in the way of the acceptance');
+      await h.ok('decision.accept', {id, acknowledge: true});
+      // while the chosen candidate's row is unproven: no approval evidence, and the assumptions are not resolved
+      { const r = await h.send('decision.governance', {id, status: 'approved', reviewer: 'Governance board', evidence: 'Minutes 12'}); assert.equal(r.status, 400); assert.match(r.error, /Resolve content gaps and decision assumptions/); }
+      { const r = await h.send('decision.save', {id, assumptionsResolved: true, assumptionEvidence: 'I checked.'}); assert.equal(r.status, 400, 'the assumptions are not resolved while a row is unproven'); assert.match(r.error, /unproven/); }
+      // the profile is instantiated, and its adoption's projection names the chooser and the judge too
+      const component = {title: 'Inbox and deduplication component', kind: 'service', purpose: 'Deduplicate payment notifications by message id.', boundary: 'The inbox owns its deduplication store.', owner: 'Payments platform'};
+      await h.ok('selection.instantiate', {id, reviewed: true, component});
+      const adp = D.adoptionRecords(h.doc()).find(a => a.kind === 'profile');
+      assert.deepEqual(D.acceptanceSubject(adp, h.doc()).history.map(x => x.actor).sort(), [A, B].sort(), 'the profile adoption\'s projection names the chooser and the judge');
+      for (const as of [A, B]) { const r = await h.send('adoption.accept', {id: adp.id, revision: adp.revision, deviationIds: [], note: ''}, as); assert.equal(r.status, 400, as + ' does not accept the profile adoption'); }
+      // the unproven row is judged after the choice by a person other than the chooser; the choice's rows follow and the
+      // confirm and the acceptance lapse
+      const judge = {id, alternativeId: inbox, constraintId: 'QD-008', state: 'pass', evidence: 'The platform team runs the inbox (ticket OPS-12).', reason: 'Operated on the platform.'};
+      { const r = await h.send('selection.judge', judge, A); assert.equal(r.status, 400, 'the chooser does not judge the row named unproven'); }
+      { const other = decision(h.doc(), id).alternatives.find(a => a.candidate && a.id !== inbox), r = await h.send('selection.judge', {...judge, alternativeId: other.id}, C); assert.equal(r.status, 400, 'after the choice only a row of the chosen candidate is judged'); }
+      await h.ok('selection.judge', judge, C);
+      const d = decision(h.doc(), id);
+      assert.deepEqual([d.selection.choice.unproven, d.selection.choice.rows[inbox].rows.map(r => [r.constraintId, r.state, r.by || null])], [[], [['QD-007', 'pass', B], ['QD-008', 'pass', C]]], 'the choice\'s rows are the rows as they now read');
+      assert.equal(d.status, 'draft', 'the acceptance lapses: the decision is revised'); assert.ok(!/Unproven for/.test(d.assumptions || ''), 'and its assumptions no longer name the row');
+      assert.deepEqual(findingOf('selection-confirm').map(f => f.level), ['error'], 'the confirm lapses');
+      { const r = await h.send('selection.confirm', {id}, C); assert.equal(r.status, 400, 'the new judge does not confirm'); }
+      // a row a person judged fail after the choice: the built-in error "breaks a hard constraint" (ruling Q1)
+      const {h: g, id: k, inbox: ib} = await serverSelection();
+      try { await g.ok('selection.judge', {id: k, alternativeId: ib, constraintId: 'QD-008', state: 'fail', evidence: 'The inbox runs outside the platform (ticket OPS-13).', reason: 'Another platform.'}, C);
+        const e = decisionFindings(g.doc()).filter(f => f.decisionId === k && f.code === 'breaks'); assert.deepEqual(e.map(f => [f.level, f.driverIds]), [['error', ['QD-008']]], 'a chosen candidate a person judged fail breaks a hard constraint');
+        assert.equal(decision(g.doc(), k).alternatives.find(a => a.id === ib).assessments['QD-008'].effect, 'violates', 'Chapter 3 shows the row'); } finally { g.close(); }
+      // every kind of candidate: decision.accept is refused until a second person confirms
+      const REVIEW = {reviewed: true, reviewer: B, reason: 'Verified source and limited interpretation.'};
+      await h.ok('workspace.catalogue', {kind: 'component', title: 'Ticket consumer v2', content: snapshotText(componentSnapshot(h.doc(), 'notify-worker', {at: AT})), owner: 'Platform team', reviewNote: 'A consumer filed from the notification worker.'});
+      const entryId = h.doc().workbench.catalogue.find(x => x.title === 'Ticket consumer v2').id;
+      await h.ok('knowledge.source', {title: 'Synthetic scheduling note', body: 'Synthetic scheduling note\nCompare owning the schedule in one application with a separate service.\n', path: 'synthetic/schedule.txt', revision: '1', license: 'Synthetic test material'});
+      await h.ok('knowledge.claim', {sourceId: h.doc().knowledge.sources.at(-1).id, lineStart: 2, lineEnd: 2, subjectId: 'design-concern:schedule-ownership', predicate: 'offers a design concern', claimType: 'applicability', polarity: 'neutral', statement: 'Compare owning the schedule in one application with a separate service.', conditions: ['For a schedule two teams change.'], limitations: ['The source makes no measured recovery claim.'], tags: CONCERN_TAGS});
+      const concernClaim = h.doc().knowledge.claims.at(-1).id;
+      await h.ok('knowledge.review', {...REVIEW, id: concernClaim, decision: 'verified', sourceChecked: true, rightsChecked: true, conditionsChecked: true}, B);
+      await h.ok('knowledge.release', {...REVIEW, title: 'Synthetic K2 concern', claimIds: [concernClaim]});
+      await h.ok('knowledge.activate', {...REVIEW, id: h.doc().knowledge.releases.at(-1).id, stamp: knowledgeStamp(h.doc())});
+      const kinds = [['library', {kind: 'library', ref: {scope: 'project', entryId}}, 'Ticket consumer v2'], ['archetype', {kind: 'archetype', ref: {scope: 'catalogue', archetypeId: ARCHETYPE.id}}, ARCHETYPE.name], ['existing', {kind: 'existing', ref: {componentId: 'api-pod'}}, 'Keep the Payment service'], ['build', {kind: 'build', ref: null}, 'Build a deduplicating consumer'], ['buy', {kind: 'buy', ref: null}, 'Buy a hosted inbox'], ['option', null, 'One application']];
+      for (const [kind, candidate, title] of kinds) {
+        let k;
+        if (kind === 'option') { k = (await h.ok('selection.start', {kind: 'option', concernId: 'schedule-ownership', requirementId: 'REQ-001', driverId: decision(h.doc(), id).driverIds.find(x => !['QD-007', 'QD-008'].includes(x)), owner: 'Payments architect', reason: 'One application fits the present team.'})).selected;
+          for (const optionId of ['local', 'separate']) await h.ok('selection.candidate', {id: k, candidate: {kind: 'option', ref: {optionId}}, notes: CONCERN_NOTES[optionId]}); }
+        else { k = (await h.ok('selection.start', {kind: 'component', responsibilityIds: ['api'], owner: 'Payments architect'})).selected;
+          await h.ok('selection.candidate', {id: k, candidate, title}); await h.ok('selection.candidate', {id: k, candidate: kind === 'build' ? {kind: 'buy', ref: null} : {kind: 'build', ref: null}, title: kind === 'build' ? 'Buy a hosted inbox' : 'Build a deduplicating consumer'}); }
+        const x = decision(h.doc(), k), chosen = x.alternatives.find(a => a.title === title), unknown = S.candidateEligibility(h.doc(), x, chosen).rows.filter(r => r.state === 'unknown').map(r => r.constraintId);
+        assert.ok(unknown.length > 0, kind + ': the hard constraints reach the selection');
+        await h.ok('selection.choose', {id: k, alternativeId: chosen.id, reason: 'Chosen for the test.', unproven: unknown, rejections: Object.fromEntries(x.alternatives.filter(a => a.candidate && a.id !== chosen.id).map(a => [a.id, 'Not this one.']))});
+        await complete(k);
+        assert.deepEqual(decisionFindings(h.doc()).filter(f => f.decisionId === k && f.level === 'error').map(f => f.code), ['selection-confirm'], kind + ': the one error is the confirm nobody gave');
+        { const r = await h.send('decision.accept', {id: k, acknowledge: true}); assert.equal(r.status, 400, kind + ': decision.accept is refused without a standing confirm'); }
+        { const r = await h.send('selection.confirm', {id: k}, A); assert.equal(r.status, 400, kind + ': the chooser does not confirm'); }
+        await h.ok('selection.confirm', {id: k}, B);
+        assert.deepEqual(decisionFindings(h.doc()).filter(f => f.decisionId === k && f.level === 'error').map(f => f.code + ': ' + f.detail), [], kind + ': no error stands in the way of the acceptance');
+        await h.ok('decision.accept', {id: k, acknowledge: true});
+        assert.equal(decision(h.doc(), k).status, 'accepted', kind + ': accepted once a second person confirmed');
+      }
+      pass('S5 Q4 second person: a chosen selection nobody confirmed is an error and decision.accept is refused, for a profile, a library entry, an archetype, an existing component, a build, a buy and a released option; selection.confirm is refused to the chooser, the judge of a chosen row, an agent account and a draft by Sol, and taken from a third person; approval evidence and resolving the assumptions are refused while a chosen row is unproven; the profile adoption\'s projection names the chooser and the judge, each refused adoption.accept; the unproven row is judged after the choice only by a person other than the chooser, only on the chosen candidate, and the choice\'s rows follow, the acceptance and the confirm lapse and the new judge does not confirm; a row judged fail after the choice raises the built-in "breaks" error, and Chapter 3 shows it');
+    } finally { h.close(); }
+  });
+
+  // ------------------------------------------------------------ instantiate creates, never updates (ruling Q5)
+  await block('S5 Q5 instantiate creates', async () => {
+    pkg(); let {p, id} = threeCandidates(); const d0 = decision(p, id), inbox = alt(d0, 'Inbox and deduplication component');
+    p = doc(send(p, 'selection.judge', {id, alternativeId: inbox.id, constraintId: 'QD-008', state: 'pass', evidence: 'Ticket OPS-12.', reason: 'Operated on the platform.'}, B));
+    p = doc(send(p, 'selection.choose', {id, alternativeId: inbox.id, reason: 'Fits.', rejections: Object.fromEntries(d0.alternatives.filter(a => a.id !== inbox.id).map(a => [a.id, 'Not this one.']))}));
+    p = acceptDecision(p, id);
+    const component = {title: 'Inbox', kind: 'service', purpose: 'Deduplicate payment notifications by message id.', boundary: 'The inbox owns its deduplication store.', owner: 'Payments platform'}, payment = structuredClone(p.realisation.components.find(c => c.id === 'api-pod'));
+    for (const idValue of ['api-pod', 'COMP-NEW', null]) assert.throws(() => send(p, 'selection.instantiate', {id, reviewed: true, component: {...component, id: idValue}}), /a new component: it names no id/, 'a payload that names an id is refused (' + idValue + ')');
+    assert.deepEqual(p.realisation.components.find(c => c.id === 'api-pod'), payment, 'and the Payment service is as it was');
+    // what the payload says beyond the reviewed fields is not taken: the status, the links, the library pin, the source
+    const r = send(p, 'selection.instantiate', {id, reviewed: true, component: {...component, status: 'accepted', decisionIds: ['ADR-001'], library: {scope: 'project', entryId: 'LIB-S5-0001'}, source: 'Typed by hand.', patternIds: ['PB-1']}}), q = doc(r), c = q.realisation.components.find(x => x.id === r.selected);
+    assert.notEqual(c.id, 'api-pod'); assert.equal(q.realisation.components.length, p.realisation.components.length + 1, 'a component is created');
+    assert.deepEqual([c.title, c.status, c.decisionIds, c.library ?? null, list(c.patternIds)], ['Inbox', 'candidate', [id], null, []], 'from the reviewed fields only');
+    const ref = alt(decision(q, id), 'Inbox and deduplication component').candidate.ref;
+    for (const part of [ref.releaseId, ref.claimId, ref.claimHash, id]) assert.ok(c.source.includes(part), 'its source names ' + part + ': ' + c.source);
+    const a = D.adoptionRecords(q).find(x => x.kind === 'profile');
+    assert.deepEqual(a.bindings.find(b => b.roleId === 'component').mode, 'created'); assert.equal(a.applied.records[0].isNew, true);
+    // every reader asking where the component came from finds the release, the claim, its hash and the decision
+    const sheet = componentSheet(q, c.id), field = JSON.stringify(sheet), spec = JSON.stringify(componentSpecDocument(q, c.id));
+    for (const part of [ref.releaseId, ref.claimId, ref.claimHash, id]) { assert.ok(field.includes(part), 'the component sheet names ' + part); assert.ok(spec.includes(part), 'the component specification names ' + part); }
+    assert.ok(architectureMarkdown(withFinalReview(q)).markdown.includes(ref.claimHash), 'and the SDD');
+    pass('S5 Q5 instantiate creates: a payload that names an id (an existing component\'s, a new one, null) is refused and changes nothing; the component is created from the reviewed fields only (no status, link, library pin, pattern or source taken from the payload); its source names the release, the claim, the claim\'s hash and the decision, and the component sheet, the specification and the SDD find them; the profile adoption binds the component it created');
+  });
+
+  // ------------------------------------------------------------ steps from elsewhere count as nobody's; facts come from the release (ruling Q6)
+  await block('S5 Q6 elsewhere', async () => {
+    pkg(); let {p, id} = threeCandidates(); const d0 = decision(p, id), inbox = alt(d0, 'Inbox and deduplication component');
+    p = doc(send(p, 'selection.choose', {id, alternativeId: inbox.id, reason: 'Fits.', unproven: ['QD-008'], rejections: Object.fromEntries(d0.alternatives.filter(a => a.id !== inbox.id).map(a => [a.id, 'Not this one.']))}));
+    p = confirmed(p, id);
+    // a recovery import: the judgements, the confirm, the choice and the instantiation are moved aside, nobody's here
+    const sel = q => q.decisions.records.filter(d => d.selection).map(d => d.selection);
+    R.assertRecoveryClearsSteps(p, sel);
+    const back = withFinalReview(neutraliseImportedAuthority(structuredClone(p), AT), {upgrade: false}), b = decision(back, id);
+    assert.deepEqual(S.candidateEligibility(back, b, alt(b, 'Inbox and deduplication component')).rows.map(r => r.state), ['unknown', 'unknown'], 'after a recovery import a judged row reads unknown');
+    assert.deepEqual([b.selection.choice, b.selection.confirm ?? null, b.selection.judgements], [null, null, []]); assert.equal(b.selection.imported.choice.actor, A, 'kept as history');
+    assert.ok(decisionFindings(back).some(f => f.decisionId === id && f.code === 'selection-choice' && f.level === 'error'), 'and Chapter 3\'s choice is no selection\'s here until a person chooses again');
+    // facts are the released claim's, read on each read; a hand-written copy is not read
+    const hand = structuredClone(p), h = decision(hand, id);
+    alt(h, 'Inbox and deduplication component').candidate.facts = {topology: {value: 'multi-region', status: 'declared'}};
+    alt(h, 'Ticket consumer v2').candidate.facts = {topology: {value: 'single-region-north', status: 'declared'}};
+    const read = S.selectionReading(hand, h), of = t => read.candidates.find(c => c.title === t).facts;
+    assert.equal(of('Inbox and deduplication component').topology.value, PROFILE_FACTS.inbox.topology, 'a profile\'s facts are its released claim\'s');
+    assert.deepEqual(of('Ticket consumer v2'), {}, 'a library entry states no fact');
+    // the standing of a library entry, an archetype and an existing component is read on each read, with the reason
+    let {p: s2, id: k} = threeCandidates();
+    s2 = doc(send(s2, 'selection.candidate', {id: k, candidate: {kind: 'archetype', ref: {scope: 'catalogue', archetypeId: ARCHETYPE.id}}, title: ARCHETYPE.name}));
+    s2 = doc(send(s2, 'selection.candidate', {id: k, candidate: {kind: 'existing', ref: {componentId: 'notify-worker'}}, title: 'Keep the Notification worker'}));
+    const gone = structuredClone(s2); gone.workbench.catalogue = gone.workbench.catalogue.filter(e => e.id !== 'LIB-S5-0001');
+    const off = structuredClone(s2); off.realisation.components = off.realisation.components.filter(c => c.id !== 'notify-worker');
+    const arch = structuredClone(s2); decision(arch, k).alternatives.find(a => a.title === ARCHETYPE.name).candidate.ref.archetypeId = 'not-an-archetype';
+    for (const [q, title, why] of [[withFinalReview(gone, {upgrade: false}), 'Ticket consumer v2', /library entry/], [withFinalReview(off, {upgrade: false}), 'Keep the Notification worker', /component/], [withFinalReview(arch, {upgrade: false}), ARCHETYPE.name, /archetype/]]) {
+      const e = S.candidateEligibility(q, decision(q, k), alt(decision(q, k), title));
+      assert.ok(e.reasons.some(x => why.test(x)), title + ' no longer stands, and says why: ' + JSON.stringify(e.reasons));
+      assert.throws(() => send(q, 'selection.choose', {id: k, alternativeId: alt(decision(q, k), title).id, reason: 'x', unproven: e.rows.map(r => r.constraintId), rejections: Object.fromEntries(decision(q, k).alternatives.filter(a => a.title !== title).map(a => [a.id, 'y']))}), /no longer|not selected/, title + ' is not chosen');
+    }
+    pass('S5 Q6 elsewhere: a recovery import moves each selection\'s judgements, confirm and choice aside (assertRecoveryClearsSteps), so a judged row reads unknown and Chapter 3\'s choice is no selection\'s until a person chooses again; a profile\'s facts are read from its released claim on each read, never from the stored copy, and a library entry states none; a library entry removed, an archetype this build does not know and an existing component gone no longer stand, say why, and are not chosen');
+  });
+
   // ------------------------------------------------------------ candidate knowledge is inert
   await block('S5 candidate knowledge', async () => {
     pkg(); let {p, id} = threeCandidates();
@@ -393,7 +541,7 @@ export default async function ({block, pass, load}) {
     { const r = await h.send('selection.choose', choose, AGENT); assert.equal(r.status, 400); }
     { const r = await h.send('selection.choose', choose, A, {authorKind: 'sol-draft'}); assert.equal(r.status, 400); }
     await h.ok('selection.choose', choose);
-    for (const payload of completion(decision(h.doc(), id), h.doc())) await h.ok('decision.alternative', payload); for (const type of ['decision.record', 'decision.accept']) await h.ok(type, {id, acknowledge: true});
+    for (const payload of completion(decision(h.doc(), id), h.doc())) await h.ok('decision.alternative', payload); await h.ok('selection.confirm', {id, note: 'Read the rows and the choice.'}, C); for (const type of ['decision.record', 'decision.accept']) await h.ok(type, {id, acknowledge: true});
     const component = {title: 'Inbox and deduplication component', kind: 'service', purpose: 'Deduplicate payment notifications by message id.', boundary: 'The inbox owns its deduplication store.', owner: 'Payments platform'};
     { const r = await h.send('selection.instantiate', {id, reviewed: true, component}, AGENT); assert.equal(r.status, 400); }
     await h.ok('selection.instantiate', {id, reviewed: true, component});
@@ -545,6 +693,12 @@ export default async function ({block, pass, load}) {
     assert.ok(!/typed reading|predicate/i.test(html.replace('no typed reading', '')), 'the view states no typed reading'); assert.match(html, /topology single-region-north/, 'and shows what each released profile states, for the person who judges');
     assert.match(html, /MSG 004 Transactional outbox relay[\s\S]*?Candidate · not reviewed[\s\S]*?<button[^>]*disabled[^>]*title="Candidate knowledge can be read, not selected\."/, 'the candidate profile is read, labelled, and its Add is disabled with the reason');
     assert.ok(!/score|rank|weigh/i.test(html), 'the view weighs nothing');
+    // naming a row unproven is the person's act, row by row (ruling Q4, should-fix 7): each row that reads unknown has its own
+    // box, none ticked, and the choice sends the rows ticked, not every unknown row
+    assert.equal((html.match(/data-sel-unproven="[^"]+"/g) || []).length, 4, 'one box for each row that reads unknown (inbox 1, relay 1, library 2)'); assert.ok(!/data-sel-unproven="[^"]+" checked/.test(html), 'none ticked');
+    assert.match(readFileSync(new URL('../public/adoption-ui.js', import.meta.url), 'utf8'), /unproven:\[\.\.\.d\.querySelectorAll\('\[data-sel-unproven\^="'\+c\.alternativeId\+':"\]:checked'\)\]/, 'the choice sends the rows the person ticked');
+    { let q = p; const d = decision(q, id), inbox = alt(d, 'Inbox and deduplication component'); q = doc(send(q, 'selection.choose', {id, alternativeId: inbox.id, reason: 'Fits.', unproven: ['QD-008'], rejections: Object.fromEntries(d.alternatives.filter(a => a.id !== inbox.id).map(a => [a.id, 'Not this one.']))}));
+      const v = U.selectionView(q, {decisionId: id}); assert.match(v, /data-sel-action="confirm"/, 'once chosen, a second person confirms from the view'); assert.match(v, /data-sel-action="judge" data-alternative="[^"]+" data-constraint="QD-008"/, 'and the unproven row can be judged by a person other than the chooser'); }
     const src = f => readFileSync(new URL('../public/' + f + '.js', import.meta.url), 'utf8'), lib = src('component-library-ui'), host = src('architecture-task-ui');
     assert.match(lib, /await import\('\.\/architecture-task-ui\.js'\);window\.aiwSelection\?\.\(\{store:s,modal\}\)/, 'the library chooser loads the comparison tools\' entry by a dynamic import and opens the selection through the hook it sets');
     assert.ok(!/from '\.\/adoption-/.test(lib), 'it imports no adoption module statically (a second lazy chunk would split a shared one)');

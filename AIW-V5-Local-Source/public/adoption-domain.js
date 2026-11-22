@@ -97,6 +97,9 @@ export function acceptanceSubject(a,p=null){
  const live=!a?.applied?.actor&&!named&&p?journalApplier(p,a):{actors:[],person:null},applier=a?.applied?.actor||named||live.person||null,seen=new Set(),history=[];
  const say=(actor,revision)=>{if(actor&&!seen.has(actor)){seen.add(actor);history.push({revision,actor});}};
  say(applier,1);for(const actor of live.actors)say(actor,1);
+ // (slice S5, ruling Q4: a profile adoption also names the persons whose word its selection rests on: the chooser and
+ // every judge of the chosen candidate's rows.)
+ if(a?.kind==='profile'&&p){const d=list(p.decisions?.records).find(x=>x.id===a.decisionId),c=d?.selection?.choice;if(c){say(c.actor,1);for(const j of list(d.selection.judgements))if(j?.alternativeId===c.alternativeId&&j.account==='person')say(j.actor,1);}}
  const journal=history.length;
  for(const x of from<0?h:h.slice(from))if(!x.identity&&(COVERED.has(x.event)||!applier&&x.event==='reassess'))say(x.actor,x.revision);
  return {id:a?.id,actor:applier||history[journal]?.actor||null,owner:typeof a?.owner==='string'?a.owner:'',history};

@@ -193,10 +193,10 @@ from, then the change; a WIP commit after each item.
 
 ### Progress
 
-- **Done:** item 1 (Q7), item 2 (Q1), item 3 (Q2), item 4 (Q3). Every S5 block is green; S1's `size` block is red until
-  item 9 (wp2's allowance is 800 B since Q10; the route is over until item 7 retires the guided path's code).
-- **In progress:** item 5 (Q4).
-- **Next:** items 6 to 9 in the order of the task (Q5 and Q6, Q8, Q9, notes and size).
+- **Done:** items 1 to 5 (Q7, Q1, Q2, Q3, Q4). Every S5 block is green; S1's `size` block is red until item 9 (wp2's
+  allowance is 800 B since Q10; the route is over until item 7 retires the guided path's code).
+- **In progress:** item 6 (Q5 and Q6).
+- **Next:** items 7 to 9 in the order of the task (Q8, Q9, notes and size).
 
 ### Items
 
@@ -267,3 +267,33 @@ from, then the change; a WIP commit after each item.
    not judged -> a row a person judged is not judged again (by the judge or a third person); `S5 SDD` the typed reading
    printed -> "no typed reading" for both constraints and each judged row naming its judge; `S5 old documents` a template
    copy's `readDecision` is null -> its reading weighs nothing (item 8 changes what a copy is).
+5. **Q4, must-fix 4 and 5, design concern 2, should-fix 7 — done.** A second person stands behind every person's word
+   on a hard constraint. `selection.confirm {id, note?}` is stated `second` on the command (`adoption-package.js`); its
+   projection (`adoption-selection.js` confirmSubject) is `{id, actor: the chooser, owner, history}`, history naming once
+   each the chooser (who also names each unproven row: the view asks for it row by row) and every person who judged a row
+   of the chosen candidate, so the one rule (verifierRefusal) refuses each of them, at the boundary and at read time
+   (confirmStands, ruling D7.1); the boundary's D1 check also needs a person behind the decision as it stands (the
+   chooser's commit stamps it). The confirm is kept as `selection.confirm {actor, at, account, basis, note}`: it stands
+   while its basis (the choice, the chosen candidate's rows with their judges, the rows named unproven, the hard
+   constraints) is as it was, a person's, taken here. While a choice stands that no second person confirmed, the package
+   raises the error `selection-confirm` on Chapter 3, so `decision.accept` refuses, for every kind of candidate; and
+   `selection.instantiate` requires the confirm. For a profile, `adoption.accept`'s projection (`adoption-domain.js`
+   acceptanceSubject) also names the chooser and the judges of the chosen candidate's rows. While a chosen row is
+   unproven, `decision.governance` (approved) and `decision.save` with `assumptionsResolved: true` are refused
+   (`decisions-domain.js`, reading `selection.choice.unproven`: clearing the assumptions' sentence does not get round it).
+   After the choice, `selection.judge` takes a row of the chosen candidate that reads unknown, from a person other than
+   the chooser: the choice's rows and its unproven list follow, the decision's assumptions drop the row, the selection's
+   rows are written into Chapter 3 (so the decision is revised and its acceptance lapses), and the confirm lapses (its
+   basis moved; the new judge is in the projection). A row judged fail after the choice is "breaks it" in Chapter 3 and
+   raises the built-in 'breaks' error (ruling Q1). The view: one box "Name unproven if chosen" per row that reads unknown,
+   none ticked, and the choice sends the rows ticked; a "Confirm the selection" button once chosen; the Judge button on the
+   chosen candidate's unknown rows. Cases: `S5 Q4 second person` (new, through the server; failed first on "a chosen
+   selection nobody confirmed is an error"): every kind (profile, library entry, archetype, existing component, build,
+   buy, released option) is refused acceptance until a second person confirms, the one error before the confirm being
+   `selection-confirm`; the chooser, the judge, an agent account and a draft by Sol are refused the confirm; governance
+   and resolving the assumptions are refused while unproven; the profile adoption's projection names the chooser and the
+   judge, each refused `adoption.accept`; the judgement after the choice; the fail row's 'breaks'. `S5 surface` (failed
+   first on the boxes). Replaced assertions, old -> new: `S5 registration` five steps, none second -> six, only
+   `selection.confirm` second and a review command; S1's `registration` (the list S5 added) five steps -> six; the
+   suite's `acceptDecision` and the server block confirm by a third person (C) before acceptance, as the boundary applies
+   the step (the boundary's refusals are held through the server).
