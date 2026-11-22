@@ -223,14 +223,16 @@ const tracked = (p, paths) => paths.map(([path]) => { const out = new Map(), loo
 // What a call may leave of a record it changed (ruling T1): the fields the path lists as the call left them; every other
 // field as the boundary's copy (`old`, the record's text before the call) had it, in the copy's order; the revision moved
 // forward by one where a listed field changed, else as it was. `now` is the record in the document, changed in place.
+// The fields are kept as [key, value] entries and written back as the record's own (defineProperty), never by
+// assignment, so a field of any name (one named "__proto__" included) is put back as the record held it.
 function keepListed(old, now, listed) {
-  const copy = JSON.parse(old), was = copy.revision ?? 0, out = {};
-  const mended = [...listed].some(k => JSON.stringify(now[k]) !== JSON.stringify(copy[k]));
-  for (const k of Object.keys(copy)) if (!listed.has(k)) out[k] = copy[k]; else if (Object.hasOwn(now, k)) out[k] = now[k];
-  for (const k of Object.keys(now)) if (listed.has(k) && !Object.hasOwn(out, k)) out[k] = now[k];
-  if (mended && Number.isInteger(was) && now.revision === was + 1) out.revision = now.revision;
+  const copy = JSON.parse(old), was = copy.revision ?? 0, out = new Map(), own = (o, k) => Object.getOwnPropertyDescriptor(o, k)?.value;
+  const mended = [...listed].some(k => JSON.stringify(own(now, k)) !== JSON.stringify(own(copy, k)));
+  for (const k of Object.keys(copy)) if (!listed.has(k)) out.set(k, own(copy, k)); else if (Object.hasOwn(now, k)) out.set(k, own(now, k));
+  for (const k of Object.keys(now)) if (listed.has(k) && !out.has(k)) out.set(k, own(now, k));
+  if (mended && Number.isInteger(was) && now.revision === was + 1) out.set('revision', now.revision);
   for (const k of Object.keys(now)) delete now[k];
-  Object.assign(now, out);
+  for (const [k, value] of out) Object.defineProperty(now, k, {value, enumerable: true, writable: true, configurable: true});
 }
 export function trackExtensions(prior, next, command, at, {author = null} = {}) {
   const inner = innerCommands(command);

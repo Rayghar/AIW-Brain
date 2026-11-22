@@ -1459,3 +1459,15 @@ fix-up's report, `wp9a-s1-topology.fixup4.json`, names them by their first numbe
     (`ADOPTION_HOLDER`). If the merge with wp2 S5 or wp1 S2 changes what that chunk imports (an alias that moves in a
     shared chunk shows in its import list), S1.10's lists bound (168 B) may need re-measuring at the merge; the modules
     are unaffected.
+
+## Lead follow-up after the fifth verifier (2026-11-22)
+
+The fifth verifier's verdict on f784fdb is *merge* (6 of 7 items fixed, the seventh known limit (a) as L11 allows; nothing
+weakened), with one nit, closed here on rc44/wp9a-s1-lead, case first:
+- keepListed dropped an own field named "__proto__" when it rebuilt a mended record (assignment sets a prototype). It now
+  keeps the fields as [key, value] entries and writes each back as the record's own (defineProperty), so every field the
+  path does not list is put back as the record held it. Case: S0 block 'O2', a responsibility holding "__proto__" as its
+  own field, mended by the synthetic tracker through trackExtensions (seen red: the field was gone). Server-only module:
+  no route bytes. Suites: rc44-s0-extensions 28 of 28, rc44-wp9a-deployment 25 of 25.
+- The fifth fix-up's open issues are the lead's at the merge: wp2's suite calls assertTrackerStaysInPaths and reads the
+  bucket as a ceiling at wp2's merge (T3, R4); S1.10's lists bound is re-measured at each merge (open question 17).
