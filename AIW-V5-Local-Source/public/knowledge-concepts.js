@@ -184,10 +184,10 @@ export function releasedCrosswalk(p){
  return held.filter(({row:r,release})=>{const here=own.get(r?.id);return crosswalkState(r)==='verified'&&!!here&&crosswalkRowHash(here)===crosswalkRowHash(r)&&!['retired','rejected'].includes(crosswalkState(here))&&concepts.some(c=>c.release.id===release.id&&c.conceptId===r.conceptId&&c.eligible);});
 }
 const BUILT_IN_WORDS='AIW built-in mapping, not reviewed by a person';
-// The one resolver: the concept an id names, {conceptId, relation, via: {scheme, aliasId, rowId, releaseId}, authority},
-// or null. In order: an id that is itself a concept an active release holds, usable as a whole; a released `same` row
-// (governed); a built-in `same` row (navigation only, reviewed by no person). An alias two rows give two concepts names
-// none. `scheme` narrows the aliases read.
+// The one resolver of identity: the concept an id names, {conceptId, relation, via: {scheme, aliasId, rowId, releaseId},
+// authority: 'governed'}, or null. In order: an id that is itself a concept an active release holds, usable as a whole;
+// a released `same` row. An alias two rows give two concepts names none. `scheme` narrows the aliases read. It answers
+// governed identities only (ruling P6 of 2026-11-22): no built-in row answers it; builtInNavigation reads those.
 export function resolveConcept(p,id,scheme=null){
  if(typeof id!=='string'||!id)return null;
  const fits=r=>r.relation==='same'&&r.aliasId===id&&(!scheme||r.scheme===scheme),one=list=>new Set(list.map(r=>r.conceptId)).size===1;
@@ -198,8 +198,14 @@ export function resolveConcept(p,id,scheme=null){
  if(own.length&&!scheme)return {conceptId:id,relation:'same',via:{scheme:'concept',aliasId:id,rowId:null,releaseId:own[0].release.id},authority:'governed'};
  const governed=rows.filter(h=>fits(h.row));
  if(governed.length)return one(governed.map(h=>h.row))?{conceptId:governed[0].row.conceptId,relation:'same',via:{scheme:governed[0].row.scheme,aliasId:id,rowId:governed[0].row.id,releaseId:governed[0].release.id},authority:'governed'}:null;
- const built=BUILT_IN_CROSSWALK.filter(fits);
- return built.length&&one(built)?{conceptId:built[0].conceptId,relation:'same',via:{scheme:built[0].scheme,aliasId:id,rowId:null,releaseId:null},authority:'built-in',label:BUILT_IN_WORDS}:null;
+ return null;
+}
+// The built-in rows of an alias, for navigation only (ruling P6): AIW's own table, reviewed by no person, answered under a
+// name that says so and with no conceptId at its top level, so that no reader can take it for an identity.
+// {navigation: [{scheme, aliasId, targetId, relation}], authority: 'built-in', label} or null.
+export function builtInNavigation(id,scheme=null){
+ const rows=BUILT_IN_CROSSWALK.filter(r=>r.aliasId===id&&(!scheme||r.scheme===scheme));
+ return rows.length?{navigation:rows.map(r=>({scheme:r.scheme,aliasId:r.aliasId,targetId:r.conceptId,relation:r.relation})),authority:'built-in',label:BUILT_IN_WORDS+': navigation only, never an identity'}:null;
 }
 // The aliases of a concept, for the concept view: its rows in the register with their standing (released when an
 // active release holds the row as verified and the register still reads it so), and beside it what an active release

@@ -196,8 +196,11 @@ add('S2.2 (migration, ruling J6): MAPPINGS of knowledge-coverage.js is retired i
   // The five style rows: the Playbook's style ids, read from design-reasoning.js STYLE_CATALOGUE, the one definition of them.
   const {STYLE_CATALOGUE} = await import('./public/design-reasoning.js');
   assert.deepEqual(KC.BUILT_IN_CROSSWALK.filter(r => r.scheme === 'playbook').map(r => [r.aliasId, r.conceptId, r.relation]), Object.entries(STYLE_CATALOGUE).map(([a, c]) => [a, c, 'same']));
-  for (const [alias, concept] of Object.entries(STYLE_CATALOGUE)) assert.deepEqual(KC.resolveConcept(blank, alias), {conceptId: concept, relation: 'same', via: {scheme: 'playbook', aliasId: alias, rowId: null, releaseId: null}, authority: 'built-in', label: 'AIW built-in mapping, not reviewed by a person'}, alias);
-  assert.equal(KC.resolveConcept(blank, 'S-MODMONO').conceptId, 'STYLE-MODULAR-MONOLITH');
+  // (ruling P6; was: resolveConcept answered each style alias as {conceptId, relation 'same', via, authority 'built-in',
+  // label}: now no built-in row answers the resolver, and the navigation reader gives the same row, exactly, under a name
+  // that says navigation and with no conceptId at its top level)
+  for (const [alias, concept] of Object.entries(STYLE_CATALOGUE)) { assert.equal(KC.resolveConcept(blank, alias), null, alias + ' is no identity'); assert.deepEqual(KC.builtInNavigation(alias), {navigation: [{scheme: 'playbook', aliasId: alias, targetId: concept, relation: 'same'}], authority: 'built-in', label: 'AIW built-in mapping, not reviewed by a person: navigation only, never an identity'}, alias); }
+  assert.equal(KC.builtInNavigation('S-MODMONO').navigation[0].targetId, 'STYLE-MODULAR-MONOLITH');
 });
 
 // ------------------------------------------------------------------------------------------------ 3
@@ -700,5 +703,26 @@ add('S2.20 (ruling P5 g): no crosswalk row can be written by a merge or a templa
     for (const [type, payload] of [['workspace.alternative', {commands, stamp: 'x', title: 'An alternative with a row', reason: 'Holds a crosswalk row.'}], ['workspace.apply', {commands, stamp: 'x', reviewed: true, reason: 'A batch with a row.'}]])
       await S.refused(/This action must use its chapter review workflow|Unknown Review & realize action/, type, payload, 'architect');
     assert.equal(S.document.knowledge.crosswalk, undefined, 'no row was written'); assert.deepEqual(S.document.workbench?.alternatives || [], []);
+  } finally { S.close(); }
+});
+
+// ------------------------------------------------------------------------------------------------ 21 (ruling P6)
+add('S2.21 (ruling P6): built-in rows are navigation by construction: no built-in row answers resolveConcept, in any scheme; they are read through builtInNavigation, whose answer has no conceptId at its top level and says navigation; a governed row of the same alias is what resolves', async () => {
+  const {KC} = await mods(), blank = createProject({name: 'Synthetic navigation', template: 'blank'}, 'navigation-blank', AT);
+  assert(KC.BUILT_IN_CROSSWALK.length >= 21, 'the built-in rows');
+  for (const r of KC.BUILT_IN_CROSSWALK) {
+    assert.equal(KC.resolveConcept(blank, r.aliasId), null, r.aliasId + ': no built-in row answers the resolver'); assert.equal(KC.resolveConcept(blank, r.aliasId, r.scheme), null, r.aliasId + ' in ' + r.scheme);
+    const n = KC.builtInNavigation(r.aliasId); assert.equal('conceptId' in n, false, 'no conceptId at the top level'); assert.equal(n.authority, 'built-in'); assert.match(n.label, /navigation only, never an identity/);
+    assert(n.navigation.some(x => x.scheme === r.scheme && x.targetId === r.conceptId && x.relation === r.relation), r.aliasId + ': the navigation names the row');
+    assert.deepEqual(KC.builtInNavigation(r.aliasId, 'akr'), null, 'a scheme no built-in row of the alias has: no navigation');
+  }
+  assert.equal(KC.builtInNavigation('P-STRANGLER'), null, 'an alias no built-in row names');
+  // A governed row of a built-in alias is what resolves; the navigation still answers the built-in row beside it.
+  const {S, release} = await strangler();
+  try {
+    const id = await S.ok('knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'playbook', aliasId: 'S-MICROKERNEL', label: 'Microkernel (a synthetic governed row)', relation: 'same'}, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id}, 'reviewer');
+    assert.equal(KC.resolveConcept(S.document, 'S-MICROKERNEL'), null, 'verified, unreleased: nothing'); await release();
+    assert.equal(KC.resolveConcept(S.document, 'S-MICROKERNEL').conceptId, 'PAT-STRANGLER-FIG', 'the governed row resolves'); assert.equal(KC.builtInNavigation('S-MICROKERNEL').navigation[0].targetId, 'STYLE-MICROKERNEL');
+    assert.equal(KC.resolveConcept(S.document, 'S-LAYERED'), null, 'a built-in alias with no governed row resolves nothing');
   } finally { S.close(); }
 });
