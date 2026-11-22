@@ -23,8 +23,9 @@
 //   S5 U4 proposal   a selection before a person's choice says nothing to the context of the requirement it answers (U4);
 //   S5 U3 concern    a candidate concern offers no comparison; a released option is compared only once it is assessed on
 //                    every released criterion (what design-concern-validate.mjs held of the guided path, ruling U3);
-//   S5 V1 view       the view keeps that gate: it checks every note before selection.start (a blank note writes nothing),
-//                    and a partly started option selection offers each option not yet compared, with its notes (V1);
+//   S5 V1 view       the view keeps that gate: it checks every note before selection.start (a blank note writes nothing,
+//                    nor does one over the text limit, W3), and a partly started option selection offers each option not
+//                    yet compared, with its notes (V1);
 //   S5 Q5 instantiate creates  a payload with an id is refused; the component's source names its release, claim, hash and
 //                    decision, and every reader finds them (ruling Q5);
 //   S5 Q6 elsewhere  a recovery import moves the selection's steps aside; facts and standing read on each read (Q6);
@@ -546,16 +547,24 @@ export default async function ({block, pass, load}) {
     const note = (v, optionId, criterionId, text) => { const f = v.d.querySelector('[data-sel-note="' + optionId + '|' + criterionId + '"]'); assert.ok(f, 'the view asks a note on ' + optionId + ' · ' + criterionId); f.value = text; };
     const start = (v, notes) => { v.d.querySelector('[data-sel-requirement]').value = 'REQ-001'; v.d.querySelector('[data-sel-driver]').value = 'QD-001'; v.d.querySelector('[data-sel-owner]').value = CONCERN_ANSWERS.owner; v.d.querySelector('[data-sel-why]').value = CONCERN_ANSWERS.reason;
       for (const [o, ks] of Object.entries(notes)) for (const [k, t] of Object.entries(ks)) note(v, o, k, t); };
-    const p = concernProject(), before = JSON.stringify(p);
+    const p = concernProject(), before = JSON.stringify(p), LIMIT = S.SELECTION_LIMITS.text;
     // a blank note writes nothing: the view checks every note before it sends selection.start, and refuses in words naming the option and the criterion
     for (const [why, notes, words] of [
       ['no note at all', {}, /^Assess every released approach before it is compared: One application · Recovery, Operations; Separate service · Recovery, Operations\.$/],
       ['one blank note', {...CONCERN_NOTES, separate: {...CONCERN_NOTES.separate, operations: '   '}}, /^Assess every released approach before it is compared: Separate service · Operations\.$/],
-      ['the first option\'s note missing', {local: {operations: CONCERN_NOTES.local.operations}, separate: CONCERN_NOTES.separate}, /^Assess every released approach before it is compared: One application · Recovery\.$/]]) {
+      ['the first option\'s note missing', {local: {operations: CONCERN_NOTES.local.operations}, separate: CONCERN_NOTES.separate}, /^Assess every released approach before it is compared: One application · Recovery\.$/],
+      // (the lead's ruling W3 of 2026-11-22) a note over the text limit is refused too, before anything is sent, naming the option and the
+      // criterion: at ad8204b the view sent the start, the server refused the first candidate without naming either, and an empty
+      // selection decision was left in Chapter 3
+      ['a note over the text limit', {...CONCERN_NOTES, separate: {...CONCERN_NOTES.separate, operations: 'x'.repeat(LIMIT + 1)}}, new RegExp('^Record each criterion\'s note as text of at most ' + LIMIT + ' characters: Separate service · Operations\\.$')],
+      ['a blank note and one over the limit', {local: {...CONCERN_NOTES.local, recovery: 'y'.repeat(LIMIT + 1)}, separate: {...CONCERN_NOTES.separate, operations: ' '}}, new RegExp('^Assess every released approach before it is compared: Separate service · Operations\\. Record each criterion\'s note as text of at most ' + LIMIT + ' characters: One application · Recovery\\.$')]]) {
       const v = open(p, {concernId: 'schedule-ownership', driverId: 'QD-001'}); start(v, notes); await click(v, '[data-sel-action="start-option"]');
       assert.deepEqual(v.sent.map(([t]) => t), [], 'nothing is sent (' + why + ')'); assert.equal(v.errors.length, 1, 'the view says why (' + why + ')'); assert.match(v.errors[0], words, why);
       { const n = v.d.querySelector('[data-error]'); assert.ok(n && !n.hidden && words.test(n.textContent), 'in the dialog\'s error line (' + why + ')'); }
       assert.equal(JSON.stringify(v.store.value.document), before, 'and nothing is written (' + why + ')'); assert.ok(!v.store.value.document.decisions.records.some(d => d.selection), 'no empty selection decision is left (' + why + ')'); }
+    // (ruling W3) a note of exactly the limit is sent, and the server takes it: the view's limit is the server's
+    { const v = open(p, {concernId: 'schedule-ownership', driverId: 'QD-001'}); start(v, {...CONCERN_NOTES, local: {...CONCERN_NOTES.local, recovery: 'z'.repeat(LIMIT)}}); await click(v, '[data-sel-action="start-option"]');
+      assert.deepEqual(v.errors, [], 'a note of ' + LIMIT + ' characters is not refused'); assert.deepEqual(v.sent.map(([t]) => t), ['selection.start', 'selection.candidate', 'selection.candidate'], 'a note of exactly the limit is sent and taken'); }
     // assessed on every criterion, the view starts the selection and adds each released option, in the concern's order
     { const v = open(p, {concernId: 'schedule-ownership', driverId: 'QD-001'}); start(v, CONCERN_NOTES); await click(v, '[data-sel-action="start-option"]');
       assert.deepEqual(v.errors, []); assert.deepEqual(v.sent.map(([t, x]) => t + (x.candidate ? ':' + x.candidate.ref.optionId : '')), ['selection.start', 'selection.candidate:local', 'selection.candidate:separate'], 'the start, then each option');
@@ -570,6 +579,8 @@ export default async function ({block, pass, load}) {
       const v = open(q, {decisionId: id}), was = JSON.stringify(q);
       note(v, 'separate', 'recovery', CONCERN_NOTES.separate.recovery); await click(v, '[data-sel-action="add-option"][data-option="separate"]');
       assert.deepEqual(v.sent, [], 'a blank note on the offered option sends nothing'); assert.match(v.errors[0] || '', /^Assess every released approach before it is compared: Separate service · Operations\.$/); assert.equal(JSON.stringify(v.store.value.document), was, 'and writes nothing');
+      note(v, 'separate', 'recovery', 'x'.repeat(LIMIT + 1)); note(v, 'separate', 'operations', CONCERN_NOTES.separate.operations); await click(v, '[data-sel-action="add-option"][data-option="separate"]');
+      assert.deepEqual(v.sent, [], 'a note over the limit on the offered option sends nothing (ruling W3)'); assert.match(v.errors.at(-1) || '', new RegExp('^Record each criterion\'s note as text of at most ' + LIMIT + ' characters: Separate service · Recovery\\.$')); assert.equal(JSON.stringify(v.store.value.document), was, 'and writes nothing');
       note(v, 'separate', 'recovery', CONCERN_NOTES.separate.recovery); note(v, 'separate', 'operations', CONCERN_NOTES.separate.operations); await click(v, '[data-sel-action="add-option"][data-option="separate"]');
       assert.deepEqual(v.sent.map(([t, x]) => [t, x.id, x.candidate.ref.optionId, x.notes]), [['selection.candidate', id, 'separate', CONCERN_NOTES.separate]], 'assessed, the option is added with its notes');
       const d = decision(v.store.value.document, id); assert.deepEqual(d.alternatives.map(a => [a.candidate.ref.optionId, a.summary]), [['local', 'Recovery: Restore one process and reconcile reservations. Operations: Facilities runs the rebuild.'], ['separate', 'Recovery: Coordinate partial failure across services. Operations: A platform team runs the rebuild.']], 'the selection is complete, as a start from the view makes it');
@@ -578,7 +589,7 @@ export default async function ({block, pass, load}) {
       // once a candidate is chosen, no option is offered (a further candidate is compared in a selection of its own)
       const c = decision(v.store.value.document, id), local = c.alternatives[0]; const chosen = doc(send(v.store.value.document, 'selection.choose', {id, alternativeId: local.id, reason: 'Fits.', unproven: [], rejections: {[c.alternatives[1].id]: 'Not this one.'}}));
       assert.ok(!/data-sel-action="add-option"/.test(U.selectionView(chosen, {decisionId: id})), 'a chosen selection offers no option'); }
-    pass('S5 V1 view: the view checks every note before it sends selection.start and refuses in words naming the option and the criterion, so a blank note writes nothing and leaves no empty selection decision; an option selection offers each released option not yet compared, with a note field on each released criterion, so a partly started selection is completed from the view (a blank note there sends nothing too); none is offered once every option is compared or a candidate is chosen');
+    pass('S5 V1 view: the view checks every note before it sends selection.start and refuses in words naming the option and the criterion, so a blank note writes nothing and leaves no empty selection decision, nor does a note over the text limit (ruling W3: refused in words naming the option and the criterion; a note of exactly the limit is sent and taken); an option selection offers each released option not yet compared, with a note field on each released criterion, so a partly started selection is completed from the view (a blank note there sends nothing too); none is offered once every option is compared or a candidate is chosen');
   });
 
   // ------------------------------------------------------------ instantiate creates, never updates (ruling Q5)
