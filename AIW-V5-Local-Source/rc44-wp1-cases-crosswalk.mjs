@@ -564,7 +564,9 @@ add('S2.10 (old documents and S0\'s helpers): with ' + PACKAGE + ' registered, t
   assert(mine(), PACKAGE + ' is registered'); assert.deepEqual(boundary.extensionIssues(mine()), [], 'the package conforms to the registration contract'); assert.deepEqual(boundary.extensionConflicts(), []);
   // (rc44 wp1 S3, old -> new: the parts were commands, design, id, provenance and the commands the crosswalk's four) S3
   // adds the pins' object type, emitter, finding, section and knowledge keys, and seven types: the exact sets, as strict.
-  assert.deepEqual(Object.keys(mine()).sort(), ['checks', 'commands', 'design', 'evidenceKeys', 'id', 'objectTypes', 'provenance', 'records', 'sections'], 'the package states its commands, the collections they write, what its records say to the fingerprint, the pins\' type, emitter, finding and section, nothing more');
+  // (rc44 wp1 S3 fix-up, the lead's ruling X5 a, old -> new: the parts listed checks too; the check row of list 11 is
+  // held back until S5's concept view offers the steps that clear its finding (J7), so the package states no checks)
+  assert.deepEqual(Object.keys(mine()).sort(), ['commands', 'design', 'evidenceKeys', 'id', 'objectTypes', 'provenance', 'records', 'sections'], 'the package states its commands, the collections they write, what its records say to the fingerprint, the pins\' type, emitter, finding and section, nothing more');
   assert.deepEqual(Object.keys(mine().commands).sort(), [...TYPES, 'knowledge.concept-pin', 'knowledge.concept-link', 'knowledge.concept-unlink', 'knowledge.concept-migration', 'knowledge.concept-migration-confirm', 'knowledge.concept-repin', 'knowledge.concept-unpin'].sort());
   for (const t of TYPES) assert.deepEqual(mine().provenance.paths[t], ['knowledge.crosswalk'], t + ' writes the crosswalk only');
   const golden = JSON.parse(readFileSync('rc44-s0-extensions-baseline.json', 'utf8')); assert.equal(golden.capturedFrom, '94dbd4f');

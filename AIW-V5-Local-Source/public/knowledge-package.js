@@ -10,7 +10,10 @@
 // commands and applies none, so the command module stays out of every client bundle.
 //   objectTypes, records  a pin is an object of type `concept` (Chapter 11), and each link through a pin a relation
 //                         `informs` from the pin to the record (knowledge-pins.js): no layer, no trail
-//   checks 11             one finding for each link whose pin is not current (the review's own list)
+//   (no checks)           the finding for each link whose pin is not current is the package's reader
+//                         (knowledge-pins.js conceptLinkFindings) and Appendix E of the SDD: its check row of list 11
+//                         is held back until slice S5's concept view offers relink, migration, repin and unpin in the
+//                         browser (the lead's ruling X5 a, by J7: no finding before the surface that clears it)
 //   design                what the crosswalk rows, the pins and the links say to the design fingerprint, in place of the
 //                         raw keys (ruling J3): all but their history, review, confirmation and stamps, so no person's or
 //                         second person's step moves a stamp; a migration is a proposal and says nothing (ruling L6)
@@ -19,13 +22,12 @@
 //                         organisation's notices are bookkeeping (neither fingerprint reads them)
 import {registerExtension} from './design-extensions.js';
 import {crosswalkDesign} from './knowledge-crosswalk.js';
-import {pinRecords,conceptLinkFindings,pinsDesign,linksDesign,migrationsDesign} from './knowledge-pins.js';
+import {pinRecords,pinsDesign,linksDesign,migrationsDesign} from './knowledge-pins.js';
 // (The keys are built from their names: a key of the knowledge workspace is no command type, which product scans read.)
 const key=k=>'knowledge.'+k;
 export const KNOWLEDGE_PACKAGE={id:'p10-knowledge',
  objectTypes:{concept:{label:'Knowledge concept',chapter:11,level:'intent',prefix:'KU'}},
  records:pinRecords,
- checks:{11:conceptLinkFindings},
  design:{[key('crosswalk')]:crosswalkDesign,[key('conceptPins')]:pinsDesign,[key('conceptLinks')]:linksDesign,[key('conceptMigrations')]:migrationsDesign},
  evidenceKeys:['concepts','topics','library','pinCurrency','organizationNotices'].map(key)};
 registerExtension(KNOWLEDGE_PACKAGE);

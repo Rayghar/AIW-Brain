@@ -3,13 +3,14 @@
 // (knowledge.conceptPins, KU: the release, the version, the concept's hash) and links a record to it through the pin
 // (knowledge.conceptLinks, KB). The pin's currency is derived on the server, which alone reads the organisation's signed
 // notices, and stored beside the pins by one writer (knowledge-concepts.js refreshConceptPins): knowledge.pinCurrency,
-// {pinId: {state, title, detail, successor?}}. What is read here, by the record graph and the review's own list (11):
+// {pinId: {state, title, detail, successor?}}. What is read here, by the record graph (and, from slice S5, the review's
+// own list 11: the lead's ruling X5 a holds the check row back until the concept view offers the steps that clear it):
 //   pinRecords           each pin a record relies on, or that is active, as an object of type `concept`, and each active
 //                        link as a relation `informs` from the pin to the record (no layer, no trail: S0's emitter)
 //   conceptLinkFindings  one finding for each active link whose pin is not current: a newer version, a withdrawal, a
 //                        change, a due review, a retirement, a pin a second person moved, a pin a person retired
 //   pinsDesign, linksDesign  what the pins and links say to the design fingerprint: all of them but the steps they keep
-// The design package p10-knowledge registers these (knowledge-package.js). Nothing here is read by a check of a
+// The design package p10-knowledge registers these but the finding (knowledge-package.js). Nothing here is read by a check of a
 // chapter, a gate, a score or a conformance reading: a pin is taken only on released knowledge, and its finding says
 // that the support changed, never what the knowledge says.
 import {list} from './util.js';

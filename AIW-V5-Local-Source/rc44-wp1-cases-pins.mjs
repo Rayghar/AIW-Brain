@@ -43,6 +43,10 @@ const FORMS = ['definition', 'applicability'];
 // The applicability form with another avoid-when (a changed form: the claim's hash moves, the quote is the same).
 const changedApplicability = () => { const f = F.p001Forms().applicability, c = clone(f); c.content.avoidWhen[0].text = 'Nothing has to be published after the caller reads data.'; return c; };
 const findings11 = p => rv.inheritedFindings(p).filter(f => f.chapterTitle === 'Knowledge support');
+// The package's own reader of its finding (knowledge-pins.js conceptLinkFindings). Since the fix-up (the lead's ruling
+// X5 a, by J7) the package registers no check of list 11 until slice S5's concept view offers relink, migration, repin
+// and unpin in the browser: the cases below read the reader and Appendix E of the SDD, and the review's list raises none.
+const raisedBy = async p => (await import('./public/knowledge-pins.js')).conceptLinkFindings(p);
 const packageFindings = async p => { const X = await import('./public/design-extensions.js'); return X.EXTENSIONS.filter(e => e.id === PACKAGE).flatMap(e => e.checks?.[11]?.(p) || []); };
 const pins = d => d.knowledge?.conceptPins || [], links = d => d.knowledge?.conceptLinks || [], migrations = d => d.knowledge?.conceptMigrations || [];
 
@@ -129,7 +133,7 @@ async function worldDesign(W, OR, {link = true, name = 'Northquay booking design
 }
 
 // ------------------------------------------------------------------------------------------------ 1 (fails today)
-add('S3.1 (fails today): a design project pins an organisation release, links a component through a pin, the library publishes a successor; the project\'s knowledge findings hold "Review a newer knowledge version" for that component, and its forms are unchanged', async () => {
+add('S3.1 (fails today): a design project pins an organisation release, links a component through a pin, the library publishes a successor; the package\'s reader raises "Review a newer knowledge version" for that component and Appendix E says a newer version exists (the review\'s list holds it back until S5, ruling X5 a), and its forms are unchanged', async () => {
   const {KC} = await mods(), W = await world();
   try {
     const lib = await worldLibrary(W), OR1 = await lib.publish(lib.v1, 'Synthetic integration concepts 1');
@@ -137,17 +141,23 @@ add('S3.1 (fails today): a design project pins an organisation release, links a 
     let doc = await D.read();
     const before = {forms: KC.conceptDecisionReading(doc, pinId), component: clone(doc.realisation.components.find(c => c.id === 'api-pod')), pin: clone(pins(doc).find(p => p.id === pinId))};
     assert.equal(before.pin.version, 1); assert.deepEqual(before.forms.reasons, []); assert.deepEqual(before.forms.forms.map(f => f.type), ['applicability'], 'the pinned version hands its decision-bearing form over');
-    assert.deepEqual(findings11(doc), [], 'a current pin raises nothing');
+    assert.deepEqual(findings11(doc), [], 'a current pin raises nothing'); assert.deepEqual(await raisedBy(doc), [], 'nor does the package\'s reader');
     const stampOf = d => { const q = rv.withFinalReview(clone(d), {upgrade: false}); return rv.reviewSourceStamp(q) + ' ' + rv.reviewDesignStamp(q); }, designStamp = stampOf(doc);
     // The library publishes version 2 as the successor of version 1.
     const v2 = await lib.successor(lib.v1, 'Synthetic integration concepts 2'), OR2 = await lib.publish(v2, 'Synthetic integration concepts 2');
     assert.equal(OR2.from.supersedes, OR1.id, 'the organisation release names the release it supersedes');
     doc = await D.read();
-    const raised = findings11(doc);
-    assert.deepEqual(raised.map(f => [f.title, f.objectId, f.level]), [['Review a newer knowledge version', 'api-pod', 'warning']], 'the component raises the version finding');
-    assert.deepEqual((await packageFindings(doc)).map(f => f.id), ['knowledge:' + linkId], 'one finding per link, named by the link');
-    // (The finding is the package's, in the review's own list with the knowledge findings (rulings E5 and D7.4): the
-    // reader of plain claim links, which the Brain reads too, is not handed a form (rulings B1 and E2).)
+    // (the fix-up, the lead's ruling X5 a, old -> new: the review's knowledge findings held "Review a newer knowledge
+    // version" for api-pod, raised by the package's check of list 11. That row is held back until S5 (J7): the package's
+    // reader raises it, one finding per link, Appendix E of the SDD says a newer version exists, and the review's list
+    // raises nothing.)
+    const raised = await raisedBy(doc);
+    assert.deepEqual(raised.map(f => [f.title, f.objectId, f.level]), [['Review a newer knowledge version', 'api-pod', 'warning']], 'the package\'s reader raises the version finding for the component');
+    assert.deepEqual(raised.map(f => f.id), ['knowledge:' + linkId], 'one finding per link, named by the link');
+    assert.deepEqual(await packageFindings(doc), [], 'the package registers no check of list 11 (ruling X5 a)');
+    assert.deepEqual(findings11(doc), [], 'the review\'s list raises nothing until S5\'s concept view offers the steps that clear it (J7)');
+    assert.match(architectureMarkdown(rv.withFinalReview(clone(doc))).markdown, /SYN-P001 · Transactional outbox · version 1 of “Synthetic integration concepts 1” · newer-available[\s\S]*A newer version exists: version 2 in “Synthetic integration concepts 2”\./, 'Appendix E says a newer version exists');
+    // (The reader of plain claim links, which the Brain reads too, is not handed a form (rulings B1 and E2).)
     assert.deepEqual(K.knowledgeFindings(doc), [], 'knowledgeFindings, the reader of plain claim links, is as it was');
     assert.match(raised[0].detail, /SYN-P001 v1/); assert.match(raised[0].detail, /v2/);
     assert.deepEqual(KC.conceptDecisionReading(doc, pinId), before.forms, 'the pinned forms are unchanged: still version 1');
@@ -242,7 +252,7 @@ add('S3.5 (withdrawal): the organisation withdraws a release; the pinned release
     const notice = {kind: 'knowledge-notice', id: 'notice:' + OR1.id, organizationId: W.O, releaseId: OR1.id, withdrawn: {at: AT, by: 'steward', reason: 'Forged.'}};
     for (const forged of [{...notice, signature: 'f'.repeat(64)}, notice]) {
       await W.env.DB.prepare('INSERT INTO organization_releases(organization_id,id,document,created_at) VALUES(?,?,?,?) ON CONFLICT(organization_id,id) DO UPDATE SET document=excluded.document').bind(W.O, notice.id, JSON.stringify(forged), AT).run();
-      const doc = await D.read(); assert.equal(K.organizationReleases(doc)[0].assurance.eligible, true, 'a forged or unsigned notice is ignored'); assert.equal(doc.knowledge.pinCurrency[pinId].state, 'current'); assert.deepEqual(findings11(doc), []);
+      const doc = await D.read(); assert.equal(K.organizationReleases(doc)[0].assurance.eligible, true, 'a forged or unsigned notice is ignored'); assert.equal(doc.knowledge.pinCurrency[pinId].state, 'current'); assert.deepEqual(await raisedBy(doc), []);
     }
     assert.equal((await W.orgApi('knowledge-withdraw', WITHDRAW, 'architect')).status, 403, 'only an administrator withdraws');
     assert.equal((await W.orgApi('knowledge-withdraw', {...WITHDRAW, reviewed: false}, 'steward')).status, 400, 'the administrator reviews the withdrawal');
@@ -250,8 +260,9 @@ add('S3.5 (withdrawal): the organisation withdraws a release; the pinned release
     const doc = await D.read(), held = K.organizationReleases(doc)[0];
     assert.equal(held.assurance.eligible, false); assert.match(held.assurance.status, /Withdrawn by the organisation: The guild found the relay guidance wrong/);
     assert.equal(doc.knowledge.pinCurrency[pinId].state, 'withdrawn');
-    assert.deepEqual(findings11(doc).map(f => [f.title, f.objectId]), [['Review withdrawn knowledge', 'api-pod']]);
-    assert.match(findings11(doc)[0].detail, /The guild found the relay guidance wrong/);
+    // (ruling X5 a, old -> new: read in the review's list; now the package's reader, the list holding none until S5)
+    assert.deepEqual((await raisedBy(doc)).map(f => [f.title, f.objectId]), [['Review withdrawn knowledge', 'api-pod']]); assert.deepEqual(findings11(doc), []);
+    assert.match((await raisedBy(doc))[0].detail, /The guild found the relay guidance wrong/);
     assert.deepEqual(KC.conceptDecisionForms(doc, pinId), [], 'a withdrawn release hands over nothing');
     // The library's own listings show no notice.
     assert.ok(!(await W.orgApi('releases', null, 'steward')).data.releases.some(r => r.kind === 'knowledge-notice'), 'the library releases list no notice');
@@ -287,11 +298,12 @@ add('S3.6 (migration): a migration is proposed (by Sol, or by a person) and acce
     assert.deepEqual([old.status, old.movedTo, now.status, now.version, now.releaseId], ['moved', moved, 'active', 2, OR2.id]);
     assert.equal(migrations(doc).find(x => x.id === m).review.actor, 'second-architect'); assert.equal(migrations(doc).find(x => x.id === m).review.account, 'person');
     assert.deepEqual(links(doc).find(l => l.id === linkId).pinId, pinId, 'the link is not rewritten');
-    assert.deepEqual(findings11(doc).map(f => [f.title, f.objectId]), [['Review SYN-P001: this record rests on version 1; the project now pins version 2', 'api-pod']]);
+    // (ruling X5 a, old -> new: read in the review's list; now the package's reader, the list holding none until S5)
+    assert.deepEqual((await raisedBy(doc)).map(f => [f.title, f.objectId]), [['Review SYN-P001: this record rests on version 1; the project now pins version 2', 'api-pod']]); assert.deepEqual(findings11(doc), []);
     assert.deepEqual(doc.realisation.components.find(c => c.id === 'api-pod'), component, 'nothing in the linked record changed');
     // Linked again through the new pin, by a person: the finding is gone, the old link and the old pin stay in the document.
     await D.ok('knowledge.concept-link', {pinId: moved, objectId: 'api-pod', ...STEP}, 'architect');
-    doc = D.document; assert.deepEqual(findings11(doc), []); assert.ok(pins(doc).some(p => p.id === pinId) && links(doc).some(l => l.id === linkId));
+    doc = D.document; assert.deepEqual(await raisedBy(doc), []); assert.ok(pins(doc).some(p => p.id === pinId) && links(doc).some(l => l.id === linkId));
     // S0's helpers: the repin, a second person's step, is kept under the migration's key review, which a template copy
     // clears (it drops the knowledge whole); no step moves a design stamp (ruling J3).
     R.assertTemplateCopyClearsSteps(doc, d => migrations(d)); assert.equal(R.assertStepsMoveNoStamp(doc, d => [...pins(d), ...links(d), ...migrations(d)]), pins(doc).length + links(doc).length + migrations(doc).length);
@@ -532,7 +544,8 @@ add('S3.17 (old documents and S0\'s helpers): with ' + PACKAGE + ' registered as
   const X = await import('./public/design-extensions.js'), boundary = await import('./design-extension-boundary.js'); await import('./worker.js');
   const mine = X.EXTENSIONS.find(e => e.id === PACKAGE);
   assert.deepEqual(boundary.extensionIssues(mine), []); assert.deepEqual(boundary.extensionConflicts(), []);
-  assert.deepEqual(Object.keys(mine).sort(), ['checks', 'commands', 'design', 'evidenceKeys', 'id', 'objectTypes', 'provenance', 'records', 'sections']);
+  // (ruling X5 a, old -> new: the parts were checks, commands, …; the check row of list 11 is held back until S5)
+  assert.deepEqual(Object.keys(mine).sort(), ['commands', 'design', 'evidenceKeys', 'id', 'objectTypes', 'provenance', 'records', 'sections']);
   assert.deepEqual(Object.keys(mine.commands).sort(), [...PIN_TYPES, 'knowledge.crosswalk', 'knowledge.crosswalk-confirm', 'knowledge.crosswalk-review', 'knowledge.crosswalk-retire'].sort());
   assert.deepEqual(Object.entries(mine.commands).filter(([, c]) => c.person).map(([t]) => t).sort(), ['knowledge.concept-link', 'knowledge.concept-migration-confirm', 'knowledge.concept-pin', 'knowledge.concept-unlink', 'knowledge.concept-unpin', 'knowledge.crosswalk-confirm', 'knowledge.crosswalk-retire']);
   assert.deepEqual(Object.entries(mine.commands).filter(([, c]) => c.second).map(([t]) => t).sort(), ['knowledge.concept-repin', 'knowledge.crosswalk-review']);
@@ -592,9 +605,10 @@ add('S3.19 (a person\'s steps): a pin, a link through a pin, an unlink and an un
     assert.deepEqual(KC.conceptUses(D.document, pinId), ['api-pod']);
     await D.ok('knowledge.concept-unpin', {id: pinId, stamp: KC.unpinStamp(D.document, pinId), ...STEP}, 'second-architect');
     const doc = D.document; assert.equal(pins(doc).find(p => p.id === pinId).status, 'retired');
-    assert.deepEqual(findings11(doc).map(f => [f.title, f.objectId]), [['Review changed architectural support', 'api-pod']], 'the link to a retired pin is a finding');
+    // (ruling X5 a, old -> new: read in the review's list; now the package's reader, the list holding none until S5)
+    assert.deepEqual((await raisedBy(doc)).map(f => [f.title, f.objectId]), [['Review changed architectural support', 'api-pod']], 'the link to a retired pin is a finding'); assert.deepEqual(findings11(doc), []);
     assert.deepEqual(KC.conceptDecisionForms(doc, pinId), []);
-    await D.ok('knowledge.concept-unlink', {id: linkId, ...STEP}, 'architect'); assert.deepEqual(findings11(D.document), [], 'an unlinked record raises nothing');
+    await D.ok('knowledge.concept-unlink', {id: linkId, ...STEP}, 'architect'); assert.deepEqual(await raisedBy(D.document), [], 'an unlinked record raises nothing');
   } finally { W.close(); }
 });
 
@@ -632,7 +646,7 @@ add('S3.21 (ruling X1): an agent account, as the organisation\'s administrator, 
     before = await signed();
     { const r = await W.orgApi('knowledge-withdraw', {releaseId: OR1.id, reason: 'An agent account withdraws it.', reviewed: true}, 'bot'); assert.equal(r.status, 403, 'an agent withdraws: ' + JSON.stringify(r.data).slice(0, 300)); assert.match(r.data.error, AGENT); }
     assert.equal(await signed(), before, 'no notice is written');
-    { const doc = await D.read(); assert.equal(doc.knowledge.pinCurrency[pinId].state, 'current', 'the pin stays current'); assert.deepEqual(findings11(doc), [], 'no project that pins the release raises anything'); }
+    { const doc = await D.read(); assert.equal(doc.knowledge.pinCurrency[pinId].state, 'current', 'the pin stays current'); assert.deepEqual(await raisedBy(doc), [], 'no project that pins the release raises anything'); }
     // bot pins the organisation release into a design project it owns.
     const B = await W.project('bot', 'bank-payment', 'A design an agent account owns'); await B.read(); const was = JSON.stringify(B.document);
     { const r = await W.orgApi('knowledge-pin', {releaseId: OR1.id, revision: B.state.revision, reviewed: true, reason: 'An agent account pins it.', reviewer: 'bot'}, 'bot', B.id); assert.equal(r.status, 403, 'an agent pins: ' + JSON.stringify(r.data).slice(0, 300)); assert.match(r.data.error, AGENT); }
@@ -730,7 +744,7 @@ add('S3.24 (ruling X4): a withdrawn successor is not offered as newer, in the pr
     const v2 = await lib.successor(lib.v1, 'Synthetic integration concepts 2'), OR2 = await lib.publish(v2, 'Synthetic integration concepts 2');
     assert.equal((await D.read()).knowledge.pinCurrency[pinId].state, 'newer-available');
     { const r = await W.orgApi('knowledge-withdraw', {releaseId: OR2.id, reason: 'The second edition was wrong.', reviewed: true}, 'steward'); assert.equal(r.status, 200, JSON.stringify(r.data)); }
-    let doc = await D.read(); assert.equal(doc.knowledge.pinCurrency[pinId].state, 'current', 'the organisation\'s withdrawn successor is no newer version'); assert.deepEqual(findings11(doc), []);
+    let doc = await D.read(); assert.equal(doc.knowledge.pinCurrency[pinId].state, 'current', 'the organisation\'s withdrawn successor is no newer version'); assert.deepEqual(await raisedBy(doc), []);
     const v3 = await lib.successor(v2, 'Synthetic integration concepts 3', {reviewDue: '2028-06-30'}), OR3 = await lib.publish(v3, 'Synthetic integration concepts 3');
     doc = await D.read(); assert.deepEqual([doc.knowledge.pinCurrency[pinId].state, doc.knowledge.pinCurrency[pinId].successor?.releaseId], ['newer-available', OR3.id], 'the successor of the withdrawn one is, through its notice');
   } finally { W.close(); }
