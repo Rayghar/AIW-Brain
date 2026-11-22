@@ -3,7 +3,8 @@
 // handler (decisions-domain.js applyDecisionCommand) and keep the selection's basis beside it, created when first
 // written: decision.selection {kind, responsibilityIds | requirementId, driverId, concern, reviewTrigger, prepared,
 // started, judgements, choice, instantiated, actor, at, account} and, on each alternative it compares,
-// alternative.candidate {kind, ref, facts, by?, outcome?}. Candidates are kept in the order they were added; no field
+// alternative.candidate {kind, ref, by?, outcome?} (no facts are stored: they are read from the released claim on each
+// read, ruling Q6). Candidates are kept in the order they were added; no field
 // holds a score, a rank or a weight, and the decision's weighing (decision-reading.js readDecision) reads none.
 //   selection.start       {kind: 'component', responsibilityIds, owner, question?, reviewTrigger?}
 //                         {kind: 'option', concernId, requirementId, driverId, owner, reason}   any author; a draft by
@@ -58,6 +59,7 @@ import {digest} from './brain-integrity.js';
 import {verifierRefusal} from './architecture-obligations.js';
 
 const list=v=>Array.isArray(v)?v:[],plain=v=>!!v&&typeof v==='object'&&!Array.isArray(v),copy=v=>v===undefined?undefined:JSON.parse(JSON.stringify(v)),uniq=xs=>[...new Set(xs)];
+const REVIEWED=['title','kind','purpose','boundary','owner','inputs','outputs','rationale','assumptions','technologyNeeds'];
 export const SELECTION_LIMITS=Object.freeze({text:2000,responsibilities:12});
 const KINDS={component:['profile','library','archetype','existing','build','buy'],option:['option']};
 const words=(v,what,max=SELECTION_LIMITS.text)=>{if(typeof v!=='string'||!v.trim())throw Error(what);if(v.length>max)throw Error('Use at most '+max+' characters ('+v.length+' were sent); nothing is cut.');return v.trim();};
@@ -92,18 +94,32 @@ export function selectionConstraints(p,d){
  const s=d?.selection;if(!plain(s))return [];
  return list(d.driverIds).map(id=>list(p?.quality?.drivers).find(x=>x.id===id)).filter(x=>x&&driverKind(x)==='constraint'&&constraintForce(p,x).hard).map(x=>({id:x.id,source:'driver',driverId:x.id,label:x.title,hard:true}));
 }
-// Whether what a candidate rests on still stands in this project.
-function current(p,d,c){
- if(c?.kind==='profile')return claimReceiptCurrent(p,c.ref);
- if(c?.kind==='option')return !!d.selection.concern&&claimReceiptCurrent(p,d.selection.concern.receipt);
- return true;
+// Whether what a candidate rests on still stands in this project, read on each read (ruling Q6): the released claim
+// of a profile and of a concern's option; the library entry (still in the project's library, not deprecated, at the
+// revision it was added at) or the organisation entry (still installed, same content); the archetype (one of the
+// catalogue's, not withdrawn); the existing component (still in the model). Answers the reason it does not, or ''.
+function standingOf(p,d,c){
+ const r=c?.ref||{};
+ if(c?.kind==='profile')return claimReceiptCurrent(p,r)&&releasedProfile(p,r)?.eligible?'':'The released knowledge '+(r.claimId||'')+' is no longer current in this project: it states no fact here, and the candidate is not selected from it.';
+ if(c?.kind==='option')return d.selection.concern&&claimReceiptCurrent(p,d.selection.concern.receipt)?'':'The released knowledge of the concern is no longer current in this project: its options are not selected from it.';
+ if(c?.kind==='library'||c?.kind==='archetype'){
+  if(c.kind==='archetype'&&!COMPONENT_ARCHETYPES.some(x=>x.id===r.archetypeId))return 'The archetype '+String(r.archetypeId||'').slice(0,60)+' is not one of the catalogue\'s: it is not selected.';
+  try{const e=proposalSource(p,r);if(e&&!e.organization&&r.revision!=null&&e.revision!==r.revision)return 'The library entry '+r.entryId+' changed since it was compared (revision '+r.revision+', now '+e.revision+'): compare it again.';}catch(x){return (c.kind==='archetype'?'The archetype':'The library entry')+' no longer stands in this project: '+x.message;}
+  return '';
+ }
+ if(c?.kind==='existing')return list(p?.realisation?.components).some(x=>x.id===r.componentId)?'':'The component '+String(r.componentId||'').slice(0,60)+' is no longer in the model: it is not selected.';
+ return '';
 }
+const current=(p,d,c)=>!standingOf(p,d,c);
+// What a candidate states: a released profile's facts, read from its released claim on each read while it stands; any
+// other candidate states none (ruling Q6). A stored copy is never read.
+const factsFor=(p,d,c)=>c?.kind==='profile'&&current(p,d,c)?factsOf(releasedProfile(p,c.ref).claim):{};
 // A candidate's rows against the hard constraints: a signed-in person's judgement of the row, or unknown. A candidate
 // whose basis no longer stands here (its released knowledge, its library entry, its archetype, its component) reads
 // unknown on every row, whatever was judged of it, and says why.
 export function candidateEligibility(p,d,a){
- const c=a?.candidate,constraints=selectionConstraints(p,d),standing=!!c&&current(p,d,c);
- const reasons=c&&!standing?['The released knowledge '+(c.kind==='option'?'of the concern':c.ref?.claimId||'')+' is no longer current in this project: it states no fact here, and the candidate is not selected from it.']:[];
+ const c=a?.candidate,constraints=selectionConstraints(p,d),why=c?standingOf(p,d,c):'Choose a candidate of the selection.',standing=!why;
+ const reasons=why?[why]:[];
  const judged=list(d?.selection?.judgements).filter(j=>j?.alternativeId===a?.id&&j.actor&&j.account==='person'&&['pass','fail'].includes(j.state));
  const rows=constraints.map(k=>{
   const j=standing&&judged.findLast(x=>x.constraintId===k.id);
@@ -116,7 +132,7 @@ export function candidateEligibility(p,d,a){
 export function selectionReading(p,d){
  const s=d?.selection;if(!plain(s))return null;
  return {id:d.id,kind:s.kind,prepared:s.prepared,started:s.started?{by:s.started.actor,at:s.started.at,account:s.started.account}:null,responsibilityIds:copy(list(s.responsibilityIds)),concern:s.concern?{id:s.concern.id,title:s.concern.title}:null,constraints:selectionConstraints(p,d),
-  candidates:list(d.alternatives).filter(a=>a?.candidate).map(a=>({alternativeId:a.id,title:a.title,kind:a.candidate.kind,ref:copy(a.candidate.ref),facts:copy(a.candidate.facts||{}),eligibility:candidateEligibility(p,d,a),outcome:a.candidate.outcome||'open',rejection:a.rejectionReason||'',...(a.candidate.by?{by:a.candidate.by}:{})})),
+  candidates:list(d.alternatives).filter(a=>a?.candidate).map(a=>({alternativeId:a.id,title:a.title,kind:a.candidate.kind,ref:copy(a.candidate.ref),facts:factsFor(p,d,a.candidate),eligibility:candidateEligibility(p,d,a),outcome:a.candidate.outcome||'open',rejection:a.rejectionReason||'',...(a.candidate.by?{by:a.candidate.by}:{})})),
   choice:s.choice?{alternativeId:s.choice.alternativeId,unproven:copy(list(s.choice.unproven)),by:s.choice.actor,at:s.choice.at}:null,instantiated:s.instantiated?{componentId:s.instantiated.componentId,adoptionId:s.instantiated.adoptionId||null,by:s.instantiated.actor,at:s.instantiated.at}:null,
   considered:['the hard constraints that reach the decision','a signed-in person\'s judgement of each row, with its evidence and reason','the facts released knowledge states of each candidate, shown to the person who judges'],notConsidered:['quality effects','cost','measured behaviour','anything a candidate does not state']};
 }
@@ -219,10 +235,10 @@ function candidate(p,raw,at,actor,author){
  let d=need(p,raw.id);const s=d.selection,c=plain(raw.candidate)?raw.candidate:{},kind=c.kind;
  if(s.choice)throw Error('A candidate of '+d.id+' is chosen: a further candidate is compared in a selection of its own.');
  if(!KINDS[s.kind]?.includes(kind))throw Error(s.kind==='option'?'A selection of a released concern compares its released options.':'Choose a profile, a library entry, an archetype, an existing component, a build or a buy.');
- let ref=null,facts={},title=optional(raw.title,160),fields={};
+ let ref=null,title=optional(raw.title,160),fields={};
  if(kind==='profile'){
   const h=releasedProfile(p,plain(c.ref)?c.ref:{});if(!h||!h.eligible)throw Error('Candidate knowledge can be read, not selected.');
-  const r=claimReceipt(p,h.claim,h.release);ref={scope:'knowledge',claimId:r.claimId,releaseId:r.releaseId,claimHash:r.claimHash,releaseHash:r.releaseHash,title:titleOf(h.claim)};facts=factsOf(h.claim);title||=ref.title;
+  const r=claimReceipt(p,h.claim,h.release);ref={scope:'knowledge',claimId:r.claimId,releaseId:r.releaseId,claimHash:r.claimHash,releaseHash:r.releaseHash,title:titleOf(h.claim)};title||=ref.title;
  }else if(kind==='library'||kind==='archetype'){
   ref=cleanLibraryRef(kind==='archetype'?{...(plain(c.ref)?c.ref:{}),scope:'catalogue'}:c.ref);
   if((kind==='archetype')!==(ref.scope==='catalogue')||ref.scope==='knowledge')throw Error('A library candidate names a library entry; an archetype candidate names a catalogue archetype.');
@@ -240,7 +256,7 @@ function candidate(p,raw,at,actor,author){
  const said=s.kind==='component'?Object.fromEntries(['summary','benefits','costs','consequences'].map(k=>[k,optional(raw[k],4000)]).filter(([,v])=>v)):{};
  p=decide(p,'decision.alternative',{...said,...(s.kind==='component'?{responsibilityIds:copy(s.responsibilityIds)}:{}),...fields,id:d.id,title},at);
  const by={'sol-draft':'sol',agent:'agent',import:'import'}[kindOf(author)];
- d=decisionOf(p,raw.id);d.alternatives.at(-1).candidate={kind,ref,facts,...(by?{by}:{})};
+ d=decisionOf(p,raw.id);d.alternatives.at(-1).candidate={kind,ref,...(by?{by}:{})};
  return {document:p,selected:d.id};
 }
 function judge(p,raw,at,actor,author){
@@ -269,7 +285,7 @@ function choose(p,raw,at,actor,author){
  if(d.selection.instantiated)throw Error(id+' is instantiated: its choice stands.');
  const cs=list(d.alternatives).filter(x=>x.candidate);if(cs.length<2)throw Error('Compare at least two candidates before choosing.');
  const a=cs.find(x=>x.id===raw.alternativeId);if(!a)throw Error('Choose a candidate of the selection.');
- if(!current(p,d,a.candidate))throw Error('Candidate knowledge can be read, not selected.');
+ {const why=standingOf(p,d,a.candidate);if(why)throw Error(a.candidate.kind==='profile'?'Candidate knowledge can be read, not selected. '+why:why);}
  const label=k=>selectionConstraints(p,d).find(x=>x.id===k)?.label||k,e=candidateEligibility(p,d,a),fails=e.rows.filter(r=>r.state==='fail');
  if(fails.length)throw Error(a.title+' cannot be chosen: it fails '+fails.map(r=>'“'+label(r.constraintId)+'”').join(', ')+'.');
  const unknown=e.rows.filter(r=>r.state==='unknown').map(r=>r.constraintId),named=uniq(list(raw.unproven));
@@ -302,19 +318,21 @@ function mint(p,adoptions){
 }
 function instantiate(p,raw,at,actor,author){
  let d=need(p,raw.id);const id=d.id,s=d.selection;
- if(s.instantiated)throw Error(id+' is already instantiated as '+s.instantiated.ref+'.');
+ if(s.instantiated||s.imported?.instantiated)throw Error(id+' is already instantiated as '+(s.instantiated||s.imported.instantiated).ref+'.');
  const a=s.choice&&list(d.alternatives).find(x=>x.id===s.choice.alternativeId&&x.candidate);if(!a)throw Error('Choose a candidate first: nothing is instantiated before the choice is made and accepted.');
  if(!decisionCurrent(p,d)||d.selectedAlternativeId!==a.id||!confirmStands(p,d))throw Error('Accept '+id+' as it stands, confirmed by a second person, before its chosen candidate is instantiated.');
  const kind=a.candidate.kind;if(!['profile','library','archetype'].includes(kind))throw Error('A profile, a library entry or an archetype is instantiated; '+a.title+' is '+(kind==='existing'?'a component of the project already':'no reviewed proposal')+'.');
  if(raw.reviewed!==true||!plain(raw.component))throw Error('Review the proposed component before it is saved (reviewed).');
+ if('id' in raw.component)throw Error('The reviewed component is a new component: it names no id.');
  const e=candidateEligibility(p,d,a);if(e.rows.some(r=>r.state==='fail')||e.rows.some(r=>r.state==='unknown'&&!list(s.choice.unproven).includes(r.constraintId)))throw Error('The rows of '+a.title+' changed since it was chosen: choose again.');
  const h=kind==='profile'?releasedProfile(p,a.candidate.ref):null;if(kind==='profile'&&(!h?.eligible||!claimReceiptCurrent(p,a.candidate.ref)))throw Error('Candidate knowledge can be read, not selected.');
- const comp=raw.component,purpose=typeof comp.purpose==='string'?comp.purpose:'';
+ // The component is built from the reviewed fields only (ruling Q5): what else the payload says is not taken.
+ const comp=Object.fromEntries(REVIEWED.filter(k=>typeof raw.component[k]==='string').map(k=>[k,raw.component[k]])),purpose=comp.purpose||'';
  // A library entry or an archetype through the reviewed candidate path, with its pinned reference; a released profile
  // as a candidate component that names where it comes from, the pin itself kept where it is read: on the profile's
  // adoption (its definition's claim receipt) and on the selection's candidate.
- const ref=a.candidate.ref,made={...comp,status:'candidate',decisionIds:uniq([...list(comp.decisionIds),id]),...(comp.allocations===undefined?{allocations:list(s.responsibilityIds).map(logicalId=>({logicalId,scope:purpose||a.title}))}:{})};
- const r=applyRealisationCommand(p,h?{type:'realisation.component',payload:{...made,source:'Released component profile '+ref.claimId+' in '+ref.releaseId+' (claim '+String(ref.claimHash).slice(0,12)+'), chosen in '+id+'.'}}:{type:'realisation.candidate',payload:{...made,key:kind,library:copy(ref),reviewed:true}},at);
+ const ref=a.candidate.ref,made={...comp,status:'candidate',decisionIds:[id],allocations:list(s.responsibilityIds).map(logicalId=>({logicalId,scope:purpose||a.title}))};
+ const r=applyRealisationCommand(p,h?{type:'realisation.component',payload:{...made,source:'Released component profile '+ref.claimId+' in '+ref.releaseId+' (claim hash '+ref.claimHash+'), chosen in '+id+'.'}}:{type:'realisation.candidate',payload:{...made,key:kind,library:copy(ref),reviewed:true}},at);
  p=r.document;const c=list(p.realisation.components).find(x=>x.id===r.selected);d=decisionOf(p,id);
  let adoptionId=null;
  if(h){
@@ -325,7 +343,7 @@ function instantiate(p,raw,at,actor,author){
   const snapshot={definitionId,version:1,kind:'profile',title,mechanism:unit.mechanism,roles:[{id:'component',label:'The component the profile is instantiated as',required:true,cardinality:'one',accepts:[{type:'component'}]},...(list(s.responsibilityIds).length?[{id:'responsibility',label:'The responsibilities it realises',required:true,cardinality:'many',accepts:[{type:'responsibility'}]}]:[])],
    obligations:list(unit.obligations).map((o,i)=>({id:'O'+(i+1),kind:'implementation',action:o.action,evidence:o.evidence,mandatory:true,role:'component'}))};
   held.records.push({id:adoptionId,ref:adoptionId,revision:1,status:'applied',origin:'person',kind:'profile',title,owner:typeof comp.owner==='string'?comp.owner.slice(0,180):'',scope:{requirementId:list(d.requirementIds)[0]||null,driverId:null,contextIds:[]},
-   definition:{definitionId,version:1,authority:'released',receipt,snapshot,snapshotHash:digest(snapshot)},facts:copy(a.candidate.facts||{}),
+   definition:{definitionId,version:1,authority:'released',receipt,snapshot,snapshotHash:digest(snapshot)},facts:factsOf(h.claim),
    bindings:[{id:adoptionId+':component',roleId:'component',recordId:c.id,recordType:'component',mode:'created',at,by:actor||null},...list(s.responsibilityIds).map(x=>({id:adoptionId+':responsibility:'+x,roleId:'responsibility',recordId:x,recordType:'responsibility',mode:'reused',at,by:actor||null}))],
    parameters:[],obligations:snapshot.obligations.map(o=>({id:adoptionId+':'+o.id,kind:o.kind,action:o.action,evidence:o.evidence,mandatory:true,targetIds:[c.id],declared:true})),decisionId:id,deviations:[],
    applied:{at,actor:actor||null,account:author?.account??null,reason:'Instantiated from the selection '+id+'.',changeIds:[],records:[{id:c.id,ref:c.ref,title:c.title,chapter:5,slot:'component',isNew:true}]},

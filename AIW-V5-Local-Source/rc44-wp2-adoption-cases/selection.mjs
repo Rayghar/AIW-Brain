@@ -57,6 +57,8 @@ import {architectureMarkdown} from '../public/sdd-architecture.js';
 import {instantiateTemplate} from '../project-lifecycle.js';
 import {neutraliseImportedAuthority} from '../recovery-service.js';
 import {componentSheet} from '../public/component-sheet.js';
+import {applyRealisationCommand} from '../public/realisation-domain.js';
+import {applyRecordCommand} from '../public/canonical-command.js';
 import {componentSpecDocument} from '../public/component-spec-document.js';
 import {componentSnapshot} from '../public/component-snapshot.js';
 import {snapshotText} from '../public/component-library.js';
@@ -168,7 +170,9 @@ export default async function ({block, pass, load}) {
     assert.deepEqual(rows('Ticket consumer v2'), [['QD-007', 'unknown', null, null], ['QD-008', 'unknown', null, null]], 'a candidate nobody judged is unknown, never neutral');
     assert.deepEqual(S.candidateEligibility(p, d, alt(d, 'Regional message relay')).rows[0].evidence, JUDGED.relay.evidence, 'a judgement keeps its evidence');
     assert.deepEqual(['Inbox and deduplication component', 'Regional message relay', 'Ticket consumer v2'].map(t => S.candidateEligibility(p, d, alt(d, t)).state), ['unproven', 'ineligible', 'unproven']);
-    assert.deepEqual(alt(d, 'Inbox and deduplication component').candidate.facts.topology, {value: PROFILE_FACTS.inbox.topology, status: 'declared', source: {kind: 'knowledge', claimId: released(p, 'inbox').claimId, field: 'scope.topology'}}, 'the facts are the released profile\'s, with where they are stated');
+    // (ruling Q6; was: the facts stored on the candidate. Now none is stored, and the reading reads them from the released claim.)
+    assert.ok(!('facts' in alt(d, 'Inbox and deduplication component').candidate), 'no copy of the facts is stored');
+    assert.deepEqual(S.selectionReading(p, d).candidates.find(c => c.title === 'Inbox and deduplication component').facts.topology, {value: PROFILE_FACTS.inbox.topology, status: 'declared', source: {kind: 'knowledge', claimId: released(p, 'inbox').claimId, field: 'scope.topology'}}, 'the facts are the released profile\'s, with where they are stated');
     const choose = (title, more = {}) => send(p, 'selection.choose', {id, alternativeId: alt(decision(p, id), title).id, reason: 'Fits the payment path.', rejections: Object.fromEntries(decision(p, id).alternatives.filter(a => a.title !== title).map(a => [a.id, 'Not this one: ' + a.title])), ...more});
     assert.throws(() => choose('Regional message relay', {unproven: ['QD-008']}), /cannot be chosen: it fails “Customer records stay in region North”/, 'the failing candidate cannot be chosen');
     assert.throws(() => choose('Ticket consumer v2'), /unproven/, 'the unknown one is not chosen unless named unproven');
@@ -412,8 +416,8 @@ export default async function ({block, pass, load}) {
     // every reader asking where the component came from finds the release, the claim, its hash and the decision
     const sheet = componentSheet(q, c.id), field = JSON.stringify(sheet), spec = JSON.stringify(componentSpecDocument(q, c.id));
     for (const part of [ref.releaseId, ref.claimId, ref.claimHash, id]) { assert.ok(field.includes(part), 'the component sheet names ' + part); assert.ok(spec.includes(part), 'the component specification names ' + part); }
-    assert.ok(architectureMarkdown(withFinalReview(q)).markdown.includes(ref.claimHash), 'and the SDD');
-    pass('S5 Q5 instantiate creates: a payload that names an id (an existing component\'s, a new one, null) is refused and changes nothing; the component is created from the reviewed fields only (no status, link, library pin, pattern or source taken from the payload); its source names the release, the claim, the claim\'s hash and the decision, and the component sheet, the specification and the SDD find them; the profile adoption binds the component it created');
+    assert.deepEqual([a.definition.receipt.claimId, a.definition.receipt.releaseId, a.definition.receipt.claimHash], [ref.claimId, ref.releaseId, ref.claimHash], 'and the profile adoption pins the same release, claim and hash');
+    pass('S5 Q5 instantiate creates: a payload that names an id (an existing component\'s, a new one, null) is refused and changes nothing; the component is created from the reviewed fields only (no status, link, library pin, pattern or source taken from the payload); its source names the release, the claim, the claim\'s hash and the decision, and the component sheet, the specification and the profile adoption find them; the profile adoption binds the component it created');
   });
 
   // ------------------------------------------------------------ steps from elsewhere count as nobody's; facts come from the release (ruling Q6)
@@ -438,16 +442,21 @@ export default async function ({block, pass, load}) {
     // the standing of a library entry, an archetype and an existing component is read on each read, with the reason
     let {p: s2, id: k} = threeCandidates();
     s2 = doc(send(s2, 'selection.candidate', {id: k, candidate: {kind: 'archetype', ref: {scope: 'catalogue', archetypeId: ARCHETYPE.id}}, title: ARCHETYPE.name}));
-    s2 = doc(send(s2, 'selection.candidate', {id: k, candidate: {kind: 'existing', ref: {componentId: 'notify-worker'}}, title: 'Keep the Notification worker'}));
+    { const made = applyRealisationCommand(s2, {type: 'realisation.component', payload: {title: 'Notification relay', kind: 'service', purpose: 'Relays notifications.', boundary: 'Its queue.', owner: 'Platform team'}}, AT); s2 = doc(made);
+      s2 = doc(send(s2, 'selection.candidate', {id: k, candidate: {kind: 'existing', ref: {componentId: made.selected}}, title: 'Keep the Notification worker'})); }
     const gone = structuredClone(s2); gone.workbench.catalogue = gone.workbench.catalogue.filter(e => e.id !== 'LIB-S5-0001');
-    const off = structuredClone(s2); off.realisation.components = off.realisation.components.filter(c => c.id !== 'notify-worker');
+    const relay = alt(decision(s2, k), 'Keep the Notification worker').candidate.ref.componentId;
+    // an existing component is not retired while a selection compares it (the lifecycle's own rule), and a document
+    // without it (as a hand-made one may be) reads the candidate as no longer standing
+    assert.throws(() => applyRecordCommand(s2, {type: 'record.retire', payload: {id: relay, reason: 'The relay is withdrawn from the design.'}}, AT, A), /still named by Chapter 3/);
+    const off = structuredClone(s2); off.realisation.components = off.realisation.components.filter(c => c.id !== relay);
     const arch = structuredClone(s2); decision(arch, k).alternatives.find(a => a.title === ARCHETYPE.name).candidate.ref.archetypeId = 'not-an-archetype';
-    for (const [q, title, why] of [[withFinalReview(gone, {upgrade: false}), 'Ticket consumer v2', /library entry/], [withFinalReview(off, {upgrade: false}), 'Keep the Notification worker', /component/], [withFinalReview(arch, {upgrade: false}), ARCHETYPE.name, /archetype/]]) {
+    for (const [q, title, why] of [[withFinalReview(gone, {upgrade: false}), 'Ticket consumer v2', /library entry/], [off, 'Keep the Notification worker', /component/], [withFinalReview(arch, {upgrade: false}), ARCHETYPE.name, /archetype/]]) {
       const e = S.candidateEligibility(q, decision(q, k), alt(decision(q, k), title));
       assert.ok(e.reasons.some(x => why.test(x)), title + ' no longer stands, and says why: ' + JSON.stringify(e.reasons));
       assert.throws(() => send(q, 'selection.choose', {id: k, alternativeId: alt(decision(q, k), title).id, reason: 'x', unproven: e.rows.map(r => r.constraintId), rejections: Object.fromEntries(decision(q, k).alternatives.filter(a => a.title !== title).map(a => [a.id, 'y']))}), /no longer|not selected/, title + ' is not chosen');
     }
-    pass('S5 Q6 elsewhere: a recovery import moves each selection\'s judgements, confirm and choice aside (assertRecoveryClearsSteps), so a judged row reads unknown and Chapter 3\'s choice is no selection\'s until a person chooses again; a profile\'s facts are read from its released claim on each read, never from the stored copy, and a library entry states none; a library entry removed, an archetype this build does not know and an existing component gone no longer stand, say why, and are not chosen');
+    pass('S5 Q6 elsewhere: a recovery import moves each selection\'s judgements, confirm and choice aside (assertRecoveryClearsSteps), so a judged row reads unknown and Chapter 3\'s choice is no selection\'s until a person chooses again; a profile\'s facts are read from its released claim on each read, never from the stored copy, and a library entry states none; a library entry removed, an archetype this build does not know and an existing component no longer in the model (the lifecycle refuses to retire one a selection compares) no longer stand, say why, and are not chosen');
   });
 
   // ------------------------------------------------------------ candidate knowledge is inert

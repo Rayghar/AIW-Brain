@@ -193,10 +193,10 @@ from, then the change; a WIP commit after each item.
 
 ### Progress
 
-- **Done:** items 1 to 5 (Q7, Q1, Q2, Q3, Q4). Every S5 block is green; S1's `size` block is red until item 9 (wp2's
-  allowance is 800 B since Q10; the route is over until item 7 retires the guided path's code).
-- **In progress:** item 6 (Q5 and Q6).
-- **Next:** items 7 to 9 in the order of the task (Q8, Q9, notes and size).
+- **Done:** items 1 to 6 (Q7, Q1, Q2, Q3, Q4, Q5 and Q6). Every S5 block is green; S1's `size` block is red until item 9
+  (wp2's allowance is 800 B since Q10; the route is over until item 7 retires the guided path's code).
+- **In progress:** item 7 (Q8).
+- **Next:** items 8 and 9 (Q9, notes and size).
 
 ### Items
 
@@ -297,3 +297,29 @@ from, then the change; a WIP commit after each item.
    `selection.confirm` second and a review command; S1's `registration` (the list S5 added) five steps -> six; the
    suite's `acceptDecision` and the server block confirm by a third person (C) before acceptance, as the boundary applies
    the step (the boundary's refusals are held through the server).
+6. **Q5, must-fix 6, design concern 7 (accepted) — done.** `selection.instantiate` creates, never updates: a component
+   payload that names an id (any value, null included) is refused ("The reviewed component is a new component: it names
+   no id."), and the component is built from the reviewed fields only (title, kind, purpose, boundary, owner, inputs,
+   outputs, rationale, assumptions, technology needs): no status, link, library pin, pattern or source is taken from the
+   payload; its decision is the selection's alone. A profile's component is saved with `realisation.component` (design
+   concern 7, as the lead accepts), its `source` naming the release, the claim, the claim's full hash and the decision.
+   Case `S5 Q5 instantiate creates` (new; failed first: the payload with `api-pod`'s id was taken): three ids refused and
+   the Payment service unchanged; the component sheet, the component specification and the profile adoption name the
+   release, the claim, the hash and the decision.
+   **Q6, must-fix 7, design concern 4, should-fix 3 — done.** A recovery import (`recovery-service.js`
+   neutraliseImportedAuthority, the edit the lead confirms) moves each selection's start, judgements, choice, confirm,
+   instantiation and last actor into `decision.selection.imported`, and the candidates' outcomes into
+   `importedOutcome`; they count as nobody's here, a document with no selection gains no key, and an instantiation from
+   before is still not repeated. `rc44-s0-readings.mjs` gains `assertRecoveryClearsSteps(p, records)`, the counterpart of
+   `assertTemplateCopyClearsSteps` (the edit the lead confirms): after the import no value, and no element of a list, of
+   the records is a step a named actor took, unless kept under a key that starts with "imported"; the wp2 suite calls
+   it on the selections. Facts are read from the released claim on each read (`factsFor`) and none are stored on the
+   candidate any more; a library, archetype, existing, build, buy or option candidate states none. The standing of every
+   kind is read on each read (`standingOf`): the released claim of a profile and of a concern; the library entry (in the
+   project's library, not deprecated, at the revision compared; an organisation entry installed with the same content);
+   the archetype (one of the catalogue's, not withdrawn); the existing component (in the model). The reason is in
+   `eligibility.reasons`, every row reads unknown while it does not stand, and `selection.choose` refuses it with the
+   reason. Case `S5 Q6 elsewhere` (new; failed first in assertRecoveryClearsSteps on `started`). Replaced assertion
+   (`S5 eligibility`): the stored candidate's facts -> no copy stored, and the reading's facts are the released claim's.
+   Known limit: the lifecycle refuses to retire a component a selection compares, so an existing candidate loses its
+   standing only in a document made by hand; the case reads such a document.
