@@ -415,10 +415,26 @@ settles them, done on rc44/wp1-s2-lead, cases first.
   concept view proper reads them once per call. Should-fix 4: the earlier section's words are restored as they stood
   ("in the same words" was the proposal's refusal; the edit's refusal now names the row, ruling S1), and this line records
   the correction.
-- Design concerns: admit and oneAlias both take the document (misuse no longer fails open); the exported
+- Design concerns: admit and oneAlias both take the document (and, after the fourth review, refuse a knowledge state); the exported
   releasedCrosswalk takes the document only and an internal reader takes the concepts; the contract for S3 below.
 - **Contracts for later slices.** The bound is 24 rows that stand per concept: `admit(document, conceptId, row)`. One
   alias names one concept in every scheme: `oneAlias(document, row)`. Each is asked wherever a row comes to stand or to
   read verified, of the row as written. For S3, the one-alias rule over organisation releases reads this register plus
   the rows releases hold, with an identity of (project, row id). The known limit of S4 (recovery) stands.
 - Suites on this head: rc44-wp1-knowledge 57 passed, 0 failed, 3 pending.
+
+### After the fourth narrow review (2026-11-22)
+
+The narrow review of ceea949 approves, with four should-fix points and two design concerns, closed here:
+- The code comment above oneAlias now says what S10 rules: S4 may ask oneAlias(document, row); S3's rule over
+  organisation releases reads this register plus the rows releases hold, keyed by (project, row id), and is not oneAlias.
+- admit and oneAlias refuse a knowledge state in plain words, so a misuse fails closed (case in S2.14; the document
+  still gives the bound). The earlier line saying misuse no longer fails open is corrected above.
+- The bound at the edit door reads the row before the write; the comment and this contract say so. It matches the row
+  as written in every document these commands write; in a hand-made or imported document whose rejected row lacks the
+  evidenceClaimId key, a save with the same content leaves the row rejected and the bound refuses it, which fails closed.
+- For S4: sameFields and crosswalkRowHash disagree on a missing key against null; S4's import is the path that produces
+  such rows, and S4 normalises one side (`??null`).
+- Nit, recorded: conceptReading still reads releasedForms twice and aliasesIn reads heldCrosswalk twice; S9 names the
+  released concepts only.
+- Contracts for later slices, as above, with: the bound reads the row before the write.

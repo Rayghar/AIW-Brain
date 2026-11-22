@@ -326,14 +326,19 @@ function targetContent(scheme,aliasId,conceptId){
  return !record?undefined:catalogueMark(id)?'marked':record.stub?'stub':templateFields(record).includes('summary')?'template':'authored';
 }
 // The bound of rows that stand (ruling P4), asked wherever a row comes to stand: a proposal (row null), and a rejected row
-// that an edit or a second person's verification makes stand again (rulings S1 and S7). A later path that makes a row
-// stand (S4's import, a restore) asks it too: admit(document, conceptId, row), with the document as oneAlias takes it.
+// that an edit or a second person's verification makes stand again (rulings S1 and S7), read of the row before the write
+// (an edit lapses a rejection whenever it changes the row; where it does not, the bound refuses, which fails closed). A
+// later path that makes a row stand (S4's import, a restore) asks it too: admit(document, conceptId, row).
+const documentOnly=(p,name)=>{if(p&&typeof p==='object'&&('crosswalk' in p||'concepts' in p)&&!('knowledge' in p))throw Error(name+' takes the project document, not its knowledge state.');};
 const standing=(s,c)=>list(s.crosswalk).filter(y=>y.conceptId===c&&!['retired','rejected'].includes(crosswalkState(y))).length;
-export function admit(p,c,row=null){if((!row||crosswalkState(row)==='rejected')&&standing(knowledgeState(p),c)>=ROWS_PER_CONCEPT)throw Error(c+' has '+ROWS_PER_CONCEPT+' crosswalk rows that stand (neither retired nor rejected), the most a concept holds: '+(row?row.id+' would stand again. Retire':'retire')+' or reject one first.');}
-// One verified `same` row per alias: one alias names one concept, in every scheme (rulings S2 and S6), asked wherever a
-// row comes to read verified (a second person's verification, an edit that revives a standing review). A later path that
-// makes a row read verified (S3's organisation releases, S4's import) asks it too: oneAlias(document, row).
+export function admit(p,c,row=null){documentOnly(p,'admit');if((!row||crosswalkState(row)==='rejected')&&standing(knowledgeState(p),c)>=ROWS_PER_CONCEPT)throw Error(c+' has '+ROWS_PER_CONCEPT+' crosswalk rows that stand (neither retired nor rejected), the most a concept holds: '+(row?row.id+' would stand again. Retire':'retire')+' or reject one first.');}
+// One verified `same` row per alias: one alias names one concept, in every scheme (rulings S2, S6 and S10), asked of the
+// row as written wherever a row comes to read verified (a second person's verification, an edit that revives a standing
+// review). It reads this project's register only: S4's import may ask oneAlias(document, row); S3's organisation releases
+// need the rule over this register plus the rows releases hold, keyed by (project, row id), which this is not.
+// Both shared checks take the document and refuse a knowledge state, so a misuse fails closed.
 export function oneAlias(p,x){
+ documentOnly(p,'oneAlias');
  const other=x.relation==='same'&&crosswalkRecords(p).find(y=>y.id!==x.id&&y.state==='verified'&&y.relation==='same'&&y.aliasId===x.aliasId&&y.conceptId!==x.conceptId);
  if(other)throw Error(x.scheme+' '+x.aliasId+' is already the same as '+other.conceptId+(other.scheme===x.scheme?'':' in the '+other.scheme+' scheme')+' ('+other.id+', verified): one alias names one concept. Reject or retire that row first.');
 }

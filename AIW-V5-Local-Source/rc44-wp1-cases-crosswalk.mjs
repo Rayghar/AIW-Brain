@@ -723,6 +723,11 @@ add('S2.14 (ruling P4): the bound of 24 rows per concept counts the rows that st
     await S.ok('knowledge.crosswalk-retire', {...PERSON_STEP, id: more[2], reason: 'Not a mechanism of this concept.'}, 'steward');
     await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: more[1], reason: 'On reflection it is.'}, 'reviewer');
     assert.deepEqual([KC.crosswalkRecords(S.document).find(r => r.id === more[1]).state, standing()], ['verified', 24], 'taken once a place is free; never more than 24 stand');
+    // (the fourth narrow review) both shared checks take the document and refuse a knowledge state: a misuse fails closed
+    { const C = await import('./public/knowledge-concept-commands.js');
+      assert.throws(() => C.admit(S.document.knowledge, 'PAT-STRANGLER-FIG'), /^Error: admit takes the project document, not its knowledge state\.$/);
+      assert.throws(() => C.oneAlias(S.document.knowledge, row(S.document, more[1])), /^Error: oneAlias takes the project document, not its knowledge state\.$/);
+      assert.throws(() => C.admit(S.document, 'PAT-STRANGLER-FIG'), /would stand again|retire or reject one first/, 'and the document gives the bound'); }
   } finally { S.close(); }
 });
 
