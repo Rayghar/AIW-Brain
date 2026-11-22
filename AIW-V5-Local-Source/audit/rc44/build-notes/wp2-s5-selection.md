@@ -533,5 +533,13 @@ case first, seen to fail on the head it started from, then the change; a WIP com
   `selectionBasis`, after "## Trade-off analysis", server-only), read from `selectionReading`; `sdd-architecture.js` prints
   a pointer in the decision record and no longer reads the package's finding (its import of `decisionFindings` and
   `constraintForce` is gone again).
-- **In progress:** item 5 (U2).
-- **Next:** U2, U6, the notes.
+- **Done:** item 5 (U2): measured with `node build.mjs` at 9df762c: the route 3,228,422 B; the same tree with
+  `architecture-design.js` and `architecture-task-ui.js` as at 082e06b (the guided path put back) 3,231,469 B. The lead's
+  file `audit/rc44/evidence/lead-bookings-size.json` (created as O1 describes) books the saving, −3,047 B
+  (`guidedConcernRetirementQ8`); `wp2-s5-size.json` books S5's gross additions, `ownBytes` 864 (3,231,469 − 3,230,605). The
+  size blocks re-pointed, seen to fail first (fcf8f77): `S5 size`, S1's `size` (wp2 through routeBookings, 1,189 of
+  1,200 B; S1's share exactly 325 B), S0's block 8 (lower bound less the lead's booked savings); wp9a's `S1.10` reads as
+  it did and is green (342 B). The O1 identity holds: −1,418 = 0 + 325 + 864 + 342 − 3,047 + 98 (`S5 size`, and wp9a's
+  branch's `assertBookingsAddUp` run in a scratch copy on this branch's files).
+- **In progress:** item 6 (U6).
+- **Next:** U6, the notes.

@@ -1,0 +1,56 @@
+{
+ "schema": "aiw.rc44.slice-size.v3",
+ "name": "the lead's bookings: what merging packages adds or saves together on the chapters route, and what a retirement saves (rulings K6, N1, O1, U2)",
+ "measuredWith": "client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)",
+ "whatWasMeasured": "Nothing of its own: this file books no package's bytes (ownBytes 0). Each item of sharedPoolBytes is a measured change of the chapters route that is no package's own, recorded under items with the builds it was measured on. Only this file may book a negative item (ruling O1). Created on rc44/wp2-s5-selection-fix-c2 (the second fix-up of wp2 slice 5) for the item of ruling U2, as ruling O1 describes the file; the lead reconciles it with the file of the same name on wp9a's branch (which books trackPathsPartNameO2, 0 B) at the merge.",
+ "allowance": {
+  "chapters": 0,
+  "of": "the lead's own file books no bytes of its own; its items are the shared pool's. Of the saving booked below, 400 B are wp2's allowance (ruling U2: wp2 1,200 B = 600 B by A4 + 200 B by Q10 + 400 B of the saving), and the rest, 2,647 B, joins the shared pool (ruling U2)",
+  "scripts": 148
+ },
+ "caps": {
+  "chapters": 3233792,
+  "projects": 1242112,
+  "scripts": 148,
+  "under10k": 61,
+  "css": 902144
+ },
+ "bases": {
+  "integrated": {
+   "commit": "9673661",
+   "chapters": 3229840
+  }
+ },
+ "ownBytes": 0,
+ "sharedPoolBytes": {
+  "guidedConcernRetirementQ8": -3047
+ },
+ "items": {
+  "guidedConcernRetirementQ8": {
+   "bytes": -3047,
+   "ruling": "U2 (wp2 slice 5, second fix-up): the saving of Q8's retirement of row 9, the guided comparison of a released concern (its start, answers, preparation, re-reading and preview, the comparison's builder on the route, the comparison tools' released-concern picker)",
+   "measuredOn": "the second fix-up of wp2 slice 5 at 9df762c (after its items U1, U4, U3 and U5), each with node build.mjs (dist/client-size-report.json routes.chapters.code): the tree as it is, 3,228,422 B; the same tree (a git archive of 9df762c) with public/architecture-design.js and public/architecture-task-ui.js as at 082e06b (the slice before the retirement; no later commit touched them but the retirement's 4334100 and 452604e), 3,231,469 B",
+   "why": "Retiring an old path is what the doctrine asks; its saving is not a package's own figure (ruling U2). The saving is the route with the guided path's code put back less the route without it: 3,231,469 - 3,228,422 = 3,047 B. wp2 S5 books its gross additions, measured with the retirement put back (3,231,469 - 3,230,605 = 864 B, wp2-s5-size.json ownBytes)."
+  }
+ },
+ "slice": {
+  "chapters": 3228422,
+  "measuredOn": "wp2 slice 5 after its second fix-up (9df762c and later: no route module changed after it)"
+ },
+ "addsUp": {
+  "route": 3228422,
+  "lessIntegrated": -1418,
+  "ownBytes": {
+   "lead-bookings-size.json": 0,
+   "wp2-s1-size.json": 325,
+   "wp2-s5-size.json": 864,
+   "wp9a-s1-size.json": 342
+  },
+  "sharedPool": {
+   "lead-bookings-size.json": -3047,
+   "wp9a-s1-size.json": 98
+  },
+  "check": "-1,418 = 0 + 325 + 864 + 342 - 3,047 + 98 (held by rc44-wp2-adoption-cases/selection.mjs 'S5 size' on this branch; the lead's merge check, rc44-s0-readings.mjs assertBookingsAddUp in S0's block 'O1 the bookings add up', is on wp9a's branch)"
+ },
+ "productionAccepted": false
+}

@@ -3,8 +3,8 @@
  "name": "wp2 S5 component selection as a recorded decision",
  "measuredWith": "client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code, scripts, buckets)",
  "allowance": {
-  "chapters": 800,
-  "of": "all of wp2 (ruling Q10, was 600 B by ruling A4): S1 books 325 B (ruling N1), so S5 may add at most 475 B",
+  "chapters": 1200,
+  "of": "all of wp2 (ruling U2: 600 B by ruling A4, 200 B by Q10 and 400 B of the retirement's saving; was 800 B): S1 books 325 B (ruling N1), so S5 may book at most 875 B",
   "scripts": 148
  },
  "caps": {
@@ -26,24 +26,33 @@
   }
  },
  "slice": {
-  "chapters": 3228300,
-  "projects": 507960,
+  "chapters": 3228422,
+  "projects": 508043,
   "scripts": 148,
   "under10k": 53,
   "css": 901873
  },
- "ownBytes": 0,
- "routeDelta": -2305,
- "routeDeltaNote": "The chapters route against the start: negative once the fix-up retired the guided comparison of a released concern (ruling Q8), whose code left the route. A package books no negative figure (ruling O1): S5 books 0, and the saving is the lead's to book at the merge (lead-bookings-size.json).",
- "projectsDelta": 622,
- "headroomAfter": 5492,
+ "withRetirementPutBack": {
+  "chapters": 3231469,
+  "projects": 508057,
+  "scripts": 148,
+  "under10k": 53,
+  "css": 901873,
+  "measuredOn": "9df762c (the second fix-up after its items U1, U4, U3 and U5): a git archive of it with public/architecture-design.js and public/architecture-task-ui.js as at 082e06b (the slice before the retirement of row 9; only the retirement's commits 4334100 and 452604e touched them since), built with node build.mjs (dist/client-size-report.json)"
+ },
+ "ownBytes": 864,
+ "ownBytesNote": "S5's gross additions (ruling U2): the chapters route with the retirement of row 9 put back, less the start. The retirement's saving is no package's own figure: the lead books it in lead-bookings-size.json (guidedConcernRetirementQ8).",
+ "routeDelta": -2183,
+ "retirementSaving": 3047,
+ "projectsDelta": 705,
+ "headroomAfter": 5370,
  "opens with records": {
   "gate": "The chapters-route gate measures opening a document that holds no package records (ruling D10).",
   "host": "public/architecture-task-ui.js",
-  "route": 3228300,
-  "added": 131176,
-  "total": 3359476,
+  "route": 3228422,
+  "added": 132338,
+  "total": 3360760,
   "files": 2,
-  "holds": "the adoption record's readers, steps and tracker (adoption-domain.js), the registration (adoption-package.js), the selection (adoption-selection.js) and its view (adoption-ui.js); not the upgrade (ruling J12)"
+  "holds": "the adoption record's readers, steps and tracker (adoption-domain.js), the registration (adoption-package.js), the selection (adoption-selection.js) and its view (adoption-ui.js); not the upgrade, nor the SDD's selection basis (adoption-server.js: rulings J12, U5)"
  }
 }
