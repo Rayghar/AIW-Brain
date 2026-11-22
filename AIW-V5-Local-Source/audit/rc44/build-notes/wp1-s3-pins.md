@@ -12,8 +12,8 @@ Resumable: read this file and `git log` first. Suite: `npm run test:rc44-wp1-kno
 
 - **Done:** every item below, each case written first (commit `8308a3b`, all 19 red on `c709ae3`); S3.20 added later and
   seen red by mutation. The final commit is on the branch.
-- **In progress:** nothing.
-- **Next:** the adversarial review, the fix-up, the lead's merge.
+- **In progress:** the fix-up of the adversarial review (rulings X1 to X5), on `rc44/wp1-s3-pins-fix`; see "Fix-up" below.
+- **Next:** the fix-up's items in order (0 merge, 1 X1, 2 X2, 3 X3, 4 X4, 5 X5, 6 notes, size and suites), then the lead.
 
 ## What was built, case by case (`rc44-wp1-cases-pins.mjs`)
 
@@ -204,3 +204,21 @@ Route bytes, module by module: the stub's `needs` +26, KINDS (B10) +60, `knowled
 External authorities: unchanged. No four-eyes knowledge approver is assigned, licence counsel is not engaged, no
 independent architecture review has started, no production acceptance authority exists. Nothing here releases or
 promotes knowledge; every record is synthetic; `productionAccepted` stays false.
+
+## Fix-up (rulings X1 to X5 of 2026-11-22, after the adversarial review of `ada5954`)
+
+Branch `rc44/wp1-s3-pins-fix`, from `ada5954`. Review: `/home/user/hb-review/rc44-build/wp1-s3-pins.review.json`
+(three must-fix, nine should-fix, seven design concerns). Cases first, each seen red on the head it starts from.
+
+### Item 0: merge of rc44/integration (`e96abef`, component selection wp2 S5)
+
+- Done, commit `138382f`. One conflict: S2.12 in `rc44-wp1-cases-crosswalk.mjs` (wp2 S5's edit by ruling W2 and this
+  slice's). Kept in a working form for now: wp2 S5's `LATER` list with this slice's booking file added beside it; ruling
+  X4 settles it in item 4. `recovery-service.js` merged cleanly (wp2 S5's selection block and this slice's pins block).
+- On the merged tree: `node build.mjs` passes, no violation; chapters route 3,228,648 B (rc44/integration 3,228,540 B
+  plus this slice's 108 B, exactly), 148 scripts, buckets 52/51/45.
+- Suites: `rc44-s0-extensions` green (every block, "O1 the bookings add up" included), `rc44-wp2-adoption` green,
+  `rc44-wp9a-deployment` green. `rc44-wp1-knowledge`: 75 pass, 2 fail, 2 pending. S2.12 fails only in
+  `AIW_RC44_WP1_MEASURE=1` mode, which is valid only at S2's own commit (passes without it). S3.10 fails: "the start
+  commit is the integrated base and what the other packages and the pool booked" (wp2 S5's 864 B and the lead's
+  -3,047 B are now on the books and S3.10 read every booking): settled in item 4 with S2.12 and re-measured in item 6.
