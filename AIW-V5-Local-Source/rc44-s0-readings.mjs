@@ -189,6 +189,15 @@ export function assertBookingsAddUp(route, base, dir = 'audit/rc44/evidence') {
   if (grew !== own + b.poolTotal) throw Error('The bookings do not add up: the chapters route grew ' + grew + ' B against ' + base.commit + ' (' + route + ' - ' + base.chapters + '), and the size files book ' + (own + b.poolTotal) + ' B: ' + Object.entries(b.own).map(([f, n]) => f.split('/').pop() + ' ' + n + ' B of its own').join(', ') + '; the shared pool ' + b.poolTotal + ' B (' + (Object.entries(b.pool).map(([k, n]) => k.split('/').pop() + ' ' + n + ' B').join(', ') || 'no item') + '). A size file is stale, foreign or mistyped: measure it again at its own head.');
   return {grew, own, pool: b.poolTotal};
 }
+// assertUnder10kCeiling(slice, base, gate) (the lead's rulings P8 and R4 of 2026-11-22): a size case reads the
+// files-under-10-KB bucket as a ceiling, as client-bundle.mjs does: at most the gate (BUDGET.tiny), and at most the
+// base's count plus the script files the slice adds (slice and base: {scripts, under10k}). A slice may leave fewer
+// small files than its base; it may not add one beyond the files it adds. Throws in words; answers the ceiling.
+export function assertUnder10kCeiling(slice, base, gate) {
+  const added = Math.max(0, slice.scripts - base.scripts), ceiling = Math.min(gate, base.under10k + added);
+  if (!(Number.isInteger(slice.under10k) && slice.under10k <= ceiling)) throw Error(slice.under10k + ' script files under 10 KB: at most ' + ceiling + ' (the gate ' + gate + ', and the base\'s ' + base.under10k + ' plus the ' + added + ' script file' + (added === 1 ? '' : 's') + ' the slice adds).');
+  return ceiling;
+}
 export function opensWithRecords(metafile, entry, dataNames = []) {
   const outputs = metafile.outputs, scripts = Object.keys(outputs).filter(f => f.endsWith('.js'));
   const isData = input => dataNames.some(name => input.endsWith('public/' + name + '.js'));

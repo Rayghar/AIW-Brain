@@ -92,7 +92,41 @@ files, buckets 53/50/45, stylesheet 901,873 B, no violation.
   file). Now `rc44-s0-readings.mjs routeBookings` refuses each with its path: "<path> is no size file this check can
   read: it is not valid JSON (<the parser's words>)." and "... : a size file is a JSON object." (the second is a little
   more than the ruling's words; a `null` file threw a general fault before).
-- Item 4: in progress.
+- **Item 4, R4: done.** Cases: wp9a's S1.10 (the share read from a build's metafile: a script of the entry's closure
+  beside the route and the holder moved by 24 B, as another package's shared chunk would be, does not move the share; the
+  package's own lists one byte past the measure, and a module one byte past its pin, do) and S0's block 8 (the bucket
+  ceiling on seven synthetic figures). Seen to fail first: S1.10 with the share reader wired to the old reading (the
+  entry's whole growth) failed on the shifted chunk (`.aiw-local/fixup4/r4-share-before.log`); S0's block 8 failed for
+  want of the helper (`r4-bucket-before.log`). What was built:
+  - S1.10 reads the package's share as its own modules (pinned exactly, as before) plus its own import and export
+    lists: the bytes of the script that holds it (the deploy-view chunk) outside its modules, against the same script at
+    the adoption record. Measured with `node build.mjs` on an archive of `a4c1690` (`.aiw-local/fixup4/a4c`): that script
+    51,789 B, 49,415 B of modules, 2,374 B of lists; at this head 74,415 B, 71,873 B, 2,542 B. So the lists are 168 B
+    and the share 22,614 B (22,446 B of modules). The script's two other modules moved 12 B with the package beside
+    them (`deploy-view.js` +6 B, wp9a's own edit of L7's H15; `deploy-layout.js` +6 B, a renamed identifier) and the
+    rest of the entry's closure -2 B: they are no part of the share as R4 reads it, and the entry's whole growth stays
+    22,624 B ("opens with records" 4,086,349 B, 855,744 B in 12 scripts, unchanged).
+  - `rc44-s0-readings.mjs assertUnder10kCeiling(slice, base, gate)`: at most the gate and at most the base's count plus
+    the script files the slice adds; S0's block 8 and S1.10 read the bucket with it, and each also holds this build's
+    bucket inside the gate.
+  - Old -> new: (1) S1.10 `LAZY_SHARE.lists` 178 B ("the script's import and export lists with the rest of the entry's
+    closure") -> 168 B (the holder script's own lists, against `ADOPTION_HOLDER`), `total` 22,624 -> 22,614 B, the
+    modules unchanged; (2) S1.10 the evidence's `w.added - ADOPTION_OPENS.added <= LAZY_SHARE.total` (the entry's whole
+    growth) -> the evidence's holder script: its lists are its bytes less its modules and grew no more than
+    `LAZY_SHARE.lists`, with `w.holder.atTheAdoptionRecord` deep-equal to `ADOPTION_HOLDER`; (3) S1.10 this build's
+    `opens.added - ADOPTION_OPENS.added <= LAZY_SHARE.total` -> this build's modules deep-equal to the pins, its own
+    lists at most 168 B and the share at most 22,614 B; (4) S1.10 `size.slice.under10k` equal to `BASE.under10k` -> at
+    most the gate and at most the base's 53 plus the 0 files the slice adds, and this build at most the gate; (5) S0's
+    block 8 `size.slice.under10k` equal to `BASELINE.under10k` -> the same ceiling against 94dbd4f's 53, and this build
+    at most the gate. (1) to (3) are stricter on the package's own bytes (22,614 < 22,624) and no longer read other
+    packages' bytes, as R4 rules; (4) and (5) are the ceiling R4 rules, which accepts a lower count where the equality
+    did not, and they now also read this build's count.
+  - Re-measured (`node build.mjs`, S1.10 `--measure`): chapters route 3,230,605 B (unchanged by items 1 to 4: nothing of
+    them reaches the client), projects 507,338 B, 148 script files, buckets 53/50/45, stylesheet 901,873 B, no
+    violation. `audit/rc44/evidence/wp9a-s1-size.json`: the name, `packageShare` (lists 168, total 22,614) and a new
+    `holder` block; every route figure as before (ownBytes 342). The O1 merge check passes (block "O1": 765 = 0 + 325
+    + 342 + 98 + 0).
+- Item 5: in progress.
 
 ## Third fix-up (after the second verifier; the lead's rulings O1 to O5, with K to N)
 
