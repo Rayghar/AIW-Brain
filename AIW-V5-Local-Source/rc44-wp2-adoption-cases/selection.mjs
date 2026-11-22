@@ -20,6 +20,7 @@
 //                    candidate, approval refused while a row is unproven, a judgement after the choice (ruling Q4);
 //   S5 U1 hard constraint  a hard constraint leaves a selection's decision only through the selection; an ineligible
 //                    choice is an error worded as the built-in 'breaks' whatever the drivers say, and is not confirmed (U1);
+//   S5 U4 proposal   a selection before a person's choice says nothing to the context of the requirement it answers (U4);
 //   S5 Q5 instantiate creates  a payload with an id is refused; the component's source names its release, claim, hash and
 //                    decision, and every reader finds them (ruling Q5);
 //   S5 Q6 elsewhere  a recovery import moves the selection's steps aside; facts and standing read on each read (Q6);
@@ -447,6 +448,36 @@ export default async function ({block, pass, load}) {
       assert.throws(() => applyDecisionCommand(accd, {type: 'decision.governance', payload: {id, status: 'approved', reviewer: 'Governance board', evidence: 'Minutes 12'}}, AT), /Resolve content gaps/, 'and no approval evidence');
       pass('S5 U1 hard constraint: after a person other than the chooser judged a chosen row fail (the verifier\'s walk H-A, through the server), a decision.save that drops that hard constraint from the decision\'s drivers is refused to a person, an agent account and a draft by Sol and changes nothing, while a save of the texts or of a driver that is no hard constraint is taken; no second person confirms the ineligible choice and it is not accepted; on a document whose drivers no longer name the constraint, the chosen candidate still reads ineligible, the package raises "The working choice breaks a hard constraint" in the built-in\'s words, and the confirm, the acceptance and the approval are refused');
     } finally { h.close(); }
+  });
+
+  // ------------------------------------------------------------ a selection is a proposal until a person chooses (ruling U4)
+  // What a selection's start, its candidates and a judgement write before a person's choice says nothing to the design
+  // source (as rulings L6 and M6 rule for a package's proposals): the context of the requirement it answers (aiw-brain.js
+  // brainContext, which a generation's currentness reads) reads as before, so a generation that read it stays current;
+  // the person's choice is a design change that context reads. (architecture-intelligence-validate.mjs holds the same
+  // for the option selection the intelligence's compare action opens as a draft by Sol, with its two assertions of
+  // 5cae40a.)
+  await block('S5 U4 proposal', async () => {
+    pkg(); const {brainContext, generationCurrent} = await import('../public/aiw-brain.js'), {journeyIndex} = await import('../public/journey-context.js');
+    const p = selectionProject(), context = {chapter: 1, id: 'REQ-001'}, g = {context, basisStamp: brainContext(p, context).stamp, sources: []};
+    for (const [who, actor, author] of [['a person', A, person(A)], ['a draft by Sol', A, sol(A)], ['an agent account', AGENT, agent(AGENT)]]) {
+      const r = send(p, 'selection.start', {kind: 'component', responsibilityIds: ['api'], owner: 'Payments architect'}, actor, author), id = r.selected; let q = doc(r);
+      assert.ok(decision(q, id).requirementIds.includes('REQ-001'), 'the selection answers REQ-001');
+      assert.ok(generationCurrent(q, g), 'a selection ' + who + ' starts says nothing to the requirement\'s context');
+      for (const [kind, ref, title] of [['profile', released(q, 'inbox'), 'Inbox and deduplication component'], ['library', library(q), 'Ticket consumer v2']]) q = doc(send(q, 'selection.candidate', {id, candidate: {kind, ref}, title}, actor, author));
+      q = doc(send(q, 'selection.judge', {id, alternativeId: alt(decision(q, id), 'Inbox and deduplication component').id, constraintId: 'QD-007', ...JUDGED.inbox}, B));
+      assert.ok(generationCurrent(q, g), 'nor do its candidates and a judgement (' + who + ')');
+      // the decision itself is still read: it is in the journey's records, and it is the subject of its own context
+      assert.ok(journeyIndex(q).nodes.has(id), 'the decision is a record of the journey'); assert.equal(brainContext(q, {chapter: 3, id}).selected.id, id, 'and its own context is its own');
+      const d = decision(q, id), inbox = alt(d, 'Inbox and deduplication component');
+      const chosen = doc(send(q, 'selection.choose', {id, alternativeId: inbox.id, reason: 'Fits.', unproven: ['QD-008'], rejections: Object.fromEntries(d.alternatives.filter(a => a.id !== inbox.id).map(a => [a.id, 'Not this one.']))}));
+      assert.equal(generationCurrent(chosen, g), false, 'a person\'s choice is a design change the requirement\'s context reads (' + who + ' started it)');
+      assert.ok(brainContext(chosen, context).decisions.some(x => x.id === id), 'and the chosen selection is read there');
+      // a recovery import moves the choice aside (ruling Q6): the selection is a proposal again until a person chooses here
+      const back = withFinalReview(neutraliseImportedAuthority(structuredClone(chosen), AT), {upgrade: false});
+      assert.ok(!brainContext(back, context).decisions.some(x => x.id === id), 'after a recovery import it is a proposal again (' + who + ')');
+    }
+    pass('S5 U4 proposal: a selection started by a person, by a draft by Sol or by an agent account, its candidates and a judgement say nothing to the context of the requirement it answers (a generation that read it stays current), while the decision stays a record of the journey and the subject of its own context; a person\'s choice is a design change that context reads; after a recovery import the selection is a proposal again');
   });
 
   // ------------------------------------------------------------ instantiate creates, never updates (ruling Q5)

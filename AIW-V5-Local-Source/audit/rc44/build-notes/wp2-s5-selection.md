@@ -518,5 +518,8 @@ case first, seen to fail on the head it started from, then the change; a WIP com
 - **Done:** item 1 (U1): case `S5 U1 hard constraint` (failed at `7f1b897`: a person's decision.save that drops QD-008
   was taken, 200 !== 400), then the change (commit 8738d5d); the wp2 suite is green but for S1's `size` (item 5).
   Route +83 B (3,228,300 -> 3,228,383).
-- **In progress:** item 2 (U4).
-- **Next:** U4, U3, U5, U2, U6, the notes.
+- **Done:** item 2 (U4): architecture-intelligence-validate.mjs's two assertions restored exactly as on 5cae40a (failed
+  at 8738d5d on 'Creating a proposed task cannot invalidate the source that suggested it'), case `S5 U4 proposal` (failed
+  without the change), then the change in `public/journey-context.js` (route +39 B, 3,228,383 -> 3,228,422).
+- **In progress:** item 3 (U3).
+- **Next:** U3, U5, U2, U6, the notes.
