@@ -328,8 +328,17 @@ function targetContent(scheme,aliasId,conceptId){
 // One id names one concept (ruling P3 of 2026-11-22): the alias of a `same` row is not the id of another concept of the
 // register, whichever was registered first; asked at the proposal and again at verification.
 function oneIdentity(s,aliasId,conceptId){const other=list(s.concepts).find(c=>c.conceptId===aliasId&&c.conceptId!==conceptId);if(other)throw Error(aliasId+' is a concept of this register ('+other.id+'): one id names one concept, so it is no alias the same as '+conceptId+'.');}
-// Whether a passage names an id as a whole token: capitals and digits in hyphenated parts, bounded by what is no part of one.
-const wholeToken=(text,id)=>ID_TOKEN.test(id)&&String(text||'').split(/[^A-Za-z0-9-]+/).some(t=>t.replace(/^-+|-+$/g,'')===id);
+// Whether a passage holds an alias as a whole token, bounded by what is no part of an alias; and as a whole identifier
+// (capitals and digits in hyphenated parts), which a handbook alias is.
+const token=(text,id)=>String(text||'').split(/[^A-Za-z0-9/-]+/).some(t=>t.replace(/^[-/]+|[-/]+$/g,'')===id),wholeToken=(text,id)=>ID_TOKEN.test(id)&&token(text,id);
+// A governed identity traces to a source passage (ruling P7 of 2026-11-22; AGENTS.md): a `same` row of the handbook or
+// an external scheme names as its evidence a claim of this library whose passage holds the alias as a whole token; an
+// akr row traces to the catalogue record it names, read here (targetContent). Asked at the proposal, on an edit and again
+// at verification, on the row as it stands.
+function traced(s,x){
+ if(x.relation==='same'&&(x.scheme==='handbook'||x.scheme==='external')){const e=x.evidenceClaimId==null?null:list(s.claims).find(c=>c.id===x.evidenceClaimId);if(!e||!(x.scheme==='handbook'?wholeToken:token)(e.excerpt,x.aliasId))throw Error('A same row of scheme '+x.scheme+' traces to a source passage: name as its evidence (evidenceClaimId) a claim of this library whose passage holds '+x.aliasId+' as a whole token.');}
+ if(x.scheme==='akr'){if(!catalogueRelation(x.aliasId))throw Error(x.aliasId+' is neither a catalogue record nor a relation stub of '+catalogue().releaseId+'.');const now=targetContent('akr',x.aliasId,x.conceptId);if(now!==x.targetContent)throw Error(x.aliasId+' reads '+now+' in the catalogue '+catalogue().releaseId+', not '+(x.targetContent??'nothing')+' as '+(x.id||'the row')+' says: a person saves the row again.');}
+}
 function crosswalkInput(s,r,existing){
  const scheme=r.scheme,aliasId=typeof r.aliasId==='string'?r.aliasId.trim():'',conceptId=text(r.conceptId,200);
  if(scheme==='lens')throw Error('A lens row maps a quality lens to a Chapter 2 category: it is no crosswalk row of a concept (wp1 slice S4).');
@@ -352,8 +361,8 @@ function crosswalkInput(s,r,existing){
  // fragment of one or a word.
  if(scheme==='handbook'&&!list(s.topics).some(t=>t.topicId===aliasId)&&!wholeToken(evidence?.excerpt,aliasId))throw Error(aliasId+' is neither a topic of this library nor named by the passage of the claim given as evidence'+(evidence?' ('+evidence.id+')':'')+' as a whole identifier.');
  if(scheme==='external'&&!note)throw Error('Say where the external alias comes from (note).');
- const target=targetContent(scheme,aliasId,conceptId);
- return {conceptId,scheme,aliasId,label:required(r.label,'the alias\'s label',160),relation:r.relation,evidenceClaimId,note,...(target?{targetContent:target}:{})};
+ const target=targetContent(scheme,aliasId,conceptId),out={conceptId,scheme,aliasId,label:required(r.label,'the alias\'s label',160),relation:r.relation,evidenceClaimId,note,...(target?{targetContent:target}:{})};
+ traced(s,out);return out;
 }
 function crosswalkCommand({p,s,r,type,at,actor,next},author){
  if(!type.startsWith('knowledge.crosswalk'))return undefined;
@@ -394,6 +403,7 @@ function crosswalkCommand({p,s,r,type,at,actor,next},author){
    if(r.aliasChecked!==true)throw Error('Check the alias against its source and the concept before verifying the row (aliasChecked).');
    const concept=list(s.concepts).find(c=>c.conceptId===x.conceptId);if(!concept||concept.retired)throw Error(x.conceptId+' is not a concept that stands in the register.');
    if(x.relation==='same')oneIdentity(s,x.aliasId,x.conceptId);
+   traced(s,x);
    // One verified `same` row per alias: one alias names one concept.
    const other=x.relation==='same'&&crosswalkRecords(p).find(y=>y.id!==x.id&&y.state==='verified'&&y.relation==='same'&&y.scheme===x.scheme&&y.aliasId===x.aliasId&&y.conceptId!==x.conceptId);
    if(other)throw Error(x.scheme+' '+x.aliasId+' is already the same as '+other.conceptId+' ('+other.id+', verified): one alias names one concept. Reject or retire that row first.');

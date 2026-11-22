@@ -352,7 +352,7 @@ add('S2.6 (targetContent): what a crosswalk row\'s catalogue target holds is the
       [{conceptId: 'PAT-STRANGLER-FIG', scheme: 'playbook', aliasId: 'P-STRANGLER', label: 'Strangler', relation: 'same'}, 'template'],
       [{conceptId: 'PAT-ACTIVE-PASSIVE', scheme: 'playbook', aliasId: 'P-STANDBY', label: 'Standby', relation: 'same'}, 'marked'],
       [{conceptId: 'CON-PATTERN-PROTECTED-CALL', scheme: 'akr', aliasId: 'ANTI-DUAL-WRITE', label: 'Dual write', relation: 'distinct'}, 'stub'],
-      [{conceptId: 'CON-PATTERN-OWN-WORDS', scheme: 'external', aliasId: 'EXT-OWN-WORDS', label: 'A mechanism in our own words', relation: 'same', note: 'An internal glossary entry.'}, undefined]];
+      [{conceptId: 'CON-PATTERN-OWN-WORDS', scheme: 'external', aliasId: 'EXT-OWN-WORDS', label: 'A mechanism in our own words', relation: 'narrower', note: 'An internal glossary entry.'}, undefined]];
     for (const [payload, expected] of cases) {
       const id = await S.ok('knowledge.crosswalk', {...payload, targetContent: 'authored'}, 'architect');
       assert.equal(row(S.document, id).targetContent, expected, payload.aliasId + ': recomputed, whatever was sent');
@@ -724,5 +724,45 @@ add('S2.21 (ruling P6): built-in rows are navigation by construction: no built-i
     assert.equal(KC.resolveConcept(S.document, 'S-MICROKERNEL'), null, 'verified, unreleased: nothing'); await release();
     assert.equal(KC.resolveConcept(S.document, 'S-MICROKERNEL').conceptId, 'PAT-STRANGLER-FIG', 'the governed row resolves'); assert.equal(KC.builtInNavigation('S-MICROKERNEL').navigation[0].targetId, 'STYLE-MICROKERNEL');
     assert.equal(KC.resolveConcept(S.document, 'S-LAYERED'), null, 'a built-in alias with no governed row resolves nothing');
+  } finally { S.close(); }
+});
+
+// ------------------------------------------------------------------------------------------------ 22 (ruling P7)
+// A governed identity traces to a source passage (AGENTS.md: every authoritative claim traces to an immutable source
+// passage). A `same` row of the handbook or an external scheme names its evidence, a claim of this library whose passage
+// holds the alias as a whole token, at the proposal, on an edit and at verification; an akr row traces to the catalogue
+// record it names, whose content the server reads (targetContent), again at verification.
+add('S2.22 (ruling P7): a governed identity traces to a source passage: a handbook or external `same` row names a claim of the library whose passage holds the alias as a whole token, at the proposal, on an edit and at verification; an akr row is verified only while its catalogue record reads as the row says', async () => {
+  const {KC} = await mods(), {extensionHandler} = await import('./design-extension-boundary.js'), {S, sourceId, definition} = await strangler();
+  try {
+    const evidence = await S.ok('knowledge.claim', {sourceId, lineStart: 1, lineEnd: 1, subjectId: 'The synthetic handbook entry', predicate: 'names', statement: 'The entry is SYN-S001, the strangler fig.', claimType: 'definition'}, 'importer');
+    const NO_PASSAGE = (alias, scheme) => new RegExp('A same row of scheme ' + scheme + ' traces to a source passage: name as its evidence \\(evidenceClaimId\\) a claim of this library whose passage holds ' + alias + ' as a whole token');
+    // No evidence, and evidence whose passage does not hold the alias: refused for both schemes.
+    await S.refused(NO_PASSAGE('EXT-STRANGLER', 'external'), 'knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'external', aliasId: 'EXT-STRANGLER', label: 'Strangler (an external register)', relation: 'same', note: 'An internal glossary entry.'}, 'architect');
+    await S.refused(NO_PASSAGE('EXT-STRANGLER', 'external'), 'knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'external', aliasId: 'EXT-STRANGLER', label: 'Strangler (an external register)', relation: 'same', note: 'An internal glossary entry.', evidenceClaimId: definition}, 'architect');
+    await S.refused(/SYN-S001 is neither a topic of this library nor named by the passage of the claim given as evidence \(KC-\d{4}\) as a whole identifier/, 'knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'handbook', aliasId: 'SYN-S001', label: 'Strangler fig (synthetic handbook)', relation: 'same', evidenceClaimId: definition}, 'architect');
+    // A topic of the library names the alias, but a topic is no passage: a handbook `same` row names its evidence all the same.
+    await S.ok('knowledge.topic', {file: 'Synthetic_Integration_Handbook.docx', topicId: 'SYN-S001', title: 'Strangler fig', lineStart: 1, lineEnd: 6, sliceSha256: sha256(SYN_S001.join('\n')), sourceId, declaredKind: 'pattern', intendedUse: 'reference', conceptId: null, reason: 'Mapped in a later tranche.'}, 'importer');
+    await S.refused(NO_PASSAGE('SYN-S001', 'handbook'), 'knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'handbook', aliasId: 'SYN-S001', label: 'Strangler fig (synthetic handbook)', relation: 'same'}, 'architect');
+    assert.equal(KC.conceptRecords(S.document)[0].state, 'reviewed', 'the topic maps no concept: the review stands');
+    // A passage that holds the alias as a whole token: accepted, verified and released, it resolves.
+    const handbook = await S.ok('knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'handbook', aliasId: 'SYN-S001', label: 'Strangler fig (synthetic handbook)', relation: 'same', evidenceClaimId: evidence}, 'architect');
+    const external = await S.ok('knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'external', aliasId: 'Strangler', label: 'Strangler (an external glossary)', relation: 'same', note: 'The glossary names it Strangler.', evidenceClaimId: evidence}, 'architect');
+    // A row that relates otherwise needs none; made `same` by an edit, it needs one like a proposal.
+    const near = await S.ok('knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'external', aliasId: 'EXT-FACADE', label: 'Facade (an external register)', relation: 'narrower', note: 'An internal glossary entry.'}, 'architect');
+    await S.refused(NO_PASSAGE('EXT-FACADE', 'external'), 'knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'external', aliasId: 'EXT-FACADE', label: 'Facade (an external register)', relation: 'same', note: 'An internal glossary entry.', id: near}, 'architect');
+    // At verification: a same row a document holds without such a passage (as an earlier build could write it) is not verified.
+    const review = (doc, id) => extensionHandler('knowledge.crosswalk-review')(doc, {type: 'knowledge.crosswalk-review', payload: {...ROW_REVIEW, id}}, AT, 'reviewer', F.person('reviewer'));
+    { const q = clone(S.document); row(q, near).relation = 'same'; assert.throws(() => review(q, near), NO_PASSAGE('EXT-FACADE', 'external')); }
+    { const q = clone(S.document); row(q, handbook).evidenceClaimId = definition; assert.throws(() => review(q, handbook), NO_PASSAGE('SYN-S001', 'handbook')); }
+    for (const id of [handbook, external]) await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id}, 'reviewer');
+    await (async () => { await S.ok('knowledge.concept-review', {...CONCEPT_REVIEW, id: S.document.knowledge.concepts[0].id}, 'reviewer'); const rid = await S.ok('knowledge.release', {...F.REVIEW, title: 'Synthetic strangler fig 1', claimIds: [definition]}, 'releaser'); await S.ok('knowledge.activate', {...F.REVIEW, id: rid, stamp: K.knowledgeStamp(S.document)}, 'releaser'); })();
+    assert.equal(KC.resolveConcept(S.document, 'SYN-S001').conceptId, 'PAT-STRANGLER-FIG'); assert.equal(KC.resolveConcept(S.document, 'Strangler', 'external').conceptId, 'PAT-STRANGLER-FIG');
+    // An akr row: verified only while the catalogue record it names reads as the row says.
+    const akr = await S.ok('knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'akr', aliasId: 'PAT-CIRCUIT-BREAKER', label: 'Circuit breaker', relation: 'narrower'}, 'architect');
+    assert.equal(row(S.document, akr).targetContent, 'authored');
+    { const q = clone(S.document); row(q, akr).targetContent = 'template'; assert.throws(() => review(q, akr), /PAT-CIRCUIT-BREAKER reads authored in the catalogue AKR-0\.10\.73\.5, not template as KA-\d{4} says: a person saves the row again/); }
+    { const q = clone(S.document); row(q, akr).aliasId = 'PAT-NO-SUCH-RECORD'; assert.throws(() => review(q, akr), /PAT-NO-SUCH-RECORD is neither a catalogue record nor a relation stub of AKR-0\.10\.73\.5/); }
+    await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: akr}, 'reviewer');
   } finally { S.close(); }
 });
