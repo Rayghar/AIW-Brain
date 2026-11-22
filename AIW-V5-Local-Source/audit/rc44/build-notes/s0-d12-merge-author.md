@@ -2,49 +2,152 @@
 
 Built on `rc44/s0-d12-merge-author`, from `53ce4cf` (rc44/integration: S0, wp1 S1 to S3, wp2 S1 and S5, wp9a slice 1).
 Rulings: D1, D7.1, D12, F3, F4, H2, H3, J3, J9 and Y3 of `RULINGS-2026-11-18.md` (the lead's, in the main checkout).
-A lead-owned slice of wave 2; the lead gives leave to edit the shared files narrowly. `productionAccepted` stays false.
+A lead-owned slice of wave 2; the lead gave leave to edit the shared files narrowly. `productionAccepted` stays false.
+No external authority is involved or impersonated: the slice changes who the server's stamps name, nothing else.
 
 ## State
 
-- **Done:** nothing yet.
-- **In progress:** reading; the plan below.
-- **Next:** the cases first in `rc44-s0-extensions-validate.mjs` (block "D12 a record a merge wrote" replaced).
+- **Done:** Y3 and H3 built, each case first and seen red; S0's block "D12 a record a merge wrote" replaced (old -> new
+  below) and block "H3 a staged handler states no author" added; wp9a's S1.15 known limit of D12 replaced (old -> new
+  below); the route measured (0 B) and booked in the lead's file as an item of its own; S0's notes amended where they
+  said a merge stamps no author.
+- **In progress:** nothing.
+- **Next (for the lead):** review and merge; the open questions below.
 
-## What the code does at the start (53ce4cf)
+## What the code did at the start (53ce4cf)
 
-- `workspace.alternative` (public/workbench-domain.js) keeps `{id, revision, title, reason, commands, targets, basis,
+- `workspace.alternative` (`public/workbench-domain.js`) kept `{id, revision, title, reason, commands, targets, basis,
   scenario, status, at, actor}`: the actor who saved it, **not** the author kind, and nobody per command.
-  `workspace.revise-alternative` replaces the commands, sets `actor` to the reviser and keeps the earlier revision in
-  `history`. So the alternative does not record who prepared each command; this build records it from now on.
-- `workspace.merge` applies the rebased commands one by one with `applyCanonical(p, c, at, merger)`. The server's
-  stamp (`stampAuthorship`) reads `innerCommands(workspace.merge)`, which is empty (a merge names no commands), so a
-  record the merge made carries no author stamp (D12). `stampExtensions` (H2) then restamps every **existing** record of
-  a package-held collection the merge changed as the merger's: an agent account's change merged by a person read as
-  the person's.
+  `workspace.revise-alternative` replaced the commands, set `actor` to the reviser and kept the earlier revision in
+  `history`. So an alternative did not record who prepared each command.
+- `workspace.merge` applied the rebased commands one by one with `applyCanonical(p, c, at, merger)`. The server's stamp
+  (`stampAuthorship`) read `innerCommands(workspace.merge)`, which is empty (a merge names no commands), so a record the
+  merge made carried no author stamp (D12). `stampExtensions` (H2) then restamped every **existing** record of a
+  collection a package holds (wp2's `selection` paths hold `decisions.records`, `realisation.components`,
+  `logical.assets`) that the merge changed as the merger's: an agent account's change, merged by a person, read as the
+  person's.
 - A package's staged handler inside a batch (`applyCanonical` -> `x.apply`) is called with four arguments; an event it
-  adds keeps whatever author fields it wrote (H3). The boundary strips them only for a tracker and for a command sent on
-  its own (`unstated`).
+  added kept whatever author fields it wrote (H3). The boundary stripped them only for a tracker and for a command sent
+  on its own (`unstated`).
+- A merge request that carried `commands` of its own (no client sends one) had them read by `innerCommands`, so the
+  merge-level `stampAuthorship` stamped what the merge wrote as the merger's (found while building: case below).
 
-## Plan
+## What was built
 
-1. `workspace.alternative` and `workspace.revise-alternative`: the server records, per command, who prepared it
-   (`authors`, index-aligned with `commands`: `{kind, by, account, session?}`), created only when first written. A
-   revision keeps the preparer of a command it carries unchanged and names the reviser for a command it changes or
-   adds; the earlier list goes into the history entry. An alternative saved before this build has no list.
-2. `workspace.merge`: the domain hands the server each command's result (`merged(q, c, i)`, one option); the server
-   stamps what that command wrote as written by its preparer (the same `stampAuthorship` and the packages'
-   `stampChanged` as any commit), then as reviewed by the merger (`provenance.reviewed {by, at, how: 'merged'}`), and
-   the merge-level `stampExtensions` does not restamp them as the merger's. An alternative without a full list merges
-   as today (known limit).
-3. The boundary: a person who prepared or merged a record, while the merge's stamps stand, is not its second person;
-   a merge's review counts as a person standing behind the record (D1).
-4. H3: every event a reviewed batch's or a merge's commands add before the trackers run states no author fields.
-5. Old documents: no stamp is invented for a record merged before this build; the goldens and readings of S0 hold.
+| File | What | Route |
+|---|---|---|
+| `public/workbench-domain.js` | `workspace.alternative` keeps `authors[i] {kind, by, account, at, session?}` beside `commands[i]` from the commit's author; `workspace.revise-alternative` names its reviser for a command it changes or adds, keeps the preparer of one it carries as it was (by `digest`), and its history entry keeps the list it replaced; the merge calls the option `merged(q, c, i)` after each command. Without an author (a caller that is not the server) nothing is written, as before. | 0 B: `applyWorkbenchCommand` is in no client bundle (the browser previews with `previewWorkingChange` and `previewScenarioAlternative`; the server applies) |
+| `public/provenance.js` | `mergeStamper(prior, command, merger, at, {fourEyes, collections, also})`: per command, the same `stampAuthorship` and the packages' `stampChanged` as any commit, with the preparer as the author, against a copy of the command's collections (and the packages') as the merge left them before it; then `author.mergedBy` and `reviewed {by: merger, at, how: 'merged'}` on what it wrote, or `reviewed.mergedBy` beside a keep or a confirmation it applied. `null` (merge as before) when a command names nobody or the list was written before a restore or a template copy (F3). | 0 B: server only (no client chunk holds it; checked in the build) |
+| `worker.js` | Hands the merge its stamper; skips the merge-level `stampAuthorship` and `stampExtensions` when it ran; calls `unstatedStaged` after the apply. | server |
+| `design-extension-boundary.js` | `personBehind` counts a merge's review; `mergedRefusal` refuses the preparer and the merger while the merge's stamps stand, in words that fit any package; `stampedCollections`; `unstatedStaged` (H3). | server |
 
-## Deviations from the design
+Words of the refusal: "A second person's step needs two persons: <id> reads as <preparer> prepared it in an alternative
+and <merger> merged it. A signed-in person who neither prepared nor merged <id> takes this step."
 
-(none yet)
+## Cases (each seen to fail first)
 
-## Open questions
+In `rc44-s0-extensions-validate.mjs`:
+- **"D12 a record a merge wrote"** (replaced). On `53ce4cf`'s code it fails at "a person: the alternative names who
+  prepared each command" (no list). It proves, for an alternative a person staged, one Sol drafted (a person's session,
+  authorKind sol-draft) and one an agent account staged, each merged by a second person: the alternative's list; a
+  package's record (`SYN`) and a built-in one (a decision) stamped as written by the preparer (kind and actor) and
+  reviewed by the merger; a draft by Sol stays Sol's and an agent account's the agent's; the second-person step refused
+  for the preparer (on the record, on a projection that names only who applied it, on the built-in record) and for the
+  merger (package and built-in), nothing accepted by a refusal, a third person accepting both. Then: a merge request
+  that carries commands of its own restamps nothing (red with the merge-level `stampAuthorship`: the merged decision
+  read as the merger's); a revision by a person of an agent account's alternative names the reviser for what it changed
+  or added and keeps the agent for what it carried, its history keeps the earlier list, and the merged records carry
+  each its own preparer; a later unchanged save keeps the merge's stamps, a confirmation keeps who wrote it, a person's
+  change makes it theirs; a keep a person prepared, merged by another, is the preparer's keep with the merger beside it,
+  and neither is the second person; a topology node a person prepared is stamped and reviewed, one Sol or an agent
+  account prepared arrives as their proposal with no stamp; an agent account's change of a person's decision, merged,
+  is the agent's (it read as the merger's); no alternative can carry an adoption's or a selection's step; and an
+  alternative saved before this build (its list taken out of the stored row) merges as before, with **every assertion
+  of the earlier block kept as it was**; one whose list predates a restore merges as before.
+- **"H3 a staged handler states no author"** (new). A synthetic staged handler (`forge = 'staged'` in `applySynthetic`)
+  journals with forged author fields. On `53ce4cf`'s code the reviewed batch keeps them ("the commit's author, not the
+  handler's words"). Proven sent on its own, in a reviewed batch, in a batch an agent account drafted and in a merge.
+- The block's built-in second-person step is `zm-vouch` (`vouch.accept` on `decisions.records`, as wp2's
+  `selection.confirm` acts on decisions), registered in the block: a decision keeps no writer of its own, so its
+  projection names whom the server's stamp names.
 
-(none yet)
+## Replaced assertions (old -> new)
+
+1. `rc44-s0-extensions-validate.mjs`, block "D12 a record a merge wrote" (S0's suite, not on `94dbd4f`). Old: an
+   alternative a person (A) saved and merged leaves its records with no author stamp
+   (`[rec.actor, rec.provenance?.author, …]` = `[A, undefined, undefined]`), so a second person's step is refused for B
+   and C in the NO_PERSON words, A is refused as its author, an unchanged save stamps nothing and leaves it refused, a
+   person's save or confirmation lets a second person accept. New: those same assertions, unchanged, for an alternative
+   saved before this build (the stored row rewritten without the list), **and** for an alternative saved on this build
+   the stamps of the preparer and the merger, the refusal of both and the acceptance by a third person, for a package's
+   and a built-in record and three kinds of preparer (and the cases listed above). The second-person step is still
+   refused for whoever wrote the record, and now also for the merger.
+2. `rc44-wp9a-deployment-validate.mjs`, block S1.15 (wp9a's suite, not on `94dbd4f`), l.747. Old:
+   `[placement.provenance?.author?.kind, zone.provenance?.author?.kind]` deepEqual `['sol-draft', 'sol-draft']`,
+   "KNOWN LIMIT (ruling D12): a merge stamps no author". New: the relocated node and reason are asserted, and
+   `[stamps(placement), stamps(zone)]` deepEqual `[['person', B, C, C, 'merged', 'person'], …twice]` (kind, by,
+   mergedBy, reviewed by, how, authorship). The case's comment and pass line say so.
+
+No assertion of a suite that exists on `94dbd4f` was touched.
+
+## Measurements
+
+`node build.mjs` (dist/client-size-report.json), at `53ce4cf` and at this head:
+
+| | before | after |
+|---|---|---|
+| routes.chapters.code | 3,228,648 B | 3,228,648 B |
+| scripts | 148 | 148 |
+| buckets (under 10 KB, 10 to 50 KB, over 50 KB) | 52, 51, 45 | 52, 51, 45 |
+| violations | none | none |
+
+Booked: `audit/rc44/evidence/lead-bookings-size.json` `sharedPoolBytes.mergeAuthorY3` = 0, with its item (ruling,
+measurement, why). S0's block "O1 the bookings add up" passes on this build.
+
+## Deviations from the design (the task's wording)
+
+- **An adoption:** no command an alternative can carry writes one on this build (`adoption.*` are person or second
+  steps, the selection's are not staged), so no merge writes an adoption; the case proves an alternative holding one is
+  refused. The package records the cases merge are the synthetic `SYN` and a topology node.
+- **A package's record cannot be changed through an alternative, only made:** `targetSnapshot` reads the journey index,
+  which holds no package record, so the rebase answers "Removed records require a new alternative." (pre-existing). The
+  agent's change of a person's record is shown on a decision, a built-in record in a collection a package holds.
+- **Where the list is written:** in `applyWorkbenchCommand`, where an alternative is written (the server passes the
+  commit's author already), not as a step of `worker.js` after it. An earlier WIP commit did the latter; it was moved.
+- **A keep or a confirmation** an alternative carries is stamped as its preparer's (as `settle` stamps any person's keep),
+  with the merger named beside it (`reviewed.mergedBy`), so the merger is not the second person there either.
+- **The merge-level stamping does not run** when the per-command stamper ran (it covered everything the merge wrote, and
+  a merge request's own `commands` could otherwise restamp the records as the merger's).
+- **Four eyes** (a project's setting) is applied per command, as for any commit: a merge whose command confirms what
+  its own preparer wrote in it is refused in such a project (it was not before, because nothing was stamped).
+
+## Known limits (recorded, not closed)
+
+1. An alternative saved before this build (no list), one with a command carried from such an alternative (null), or one
+   whose list predates a restore merges as before: what it makes carries no author stamp, and an existing record of a
+   collection a package holds that it changes is restamped as the merger's (`stampExtensions`, as on `53ce4cf`).
+2. The preparer is named by the merge's stamps only while they stand. After a person's later change of what the record
+   says, the stamp names that person, and the record's own history (a package's `history`, written by its handler with
+   the merger as the actor) does not name the preparer: the preparer of the earlier revision could then be the second
+   person, unless the package's projection names them. (Before this build the preparer was never named.) Two ways to
+   close it, for the lead: a list of merges kept on the record's provenance across saves, or the preparer handed to a
+   package's staged handler as its actor in a merge.
+3. A brief the merge changes is versioned as the merger's (`versionBrief` reads the commit's author).
+4. A record's label reads "reviewed by <merger>": `HOW_WORDS` has no word for `merged` (one would cost route bytes).
+5. The journal events of a merge name the merger, the commit's author, as before.
+
+## Suites
+
+Run on this head (see the result's `suitesRun`): S0's suite in full, the four rc44 suites, the provenance, workbench
+and alternative suites that import `public/workbench-domain.js`, `public/provenance.js` or the boundary, action-undo and
+the authorship suites; `node check-syntax.mjs`; `node scripts/lint.mjs --summary`; `node build.mjs`.
+
+## Open questions (for the lead)
+
+1. Known limit 2: is the preparer of a merged revision to be refused for good (as a writer of any revision), and by
+   which of the two ways?
+2. wp9a's suite: the comments of S1.8 ("a merge stamps no author: the lead's ruling D12") and of the tail of S1.12 ("a
+   keep inside a merged alternative stamps nobody") no longer describe the build; their assertions still hold (the
+   merged node is a proposal; S1.12's tail builds its documents by hand). Not edited: wp9a's words.
+3. The SDD's line "Written by an upgrade of the project or by a merge, with no author stamp" stays true of records
+   merged before this build; it could name the build.
