@@ -17,17 +17,21 @@ import {md, bullets, plural, decisionOrder} from './public/sdd-architecture.js';
 // reached it after the choice included (none carries a typed reading: ruling Q3); and each candidate in the order it was
 // added, with its kind, what it is pinned to, its outcome and its rows: as they read when the choice was made and as they
 // read now, once when both agree, each named when they do not, with why a candidate no longer stands. ", named unproven"
-// marks only the chosen candidate's rows the chooser named. Nothing is weighed. Printed at the end of the trade-off
+// marks only the chosen candidate's rows the chooser named; a row judged after the choice is named so, beside the chooser's
+// naming at the choice (ruling V4). Nothing is weighed. Printed at the end of the trade-off
 // analysis; the decision record points here (sdd-architecture.js, which imports no module of the package: ruling D3).
 const list=v=>Array.isArray(v)?v:[],KINDS={profile:'profile',library:'library entry',archetype:'catalogue archetype',existing:'existing component',build:'build',buy:'buy',option:'released option'};
 const pinned=c=>{const r=c.ref||{};return c.kind==='profile'?', released '+r.claimId+' in '+r.releaseId:c.kind==='library'?' '+(r.entryId||''):c.kind==='archetype'?' '+(r.archetypeId||''):c.kind==='existing'?' '+(r.componentId||''):c.kind==='option'?' '+(r.optionId||''):'';};
 function basisOf(p,d){
  const R=selectionReading(p,d),s=d.selection,driver=id=>list(p.quality?.drivers).find(x=>x.id===id),label=id=>md(R.constraints.find(k=>k.id===id)?.label||driver(id)?.title||id);
  const what=R.kind==='option'?'the released options of '+md(R.concern?.title||R.concern?.id):'a component for '+list(R.responsibilityIds).map(id=>{const r=list(p.logical?.responsibilities).find(x=>x.id===id);return r?(r.ref||r.id)+' · '+md(r.title):id;}).join(', ');
- const say=(rows,chosen)=>rows.map(r=>label(r.constraintId)+': '+r.state+(r.basis==='person'?' (judged by '+md(r.by)+')':'')+(chosen&&r.state==='unknown'&&list(s.choice?.unproven).includes(r.constraintId)?', named unproven':'')).join('; ');
+ // (ruling V4) a row a person judged after the choice (ruling Q4) is named so; the choice's rows follow such a judgement, so at the choice that row is
+ // read as it was then: unknown, named unproven when the chooser named it
+ const late=new Map(list(s.judgements).filter(j=>j?.afterChoice).map(j=>[j.alternativeId+'|'+j.constraintId,j])),then=(c,rows)=>rows.map(r=>{const j=late.get(c.alternativeId+'|'+r.constraintId);return j?{constraintId:r.constraintId,state:'unknown',named:!!j.namedUnproven}:r;});
+ const say=(rows,chosen,c)=>rows.map(r=>label(r.constraintId)+': '+r.state+(r.basis==='person'?' (judged by '+md(r.by)+(late.has(c.alternativeId+'|'+r.constraintId)?' after the choice':'')+')':'')+(chosen&&r.state==='unknown'&&(r.named||list(s.choice?.unproven).includes(r.constraintId))?', named unproven':'')).join('; ');
  const line=c=>{
-  const chosen=!!R.choice&&c.alternativeId===R.choice.alternativeId,stored=R.choice?list(s.choice?.rows?.[c.alternativeId]?.rows):null,now=say(c.eligibility.rows,chosen),why=c.eligibility.reasons.length?' ('+md(c.eligibility.reasons.join(' '))+')':'';
-  const rows=stored?(say(stored,chosen)===now&&!why?'at the choice and now: '+now:'at the choice: '+(say(stored,chosen)||'no row')+' · now: '+(now||'no row')+why):now||why?'now: '+(now||'no row')+why:'';
+  const chosen=!!R.choice&&c.alternativeId===R.choice.alternativeId,stored=R.choice?then(c,list(s.choice?.rows?.[c.alternativeId]?.rows)):null,now=say(c.eligibility.rows,chosen,c),why=c.eligibility.reasons.length?' ('+md(c.eligibility.reasons.join(' '))+')':'';
+  const rows=stored?(say(stored,chosen,c)===now&&!why?'at the choice and now: '+now:'at the choice: '+(say(stored,chosen,c)||'no row')+' · now: '+(now||'no row')+why):now||why?'now: '+(now||'no row')+why:'';
   return md(c.title)+' ('+(KINDS[c.kind]||md(c.kind))+pinned(c)+(c.by==='sol'?', proposed by Sol':c.by==='agent'?', added by an agent account':'')+'): '+c.outcome+(rows?' · '+rows:'');
  };
  const n=R.constraints.length;

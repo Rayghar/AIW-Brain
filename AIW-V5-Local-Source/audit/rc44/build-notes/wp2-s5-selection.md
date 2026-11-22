@@ -89,11 +89,14 @@ Design e.1 row 9 retires the released concern comparison (`architecture-design.j
 | The comparison's own writer (`previewReleasedConcern`'s decision and alternatives) | **retired**: `previewReleasedConcern` deleted; the one builder, `concernComparison`, moved to `adoption-selection.js` and written by `selection.*` only; parity held against the goldens of `5cae40a` (`BASE.guided`) | S5 |
 | `architecture.start` on a `knowledge:` topic, `architecture.answers`, `.prepare` and `.refresh` of such a task, the preview and so `alternative.apply` of an alternative it prepared (the guided front-end) | **retired**: refused in words ("…the guided comparison of a released concern is retired."); a task an older project holds is read as before and can be set aside (`architecture.dismiss`) | S5 |
 | The comparison tools' concern picker, `openConcern('knowledge:…')` (architecture-intelligence's "Compare the released approaches" action, the knowledge workspace) | **re-pointed**: the picker offers no released concern; `openConcern` opens a selection of the concern's options (`window.aiwSelection`) | S5 |
-| S1's fixture `governedConcernApplied`, `architecture-intelligence-validate.mjs` l.112-118 | **re-pointed** with the lead's leave (item 7) | S5 |
-| `design-concern-validate.mjs` (its two blocks run the guided path) | **not re-pointed**: no leave; it now fails at l.24 (was l.119 at the base); for the lead | the lead to rule |
+| S1's fixture `governedConcernApplied` | **re-pointed** with the lead's leave (Q8): it answers the document the guided path made, captured at `5cae40a` | S5 |
+| `architecture-intelligence-validate.mjs` l.112-118 (the compare action) | the start **re-pointed** to `selection.start` with the lead's leave (Q8); its two currentness assertions ('Creating a proposed task cannot invalidate the source that suggested it'; 'Answering a draft is not an architectural source change') **restored** as they were on `5cae40a` (second fix-up, U4) and green | S5 |
+| `design-concern-validate.mjs` (its two blocks ran the guided path) | **re-pointed** to `selection.*` of kind option with the lead's leave (second fix-up, U3), each replaced assertion marked "U3: was … ->"; red at l.199 where it was red at l.119 on `5cae40a`, the same assertion for the same reason (`'QD-002': ''` in the assessments) | S5 |
 | The applied guided comparison as an adoption of kind `concern` (S1's upgrade) and its readers | unchanged: an older project's applied task is still read | S3/S6 with the task readers |
 
-Since the fix-up a released concern is compared one way only, as a selection of its options.
+Since the fix-up a released concern is compared one way only, as a selection of its options. (Table restated in the
+third fix-up, ruling V4: the two rows for the intelligence suite and `design-concern-validate.mjs` said what was true
+after the first fix-up, not after the second.)
 
 ## Deviations from the design, the task text and the contract
 
@@ -814,4 +817,30 @@ fail on the head it started from, then the change; a WIP commit after each item.
   finding blocks the review, and "Fix before review" is taken and keeps it a blocker. It failed at 3d0b43d
   (`nonWaivable` answered null). The change: `selection-breaks` carries `hard: true` (`public/adoption-selection.js`
   selectionFindings, off the route, 0 route bytes); one class, one reader (A1, D11, M3).
-- **In progress:** item 4 (V4).
+- **Done:** item 4 (V4). (a) The row-9 table (section "Row 9 of the retirement table") says what is true:
+  `design-concern-validate.mjs` re-pointed under U3, red at l.199 where it was red at l.119, for the same reason; the
+  intelligence suite's two assertions restored under U4. (b) The SDD basis: case in `S5 U5 SDD basis` (failed at 8e5bd5b:
+  the judgement did not say it came after the choice): after the choice C judges the inbox's unproven QD-008 pass; the
+  basis now prints "at the choice: …; Run only what the platform team operates: unknown, named unproven · now: …; Run
+  only what the platform team operates: pass (judged by architect-c after the choice)". A judgement taken while a choice
+  stands is stored with `afterChoice: true` and, when the chooser had named the row unproven, `namedUnproven: true`
+  (`adoption-selection.js` judge; keys written only then, so a judgement before the choice, and every older document,
+  gains none); `adoption-server.js` basisOf reads the rows at the choice back as they were (the choice's rows follow such a
+  judgement) and names the later judgement. (c) Known limit recorded (below). (d) `wp2-s5-size.json` `putBack`: the
+  command that builds the tree with the guided path put back, and what it gave on the slice's own tree (abfdb56:
+  3,231,469 B, as `withRetirementPutBack`) and on the merged tree (4391e5e: 3,231,587 B against 3,228,540 B, the same
+  saving, 3,047 B); `S5 size` holds both (case first: "the put-back command is recorded" failed before the record). The
+  steps were run one by one (this session's shell does not take the one-line form); the read-out step was run as written.
+- **In progress:** item 5 (V5, notes, the final checks).
+
+### Known limits (third fix-up)
+
+- A selection's start and its candidates, sent by a person, a draft by Sol or an agent account, still move the design
+  stamp (`reviewDesignStamp`) and `decisions.version` (1 -> 2, measured by the second verifier) before a person's choice:
+  they are written through Chapter 3's own handler as a draft decision. Only the context a generation's currentness reads
+  was made quiet (U4). The direction is the safe one: a review or a check lapses; none stands that should not. Recorded
+  under ruling V4, owned with the lifecycle family by wp9b (as M6 and O3 record for the built-in seeds and a package's
+  proposals).
+- A judgement taken after the choice is told from one taken before by its own mark (`afterChoice`), written when it is
+  taken; a judgement written by hand into a live document is not told apart (documents are written only through the
+  commands; a recovery import moves every judgement aside, Q6).

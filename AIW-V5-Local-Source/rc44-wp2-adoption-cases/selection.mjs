@@ -1040,6 +1040,13 @@ export default async function ({block, pass, load}) {
     assert.ok(existsSync(LEAD), 'the lead\'s bookings are kept (' + LEAD + ')');
     const size = JSON.parse(readFileSync(EVIDENCE, 'utf8')), s1 = JSON.parse(readFileSync(S1_EVIDENCE, 'utf8')), s1Own = s1.ownBytes ?? s1.delta, lead = JSON.parse(readFileSync(LEAD, 'utf8')), back = size.withRetirementPutBack;
     assert.ok(Number.isInteger(back?.chapters) && back.chapters > size.slice.chapters, 'the route with the guided path\'s code put back is measured: ' + back?.chapters);
+    // (the lead's ruling V4 of 2026-11-22) the command that builds the tree with the guided path put back is recorded, so the lead can repeat the
+    // measurement: an archive of a tree, the two files as at 082e06b, node build.mjs; on the slice's own tree it gives withRetirementPutBack, and on
+    // the merged tree (atMerge) the same saving
+    { const pb = size.putBack, cmd = String(pb?.command || '');
+      for (const part of [/git archive <tree> AIW-V5-Local-Source/, /git show 082e06b:AIW-V5-Local-Source\/public\/\$f/, /architecture-design\.js architecture-task-ui\.js/, /node build\.mjs/, /routes\.chapters\.code/]) assert.match(cmd, part, 'the put-back command is recorded: ' + part);
+      assert.deepEqual([pb.sliceTree?.tree, pb.sliceTree?.chapters], ['abfdb56', back.chapters], 'on the slice\'s own tree it gives the figure S5 books from');
+      assert.equal(pb.merged?.route, size.atMerge.chapters, 'on the merged tree'); assert.equal(pb.merged.chapters - pb.merged.route, size.retirementSaving, 'the saving is the same there: ' + (pb.merged.chapters - pb.merged.route)); }
     assert.ok(Number.isInteger(size.ownBytes) && size.ownBytes > 0 && size.ownBytes === back.chapters - size.bases.start.chapters, 'S5 books its gross additions, the route with the retirement put back less the start, a positive integer: ' + size.ownBytes);
     assert.ok(s1Own + size.ownBytes <= ALLOWANCE, 'S1\'s own bytes and S5\'s are within wp2\'s 1,200 B (ruling U2; was 800 B): ' + s1Own + ' + ' + size.ownBytes);
     assert.equal(size.routeDelta, size.slice.chapters - size.bases.start.chapters); assert.equal(size.retirementSaving, back.chapters - size.slice.chapters); assert.ok(size.retirementSaving > 0, 'the retirement saved route bytes');

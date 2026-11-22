@@ -94,5 +94,31 @@
    "files": 2
   },
   "note": "slice, withRetirementPutBack, ownBytes, routeDelta and retirementSaving are measured on the slice's own tree before the merge (abfdb56; no route module changed after 9df762c), where the put-back was built: S5 books its gross additions there, and the lead books the saving there. This block restates the merged build: its route less the integrated base is wp2's own bytes, the other packages' own and the shared pool's, exactly (the lead's merge check, assertBookingsAddUp)."
+ },
+ "putBack": {
+  "ruling": "V4 (wp2 slice 5, third fix-up): the command that builds the tree with the guided path put back, so the lead can repeat the measurement of U2",
+  "command": "T=AIW-V5-Local-Source/.aiw-local/putback; rm -rf $T && mkdir -p $T && git archive <tree> AIW-V5-Local-Source | tar -x -C $T --strip-components=1 && for f in architecture-design.js architecture-task-ui.js; do git show 082e06b:AIW-V5-Local-Source/public/$f > $T/public/$f; done && ln -s \"$PWD/AIW-V5-Local-Source/node_modules\" $T/node_modules && (cd $T && node build.mjs) && node -p \"require('./'+process.argv[1]+'/dist/client-size-report.json').routes.chapters.code\" $T",
+  "runFrom": "the root of a checkout (the directory that holds AIW-V5-Local-Source), with <tree> the commit to measure; it prints the chapters route of the tree with public/architecture-design.js and public/architecture-task-ui.js as at 082e06b (the slice before the retirement of row 9; only the retirement's commits 4334100 and 452604e touched them since, and the merge of rc44/integration touched neither). The saving is that figure less the route of <tree> as it is (node build.mjs on <tree>).",
+  "sliceTree": {
+   "tree": "abfdb56",
+   "chapters": 3231469,
+   "projects": 508057,
+   "scripts": 148,
+   "under10k": 53,
+   "css": 901873,
+   "route": 3228422,
+   "saving": 3047
+  },
+  "merged": {
+   "tree": "4391e5e",
+   "chapters": 3231587,
+   "projects": 508175,
+   "scripts": 148,
+   "under10k": 52,
+   "css": 901873,
+   "route": 3228540,
+   "saving": 3047
+  },
+  "how": "Run on 2026-11-22 in the third fix-up, step by step (the archive, tar, the two files shown from 082e06b, the link to node_modules, node build.mjs), each as its own command: the session's shell did not take the one-line form. abfdb56 (the slice's own tree before the merge; no route module changed after 9df762c) gives 3,231,469 B, the figure withRetirementPutBack records from 9df762c; 4391e5e (rc44/integration merged) gives 3,231,587 B against its route of 3,228,540 B: the same saving, 3,047 B."
  }
 }
