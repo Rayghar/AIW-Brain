@@ -841,7 +841,11 @@ export default async function ({block, pass, load}) {
     assert.equal(out.early, false, 'until the entry has arrived no reader knows the adoption (the built-in emitter skips its task): the store loads it before the first draw');
     assert.deepEqual(out.after, [...stubs, PACKAGE].sort(), 'ensureExtensions loads the entry, and the package registers when it arrives (was: [PACKAGE, PACKAGE + \'-route\'])');
     assert.deepEqual(out.parts, ['checks', 'commands', 'design', 'hops', 'id', 'layers', 'prefixes', 'provenance', 'records', 'track'], 'the browser\'s package has no upgrade step (ruling J12): the browser reads no old document with it');
-    assert.deepEqual(Object.keys(pkg()).sort(), [...out.parts, 'upgrade', 'upgradeNote'].sort(), 'the server\'s is the same package with its upgrade');
+    // (slice S5, the lead's ruling U5; was: the browser's parts and upgrade, upgradeNote. The SDD's selection basis is the package's section of
+    // the architecture edition, which only the server prints, so the server adds it beside the upgrade (adoption-server.js); the browser's parts
+    // are still exactly the list above, without it.)
+    assert.deepEqual(Object.keys(pkg()).sort(), [...out.parts, 'sections', 'upgrade', 'upgradeNote'].sort(), 'the server\'s is the same package with its upgrade and its SDD section');
+    assert.deepEqual(pkg().sections.map(s => [s.document, s.after]), [['sdd', '## Trade-off analysis']], 'one section, of the architecture edition');
     assert.deepEqual(out.digests, digests(asWritten(structuredClone(doc))), 'and the document reads there as the server reads it: graph, model, trails, findings, stamps, readiness, provenance, registers, SDD, ARS');
     assert.deepEqual(out.old, BASE.readings['bank-payment'], 'a document without adoptions reads as at the base with the entry loaded');
     pass('browser load: in a process that holds what the browser holds (the registry, the route stubs, the readers; no server package list), the stub asks for the lazy entry for a document with adoptions, the package registers when the entry arrives, without an upgrade step, and the ten readings of the upgraded document equal the server\'s');
