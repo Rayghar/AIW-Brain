@@ -110,12 +110,27 @@ assert(!JSON.parse(relationshipSource.excerpt).insights.some(i=>i.interactions.s
 const ruled=releaseClaim(reference,{subjectId:'design-concern:staged-cutover',predicate:'offers a design concern',statement:'Compare staged replacement against a coordinated cutover.',linkTo:'REQ-001',tags:['title:Staged cutover','question:Which transition preserves the declared contract?','criterion:rollback|Rollback|Who restores the prior boundary?','option:staged|Staged replacement|Two versions need temporary ownership.','option:cutover|Coordinated cutover|One change window concentrates transition risk.']});
 const comparison=architectureIntelligence(ruled.p,{chapter:1,id:'REQ-001'},{limit:12}).insights.find(i=>i.id.includes(ruled.claimId)),compare=comparison?.actions.find(a=>a.kind==='compare');
 assert(compare?.concernId.startsWith('knowledge:'));
-const started=applyArchitectureCommand(ruled.p,{type:'architecture.start',payload:{topic:compare.concernId,requirementId:compare.requirementId,driverId:compare.driverId}},at).document;
-assert.equal(started.coauthoring.designTasks.at(-1).governedConcern.receipt.claimId,ruled.claimId,'The common native action opens exactly the current released concern');
+// rc44 wp2 S5's fix-up (the lead's ruling Q8, with the lead's leave for this suite): the guided comparison of a released
+// concern is retired, and the common native action opens a selection of its options (adoption-selection.js). Replaced,
+// old -> new, at least as strict: architecture.start on the action's concern opens a task whose governed concern is the
+// released claim -> the guided start is refused, and selection.start of kind option on the action's concern, requirement
+// and driver, as a draft by Sol, pins exactly that released claim, with the action's driver.
+// The two currentness assertions below are as they were on 5cae40a (the lead's ruling U4; the first fix-up had inverted
+// them): what a selection's start and the draft's answer (the concern's options added as candidates) write before a
+// person's choice is a proposal that says nothing to the design source. A person's choice is a source change.
+assert.throws(()=>applyArchitectureCommand(ruled.p,{type:'architecture.start',payload:{topic:compare.concernId,requirementId:compare.requirementId,driverId:compare.driverId}},at),/guided comparison of a released concern is retired/,'The guided start of the released concern is retired');
+const {applySelectionCommand,candidateEligibility}=await import('./public/adoption-selection.js'),sol={author:{kind:'sol-draft',id:'synthetic-architect',account:'person'}};
+const startedRun=applySelectionCommand(ruled.p,{type:'selection.start',payload:{kind:'option',concernId:compare.concernId.slice('knowledge:'.length),requirementId:compare.requirementId,driverId:compare.driverId,owner:'Synthetic architect',reason:'Compare the released approaches.'}},at,'synthetic-architect',sol),started=startedRun.document,opened=started.decisions.records.find(d=>d.id===startedRun.selected);
+assert.equal(opened.selection.concern.receipt.claimId,ruled.claimId,'The common native action opens exactly the current released concern');assert.equal(opened.selection.driverId,compare.driverId);assert.equal(opened.selection.prepared,'sol-draft');
 const rootContext=brainContext(ruled.p,{chapter:1,id:'REQ-001'}),generation={context:{chapter:1,id:'REQ-001'},basisStamp:rootContext.stamp,sources:[]};
 assert(generationCurrent(started,generation),'Creating a proposed task cannot invalidate the source that suggested it');
-const answered=structuredClone(started);answered.coauthoring.designTasks.at(-1).answers.reason='Synthetic draft answer';answered.coauthoring.designTasks.at(-1).revision++;
+// (the draft answers each option on the concern's one criterion, as an option is compared once assessed on each: ruling U3)
+let answered=started;for(const o of (await import('./public/domain-knowledge.js')).releasedDesignConcern(ruled.p,compare.concernId.slice('knowledge:'.length)).options.map(x=>x.id))answered=applySelectionCommand(answered,{type:'selection.candidate',payload:{id:opened.id,candidate:{kind:'option',ref:{optionId:o}},notes:{rollback:'Synthetic draft answer'}}},at,'synthetic-architect',sol).document;
+assert(answered.decisions.records.find(d=>d.id===opened.id).alternatives.length>=2,'The draft is answered: the concern\'s options are its candidates');
 assert(generationCurrent(answered,generation),'Answering a draft is not an architectural source change');
+// (U4) and a person's choice is a design change the requirement's context reads
+const toChoose=answered.decisions.records.find(d=>d.id===opened.id),pick=toChoose.alternatives[0],chosenDoc=applySelectionCommand(answered,{type:'selection.choose',payload:{id:opened.id,alternativeId:pick.id,reason:'The staged replacement keeps the contract.',rejections:Object.fromEntries(toChoose.alternatives.slice(1).map(a=>[a.id,'One change window concentrates the risk.'])),unproven:candidateEligibility(answered,toChoose,pick).rows.filter(r=>r.state==='unknown').map(r=>r.constraintId)}},at,'synthetic-architect',{author:{kind:'person',id:'synthetic-architect',account:'person'}}).document;
+assert.equal(generationCurrent(chosenDoc,generation),false,'A person\'s choice is an architectural source change');
 console.log('PASS exact editorial relation evidence, omitted-source closure, released comparison native routing and non-circular draft currentness');
 
 const ready=readyComposition('resilience'),prepared=arc(ready,'architecture.prepare',{optionId:'protected-call'}),alternative=prepared.document.modelAlternatives.records.find(a=>a.id===prepared.selected),preview=previewAlternative(prepared.document,alternative);

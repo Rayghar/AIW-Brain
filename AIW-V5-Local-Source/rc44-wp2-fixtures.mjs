@@ -10,6 +10,7 @@ import {applyArchitectureCommand} from './public/architecture-design.js';
 import {previewAlternative, applyAlternativeCommand} from './public/model-alternatives.js';
 import {withFinalReview} from './public/review-domain.js';
 import {localDatabase} from './local-db.js';
+import {readFileSync} from 'node:fs';
 
 export const APPLIED_AT = '2026-10-02T09:00:00.000Z';
 export const A = 'architect-a', B = 'architect-b', C = 'architect-c', AGENT = 'sol-drafter';
@@ -99,25 +100,12 @@ import {applyKnowledgeCommand, knowledgeStamp} from './public/knowledge-governan
 // then architecture.start on that concern, its answers, a prepared alternative and alternative.apply. Answers the
 // document as it was written (no adoption), the claim receipt its task pins and the id of the release.
 export function governedConcernApplied() {
-  const at = '2026-10-11T12:00:00.000Z', k = (p, type, payload, actor = 'author') => applyKnowledgeCommand(p, {type, payload}, at, actor).document, arc = (p, type, payload) => applyArchitectureCommand(p, {type, payload}, at);
-  let p = applyCommand(createProject({name: 'Synthetic equipment project', template: 'blank'}, 'concern-fixture'), {type: 'artefact', payload: {type: 'requirement', title: 'Reserve equipment', description: 'Report an authoritative reservation outcome.', acceptance: 'The original reference identifies one result.', owner: 'Facilities', source: 'Synthetic workshop', confirmed: true}}, at).document;
-  p = withFinalReview(applyQualityCommand(p, {type: 'quality.driver', payload: {title: 'Reliable reservation', category: 'recoverability', requirementIds: ['REQ-001'], stimulus: 'Processing is unavailable.', conditions: 'Reservation intake remains open.', response: 'Restore accepted reservations.', metric: 'Recovery time', operator: 'At most', targetValue: '30', unit: 'minutes', window: 'For each accepted request', measurement: 'Failure exercise', targetConfirmed: true, confirmed: true, owner: 'Facilities'}}, at).document, {upgrade: false});
-  p = k(p, 'knowledge.source', {title: 'Synthetic architecture note', body: 'Synthetic architecture note\nCompare owning the schedule in one application with a separate service. Evaluate responsibility ownership and the cost of coordination.\n', path: 'synthetic/note.txt', revision: '1', license: 'Synthetic test material'});
-  p = k(p, 'knowledge.claim', {sourceId: p.knowledge.sources.at(-1).id, lineStart: 2, lineEnd: 2, subjectId: 'design-concern:service-ownership', predicate: 'offers a design concern', claimType: 'applicability', polarity: 'neutral', statement: 'Compare local ownership and a separate service boundary.', conditions: ['For an architecture with two responsibilities.'], limitations: ['The source makes no measured reliability claim.'], tags: ['title:Service ownership', 'question:Where should reservation ownership live?', 'criterion:ownership|Ownership|Who owns the schedule and its changes?', 'criterion:recovery|Recovery|What happens during an outage?', 'option:local|One application|The modules share one release boundary.', 'option:separate|Separate service|A network contract and recovery coordination are required.']});
-  p = k(p, 'knowledge.review', {id: p.knowledge.claims[0].id, reviewed: true, reviewer: 'Second reviewer', reason: 'Verified source and limited interpretation.', decision: 'verified', sourceChecked: true, rightsChecked: true, conditionsChecked: true}, 'reviewer');
-  p = k(p, 'knowledge.release', {reviewed: true, reviewer: 'Second reviewer', reason: 'Release this synthetic concern.', title: 'Synthetic concern', claimIds: [p.knowledge.claims[0].id]});
-  p = k(p, 'knowledge.activate', {reviewed: true, reviewer: 'Second reviewer', reason: 'Use the reviewed concern.', id: p.knowledge.releases[0].id, stamp: knowledgeStamp(p)});
-  p = arc(p, 'architecture.start', {requirementId: 'REQ-001', driverId: 'QD-001', topic: 'knowledge:service-ownership'}).document;
-  let t = p.coauthoring.designTasks[0];
-  p = arc(p, 'architecture.answers', {id: t.id, taskRevision: t.revision, answers: {criteriaNotes: JSON.stringify({local: {ownership: 'Facilities owns both modules and the schedule.', recovery: 'Restore one process and reconcile reservations.'}, separate: {ownership: 'A separate team owns the schedule contract.', recovery: 'Coordinate partial failure across services.'}}), owner: 'Facilities architect', reason: 'Local ownership fits the present team; accept shared deployment.'}}).document;
-  t = p.coauthoring.designTasks[0];
-  const prepared = arc(p, 'architecture.prepare', {id: t.id, taskRevision: t.revision, optionId: 'local'}); p = prepared.document;
-  const alternative = p.modelAlternatives.records.find(a => a.id === prepared.selected), preview = previewAlternative(p, alternative);
-  p = applyAlternativeCommand(p, {type: 'alternative.apply', payload: {id: alternative.id, alternativeRevision: alternative.revision, previewStamp: preview.stamp, reviewed: true, reviewer: 'Independent project architect', reason: 'Reviewed both source-grounded options and criterion notes.'}}, at).document;
-  const document = withFinalReview(beforeAdoptions(p), {upgrade: false});
-  assert.equal(document.coauthoring.designTasks[0].status, 'applied');
-  return {document, receipt: document.coauthoring.designTasks[0].governedConcern.receipt, releaseId: document.knowledge.releases[0].id, at};
+  // (S5's fix-up, ruling Q8, with the lead's leave: the guided released-concern path this fixture ran is retired. The
+  // document it made is the one captured at 5cae40a, the base, by running this function there with its fixed time:
+  // rc44-wp2-governed-concern.json. It is what an older project holds.)
+  return structuredClone(GOVERNED);
 }
+const GOVERNED = JSON.parse(readFileSync(new URL('./rc44-wp2-governed-concern.json', import.meta.url), 'utf8'));
 // A knowledge command of that fixture, with a typed reviewer and the stamp an activation step asks for.
 export const knowledgeCommand = (p, type, payload, at, actor = 'author') => applyKnowledgeCommand(p, {type, payload: {reviewed: true, reviewer: 'Second reviewer', ...payload, ...(type === 'knowledge.deactivate' || type === 'knowledge.activate' ? {stamp: knowledgeStamp(p)} : {})}}, at, actor).document;
 // The Bank Payment reference with one applied task of another kind (an exchange), as a document written before the
@@ -133,3 +121,60 @@ export function otherKindApplied() {
       {id: 'MAP-001', ref: 'MAP-001', title: 'An allocation', chapter: 4, slot: 'allocation', isNew: true}, {id: 'gone-001', ref: 'OBJ-099', title: 'A component that left', chapter: 5, slot: 'consumer', isNew: true}]}}];
   return withFinalReview(d, {upgrade: false});
 }
+
+// ---- appended by slice S5 (component selection as a recorded decision; audit/rc44/design/wp2-adoption.md §g S5)
+// Every fixture of this file reads no clock: each command and createProject is given its fixture's fixed time, so a
+// golden captured once holds on every later day (ruling Q7; held by the block 'S5 fixtures').
+import {applyWorkbenchCommand} from './public/workbench-domain.js';
+import {componentSnapshot} from './public/component-snapshot.js';
+import {snapshotText, COMPONENT_ARCHETYPES} from './public/component-library.js';
+export const SELECTION_AT = '2026-10-20T09:00:00.000Z';
+// A released design concern whose criteria are tied to a quality category and a driver kind (the K2 shapes of
+// design-concern-validate.mjs, synthetic): four drivers, a source, the concern released and activated. The guided
+// comparison of it and the selection of its options are compared on this document (design §e.1 row 9).
+export const CONCERN_NOTES = {local: {recovery: 'Restore one process and reconcile reservations.', operations: 'Facilities runs the rebuild.'}, separate: {recovery: 'Coordinate partial failure across services.', operations: 'A platform team runs the rebuild.'}};
+export const CONCERN_TAGS = ['title:Schedule ownership', 'question:Where should the schedule live?', 'criterion:recovery|Recovery|What happens during an outage?|recoverability|quality', 'criterion:operations|Operations|Who runs the nightly rebuild?||operational', 'option:local|One application|The modules share one release boundary.|A restore rehearsal of the shared release.', 'option:separate|Separate service|A network contract and recovery coordination are required.|A failover test across both services.', 'consequence:local|recovery|One restore point covers both modules.', 'consequence:separate|recovery|Each service restores on its own; reconcile across them.', 'consequence:local|operations|One team runs the nightly rebuild.', 'consequence:separate|operations|Two teams coordinate the nightly rebuild.'];
+export const CONCERN_ANSWERS = {criteriaNotes: JSON.stringify(CONCERN_NOTES), owner: 'Facilities architect', reason: 'One application fits the present team.'};
+export function concernProject() {
+  const at = SELECTION_AT, k = (p, type, payload, actor = 'author') => applyKnowledgeCommand(p, {type, payload}, at, actor).document, REVIEW = {reviewed: true, reviewer: 'Second reviewer', reason: 'Verified source and limited interpretation.'};
+  let q = applyCommand(createProject({name: 'Synthetic scheduling project', template: 'blank'}, 'selection-concern', at), {type: 'artefact', payload: {type: 'requirement', title: 'Reserve equipment', description: 'Report an authoritative reservation outcome.', acceptance: 'The original reference identifies one result.', owner: 'Facilities', source: 'Synthetic workshop', confirmed: true}}, at).document;
+  const scenario = {requirementIds: ['REQ-001'], stimulus: 'Processing is unavailable.', conditions: 'Intake remains open.', response: 'Restore accepted reservations.', metric: 'Recovery time', operator: 'At most', targetValue: '30', unit: 'minutes', window: 'For each accepted request', measurement: 'Failure exercise', owner: 'Facilities'};
+  for (const x of [{...scenario, title: 'Reliable reservation', category: 'recoverability', priority: 'High', targetConfirmed: true, confirmed: true}, {...scenario, title: 'Bookings stay open', category: 'availability', priority: 'Medium'}, {kind: 'operational', title: 'Nightly schedule rebuild', description: 'The schedule is rebuilt every night.', priority: 'Medium', owner: 'Facilities', requirementIds: ['REQ-001']}, {...scenario, title: 'Restore the schedule', category: 'recoverability', priority: 'Low'}]) q = withFinalReview(applyQualityCommand(q, {type: 'quality.driver', payload: x}, at).document, {upgrade: false});
+  q = k(q, 'knowledge.source', {title: 'Synthetic scheduling note', body: 'Synthetic scheduling note\nCompare owning the schedule in one application with a separate service.\n', path: 'synthetic/schedule.txt', revision: '1', license: 'Synthetic test material'});
+  const TAGS = CONCERN_TAGS;
+  q = k(q, 'knowledge.claim', {sourceId: q.knowledge.sources.at(-1).id, lineStart: 2, lineEnd: 2, subjectId: 'design-concern:schedule-ownership', predicate: 'offers a design concern', claimType: 'applicability', polarity: 'neutral', statement: 'Compare owning the schedule in one application with a separate service.', conditions: ['For a schedule two teams change.'], limitations: ['The source makes no measured recovery claim.'], tags: TAGS});
+  q = k(q, 'knowledge.review', {...REVIEW, id: q.knowledge.claims[0].id, decision: 'verified', sourceChecked: true, rightsChecked: true, conditionsChecked: true}, 'reviewer');
+  q = k(q, 'knowledge.release', {...REVIEW, title: 'Synthetic K2 concern', claimIds: [q.knowledge.claims[0].id]});
+  q = k(q, 'knowledge.activate', {...REVIEW, id: q.knowledge.releases.at(-1).id, stamp: knowledgeStamp(q)});
+  return withFinalReview(q, {upgrade: false});
+}
+// (S5's fix-up, ruling Q8: guidedConcernPreview, the guided comparison of that concern, is retired with the path; what it
+// gave at the base is kept in rc44-wp2-selection-baseline.json, guided.)
+// What a comparison's decision says, as the parity case compares it (design §e.4 for row 9): the decision's own fields
+// and each alternative's, without the ids, revisions, history and source snapshots each command writes.
+const DECISION_SAYS = ['question', 'context', 'requirementIds', 'driverIds', 'owner', 'source', 'rationale', 'assumptions', 'risks', 'mitigation', 'status', 'topic'], ALTERNATIVE_SAYS = ['title', 'summary', 'benefits', 'costs', 'consequences', 'pattern', 'antiPattern', 'assessments', 'rejectionReason', 'responsibilityIds', 'componentIds', 'relationships'];
+export const decisionSays = d => d && {...Object.fromEntries(DECISION_SAYS.map(k => [k, d[k] ?? null])), chosen: d.alternatives.find(a => a.id === d.selectedAlternativeId)?.title ?? null, alternatives: d.alternatives.map(a => Object.fromEntries(ALTERNATIVE_SAYS.map(k => [k, a[k] ?? null])))};
+// The Bank Payment reference made ready for a component selection: two constraint drivers on the Payment API's
+// requirement (each hard: no constraint record says Should or Could), a project library entry, and knowledge of three
+// synthetic component profiles, each a claim with a structured architecture unit whose scope states its typed facts:
+// two reviewed by a second person, released and activated, one left a candidate nobody reviewed (read, never selected).
+export const PROFILE_FACTS = {inbox: {product: 'Synthetic inbox', version: '2.1', topology: 'single-region-north'}, relay: {product: 'Synthetic relay', version: '1.4', topology: 'multi-region'}, outbox: {product: 'Synthetic outbox relay', version: '0.9', topology: 'single-region-north'}};
+export function selectionProject() {
+  const at = SELECTION_AT, k = (p, type, payload, actor = 'author') => applyKnowledgeCommand(p, {type, payload}, at, actor).document, REVIEW = {reviewed: true, reviewer: 'Second reviewer', reason: 'Verified source and limited interpretation.'};
+  let p = structuredClone(reference('bank-payment'));
+  for (const x of [{kind: 'constraint', title: 'Customer records stay in region North', description: 'Payment instructions and customer records are kept in region North.', impact: 'Rules out a component that stores them elsewhere.', priority: 'High', requirementIds: ['REQ-001']}, {kind: 'constraint', title: 'Run only what the platform team operates', description: 'Every component of the payment path runs on the platform the platform team operates.', impact: 'Rules out a component outside that platform.', priority: 'High', requirementIds: ['REQ-001']}]) p = withFinalReview(applyQualityCommand(p, {type: 'quality.driver', payload: x}, at).document, {upgrade: false});
+  p = applyWorkbenchCommand(p, {type: 'workspace.catalogue', payload: {kind: 'component', title: 'Ticket consumer v2', content: snapshotText(componentSnapshot(p, 'notify-worker', {at})), owner: 'Platform team', reviewNote: 'A consumer filed from the notification worker.'}}, at, 'architect').document;
+  p.workbench.catalogue.at(-1).id = 'LIB-S5-0001'; // the workbench mints a random id; the fixture's is fixed so that its readings can be compared
+  p = k(p, 'knowledge.source', {title: 'Synthetic component profiles', body: 'Synthetic component profiles\nAn inbox that deduplicates by message id and keeps its data in region North.\nA relay that forwards messages across regions.\nAn outbox relay that publishes committed intents from the store.\n', path: 'synthetic/profiles.txt', revision: '1', license: 'Synthetic test material'});
+  const sid = p.knowledge.sources.at(-1).id, profile = (key, line, title, mechanism) => ({sourceId: sid, lineStart: line, lineEnd: line, subjectId: 'component-profile:' + key, predicate: 'is profiled as', claimType: 'component-attribute', polarity: 'neutral', statement: mechanism, conditions: ['For a payment path of this kind.'], limitations: ['The source makes no measured claim.'], tags: ['title:' + title],
+    architectureUnit: {kind: 'product-mechanism', mechanism, scope: PROFILE_FACTS[key], effects: [{quality: 'integrity', direction: 'supports', rationale: 'One effect per message id, as the profile states.'}], obligations: [{action: 'Keep the deduplication key with each message.', evidence: 'A replay test shows one effect per message id.'}, {action: 'Name the region the data is kept in.', evidence: 'The deployment record names the region.'}]}});
+  p = k(p, 'knowledge.claim', profile('inbox', 2, 'Inbox and deduplication component', 'An inbox that deduplicates by message id and keeps its data in region North.'));
+  p = k(p, 'knowledge.claim', profile('relay', 3, 'Regional message relay', 'A relay that forwards messages across regions.'));
+  p = k(p, 'knowledge.claim', profile('outbox', 4, 'MSG 004 Transactional outbox relay', 'An outbox relay that publishes committed intents from the store.'));
+  const [inbox, relay] = p.knowledge.claims.slice(-3);
+  for (const c of [inbox, relay]) p = k(p, 'knowledge.review', {...REVIEW, id: c.id, decision: 'verified', sourceChecked: true, rightsChecked: true, conditionsChecked: true}, 'reviewer');
+  p = k(p, 'knowledge.release', {...REVIEW, title: 'Synthetic component profiles', claimIds: [inbox.id, relay.id]});
+  p = k(p, 'knowledge.activate', {...REVIEW, id: p.knowledge.releases.at(-1).id, stamp: knowledgeStamp(p)});
+  return withFinalReview(p, {upgrade: false});
+}
+export const ARCHETYPE = COMPONENT_ARCHETYPES[0];

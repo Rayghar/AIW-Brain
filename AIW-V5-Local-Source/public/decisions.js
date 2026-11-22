@@ -104,7 +104,8 @@ function inputs(){
 // The reading on the drivers (D-25-03 to D-25-06): each alternative's total, the range its unstated effects could move it
 // to, and where it stands in the reading's own sentences (ruled out, dominated, the lead, tied, its rank), with how firmly
 // the lead holds, the unstated effects that matter and the drivers left out. Arithmetic on the recorded effects only.
-function readingHTML(d,S){const r=readDecision(project,d);if(!r||r.rows.length<2)return '';const title=id=>d.alternatives.find(a=>a.id===id)?.title||id,lines=readingLines(r,{alt:title}),of=r.rows.filter(x=>!x.out).length;
+// rc44 wp2 S5 (ruling Q1): a selection is not weighed, so it has no panel on the drivers.
+function readingHTML(d,S){const r=readDecision(project,d);if(!r||r.rows.length<2||d.selection)return '';const title=id=>d.alternatives.find(a=>a.id===id)?.title||id,lines=readingLines(r,{alt:title}),of=r.rows.filter(x=>!x.out).length;
  const said=x=>lines.find(l=>['ruled-out','dominated'].includes(l.kind)&&l.id===x.id)?.text||(r.lead===x.id?(r.only?title(x.id)+' is the only alternative that meets the hard constraints.':title(x.id)+' leads on the drivers.'):r.tied.includes(x.id)?'Tied on the drivers.':x.rank?'Ranks '+x.rank+' of '+of+' on the drivers.':'');
  const hyp=suggestionHypothesis(S,r,title);
  return `<section class="d-reading" aria-label="The reading on the drivers"><h3>On the drivers</h3><ul>${r.rows.map(x=>`<li class="${x.out?'out':r.lead===x.id?'lead':''}"><b>${esc(x.id)} · ${esc(x.alt.title)}</b><span>${signed(x.score)}${x.low!==x.high?`, between ${signed(x.low)} and ${signed(x.high)} once the unstated effects are known`:''}</span><small>${esc(said(x))}</small></li>`).join('')}</ul>${lines.filter(l=>['firmness','unknowns','left-out','missing'].includes(l.kind)).map(l=>`<p class="d-said">${esc(l.text)}</p>`).join('')}${hyp?`<p class="d-said">${esc(hyp)}</p>`:''}<p class="r-note">${esc(READING_NOTE)}</p></section>`}

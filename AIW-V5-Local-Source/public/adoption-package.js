@@ -20,9 +20,15 @@
 //   provenance the collection is read by the provenance reader and the SDD's reading of who wrote the records, under
 //             the chapter of its object type (ruling J12); an adoption does not retire through the lifecycle family;
 //   design    what an adoption says to the design fingerprint, in place of the raw key (ruling J3).
+// Slice S5 adds the five steps of a component selection (adoption-selection.js): start and candidate may be a draft by
+// Sol's proposal; judge, choose and instantiate are a signed-in person's, and confirm a second person's (ruling Q4),
+// taken before the decision is accepted. A selection is a Chapter 3 decision, written through the chapter's own
+// handler; the profile it instantiates is an adoption, which a second person accepts (adoption.accept).
 import {registerExtension} from './design-extensions.js';
 import {applyAdoptionCommand,acceptanceOf,adoptionFindings,adoptionDesign,emitAdoptions,adoptionRelation,trackAdoptionChange} from './adoption-domain.js';
-const step={apply:applyAdoptionCommand,person:true};
+import {applySelectionCommand,selectionFindings,confirmOf} from './adoption-selection.js';
+import './adoption-ui.js'; // the selection's surface, held in the same lazy entry; it opens through window.aiwSelection
+const step={apply:applyAdoptionCommand,person:true},propose={apply:applySelectionCommand},choose={apply:applySelectionCommand,person:true};
 export const ADOPTION_PACKAGE={
  id:'p40-adoption',
  prefixes:{pattern:'ADP'},
@@ -30,10 +36,13 @@ export const ADOPTION_PACKAGE={
  layers:{mechanism:'pattern'},
  hops:[{layer:'mechanism',types:['addresses'],from:['requirement'],dir:'in',ctx:true,only:adoptionRelation},
   {layer:'mechanism',types:['binds','scopes'],from:['responsibility','component','capability','realization','contract','data','plan','control'],dir:'in',ctx:true,only:adoptionRelation}],
- checks:{5:adoptionFindings},
- commands:{'adoption.reassess':step,'adoption.deviation':step,'adoption.accept':{apply:applyAdoptionCommand,second:acceptanceOf}},
+ checks:{3:selectionFindings,5:adoptionFindings}, // (S5: the selection's findings on its decision, ruling Q2)
+ commands:{'adoption.reassess':step,'adoption.deviation':step,'adoption.accept':{apply:applyAdoptionCommand,second:acceptanceOf},
+  'selection.start':propose,'selection.candidate':propose,'selection.judge':choose,'selection.choose':choose,'selection.instantiate':choose,
+  'selection.confirm':{apply:applySelectionCommand,second:confirmOf}}, // (S5, ruling Q4: the second person's confirm of a selection)
  track:trackAdoptionChange,
- provenance:{nouns:{'adoptions.records':'applied mechanism'},paths:{adoption:['adoptions.records']},records:{'adoptions.records':3}},
+ // (S5: a selection writes the decision, and its instantiation a component and an adoption; the boundary stamps who wrote each)
+ provenance:{nouns:{'adoptions.records':'applied mechanism'},paths:{adoption:['adoptions.records'],selection:['decisions.records','realisation.components','logical.assets','adoptions.records']},records:{'adoptions.records':3}},
  design:{adoptions:adoptionDesign}
 };
 registerExtension(ADOPTION_PACKAGE);
