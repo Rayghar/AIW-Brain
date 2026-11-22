@@ -321,7 +321,8 @@ function judge(p,raw,at,actor,author){
  const read=candidateEligibility(p,d,a).rows.find(r=>r.constraintId===k.id).state;
  if(read!=='unknown')throw Error('Only a row that reads unknown is judged: “'+k.label+'” reads '+read+' for '+a.title+', as '+candidateEligibility(p,d,a).rows.find(r=>r.constraintId===k.id).by+' judged it.');
  const evidence=words(raw.evidence,'Record the evidence for the judgement.'),reason=words(raw.reason,'Record the reason for the judgement.');
- // (ruling V4) a judgement after the choice says so, and whether the chooser had named the row unproven, so the SDD keeps both (keys written only then)
+ // (ruling V4) a judgement after the choice says so, and whether the chooser had named the row unproven, so the SDD keeps both (keys written only then);
+ // which choice it came after is read from that choice's judgementsFrom (ruling W1)
  s.judgements=[...list(s.judgements),{alternativeId:a.id,constraintId:k.id,state:raw.state,evidence,reason,actor:actor||null,at,account:author?.account??null,...(s.choice?{afterChoice:true,...(list(s.choice.unproven).includes(k.id)?{namedUnproven:true}:{})}:{})}];
  step(s,actor,at,author);
  if(s.choice){
@@ -353,7 +354,8 @@ function choose(p,raw,at,actor,author){
  p=decide(p,'decision.choose',{id,alternativeId:a.id},at);
  d=decisionOf(p,id);
  for(const x of d.alternatives)if(x.candidate)x.candidate.outcome=x.id===a.id?'chosen':'rejected';
- d.selection.choice={alternativeId:a.id,unproven:unknown,sentence,rows:Object.fromEntries(d.alternatives.filter(x=>x.candidate).map(x=>{const r=candidateEligibility(p,d,x);return [x.id,{state:r.state,rows:r.rows}];})),actor:actor||null,at,account:author?.account??null};
+ // (ruling W1) the new choice records where its judgements begin, so only a judgement at or after it reads as after the choice
+ d.selection.choice={alternativeId:a.id,unproven:unknown,sentence,rows:Object.fromEntries(d.alternatives.filter(x=>x.candidate).map(x=>{const r=candidateEligibility(p,d,x);return [x.id,{state:r.state,rows:r.rows}];})),judgementsFrom:list(d.selection.judgements).length,actor:actor||null,at,account:author?.account??null};
  step(d.selection,actor,at,author);
  return {document:p,selected:id};
 }

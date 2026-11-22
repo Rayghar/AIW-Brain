@@ -984,5 +984,20 @@ first, seen to fail on the head it started from, then the change; a WIP commit a
 
 ### Progress
 
-- **In progress:** item 1 (W1).
-- **Next:** items 2 (W2), 3 (W3), 4 (notes, suites, syntax, lint, build, final commit).
+- **Done:** item 1 (W1). Case first in `S5 U5 SDD basis` (commit 8a76750), seen to fail on ad8204b's product in both
+  parts: (1) after C's late pass, A chooses the inbox again (no row unknown): ad8204b printed "at the choice: …; Run only
+  what the platform team operates: unknown, named unproven · now: …: pass (judged by architect-c after the choice)";
+  (2) after C's late fail, A chooses the library entry: ad8204b printed the rejected inbox "at the choice: …: unknown · now:
+  …: fail (judged by architect-c after the choice)". The change: `selection.choose` writes `judgementsFrom` on the new
+  choice (the number of judgements taken before it; the choice object is written only by a new choice, and `judge` keeps
+  it), and `adoption-server.js` basisOf reads as late only a judgement marked `afterChoice` at or after that index. Now
+  (1) prints "at the choice and now: Customer records stay in region North: pass (judged by architect-b); Run only what
+  the platform team operates: pass (judged by architect-c)", neither "after the choice" nor "named unproven"; (2) prints
+  the rejected inbox "at the choice and now: …: fail (judged by architect-c)" and the chosen library entry with both rows
+  named unproven; a judgement after the new choice is "after the choice" again, and the earlier one stays as it read at
+  its choice. A choice without the key (this branch's documents before W1) reads as at ad8204b: held in the case on a
+  copy with the key deleted. Not compared by time (`j.at` against `choice.at`), which the fixtures' fixed clock defeats.
+  0 route bytes (the selection module is in the lazy entry; the basis is on the server). `test:rc44-wp2-adoption`: 45
+  blocks green.
+- **In progress:** item 2 (W2).
+- **Next:** items 3 (W3), 4 (notes, suites, syntax, lint, build, final commit).
