@@ -335,7 +335,7 @@ The verifier's verdict on 7008c39 is *merge*, with two new problems; the lead cl
   released navigation and resolves no identity (`resolves: false`). Case: S2.4, the row-first ordering, after the
   adapter concept's release (seen red: the entry read `released`, `resolves: true`).
 - **An edit of a rejected row passed the bound.** An edit lapses a rejection, so the row stands again: it is now held to
-  the bound of 24 standing rows as a proposal is. Case: S2.14, with 24 rows standing the person's
+  the bound of 24 standing rows as a proposal is, in the same words. Case: S2.14, with 24 rows standing the person's
   edit of the rejected row is refused and writes nothing, and is taken once a row is retired; never more than 24 stand
   (seen red: the edit was accepted).
 - Both changes are in server-only modules (knowledge-concepts.js, knowledge-concept-commands.js): no route bytes.
@@ -397,7 +397,28 @@ S6 to S9 settle them, done on rc44/wp1-s2-lead, cases first.
   five-relation assertion only.
 - **S9, reading once** (should-fix 3). resolveConcept and conceptAliases read the released concepts once per call and
   pass them to releasedCrosswalk; the stale comment and the duplicate guard are gone.
-- Contracts for later slices: the bound is 24 rows that stand per concept, asked through `admit`; one alias names one
-  concept in every scheme, asked through `oneAlias`, wherever a row comes to stand or to read verified; the known limit of
-  S4 (recovery) stands.
+- Contracts for later slices: superseded by the section below.
+- Suites on this head: rc44-wp1-knowledge 57 passed, 0 failed, 3 pending.
+
+### After the third narrow review (2026-11-22)
+
+The narrow review of 20f3cb2 asked for one must-fix, four should-fix, three design concerns; the lead's ruling S10
+settles them, done on rc44/wp1-s2-lead, cases first.
+
+- **S10, the rule reads the row as written** (must-fix). The edit door's one-alias check now runs after the write, on the
+  command's copy, of the row exactly as written (its new history line, a dropped targetContent). Cases in S2.4: the
+  reviewer's own edit back is taken and the row reads proposed (seen red on 20f3cb2: refused in the rule's words); an edit
+  whose written row comes to read verified only because the write drops a stored targetContent is refused through the
+  handler and writes nothing (seen red with the pre-write check, by mutation in an isolated run).
+- Should-fix 1: both edit-back refusals now pin the other row's id. Should-fix 2: the P3 comment is back above
+  oneIdentity. Should-fix 3: conceptReading passes the released concepts it read to the view's internal reader, so the
+  concept view proper reads them once per call. Should-fix 4: the earlier section's words are restored as they stood
+  ("in the same words" was the proposal's refusal; the edit's refusal now names the row, ruling S1), and this line records
+  the correction.
+- Design concerns: admit and oneAlias both take the document (misuse no longer fails open); the exported
+  releasedCrosswalk takes the document only and an internal reader takes the concepts; the contract for S3 below.
+- **Contracts for later slices.** The bound is 24 rows that stand per concept: `admit(document, conceptId, row)`. One
+  alias names one concept in every scheme: `oneAlias(document, row)`. Each is asked wherever a row comes to stand or to
+  read verified, of the row as written. For S3, the one-alias rule over organisation releases reads this register plus
+  the rows releases hold, with an identity of (project, row id). The known limit of S4 (recovery) stands.
 - Suites on this head: rc44-wp1-knowledge 57 passed, 0 failed, 3 pending.

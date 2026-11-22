@@ -306,12 +306,39 @@ add('S2.4 (one identity): a second verified `same` row for one (scheme, alias) i
       const a = await S.ok('knowledge.crosswalk', A, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: a}, 'reviewer');
       await S.ok('knowledge.crosswalk', {...A, id: a, label: 'Strangler fig (renamed)', reason: 'A clearer label.'}, 'architect'); assert.equal(KC.crosswalkRecords(S.document).find(r => r.id === a).state, 'proposed');
       const b = await S.ok('knowledge.crosswalk', {conceptId: 'PAT-ADAPTER', scheme: 'handbook', aliasId: 'SYN-S001', label: 'Adapter (synthetic handbook)', relation: 'same', evidenceClaimId: evidence}, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: b}, 'reviewer');
-      await S.refused(/^external SYN-S001 is already the same as PAT-ADAPTER in the handbook scheme \(KA-\d{4}, verified\): one alias names one concept\. Reject or retire that row first\.$/, 'knowledge.crosswalk', {...A, id: a, reason: 'Back to the first label.'}, 'architect');
+      await S.refused(new RegExp('^external SYN-S001 is already the same as PAT-ADAPTER in the handbook scheme \\(' + b + ', verified\\): one alias names one concept\\. Reject or retire that row first\\.$'), 'knowledge.crosswalk', {...A, id: a, reason: 'Back to the first label.'}, 'architect');
       assert.equal(KC.crosswalkRecords(S.document).find(r => r.id === a).state, 'proposed', 'the refused edit back revived nothing');
       const c = await S.ok('knowledge.crosswalk', P_STRANGLER, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: c}, 'reviewer');
       await S.ok('knowledge.crosswalk', {...P_STRANGLER, id: c, label: 'Strangler (renamed)', reason: 'A clearer label.'}, 'architect');
       const d = await S.ok('knowledge.crosswalk', {...P_STRANGLER, conceptId: 'PAT-ADAPTER', label: 'Strangler as an adapter'}, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: d}, 'reviewer');
-      await S.refused(/^playbook P-STRANGLER is already the same as PAT-ADAPTER \(KA-\d{4}, verified\): one alias names one concept\. Reject or retire that row first\.$/, 'knowledge.crosswalk', {...P_STRANGLER, id: c, reason: 'Back to the first label.'}, 'architect');
+      await S.refused(new RegExp('^playbook P-STRANGLER is already the same as PAT-ADAPTER \\(' + d + ', verified\\): one alias names one concept\\. Reject or retire that row first\\.$'), 'knowledge.crosswalk', {...P_STRANGLER, id: c, reason: 'Back to the first label.'}, 'architect');
+    } finally { S.close(); } }
+  // (ruling S10) the rule reads the row as the edit writes it: the reviewer's own edit back revives nothing (the reviewer
+  // becomes an editor, so the written row reads proposed) and is taken; an edit whose written row comes to read verified
+  // only because the write drops a stored targetContent is refused, and writes nothing
+  { const {S, sourceId} = await strangler({second: true});
+    try {
+      const evidence = await S.ok('knowledge.claim', {sourceId, lineStart: 1, lineEnd: 1, subjectId: 'The synthetic handbook entry', predicate: 'names', statement: 'The entry is SYN-S001, the strangler fig.', claimType: 'definition'}, 'importer');
+      const A = {conceptId: 'PAT-STRANGLER-FIG', scheme: 'external', aliasId: 'SYN-S001', label: 'Strangler fig (an external register)', relation: 'same', note: 'The register names it so.', evidenceClaimId: evidence};
+      const a = await S.ok('knowledge.crosswalk', A, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: a}, 'reviewer');
+      await S.ok('knowledge.crosswalk', {...A, id: a, label: 'Strangler fig (renamed)', reason: 'A clearer label.'}, 'architect');
+      const b = await S.ok('knowledge.crosswalk', {conceptId: 'PAT-ADAPTER', scheme: 'handbook', aliasId: 'SYN-S001', label: 'Adapter (synthetic handbook)', relation: 'same', evidenceClaimId: evidence}, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: b}, 'steward');
+      await S.ok('knowledge.crosswalk', {...A, id: a, reason: 'Back to the first label.'}, 'reviewer');
+      assert.equal(KC.crosswalkRecords(S.document).find(r => r.id === a).state, 'proposed', 'the reviewer edited the row, so the review no longer stands and nothing names two concepts');
+    } finally { S.close(); } }
+  { const {extensionHandler} = await import('./design-extension-boundary.js'), {S, sourceId} = await strangler({second: true});
+    try {
+      await S.ok('knowledge.concept', {...STRANGLER, conceptId: 'CON-PATTERN-OWN-WORDS', title: 'A mechanism in our own words'}, 'importer');
+      const evidence = await S.ok('knowledge.claim', {sourceId, lineStart: 1, lineEnd: 1, subjectId: 'The synthetic handbook entry', predicate: 'names', statement: 'The entry is SYN-S001, the strangler fig.', claimType: 'definition'}, 'importer');
+      const A = {conceptId: 'CON-PATTERN-OWN-WORDS', scheme: 'external', aliasId: 'SYN-S001', label: 'Our own words', relation: 'same', note: 'The register names it so.', evidenceClaimId: evidence};
+      const a = await S.ok('knowledge.crosswalk', A, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: a}, 'reviewer');
+      assert.equal('targetContent' in row(S.document, a), false, 'a concept outside the catalogue: the review covers a row without targetContent');
+      await S.ok('knowledge.crosswalk', {...A, id: a, label: 'Our own words (renamed)', reason: 'A clearer label.'}, 'architect');
+      const b = await S.ok('knowledge.crosswalk', {conceptId: 'PAT-ADAPTER', scheme: 'handbook', aliasId: 'SYN-S001', label: 'Adapter (synthetic handbook)', relation: 'same', evidenceClaimId: evidence}, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: b}, 'reviewer');
+      // as a build whose catalogue held the record would have stored it
+      const q = clone(S.document); row(q, a).targetContent = 'authored';
+      assert.throws(() => extensionHandler('knowledge.crosswalk')(q, {type: 'knowledge.crosswalk', payload: {...A, id: a, reason: 'Back to the first label.'}}, AT, 'architect', F.person('architect')), new RegExp('^Error: external SYN-S001 is already the same as PAT-ADAPTER in the handbook scheme \\(' + b + ', verified\\): one alias names one concept'), 'the written row would read verified beside another concept\'s: refused');
+      assert.equal(row(q, a).targetContent, 'authored', 'and the refusal wrote nothing into the document it was given');
     } finally { S.close(); } }
   // (ruling S8) a pair held from before (two verified, released `same` rows of one alias in two schemes for two concepts,
   // as a document written before S2 may hold): no form of the resolver names either concept, and the concept view reads

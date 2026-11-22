@@ -117,7 +117,7 @@ export function releasedConcepts(p){
 // What a concept reads as here: the register's concept with each of its forms, the forms active releases hold, and for
 // each of those releases whether the concept is usable there as a whole, with the reasons when it is not.
 export function conceptReading(p,conceptId){
- const s=knowledgeState(p),concept=conceptRecords(p).find(c=>c.conceptId===conceptId),released=releasedConcepts(p).filter(c=>c.conceptId===conceptId);
+ const s=knowledgeState(p),concept=conceptRecords(p).find(c=>c.conceptId===conceptId),all=releasedConcepts(p),released=all.filter(c=>c.conceptId===conceptId);
  if(!concept&&!released.length)return null;
  const hits=releasedForms(p),forms=[];
  for(const f of list(concept?.forms)){
@@ -126,7 +126,7 @@ export function conceptReading(p,conceptId){
  }
  for(const c of released)for(const f of c.forms)if(!forms.some(x=>x.claimId===f.claimId&&x.releaseId===f.releaseId))forms.push(f);
  const head=concept||{conceptId,title:conceptId,kind:null,family:'',scope:[],stages:[],lenses:[]};
- return {conceptId,title:head.title,kind:head.kind,family:head.family,scope:copy(head.scope),stages:copy(head.stages),lenses:copy(head.lenses),state:concept?concept.state:'released',forms:forms.sort(byForm),releases:released.map(c=>({releaseId:c.release.id,title:c.release.title,eligible:c.eligible,reasons:c.reasons})),aliases:conceptAliases(p,conceptId)};
+ return {conceptId,title:head.title,kind:head.kind,family:head.family,scope:copy(head.scope),stages:copy(head.stages),lenses:copy(head.lenses),state:concept?concept.state:'released',forms:forms.sort(byForm),releases:released.map(c=>({releaseId:c.release.id,title:c.release.title,eligible:c.eligible,reasons:c.reasons})),aliases:aliasesIn(p,conceptId,all)};
 }
 // The teaching forms a concept offers here, each with its state and label: released, reviewed, or a candidate nobody reviewed yet.
 export function conceptTeachingForms(p,conceptId){
@@ -179,7 +179,8 @@ const heldCrosswalk=p=>{const s=knowledgeState(p);return s.releases.filter(r=>s.
 // as a whole in that release, and this project's register holding the row exactly as the release copied it (its hash;
 // ruling P5 a), neither retired nor rejected since. Anything else fails closed: a person's later edit, a register that
 // lost the row.
-export function releasedCrosswalk(p,known=null){
+export function releasedCrosswalk(p){return releasedRows(p,null);}
+function releasedRows(p,known){
  const own=new Map(list(knowledgeState(p).crosswalk).map(r=>[r?.id,r])),held=heldCrosswalk(p),concepts=held.length?known||releasedConcepts(p):[];
  return held.filter(({row:r,release})=>{const here=own.get(r?.id);return crosswalkState(r)==='verified'&&!!here&&crosswalkRowHash(here)===crosswalkRowHash(r)&&!['retired','rejected'].includes(crosswalkState(here))&&concepts.some(c=>c.release.id===release.id&&c.conceptId===r.conceptId&&c.eligible);});
 }
@@ -190,7 +191,7 @@ const BUILT_IN_WORDS='AIW built-in mapping, not reviewed by a person';
 // governed identities only (ruling P6 of 2026-11-22): no built-in row answers it; builtInNavigation reads those.
 export function resolveConcept(p,id,scheme=null){
  if(typeof id!=='string'||!id)return null;
- const concepts=releasedConcepts(p);return resolveIn(releasedCrosswalk(p,concepts),concepts,id,scheme);
+ const concepts=releasedConcepts(p);return resolveIn(releasedRows(p,concepts),concepts,id,scheme);
 }
 // The resolver's own rule over the released rows and concepts read once (conceptAliases asks it for each row).
 // One id names one concept (rulings P3, S2 and S8): an id that is a usable released concept and, in any scheme, a governed
@@ -217,8 +218,9 @@ export function builtInNavigation(id,scheme=null){
 // active release holds the row as verified and the register still reads it so), and beside it what an active release
 // holds of the row (ruling P5 a): `register` is the register's state, `release` the release's copy and whether it still
 // resolves. A row a release holds that the register does not is listed as unregistered. Then the built-in rows that name it.
-export function conceptAliases(p,conceptId){
- const held=heldCrosswalk(p).filter(h=>h.row.conceptId===conceptId),concepts=releasedConcepts(p),rows=releasedCrosswalk(p,concepts),released=rows.filter(h=>h.row.conceptId===conceptId),out=[];
+export function conceptAliases(p,conceptId){return aliasesIn(p,conceptId,releasedConcepts(p));}
+function aliasesIn(p,conceptId,concepts){
+ const held=heldCrosswalk(p).filter(h=>h.row.conceptId===conceptId),rows=releasedRows(p,concepts),released=rows.filter(h=>h.row.conceptId===conceptId),out=[];
  const entry=(r,state,register,h,ok)=>({scheme:r.scheme,aliasId:r.aliasId,label:r.label,relation:r.relation,state,register,release:h?{releaseId:h.release.id,relation:h.row.relation,resolves:ok}:null,authority:'governed',targetContent:r.targetContent??null,rowId:r.id,releaseId:state==='released'?h.release.id:null});
  // A released row reads as released only while the resolver answers through it (the lead's follow-up to P3): a `same`
  // row whose alias another usable concept bears resolves nothing, so it reads as the register holds it, with its release

@@ -325,13 +325,11 @@ function targetContent(scheme,aliasId,conceptId){
  const id=scheme==='akr'?aliasId:conceptId,record=catalogueRelation(id);
  return !record?undefined:catalogueMark(id)?'marked':record.stub?'stub':templateFields(record).includes('summary')?'template':'authored';
 }
-// One id names one concept (ruling P3 of 2026-11-22): the alias of a `same` row is not the id of another concept of the
-// register, whichever was registered first; asked at the proposal and again at verification.
 // The bound of rows that stand (ruling P4), asked wherever a row comes to stand: a proposal (row null), and a rejected row
 // that an edit or a second person's verification makes stand again (rulings S1 and S7). A later path that makes a row
-// stand (S4's import, a restore) asks it too: admit(knowledgeState, conceptId, row).
+// stand (S4's import, a restore) asks it too: admit(document, conceptId, row), with the document as oneAlias takes it.
 const standing=(s,c)=>list(s.crosswalk).filter(y=>y.conceptId===c&&!['retired','rejected'].includes(crosswalkState(y))).length;
-export function admit(s,c,row=null){if((!row||crosswalkState(row)==='rejected')&&standing(s,c)>=ROWS_PER_CONCEPT)throw Error(c+' has '+ROWS_PER_CONCEPT+' crosswalk rows that stand (neither retired nor rejected), the most a concept holds: '+(row?row.id+' would stand again. Retire':'retire')+' or reject one first.');}
+export function admit(p,c,row=null){if((!row||crosswalkState(row)==='rejected')&&standing(knowledgeState(p),c)>=ROWS_PER_CONCEPT)throw Error(c+' has '+ROWS_PER_CONCEPT+' crosswalk rows that stand (neither retired nor rejected), the most a concept holds: '+(row?row.id+' would stand again. Retire':'retire')+' or reject one first.');}
 // One verified `same` row per alias: one alias names one concept, in every scheme (rulings S2 and S6), asked wherever a
 // row comes to read verified (a second person's verification, an edit that revives a standing review). A later path that
 // makes a row read verified (S3's organisation releases, S4's import) asks it too: oneAlias(document, row).
@@ -339,6 +337,8 @@ export function oneAlias(p,x){
  const other=x.relation==='same'&&crosswalkRecords(p).find(y=>y.id!==x.id&&y.state==='verified'&&y.relation==='same'&&y.aliasId===x.aliasId&&y.conceptId!==x.conceptId);
  if(other)throw Error(x.scheme+' '+x.aliasId+' is already the same as '+other.conceptId+(other.scheme===x.scheme?'':' in the '+other.scheme+' scheme')+' ('+other.id+', verified): one alias names one concept. Reject or retire that row first.');
 }
+// One id names one concept (ruling P3 of 2026-11-22): the alias of a `same` row is not the id of another concept of the
+// register, whichever was registered first; asked at the proposal and again at verification.
 function oneIdentity(s,aliasId,conceptId){const other=list(s.concepts).find(c=>c.conceptId===aliasId&&c.conceptId!==conceptId);if(other)throw Error(aliasId+' is a concept of this register ('+other.id+'): one id names one concept, so it is no alias the same as '+conceptId+'.');}
 // Whether a passage holds an alias as a whole token, bounded by what is no part of an alias; and as a whole identifier
 // (capitals and digits in hyphenated parts), which a handbook alias is.
@@ -390,7 +390,7 @@ function crosswalkCommand({p,s,r,type,at,actor,next},author){
    if(same)throw Error(x.scheme+' '+x.aliasId+' is already in the crosswalk of '+x.conceptId+' as '+same.id+': edit that row.');
    // The bound counts the rows that stand (ruling P4): a retired or rejected row frees its place, so no run of proposals
    // locks a concept's crosswalk for a person.
-   admit(s,x.conceptId);
+   admit(p,x.conceptId);
    s.crosswalk||=[];const id=next('KA');s.crosswalk.push({id,...x,revision:1,at,actor,lastEditor:actor,history:[{revision:1,at,actor,change:'Proposed'}]});return id;
   }
   // Saved again as it is, a row is not written: no revision, no new time, no new editor, no history line.
@@ -400,14 +400,17 @@ function crosswalkCommand({p,s,r,type,at,actor,next},author){
   const refusal=kindRefusal(author);if(refusal&&crosswalkCovered(p,existing))throw Error(existing.id+' was '+(crosswalkState(existing)==='rejected'?'rejected':'verified')+' here or is in a release: only a signed-in person changes it. '+refusal);
   if(existing.history.length>=200)throw Error(existing.id+' has 200 revisions. Propose another row.');
   // An edit lapses a rejection, so the row stands again: it is held to the bound as a proposal is (the lead's follow-up).
-  admit(s,existing.conceptId,existing);
-  // An edit back to the content a standing review covered revives that review: the row comes to read verified without a
-  // verification, so it asks the one-alias rule as a verification does (ruling S6).
-  {const then={...existing,...x};if(crosswalkState(existing)!=='verified'&&crosswalkState(then)==='verified')oneAlias(p,then);}
+  admit(p,existing.conceptId,existing);
   // An edit keeps the author and every earlier editor (they never review it); its review lapses on read (it covered the
   // row's hash), and a confirmation was of what the row said before.
+  const was=crosswalkState(existing);
   Object.assign(existing,x,{revision:existing.revision+1,lastEditor:actor});if(!x.targetContent)delete existing.targetContent;delete existing.confirmed;
-  existing.history.push({revision:existing.revision,at,actor,change:text(r.reason,300)||'Edited'});return existing.id;
+  existing.history.push({revision:existing.revision,at,actor,change:text(r.reason,300)||'Edited'});
+  // An edit back to the content a standing review covered revives that review: the row comes to read verified without a
+  // verification, so it asks the one-alias rule as a verification does, of the row as written (rulings S6 and S10). The
+  // command works on a copy, so a refusal here writes nothing.
+  if(was!=='verified'&&crosswalkState(existing)==='verified')oneAlias(p,existing);
+  return existing.id;
  }
  // (ruling P5 f: the steps below are a person's; the boundary refuses every other kind, and a request that states no
  // author or no account is refused here, as the knowledge family's person-only steps are)
@@ -418,7 +421,7 @@ function crosswalkCommand({p,s,r,type,at,actor,next},author){
   if(x.retired)throw Error(x.id+' is retired: it is not reviewed.');
   if(r.decision==='verified'){
    if(r.aliasChecked!==true)throw Error('Check the alias against its source and the concept before verifying the row (aliasChecked).');
-   admit(s,x.conceptId,x);
+   admit(p,x.conceptId,x);
    const concept=list(s.concepts).find(c=>c.conceptId===x.conceptId);if(!concept||concept.retired)throw Error(x.conceptId+' is not a concept that stands in the register.');
    if(x.relation==='same')oneIdentity(s,x.aliasId,x.conceptId);
    traced(s,x);
