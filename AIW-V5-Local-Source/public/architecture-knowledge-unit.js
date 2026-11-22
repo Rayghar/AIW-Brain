@@ -3,7 +3,7 @@
 // store of architecture advice. The source passage establishes the claim; this shape makes its mechanism,
 // scope, quality effects and obligations inspectable. It does not assert that a quality target was met.
 import {APPLICABILITY_OPERATORS,safeFactKey} from './architecture-facts.js';
-const KINDS=new Set(['style','pattern','tactic','anti-pattern-signal','product-mechanism','design-principle','quality-tradeoff']);
+const KINDS=new Set(['style','pattern','tactic','anti-pattern-signal','product-mechanism','design-principle','quality-tradeoff','component','technique','composition','deployment-topology']);
 const DIRECTIONS=new Set(['supports','tradeoff','unknown']);
 const FIELDS=new Set(['kind','mechanism','scope','effects','obligations','exclusions','applicability','placement']);
 const SCOPE_FIELDS=new Set(['capability','product','version','topology','tier','operatingModel']);

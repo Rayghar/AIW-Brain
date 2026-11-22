@@ -269,7 +269,7 @@ add('S3.6 (migration): a migration is proposed (by Sol, or by a person) and acce
     doc = D.document; assert.equal(stamp(doc), s0, 'a proposal says nothing to the design fingerprint (ruling L6)');
     const mig = migrations(doc).find(x => x.id === m); assert.deepEqual([mig.fromVersion, mig.toVersion], [1, 2]); assert.ok(mig.changes.length >= 0);
     const REPIN = d => ({id: m, stamp: KC.migrationStamp(d, m), ...STEP});
-    await D.refused(/signed-in person's step/, 'knowledge.concept-repin', REPIN(D.document), 'bot');
+    await D.refused(/An agent or service account does not review, confirm, accept or approve \(knowledge\.concept-repin\)/, 'knowledge.concept-repin', REPIN(D.document), 'bot');
     // One person accepting what only a draft by Sol wrote is one person, not two (ruling D1): refused until a person confirms it.
     await D.refused(/A second person's step needs two persons/, 'knowledge.concept-repin', REPIN(D.document), 'architect');
     await D.ok('knowledge.concept-migration-confirm', {id: m, ...STEP}, 'architect');
@@ -288,7 +288,7 @@ add('S3.6 (migration): a migration is proposed (by Sol, or by a person) and acce
     await D.ok('knowledge.concept-link', {pinId: moved, objectId: 'api-pod', ...STEP}, 'architect');
     doc = D.document; assert.deepEqual(findings11(doc), []); assert.ok(pins(doc).some(p => p.id === pinId) && links(doc).some(l => l.id === linkId));
     // A person's proposal: refused to that person, accepted by a second.
-    const v3 = await lib.successor(v2, 'Synthetic integration concepts 3'), OR3 = await lib.publish(v3, 'Synthetic integration concepts 3');
+    const v3 = await lib.successor(v2, 'Synthetic integration concepts 3', {reviewDue: '2028-06-30'}), OR3 = await lib.publish(v3, 'Synthetic integration concepts 3');
     await D.read(); { const r = await W.orgApi('knowledge-pin', {releaseId: OR3.id, revision: D.state.revision, reviewed: true, reason: 'The third edition.', reviewer: 'Synthetic architect'}, 'architect', D.id); assert.equal(r.status, 200); }
     await D.read();
     const m2 = await D.ok('knowledge.concept-migration', {pinId: moved, toReleaseId: OR3.id, reason: 'The guild published version 3.'}, 'architect');
@@ -471,18 +471,18 @@ add('S3.14 (rulings B10 and P5 b): the knowledge keys are stated through S0: a l
 // ------------------------------------------------------------------------------------------------ 15 (ruling S10)
 // The one-alias rule over organisation releases reads this register plus the rows the releases a project holds, keyed
 // by (project, row id): it is asked where such a row comes to read verified in the project, at the organisation pin.
-add('S3.15 (ruling S10): an organisation release whose row would give an alias a second concept is not pinned; rows are told apart by (project, row id), so two libraries\' KA-0001 are two rows; a pinned organisation release\'s rows resolve in the design project', async () => {
+add('S3.15 (ruling S10): an organisation release whose row would give an alias a second concept is not pinned; rows are told apart by (project, row id), so two libraries\' rows of one id are two rows; a pinned organisation release\'s rows resolve in the design project', async () => {
   const {KC} = await mods(), W = await world();
   try {
     const a = await worldLibrary(W, {name: 'Library A', row: {}}), A = await a.publish(a.v1, 'Library A concepts 1');
     const b = await worldLibrary(W, {name: 'Library B', conceptId: 'SYN-P002', row: {}}), B = await b.publish(b.v1, 'Library B concepts 1');
     const c = await worldLibrary(W, {name: 'Library C', conceptId: 'SYN-P003', row: {aliasId: 'Relay', label: 'Relay (an external register)'}}), C = await c.publish(c.v1, 'Library C concepts 1');
-    assert.equal(a.rowId, b.rowId, 'both libraries number their first row KA-0001'); assert.equal(a.rowId, c.rowId);
+    assert.equal(a.rowId, b.rowId, 'the libraries number their rows alike: one row id in two projects'); assert.equal(a.rowId, c.rowId);
     const {D} = await worldDesign(W, A, {link: false});
     assert.equal(KC.resolveConcept(D.document, 'Outbox')?.conceptId, 'SYN-P001', 'an organisation release\'s row resolves in the design project');
     await D.read();
     const r = await W.orgApi('knowledge-pin', {releaseId: B.id, revision: D.state.revision, reviewed: true, reason: 'Another library.', reviewer: 'Synthetic architect'}, 'architect', D.id);
-    assert.equal(r.status, 400); assert.match(r.data.error, /external Outbox is already the same as SYN-P001 \(KA-0001 of project .+\): one alias names one concept/);
+    assert.equal(r.status, 400); assert.match(r.data.error, new RegExp('external Outbox is already the same as SYN-P001 \\(' + a.rowId + ' of project ' + a.L.id + '\\): one alias names one concept'));
     await D.read(); const ok = await W.orgApi('knowledge-pin', {releaseId: C.id, revision: D.state.revision, reviewed: true, reason: 'A third library.', reviewer: 'Synthetic architect'}, 'architect', D.id); assert.equal(ok.status, 200, JSON.stringify(ok.data));
     const doc = await D.read(); assert.equal(KC.resolveConcept(doc, 'Relay')?.conceptId, 'SYN-P003'); assert.equal(KC.resolveConcept(doc, 'Outbox')?.conceptId, 'SYN-P001', 'the same row id in another project is another row');
   } finally { W.close(); }

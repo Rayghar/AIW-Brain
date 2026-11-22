@@ -8,6 +8,8 @@ import {applyWorkbenchCommand} from './public/workbench-domain.js';
 import {sha256} from './public/workbook-reader.js';
 import {COMPONENT_LIBRARY_KIND,readComponentSnapshot,snapshotText,SNAPSHOT_LIMIT} from './public/component-library.js';
 import {organizationKnowledgeRelease,pinOrganizationKnowledge} from './public/knowledge-governance.js';
+import {publishRefusal,organizationAliasRefusal} from './public/knowledge-concept-commands.js';
+import {refreshConceptPins} from './public/knowledge-concepts.js';
 import {json} from './http.js';
 import {enterpriseDefinition,enterpriseIdentity,enterpriseReferences,enterpriseReferencePreview,SHARED_ASSET_TYPES} from './public/enterprise-references.js';
 const clean=(v,n=4000)=>typeof v==='string'?v.trim().slice(0,n):'';
@@ -21,6 +23,21 @@ async function signature(env,org,body){const stored=await env.FILES.get('organiz
 // The release signature is checked with HMAC verify, which compares in constant time (round 2, B2-24); the signed bytes
 // are the payload as it was serialised at signing, so releases signed earlier keep verifying.
 export async function verifyOrganizationRelease(env,release){const {signature:received,...payload}=release;if(typeof received!=='string'||!/^[0-9a-f]{64}$/.test(received))return false;const stored=await env.FILES.get('organizations/'+release.organizationId+'/signing-key');if(!stored)throw Error('The organization signing key is unavailable.');const key=await crypto.subtle.importKey('raw',await stored.arrayBuffer(),{name:'HMAC',hash:'SHA-256'},false,['verify']);return crypto.subtle.verify('HMAC',key,Uint8Array.from(received.match(/../g),h=>parseInt(h,16)),new TextEncoder().encode(JSON.stringify(payload)));}
+// (rc44, wp1 slice S3) The organisation's notice about one of its knowledge releases: that a successor was published, or
+// that the organisation withdrew it. One row a release (id notice:<release id>), signed as a release is, so a project
+// reads only what the organisation signed; a notice that does not verify, or names another release, is no notice.
+async function readNotice(env,org,releaseId){
+ const row=await env.DB.prepare('SELECT document FROM organization_releases WHERE organization_id=? AND id=?').bind(org,'notice:'+releaseId).first();if(!row)return null;
+ let notice=null;try{notice=JSON.parse(row.document);if(notice?.kind!=='knowledge-notice'||notice.releaseId!==releaseId||notice.organizationId!==org||!await verifyOrganizationRelease(env,notice))notice=null;}catch{notice=null;}
+ return notice;
+}
+async function writeNotice(env,org,releaseId,change,at){
+ const prior=await readNotice(env,org,releaseId),{signature:_old,...kept}=prior||{};
+ const notice={...kept,kind:'knowledge-notice',id:'notice:'+releaseId,organizationId:org,releaseId,...change,at};
+ notice.signature=await signature(env,org,JSON.stringify(notice));
+ await env.DB.prepare('INSERT INTO organization_releases(organization_id,id,document,created_at) VALUES(?,?,?,?) ON CONFLICT(organization_id,id) DO UPDATE SET document=excluded.document').bind(org,notice.id,JSON.stringify(notice),at).run();
+ return notice;
+}
 export async function handleOrganizations(request,env,actor,projectId){
  const url=new URL(request.url),action=url.searchParams.get('action')||'list',id=url.searchParams.get('organization'),at=new Date().toISOString();
  if(!['GET','POST'].includes(request.method))return json({error:'Unsupported workspace action.'},405);
@@ -81,7 +98,7 @@ export async function handleOrganizations(request,env,actor,projectId){
   const result=await env.DB.prepare('UPDATE organization_library SET document=?,revision=revision+1,updated_at=? WHERE organization_id=? AND id=? AND revision=?').bind(JSON.stringify(entry),at,id,raw.id,raw.revision).run();if(!result.meta.changes)return json({error:'The entry changed during review.',conflict:true},409);return json({saved:true});
  }
  if(action==='releases'){
-  if(request.method==='GET'){const rows=await env.DB.prepare('SELECT document FROM organization_releases WHERE organization_id=? ORDER BY created_at DESC').bind(id).all();return json({releases:rows.results.map(r=>JSON.parse(r.document)).filter(r=>r.kind!=='knowledge')});}
+  if(request.method==='GET'){const rows=await env.DB.prepare('SELECT document FROM organization_releases WHERE organization_id=? ORDER BY created_at DESC').bind(id).all();return json({releases:rows.results.map(r=>JSON.parse(r.document)).filter(r=>r.kind!=='knowledge'&&r.kind!=='knowledge-notice')});}
   if(org.role!=='administrator')return json({error:'Only organization administrators publish library releases.'},403);if(!clean(raw.title,160)||!Array.isArray(raw.entryIds)||!raw.entryIds.length||raw.entryIds.length>100||raw.reviewed!==true)throw Error('Name and review a release of 1–100 approved entries.');const entries=[];
   for(const entryId of [...new Set(raw.entryIds)]){const row=await env.DB.prepare('SELECT document,revision FROM organization_library WHERE organization_id=? AND id=?').bind(id,entryId).first();if(!row)throw Error('A selected library entry is unavailable.');const e={...JSON.parse(row.document),revision:row.revision};if(e.status!=='approved'||e.review?.actor===e.author||e.review?.actor===e.lastEditor||e.review?.sourceHash!==e.source.hash||e.review?.contentHash!==await sha256(new TextEncoder().encode(e.content))||(e.asset&&e.review?.definitionHash!==enterpriseDefinition(e)))throw Error('Every release entry needs independent review of its exact source and content.');if(e.reviewDue&&e.reviewDue<at.slice(0,10))throw Error('An entry is overdue for review.');entries.push(e);}
   const release={id:crypto.randomUUID(),organizationId:id,title:clean(raw.title,160),entries,createdBy:actor,at,engine:'organization-library-1',authority:'Reviewed organization guidance with retained conditions; no automatic project adoption.'};release.signature=await signature(env,id,JSON.stringify(release));await env.DB.prepare('INSERT INTO organization_releases(organization_id,id,document,created_at) VALUES(?,?,?,?)').bind(id,release.id,JSON.stringify(release),at).run();return json({release},201);
@@ -110,9 +127,16 @@ export async function handleOrganizations(request,env,actor,projectId){
   if(raw.reviewed!==true||!clean(raw.title,160)||!clean(raw.reason))throw Error('Name the release, say why the organisation shares it, and confirm you reviewed it.');
   const row=await env.DB.prepare('SELECT document FROM projects WHERE owner_id=? AND id=?').bind(actor,projectId).first();if(!row)return json({error:'Choose a project you own.'},404);
   const p=withFinalReview((await readStoredProject(env,actor,row.document)).document);
-  const release=organizationKnowledgeRelease(p,clean(raw.releaseId,40),{organizationId:id,id:crypto.randomUUID(),title:clean(raw.title,160),actor,at});
+  // (rc44, wp1 S3) A release of concepts is published by a person who stands behind none of its forms and rows (ruling
+  // P1): the release-actor rule of the project's release, read for the administrator who publishes it.
+  {const refusal=publishRefusal(p,clean(raw.releaseId,40),actor);if(refusal)throw Error(refusal);}
+  // The organisation release it supersedes: the one published from the release this project release supersedes.
+  const own=(p.knowledge?.releases||[]).find(r=>r.id===clean(raw.releaseId,40)),earlier=own?.supersedes?(await env.DB.prepare('SELECT document FROM organization_releases WHERE organization_id=?').bind(id).all()).results.map(r=>JSON.parse(r.document)).find(r=>r.kind==='knowledge'&&r.from?.projectId===p.id&&r.from?.releaseId===own.supersedes):null;
+  const release=organizationKnowledgeRelease(p,clean(raw.releaseId,40),{organizationId:id,id:crypto.randomUUID(),title:clean(raw.title,160),actor,at,supersedes:earlier?.id||null});
   release.signature=await signature(env,id,JSON.stringify(release));
   await env.DB.prepare('INSERT INTO organization_releases(organization_id,id,document,created_at) VALUES(?,?,?,?)').bind(id,release.id,JSON.stringify(release),at).run();
+  // The superseded release's notice, signed as a release is: the projects that pin it read it on their next load.
+  if(earlier)await writeNotice(env,id,earlier.id,{supersededBy:{id:release.id,title:release.title,at}},at);
   auditEvent('organization-knowledge-release',{by:actor,organization:id,release:release.id,from:release.from,claims:release.claims.length,reason:clean(raw.reason)});
   return json({release:{id:release.id,title:release.title,claims:release.claims.length,sources:release.sources.length,checksum:release.checksum,signature:release.signature,from:release.from}},201);
  }
@@ -122,17 +146,34 @@ export async function handleOrganizations(request,env,actor,projectId){
   const rel=await env.DB.prepare('SELECT document FROM organization_releases WHERE organization_id=? AND id=?').bind(id,clean(raw.releaseId,60)).first();if(!rel)throw Error('Choose an existing knowledge release.');const release=JSON.parse(rel.document);
   if(release.kind!=='knowledge')throw Error('Choose a knowledge release.');if(!await verifyOrganizationRelease(env,release))throw Error('The release signature could not be verified.');if(raw.reviewed!==true)throw Error('Review this release and its effect on your project.');
   const stored=await readStoredProject(env,actor,row.document),p=withFinalReview(stored.document);if(p.workspace?.status==='archived')throw Error('Restore this project before changing its knowledge.');
+  // (rc44, wp1 S3; ruling S10) the rows the release holds come to read verified here: one alias names one concept.
+  {const refusal=organizationAliasRefusal(p,release);if(refusal)throw Error(refusal);}
   const pinned=pinOrganizationKnowledge(p,release,{at,actor,reviewer:clean(raw.reviewer,180),reason:clean(raw.reason),verified:true}).document;
   const result=await saveStoredProject(env,actor,projectId,pinned,row.revision,at,stored.keys);if(!result.meta.changes)return json({error:'The project changed during pinning.',conflict:true},409);
   auditEvent('organization-knowledge-pin',{by:actor,organization:id,release:release.id,project:projectId});
   return json({saved:true,revision:row.revision+1});
+ }
+ // (rc44, wp1 S3) An administrator withdraws a knowledge release: a signed notice, which every project that pins the
+ // release reads on its next load (refreshOrganizationAssurance): the release is then ineligible there, with the reason.
+ // Nothing in those projects is rewritten; their records raise the package's finding.
+ if(action==='knowledge-withdraw'&&request.method==='POST'){
+  if(org.role!=='administrator')return json({error:'Only organization administrators withdraw knowledge releases.'},403);
+  if(raw.reviewed!==true||!clean(raw.reason))throw Error('Review the withdrawal and say why the organisation withdraws the release.');
+  const rel=await env.DB.prepare('SELECT document FROM organization_releases WHERE organization_id=? AND id=?').bind(id,clean(raw.releaseId,60)).first(),release=rel?JSON.parse(rel.document):null;
+  if(release?.kind!=='knowledge')throw Error('Choose a knowledge release of this organisation.');
+  const notice=await writeNotice(env,id,release.id,{withdrawn:{at,by:actor,reason:clean(raw.reason,1000)}},at);
+  auditEvent('organization-knowledge-withdraw',{by:actor,organization:id,release:release.id,reason:clean(raw.reason,1000)});
+  return json({saved:true,notice:{id:notice.id,releaseId:release.id,withdrawn:notice.withdrawn}});
  }
  return json({error:'Organization action not found.'},404);
  }catch(e){return errorResponse(e,400,{route:'/api/organizations',actor});}
 }
 
 export async function refreshOrganizationAssurance(env,actor,p){
- const entries=p.workbench?.catalogue?.filter(e=>e.organization)||[],pinned=Array.isArray(p.knowledge?.organizationReleases)?p.knowledge.organizationReleases:[];if(!entries.length&&!pinned.length)return p;const releases=new Map(),members=new Map();
+ // (rc44, wp1 S3) The pins' currency is read again on every load (refreshConceptPins, its one writer): a document with no
+ // pin is not touched. The organisation's notices of the releases it pins are read first.
+ const today=new Date().toISOString().slice(0,10);
+ const entries=p.workbench?.catalogue?.filter(e=>e.organization)||[],pinned=Array.isArray(p.knowledge?.organizationReleases)?p.knowledge.organizationReleases:[];if(!entries.length&&!pinned.length)return refreshConceptPins(p,{today});const releases=new Map(),members=new Map(),notices={};
  // Round 12 (GR-DOM-09): a pinned knowledge release is eligible only while its organisation still signs exactly it and
  // the person is still a member; otherwise its claims read as not eligible, with why.
  for(const r of pinned){let eligible=false,status='Organization release verification unavailable';try{
@@ -140,11 +181,21 @@ export async function refreshOrganizationAssurance(env,actor,p){
   const row=await env.DB.prepare('SELECT document FROM organization_releases WHERE organization_id=? AND id=?').bind(r.organizationId,r.id).first(),release=row?JSON.parse(row.document):null;
   if(!release||release.kind!=='knowledge'||!await verifyOrganizationRelease(env,release))throw Error('Release signature unavailable or invalid');
   if(release.signature!==r.signature||release.checksum!==r.checksum)throw Error('The pinned release differs from its signed release');eligible=true;status='Verified signed release';
+  // (rc44, wp1 S3) The organisation's signed notice of the release: withdrawn (the release is ineligible here, with the
+  // reason), or superseded (the successor, verified, and the version it holds of each concept). A notice that does not
+  // verify is ignored.
+  const notice=await readNotice(env,r.organizationId,r.id),seen={};
+  if(notice?.withdrawn){eligible=false;status='Withdrawn by the organisation: '+clean(notice.withdrawn.reason,1000);seen.withdrawn={at:notice.withdrawn.at,reason:clean(notice.withdrawn.reason,1000)};}
+  if(notice?.supersededBy?.id){const row=await env.DB.prepare('SELECT document FROM organization_releases WHERE organization_id=? AND id=?').bind(r.organizationId,clean(notice.supersededBy.id,60)).first(),next=row?JSON.parse(row.document):null;
+   if(next?.kind==='knowledge'&&next.from?.supersedes===r.id&&await verifyOrganizationRelease(env,next))seen.successor={id:next.id,title:next.title,at:next.at,concepts:(Array.isArray(next.parts?.concepts)?next.parts.concepts:[]).map(c=>({conceptId:c.conceptId,version:c.version,conceptHash:c.conceptHash}))};}
+  if(Object.keys(seen).length)notices[r.id]=seen;
  }catch(err){status=err.message;}r.assurance={eligible,status,signature:r.signature};}
+ // Kept beside the pins, and only where a pin reads them: bookkeeping, which neither fingerprint reads (knowledge-package.js).
+ if(Array.isArray(p.knowledge?.conceptPins)&&p.knowledge.conceptPins.length&&(Object.keys(notices).length||p.knowledge.organizationNotices))p.knowledge.organizationNotices=notices;
  for(const e of entries){const org=e.organization;let eligible=false,status='Organization release verification unavailable',latestDefinitionHash=null,latestStatus=null;try{
   if(!members.has(org.id))members.set(org.id,await organization(env,actor,org.id));if(!members.get(org.id))throw Error('Organization membership no longer permits new use of this guidance');
   const key=org.id+':'+org.releaseId;if(!releases.has(key)){const row=await env.DB.prepare('SELECT document FROM organization_releases WHERE organization_id=? AND id=?').bind(org.id,org.releaseId).first();const release=row?JSON.parse(row.document):null;if(!release||!await verifyOrganizationRelease(env,release))throw Error('Release signature unavailable or invalid');releases.set(key,release);}const release=releases.get(key),entry=release.entries.find(v=>v.id===org.entryId);if(!entry||release.signature!==org.signature)throw Error('Entry is not part of the pinned signed release');
   const source=p.coauthoring.sources.find(s=>s.id===e.sourceId)?.versions.at(-1);if(!source||source.excerpt!==entry.source.passage||source.location!==entry.source.location||source.version!==entry.source.revision||enterpriseDefinition(e)!==enterpriseDefinition(entry))throw Error('Local guidance differs from its signed release');const latest=await env.DB.prepare('SELECT document FROM organization_library WHERE organization_id=? AND id=?').bind(org.id,org.entryId).first();if(latest){const current=JSON.parse(latest.document);latestDefinitionHash=enterpriseDefinition(current);latestStatus=current.status;}if(!latest||latestStatus==='withdrawn')throw Error('Organization guidance was withdrawn');if(entry.reviewDue&&entry.reviewDue<new Date().toISOString().slice(0,10))throw Error('Organization guidance is overdue for review');eligible=true;status='Verified signed release';
  }catch(err){status=err.message;}org.assurance={eligible,status,signature:org.signature,...(latestDefinitionHash?{latestDefinitionHash,latestStatus}:{})};}
- return p;
+ return refreshConceptPins(p,{today});
 }
