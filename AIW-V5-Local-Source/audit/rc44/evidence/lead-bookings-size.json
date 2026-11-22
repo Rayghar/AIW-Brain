@@ -24,7 +24,8 @@
  "ownBytes": 0,
  "sharedPoolBytes": {
   "trackPathsPartNameO2": 0,
-  "guidedConcernRetirementQ8": -3047
+  "guidedConcernRetirementQ8": -3047,
+  "mergeAuthorY3": 0
  },
  "items": {
   "trackPathsPartNameO2": {
@@ -38,6 +39,12 @@
    "ruling": "U2 (wp2 slice 5, second fix-up): the saving of Q8's retirement of row 9, the guided comparison of a released concern (its start, answers, preparation, re-reading and preview, the comparison's builder on the route, the comparison tools' released-concern picker)",
    "measuredOn": "the second fix-up of wp2 slice 5 at 9df762c (after its items U1, U4, U3 and U5), each with node build.mjs (dist/client-size-report.json routes.chapters.code): the tree as it is, 3,228,422 B; the same tree (a git archive of 9df762c) with public/architecture-design.js and public/architecture-task-ui.js as at 082e06b (the slice before the retirement; no later commit touched them but the retirement's 4334100 and 452604e), 3,231,469 B",
    "why": "Retiring an old path is what the doctrine asks; its saving is not a package's own figure (ruling U2). The saving is the route with the guided path's code put back less the route without it: 3,231,469 - 3,228,422 = 3,047 B. wp2 S5 books its gross additions, measured with the retirement put back (3,231,469 - 3,230,605 = 864 B, wp2-s5-size.json ownBytes)."
+  },
+  "mergeAuthorY3": {
+   "bytes": 0,
+   "ruling": "Y3 (slice S0-D12, the lead's, wave 2; with D12 and H3): who wrote what workspace.merge writes. The alternative keeps who prepared each command (public/workbench-domain.js applyWorkbenchCommand, workspace.alternative and workspace.revise-alternative), the merge hands the server each command's result (merged), the server stamps it (public/provenance.js mergeStamper, worker.js), the boundary counts a merge's review and refuses the preparer and the merger as the second person and removes a staged handler's author fields (design-extension-boundary.js)",
+   "measuredOn": "rc44/s0-d12-merge-author against its start 53ce4cf (rc44/integration), each with node build.mjs (dist/client-size-report.json routes.chapters.code): 3,228,648 B before and after; 148 script files and the buckets (52, 51, 45) unchanged",
+   "why": "applyWorkbenchCommand is in no client bundle (the browser previews with previewWorkingChange and previewScenarioAlternative and sends the command; the server applies it), mergeStamper and settle are server-only (tree-shaken: no client chunk holds them), and the boundary and worker.js are the server's: the route did not move. Booked at 0 so that the row is on the books, under the 100 B the lead gave the slice."
   }
  },
  "slice": {
