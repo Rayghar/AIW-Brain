@@ -1164,9 +1164,12 @@ await block('D12 a record a merge wrote', async () => {
       assert.equal((await send('synthetic.confirm', {id: second}, C)).status, 200); assert.equal(rec(second).provenance.reviewed.by, C);
       { const r = await accept(second, C); assert.equal(r.status, 400); assert.match(r.error, NO_PERSON(second)); }
       { const r = await accept(second, B); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); assert.equal(rec(second).acceptance.actor, B); } }
-    // and one whose list was recorded before the project was restored here (ruling F3: a step taken elsewhere is no step here)
-    { const a = await stage([{type: 'synthetic.save', payload: {title: 'Prepared before a restore'}}], A); await rewrite(p => { p.finalReview.imported = {...(p.finalReview.imported || {}), at: new Date(Date.parse(a.at) + 1).toISOString()}; });
-      await merge(a.id, B); assert.deepEqual(stamps(d().synthetic.records.at(-1)), [undefined, undefined, undefined, undefined, undefined], 'merged as before: no stamp names who prepared it elsewhere'); }
+    // (the lead's ruling Z2; was: a list dated before a restore marker set by hand, finalReview.imported.at, merged with no stamp:
+    // [undefined x 5]) no date decides: a list made elsewhere never stands here, because the import moves every list aside
+    // (block Z2, through /api/recovery, with future dates); a list on the stored row was written on this workbench and stands
+    // whatever date a restore marker carries
+    { const a = await stage([{type: 'synthetic.save', payload: {title: 'Prepared before a restore marker'}}], A); await rewrite(p => { p.finalReview.imported = {...(p.finalReview.imported || {}), at: new Date(Date.parse(a.at) + 1).toISOString()}; });
+      await merge(a.id, B); assert.deepEqual(stamps(d().synthetic.records.at(-1)), ['person', A, B, B, 'merged'], 'no date is compared with the list'); }
   } finally { h.close(); }
   pass('D12 (ruling Y3): an alternative records who prepared each command; a record a merge writes, a built-in one and a package\'s, is stamped as written by its preparer (a person, a draft by Sol, an agent account) and as reviewed by the merger, and the second-person step is refused for both and taken by a third person; a proposal stays no one\'s; an adoption is written by no merge; an alternative saved before this build merges as before');
 });
@@ -1283,6 +1286,57 @@ await block('Z1 one source of who wrote a merged record', async () => {
     ok(await verify(standing, C), 'a third person verifies it');
   } finally { k2.h.close(); }
   pass('Z1: a merged command whose preparer is known is applied with the preparer as the domain\'s actor; after a later change by the merger or by a third person, a package\'s second-person step (a projection and the record) and the obligation verifier refuse the preparer and the editor in the words a direct writer is refused in, and a third person takes the step; while the merge\'s stamp stands the verifier refuses the merger too');
+});
+
+// Z2. A preparer cannot be forged by an import: a recovery import moves who prepared each command aside, whatever its dates.
+// The same steps as mergeKit's, in a project of another owner (a restored one).
+async function projectKit(h, pid, owner, members) {
+  const q = '?project=' + encodeURIComponent(pid), ok = (r, why = '') => { assert.equal(r.status, 200, why + ' ' + JSON.stringify(r.body).slice(0, 300)); return r; };
+  for (const actorId of members) assert.equal((await h.api('/api/access' + q, 'POST', {actorId, role: 'editor'}, owner)).status, 200);
+  let state = null; const read = async as => (state = await (await h.api('/api/project' + q, 'GET', null, as)).json()), d = () => state.document;
+  const send = async (type, payload, as, extra = {}) => { const cur = await read(as), res = await h.api('/api/commands' + q, 'POST', {revision: cur.revision, command: {type, payload}, ...extra}, as), body = await res.json(); if (res.status === 200) state = body; return {status: res.status, body, error: body.error || ''}; };
+  const merge = async (id, as) => { await read(as); const a = d().workbench.alternatives.find(x => x.id === id); return ok(await send('workspace.merge', {id, stamp: rebaseWorkingAlternative(d(), a).stamp, reviewed: true, reason: 'Merged by a person.'}, as), 'merged'); };
+  const stage = async (commands, as) => { await read(as); ok(await send('workspace.alternative', {commands, stamp: previewScenarioAlternative(d(), commands, undefined).stamp, title: 'An alternative', reason: 'Prepared for a merge.'}, as), 'saved'); return d().workbench.alternatives.at(-1); };
+  return {q, ok, read, d, send, merge, stage};
+}
+await block('Z2 an import forges no preparer', async () => {
+  need();
+  const k = await mergeKit(), {d, ok, send, stage, stamps} = k, FUTURE = '2099-01-01T00:00:00.000Z', Z = 'architect-z';
+  const NO_PERSON = id => new RegExp('needs two persons: no person other than \\S+ stands behind ' + id + ' as it stands .*names no author\\)\\. A second signed-in person saves or confirms ' + id + ' first\\.');
+  try {
+    // three alternatives on the workbench the package comes from, one revised there (its history keeps the list it replaced)
+    const third = await stage([{type: 'synthetic.save', payload: {title: 'Prepared by A, relabelled as a third person'}}], A);
+    { const r = rebaseWorkingAlternative(d(), third), commands = [{type: 'synthetic.save', payload: {title: 'Prepared by A, revised by C, relabelled as a third person'}}]; await k.h.read(C);
+      ok(await send('workspace.revise-alternative', {id: third.id, revision: third.revision, commands, stamp: previewScenarioAlternative(d(), commands, third.scenario).stamp, basisStamp: r.stamp, reviewed: true, title: third.title, reason: 'Revised by a person.'}, C), 'revised'); }
+    const agent = await stage([{type: 'synthetic.save', payload: {title: 'Prepared by the agent account, relabelled as a person'}}], AGENT);
+    const own = await stage([{type: 'synthetic.save', payload: {title: 'Prepared by A, relabelled as another person here'}}], A);
+    // the package, hand-edited (a project JSON needs no checksum): every list dated after the import, naming someone else
+    const pack = structuredClone((await k.h.read()).document), alt = id => pack.workbench.alternatives.find(x => x.id === id), forged = (by, extra = {}) => [{kind: 'person', by, account: 'person', at: FUTURE, ...extra}];
+    alt(third.id).authors = forged(Z); alt(third.id).history.at(-1).authors = forged(Z); alt(agent.id).authors = forged(AGENT); alt(own.id).authors = forged(D);
+    const preview = await k.h.api('/api/recovery?action=preview', 'POST', {package: pack}, B); assert.equal(preview.status, 200, JSON.stringify(await preview.clone().json()).slice(0, 300));
+    const restored = await k.h.api('/api/recovery?action=restore', 'POST', {package: pack, hash: (await preview.json()).hash, name: 'Restored with forged preparers', reviewed: true}, B), made = await restored.json(); assert.equal(restored.status, 201, JSON.stringify(made).slice(0, 300));
+    const r = await projectKit(k.h, made.id, B, [A, C, D, AGENT]); await r.read(C);
+    // each list is kept as history (importedAuthors), its history's too, and names nobody here
+    const back = id => r.d().workbench.alternatives.find(x => x.id === id);
+    for (const [id, was] of [[third.id, forged(Z)], [agent.id, forged(AGENT)], [own.id, forged(D)]]) { assert.equal(back(id).authors, undefined, 'no list stands after the import'); assert.deepEqual(back(id).importedAuthors, was, 'it is kept as history'); }
+    assert.deepEqual([back(third.id).history.at(-1).authors, back(third.id).history.at(-1).importedAuthors], [undefined, forged(Z)], 'and the list its history kept');
+    const syn = () => r.d().synthetic.records.at(-1), accept = async (id, as) => { const x = await r.send('synthetic.accept', {id, reviewed: true}, as); assert.equal(x.status, 400, as + ' on ' + id + ': ' + JSON.stringify(x.body).slice(0, 200)); return x.error; };
+    // (1) future-dated authors naming a third person: merged as an alternative saved before this build, no stamp names anyone
+    await r.merge(third.id, C); { const x = syn(); assert.deepEqual(stamps(x), [undefined, undefined, undefined, undefined, undefined], 'no stamp names who prepared it elsewhere: ' + JSON.stringify(x.provenance)); assert.ok(!JSON.stringify(x).includes(Z), Z + ' is named nowhere on the record'); assert.equal(x.actor, C, 'its writer to the domain is the person who merged it here'); }
+    // (2) an agent account's entry relabelled as a person's: no person stands behind what the agent prepared
+    await r.merge(agent.id, C); { const x = syn(); assert.deepEqual(stamps(x), [undefined, undefined, undefined, undefined, undefined]); assert.match(await accept(x.id, D), NO_PERSON(x.id), 'a second person\'s step is refused until a person saves or confirms it'); }
+    // (3) the real preparer, relabelled, then takes the second person's step: refused in the words for a record no person stands behind
+    await r.merge(own.id, C); { const x = syn(); assert.deepEqual(stamps(x), [undefined, undefined, undefined, undefined, undefined]); for (const as of [A, D]) assert.match(await accept(x.id, as), NO_PERSON(x.id), as + ' is refused'); assert.equal(syn().acceptance, undefined); }
+    // an alternative saved here after the restore is stamped as its preparer's: what the import moved decides, never a date
+    { const a = await r.stage([{type: 'synthetic.save', payload: {title: 'Prepared by A after the restore'}}], A); assert.deepEqual(a.authors.map(x => [x.kind, x.by]), [['person', A]]); await r.merge(a.id, C); assert.deepEqual(stamps(syn()), ['person', A, C, C, 'merged']); }
+  } finally { k.h.close(); }
+  // (4) a document without finalReview (as wp9a's S1.16 calls it): the lists are moved before the early return; a document
+  // whose alternatives name nobody gains no key
+  { const {neutraliseImportedAuthority} = await import('./recovery-service.js'), x = {kind: 'person', by: Z, account: 'person', at: FUTURE};
+    const p = {workbench: {alternatives: [{id: 'WA-1', commands: [{type: 'synthetic.save', payload: {}}], authors: [x], history: [{revision: 1, authors: [x]}, {revision: 2}]}, {id: 'WA-2', commands: []}]}};
+    neutraliseImportedAuthority(p, AT); const [one, two] = p.workbench.alternatives;
+    assert.deepEqual([one.authors, one.importedAuthors, one.history[0].authors, one.history[0].importedAuthors, 'importedAuthors' in one.history[1], 'importedAuthors' in two], [undefined, [x], undefined, [x], false, false]); }
+  pass('Z2: a recovery import moves each alternative\'s list of preparers, and its history\'s, aside as importedAuthors, with or without finalReview: future-dated authors naming a third person, an agent account\'s entry relabelled as a person\'s and a preparer relabelled who then takes the second person\'s step (refused in the words for a record no person stands behind) merge stamping nothing as anyone\'s; an alternative saved here after the restore is stamped as its preparer\'s');
 });
 
 // ---------------------------------------------------------------- should-fix 3, 6, 11 and ruling D7.5: the start check

@@ -471,14 +471,14 @@ export function stampTracked(was,now,author,at){
 // merge is their reviewed step. The author stamp names the merger too (mergedBy), so that while the merged words stand
 // the second-person rule refuses both (design-extension-boundary.js); a later change of what the record says is stamped
 // as any save is. A proposal a merge makes is stamped by nobody, as any proposal (settle): a person keeps it. An
-// alternative that names nobody for a command (saved before this build), or whose list was written before the project
-// was restored here or copied from a template (a step taken elsewhere is no step here: ruling F3), merges as before:
-// null, and no stamp is invented. `collections` are the packages' (design-extension-boundary.js stampedCollections);
+// alternative that names nobody for a command (saved before this build) merges as before: null, and no stamp is
+// invented. No date decides it (ruling Z2): a recovery import moves every list aside (recovery-service.js
+// neutraliseImportedAuthority, importedAuthors) and a copy from a template keeps no alternative (project-lifecycle.js), so
+// a list that stands was written on this workbench. `collections` are the packages' (design-extension-boundary.js stampedCollections);
 // each command is compared with a copy of those and of its own collections as the merge left them before it.
 export function mergeStamper(prior,command,merger,at,{fourEyes=false,collections=[],also=null}={}){
  const a=list(prior?.workbench?.alternatives).find(x=>plain(x)&&x.id===command?.payload?.id),cs=list(a?.commands),by=list(a?.authors);
- const from=[prior?.finalReview?.imported?.at,prior?.workspace?.templateOrigin?.at].filter(Boolean).sort().pop();
- if(!merger||!cs.length||by.length!==cs.length||!by.every(x=>plain(x)&&COMMIT_KINDS.includes(x.kind)&&typeof x.at==='string'&&!(from&&!(x.at>from))))return null;
+ if(!merger||!cs.length||by.length!==cs.length||!by.every(x=>plain(x)&&COMMIT_KINDS.includes(x.kind)&&typeof x.at==='string'))return null;
  const paths=[...new Set([...cs.flatMap(pathsOfCommand),...collections])],reviewer=personAuthor(merger)?merger.id||null:null;
  const snap=p=>{const s={retired:{records:structuredClone(list(p?.retired?.records))}};for(const path of paths){const v=path===NARRATIVE?p?.finalReview?.narrative:null,[k,sub]=path.split('.');if(path===NARRATIVE){if(plain(v))s.finalReview={narrative:structuredClone(v)};continue;}const x=sub?p?.[k]?.[sub]:p?.[k];if(!Array.isArray(x))continue;if(sub)(s[k]=plain(s[k])?s[k]:{})[sub]=structuredClone(x);else s[k]=structuredClone(x);}return s;};
  let before=snap(prior);
