@@ -1087,6 +1087,12 @@ await block('D12 a record a merge wrote', async () => {
       { const r = await step('synthetic.accept', syn.id, C); ok(r, who + ': a third person accepts the package\'s record'); assert.equal(rec(syn.id).acceptance.actor, C); }
       { const r = await step('vouch.accept', dec.id, C); ok(r, who + ': and the built-in one'); assert.equal(decision(dec.id).review.actor, C); }
     }
+    // a merge request that carries commands of its own (a merge names none: workbench-domain.js applies the alternative's)
+    // restamps nothing as the merger's
+    { const a = await stage([{type: 'decision.save', payload: {question: 'Which store keeps the drafts, as a person prepared it?'}}], A); await h.read(B);
+      const x = d().workbench.alternatives.find(y => y.id === a.id), r = await send('workspace.merge', {id: a.id, stamp: rebaseWorkingAlternative(d(), x).stamp, reviewed: true, reason: 'Merged by a person.', commands: [{type: 'decision.save', payload: {id: 'ADR-001'}}]}, B);
+      if (r.status === 200) { const dec = d().decisions.records.find(y => y.question === 'Which store keeps the drafts, as a person prepared it?'); assert.deepEqual(stamps(dec), ['person', A, B, B, 'merged'], 'the stamp stands: ' + JSON.stringify(dec.provenance)); }
+      else { assert.equal(r.status, 400, JSON.stringify(r.body).slice(0, 200)); ok(await send('workspace.merge', {id: a.id, stamp: rebaseWorkingAlternative(d(), x).stamp, reviewed: true, reason: 'Merged by a person.'}, B)); } }
     // 2. per command: a revision names the reviser for what it changes or adds and keeps the preparer of what it carries
     { const a = await stage([{type: 'synthetic.save', payload: {title: 'Kept as the agent account prepared it'}}, {type: 'synthetic.save', payload: {title: 'Changed in the revision'}}], AGENT), r = rebaseWorkingAlternative(d(), a);
       const commands = [a.commands[0], {type: 'synthetic.save', payload: {title: 'Changed in the revision by a person'}}, {type: 'synthetic.save', payload: {title: 'Added in the revision'}}];

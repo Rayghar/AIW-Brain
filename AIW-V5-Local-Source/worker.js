@@ -689,8 +689,8 @@ async function route(request,env,ctx){
         // named in the document it wrote (rc44, slice S0; ruling D2: workspace.packages).
         if(result.document!==prior)markPackages(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command);
         // The records the commit wrote are stamped as its, and a brief it changed is kept as a new version of its source.
-        // (a merge whose records the stamper above stamped is not restamped as the merger's: ruling Y3)
-        stampAuthorship(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command,result,author,at,{fourEyes:prior.workspace?.governance?.fourEyes===true});if(!merged)stampExtensions(prior,result.document,author,at);attachProvenanceBlocks(prior,result.document,input.command,result);versionBrief(prior,result.document,author,at)}catch(e){const message=publicMessage(e);return json({error:message,...(/^Unknown .* action\.$/.test(message)?{code:'unknown_command'}:{})},400)}
+        // (a merge whose records the stamper above stamped is not restamped as the merger's, by what its request says of itself either: ruling Y3)
+        if(!merged){stampAuthorship(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command,result,author,at,{fourEyes:prior.workspace?.governance?.fourEyes===true});stampExtensions(prior,result.document,author,at);}attachProvenanceBlocks(prior,result.document,input.command,result);versionBrief(prior,result.document,author,at)}catch(e){const message=publicMessage(e);return json({error:message,...(/^Unknown .* action\.$/.test(message)?{code:'unknown_command'}:{})},400)}
       let impact;
       // The trackers derive journal and impact records from the change; a fault in them is a programming fault
       // (answered as such, round 2, B2-06), never a storage outage. A design package's tracker that the boundary refuses (rc44,
