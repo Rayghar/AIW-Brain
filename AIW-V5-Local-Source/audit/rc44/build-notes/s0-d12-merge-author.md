@@ -11,8 +11,10 @@ No external authority is involved or impersonated: the slice changes who the ser
   below) and block "H3 a staged handler states no author" added; wp9a's S1.15 known limit of D12 replaced (old -> new
   below); the route measured (0 B) and booked in the lead's file as an item of its own; S0's notes amended where they
   said a merge stamps no author.
-- **In progress:** nothing.
-- **Next (for the lead):** review and merge; the open questions below.
+- **In progress:** nothing. The final suites, syntax, lint and build ran on the code of the final commit (only these
+  notes changed after them).
+- **Next (for the lead):** review and merge; the open questions below. S0's suite needs no other change with the build's
+  packages registered (29 checks green); nothing in S0 is asked of the lead beyond what this lead-owned slice did.
 
 ## What the code did at the start (53ce4cf)
 
