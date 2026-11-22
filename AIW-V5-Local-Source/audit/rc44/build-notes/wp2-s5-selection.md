@@ -194,9 +194,11 @@ from, then the change; a WIP commit after each item.
 
 ### Progress
 
-- **Done:** items 1 to 9. Every S5 block is green (24 blocks). Red, for the lead: S1's `size` block (its check needs
-  the saving of the retirement booked in the lead's file, see item 9) and `design-concern-validate.mjs` (fails at l.24,
-  was l.119 at the base: item 7).
+- **Done:** items 1 to 9. Every S5 block is green (20 blocks). Red, for the lead: three size checks that assume the
+  route grows, now that the retirement shrank it by 2,305 B (S1's `size` block, `mine > 0`; S0's `8 client build`,
+  "the route as built now is the slice's or a later one's", `>= slice - 700`; wp9a's `S1.10 the client build`, `mine >
+  0`): none is mine to loosen and each passes once the saving is booked in the lead's file (item 9); and
+  `design-concern-validate.mjs` (fails at l.24, was l.119 at the base: item 7).
 - **In progress:** nothing.
 - **Next:** the lead's review; the open points at the end of this section.
 
@@ -392,7 +394,10 @@ from, then the change; a WIP commit after each item.
      weighed as a plain decision, and no selection finding there.
    - (9), should-fix 9: the SDD prints, beside the rows stored at the choice, the reading as it is now, with why a
      candidate no longer stands ("at the choice: … · now: …"), so a withdrawn profile does not keep printing pass
-     (`sdd-architecture.js`, server-only, imports `candidateEligibility`).
+     (`sdd-architecture.js`, server-only). It reads the package's reading through the package's chapter-3 finding
+     `selection-withdrawn` (decisionFindings), not by importing the package: a first version imported
+     `candidateEligibility`, and S0's `D3 workbench keys` then read `adoption-selection.js` as a workbench module and
+     its `ADP` as a workbench prefix (the constraint of design concern 5).
    - (10), should-fix 10: the case "an option with a failing excludes predicate is now ineligible" is kept in
      `S5 parity row 9`, marked for wp1's selection form (and wp9b's gates), holding today's reading: unknown, chosen only
      as unproven.
@@ -417,6 +422,14 @@ from, then the change; a WIP commit after each item.
    fails `mine > 0`: it cannot pass until the saving is booked in the lead's file; I did not loosen it (and left its 600
    B, the stricter bound, for the lead to move to 800 with Q10). Cap unchanged; no gate raised.
    `node check-syntax.mjs`: 940 modules pass. `node scripts/lint.mjs --summary`: 162 problems, the baseline's 162, 0 new.
+   Suites (one after another, the machine shared): `test:rc44-wp2-adoption` (S1's 20 blocks and S5's 20) green but for
+   S1's `size`; 64 suites that import a changed file, `rc44-wp1-knowledge`, `component-library`, `rc42-g2-library`,
+   `architecture-intelligence`, `recovery-authority`, `recovery-size`, `sdd-*`, `sol-sdd`, `decisions`, `decision-reading`,
+   `tradeoff`, `desk`, `architecture-whatif`, `utility`, `brain-tradeoffs` among them: 59 green; red the same way as on
+   `5cae40a`: `command-equivalence` (l.60, checked on an archive of 5cae40a) and `contextual-intelligence-ui` (l.116);
+   red by this fix-up, for the lead: `design-concern` (l.24, item 7), `rc44-s0-extensions` (`8 client build` only, after
+   `D3` was fixed) and `rc44-wp9a-deployment` (`S1.10` only), both size checks (above). Not run: the full regression
+   (the lead's), the browser suites (red at the baseline on this machine), `test:scale`, `sdd-size` (its timer).
 
 ### Fix-up, line by line
 
@@ -487,7 +500,10 @@ Rulings:
 2. `architecture-intelligence-validate.mjs`'s "creating a proposed task does not invalidate its source" cannot hold
    for a selection, which writes a Chapter 3 decision at its start; replaced by the exact statement that the decision is
    the only source change (item 7). Accept, or rule that a Sol-drafted selection's decision is no design source.
-3. Route booking: the fix-up's −2,305 B against `5cae40a` (S5 books 0 B) is the lead's to book; S1's size block needs
-   it, and its 600 B bound moves to 800 B with Q10 at the lead's hand.
+3. Route booking: the fix-up's −2,305 B against `5cae40a` (S5 books 0 B) is the lead's to book. Three size checks of
+   suites on `5cae40a` assume the route grows and fail until it is: S1's `size` (record.mjs l.880, `mine > 0`, −1,980
+   B), S0's `8 client build` (rc44-s0-extensions-validate.mjs l.1461, `measured >= slice - 700`, 3,228,300 B) and
+   wp9a's `S1.10 the client build` (rc44-wp9a-deployment-validate.mjs l.1223, `mine > 0`, −1,963 B). S1's 600 B bound
+   moves to 800 B with Q10 at the lead's hand.
 4. The confirm and the judgements are kept on the built-in decision under `selection`; whether S0 states a contract row
    for package steps on built-in records (design concern 4) is the lead's.

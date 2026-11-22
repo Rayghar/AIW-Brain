@@ -28,9 +28,8 @@
 // record, chooses an alternative or approves anything.
 import {reviewRequirements, CHAPTERS, latestDesignReview, latestGovernance, independentApproval, sddTitle, recordRef, raisedFindings} from './review-domain.js';
 import {driversByKind, driverCodes, driverPriority, isQualityDriver, QUALITY_TYPES, DRIVER_KINDS, driverKind} from './quality-domain.js';
-import {DECISION_CATEGORIES, decisionCategory, chosen, statusLabel, governanceLabel, recommendation, solAssessed, rulesAssessed} from './decisions-domain.js';
+import {DECISION_CATEGORIES, decisionCategory, chosen, statusLabel, governanceLabel, recommendation, solAssessed, rulesAssessed, decisionFindings} from './decisions-domain.js';
 import {readDecision, readingLines, signed, DEFAULT_WEIGHTS, READING_NOTE, constraintForce} from './decision-reading.js';
-import {candidateEligibility} from './adoption-selection.js';
 import {reasoningFor, componentSpec, qualityDriverInteractions} from './design-spec.js';
 import {PERSONA_FIELDS, USER_CATEGORIES, PROCESS_KINDS, processKind} from './requirements-domain.js';
 import {requirementGroups, groupIndex, kindName, GROUP_RULE_FIELDS} from './requirement-groups.js';
@@ -126,7 +125,10 @@ function selectionBasis(p, d, alts) {
   const label = id => md(drivers.find(x => x.id === id)?.title || id), chosen = s.choice?.rows || {};
   // (ruling Q9 (9): the rows stored at the choice, and beside them the reading as it is now, with why a candidate no longer stands)
   const say = rs => rs.map(r => label(r.constraintId) + ': ' + r.state + (r.basis === 'person' ? ' (judged by ' + md(r.by) + ')' : '') + (r.state === 'unknown' && list(s.choice?.unproven).includes(r.constraintId) ? ', named unproven' : '')).join('; ');
-  const line = a => { const c = a.candidate, rows = list(chosen[a.id]?.rows), now = candidateEligibility(p, d, a), changed = rows.length && JSON.stringify(rows.map(r => [r.constraintId, r.state, r.by])) !== JSON.stringify(now.rows.map(r => [r.constraintId, r.state, r.by])); return md(a.title) + ' (' + (CANDIDATE_KINDS[c.kind] || c.kind) + pinned(c) + (c.by === 'sol' ? ', proposed by Sol' : c.by === 'agent' ? ', added by an agent account' : '') + '): ' + (c.outcome || 'open') + (rows.length ? ' · ' + (changed || now.reasons.length ? 'at the choice: ' : '') + say(rows) : '') + (changed || now.reasons.length || !rows.length && now.rows.length ? ' · now: ' + say(now.rows) + (now.reasons.length ? ' (' + md(now.reasons.join(' ')) + ')' : '') : ''); };
+  // The reading now is the package's (its chapter-3 findings, read here through decisionFindings: no workbench module
+  // imports a module of the package): a chosen candidate whose basis no longer stands reads unknown on every row.
+  const gone = decisionFindings(p).filter(f => f.decisionId === d.id && f.code === 'selection-withdrawn');
+  const line = a => { const c = a.candidate, rows = list(chosen[a.id]?.rows), off = gone.find(f => f.alternativeId === a.id); return md(a.title) + ' (' + (CANDIDATE_KINDS[c.kind] || c.kind) + pinned(c) + (c.by === 'sol' ? ', proposed by Sol' : c.by === 'agent' ? ', added by an agent account' : '') + '): ' + (c.outcome || 'open') + (rows.length ? ' · ' + (off ? 'at the choice: ' : '') + say(rows) : '') + (off ? ' · now: ' + rows.map(r => label(r.constraintId) + ': unknown').join('; ') + ' (' + md(off.detail) + ')' : ''); };
   return '**Selection basis**: ' + what + ', against ' + (drivers.length ? drivers.length + ' hard constraint' + (drivers.length > 1 ? 's' : '') + ': ' + drivers.map(x => md(x.title) + ' (' + typed(x) + ')').join('; ') : 'no hard constraint') + '.' + (s.prepared === 'sol-draft' ? ' Prepared as a draft by Sol.' : s.prepared === 'agent' ? ' Prepared by an agent account.' : '') + '\n\n' + bullets(alts.filter(a => a.candidate).map(line), {rest: k => 'And ' + plural(k, 'more candidate') + ' (Chapter 3 · ' + d.id + ').'});
 }
 export function bullets(lines, {max = LIST_MAX, rest = n => 'And ' + more(n) + '.'} = {}) {
