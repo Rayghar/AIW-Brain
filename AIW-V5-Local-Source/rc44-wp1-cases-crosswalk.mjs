@@ -440,6 +440,25 @@ add('S2.10 (old documents and S0\'s helpers): with ' + PACKAGE + ' registered, t
     R.assertTemplateCopyClearsSteps(p, d => rows(d));
     const base = clone(p); delete base.knowledge.crosswalk; R.assertBuiltInTrailsUnchanged(base, p); R.assertBuiltInChainsUnchanged(base, p); R.assertFindingIdsUnique(p);
     assert.deepEqual(rv.reviewSource(p).knowledge.crosswalk.map(r => Object.keys(r).filter(k => ['history', 'review', 'confirmed', 'provenance'].includes(k))), [[]], 'the fingerprint reads what a row says, not its steps');
+    // Ruling P2: a document names a package exactly when it holds a record of it. The library, marked a reusable template
+    // and copied through the service, gives a project that keeps no knowledge, so no row: it names no package, and a build
+    // without the package reads it as missing nothing.
+    { const {instantiateTemplate} = await import('./project-lifecycle.js'), {missingPackages} = await import('./public/design-extension-parts.js');
+      const marked = await S.api('/api/lifecycle?project=' + S.projectId, {revision: S.state.revision, action: 'template', enabled: true}, 'importer'); assert.equal(marked.status, 200, JSON.stringify(marked.data).slice(0, 300));
+      const made = await S.api('/api/projects', {name: 'A copy of the library', sourceProjectId: S.projectId}, 'importer'); assert(made.status < 300, JSON.stringify(made.data).slice(0, 300));
+      const copy = made.data.document; assert.equal(copy.knowledge, undefined, 'the copy keeps no knowledge'); assert.equal(copy.workspace.templateOrigin.projectId, S.projectId);
+      assert.equal('packages' in copy.workspace, false, 'a copy that keeps no record of ' + PACKAGE + ' names no package (ruling P2)');
+      const stored = await S.api('/api/project?project=' + copy.id, null, 'importer'); assert.equal(stored.status, 200); assert.equal('packages' in stored.data.document.workspace, false, 'as stored and read');
+      // A name this build does not register is copied as stored (ruling K2). (A registered package whose records the copy
+      // keeps stays named: S0's suite holds it for its synthetic package, wp9a's and wp2's for theirs.)
+      const source = {...clone(marked.data.document), workspace: {...marked.data.document.workspace, packages: [PACKAGE, 'p99-missing']}}, two = instantiateTemplate(source, 'copy-two', 'Copy two', AT);
+      assert.deepEqual(two.workspace.packages, ['p99-missing'], 'an unregistered name is copied as stored; the package whose records the copy drops is not'); assert.deepEqual(missingPackages(two), ['p99-missing']);
+      // The recovered library of ruling G5: rows kept, the library mark cleared; it still names the package, truthfully.
+      const preview = await S.api('/api/recovery?action=preview', {package: clone(S.document)}, 'importer'); assert.equal(preview.status, 200, JSON.stringify(preview.data).slice(0, 300));
+      const restored = await S.api('/api/recovery?action=restore', {package: clone(S.document), hash: preview.data.hash, name: 'The recovered library', reviewed: true}, 'importer'); assert.equal(restored.status, 201, JSON.stringify(restored.data).slice(0, 300));
+      const back = (await S.api('/api/project?project=' + restored.data.id, null, 'importer')).data.document;
+      assert.deepEqual(back.workspace.packages, [PACKAGE], 'the recovered library names the package'); assert.equal(rows(back).length, 1, 'because it holds its rows'); assert.equal(back.knowledge.library.enabled, false, 'its library mark is cleared (ruling G5)');
+      assert.equal(KC.crosswalkRecords(back)[0].state, 'proposed'); assert.equal(KC.resolveConcept(back, 'P-STRANGLER'), null); }
   } finally { S.close(); }
 });
 
