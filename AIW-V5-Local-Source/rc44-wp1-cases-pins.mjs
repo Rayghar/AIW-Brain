@@ -645,3 +645,27 @@ add('S3.21 (ruling X1): an agent account, as the organisation\'s administrator, 
     assert.equal(CC.publishRefusal(botLib.L.document, botLib.v1, 'steward', 'person'), null, 'a person who wrote none of it publishes it');
   } finally { W.close(); }
 });
+
+// ------------------------------------------------------------------------------------------------ 22 (ruling X2)
+// The organisation receives only what the library stands behind now (must-fix 2): a release that holds parts is published
+// only while every concept of parts.concepts reads usable as a whole in that release in the library (not withdrawn, not
+// retired) and every row of parts.crosswalk still reads released there. Each refusal names the concept or the row and why.
+add('S3.22 (ruling X2): a release of concepts is published to the organisation only while the library stands behind it now: a concept withdrawn by its id, a concept retired and a crosswalk row retired after the release are each refused, naming the concept or the row and why, with nothing signed; a library that stands behind its release publishes it', async () => {
+  const W = await world();
+  try {
+    const signed = async () => JSON.stringify((await W.env.DB.prepare('SELECT id,document FROM organization_releases WHERE organization_id=? ORDER BY id').bind(W.O).all()).results);
+    const refused = async (lib, pattern) => { const before = await signed(), r = await W.orgApi('knowledge', {releaseId: lib.v1, title: 'Synthetic integration concepts 1', reason: 'Shared.', reviewed: true}, lib.L.owner, lib.L.id); assert.equal(r.status, 400, JSON.stringify(r.data).slice(0, 300)); assert.match(r.data.error, pattern); assert.equal(await signed(), before, 'nothing is signed'); };
+    const RETIRE = {reason: 'Retired after the release.', reviewer: 'Synthetic steward', reviewed: true};
+    // A concept the library withdrew by its id (knowledge.withdraw of SYN-P001).
+    { const lib = await worldLibrary(W, {name: 'Library W'}); await lib.L.ok('knowledge.withdraw', {...F.REVIEW, id: 'SYN-P001', stamp: K.knowledgeImpactStamp(lib.L.document, 'SYN-P001')}, 'steward');
+      await refused(lib, /^The library does not stand behind SYN-P001 now, so its release is not published: SYN-P001 is not usable as a whole in .*SYN-P001 has been withdrawn/); }
+    // A concept the library retired after the release.
+    { const lib = await worldLibrary(W, {name: 'Library R'}); await lib.L.ok('knowledge.concept-retire', {id: lib.record, ...RETIRE}, 'steward');
+      await refused(lib, /^The library does not stand behind SYN-P001 now, so its release is not published: SYN-P001 is retired in this project: Retired after the release\./); }
+    // A crosswalk row the library retired after the release.
+    { const lib = await worldLibrary(W, {name: 'Library X', row: {}}); await lib.L.ok('knowledge.crosswalk-retire', {id: lib.rowId, ...RETIRE}, 'steward');
+      await refused(lib, new RegExp('^The library does not stand behind ' + lib.rowId + ' \\(external Outbox, a crosswalk row of SYN-P001\\) now, so its release is not published: it is retired in this library\\.$')); }
+    // A library that stands behind its release (a concept and a row as released) publishes it.
+    { const lib = await worldLibrary(W, {name: 'Library S', row: {}}); const OR = await lib.publish(lib.v1, 'Synthetic integration concepts 1'); assert.deepEqual(OR.from.releaseId, lib.v1); }
+  } finally { W.close(); }
+});

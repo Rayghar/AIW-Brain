@@ -19,7 +19,7 @@ import {verifierRefusal} from './architecture-obligations.js';
 import {QUALITY_TYPES} from './quality-domain.js';
 import {FORM_TYPES,FORM_TIER,FORM_CLAIM_TYPE,FORM_PREDICATE,CONCEPT_KINDS,CONCEPT_SCOPES,CONCEPT_ID,RECORD_REFERENCE,ALIAS_SCHEMES,conceptFormIssues,conceptFormRecord} from './concept-form.js';
 import {recordGraph} from './record-graph.js';
-import {conceptRecords,conceptHash,conceptAuthors,conceptCovered,formIssues,crosswalkRecords,crosswalkRowHash,crosswalkCovered,crosswalkAuthors,crosswalkState,releasedConcepts,refreshConceptPins,conceptReceipt,migrationStamp,unpinStamp} from './knowledge-concepts.js';
+import {conceptRecords,conceptHash,conceptAuthors,conceptCovered,formIssues,crosswalkRecords,crosswalkRowHash,crosswalkCovered,crosswalkAuthors,crosswalkState,releasedConcepts,releasedCrosswalk,refreshConceptPins,conceptReceipt,migrationStamp,unpinStamp} from './knowledge-concepts.js';
 import {catalogue} from './catalogue-store.js';
 import {catalogueMark,catalogueRelation} from './catalogue-curation.js';
 import {templateFields} from './component-snapshot.js';
@@ -379,6 +379,23 @@ export function publishRefusal(p,releaseId,actor,account){
   if(wrote)return at+wrote+' An organisation release is published by a person who wrote none of its forms and rows.';
   if(origin!=='person'&&x.provenance?.reviewed?.by===actor)return at+actor+' confirmed '+x.id+', which no person wrote, and so stands in its author\'s place: a third person publishes it.';
   if(origin!=='person'&&x.review?.actor===actor)return at+actor+' verified '+x.id+', which was '+(ORIGIN_WORDS[origin]||'written by no person')+': a third person publishes it.';
+ }
+ return standsBehind(p,s,r);
+}
+// What the library stands behind now (ruling X2 of 2026-11-22): a release that holds parts is published only while each
+// concept it holds reads usable as a whole in it here (not withdrawn, not retired: releasedConcepts) and each row it holds
+// still reads released here (releasedCrosswalk: its review standing, the register holding it as copied, neither retired
+// nor rejected since). The refusal names the concept or the row and why. A release that is not active here is left to
+// organizationKnowledgeRelease, which refuses it in its own words.
+function standsBehind(p,s,r){
+ const concepts=list(r.parts?.concepts),rows=list(r.parts?.crosswalk);if(!s.pins.includes(r.id)||!concepts.length&&!rows.length)return null;
+ const not=(what,why)=>'The library does not stand behind '+what+' now, so its release is not published: '+why;
+ const held=releasedConcepts(p).filter(c=>c.release.id===r.id);
+ for(const c of concepts){const h=held.find(x=>x.conceptId===c?.conceptId);if(!h?.eligible)return not(c?.conceptId,h?h.reasons.join(' '):'the release holds no form of it.');}
+ const standing=releasedCrosswalk(p).filter(x=>x.release.id===r.id).map(x=>x.row.id),own=new Map(list(s.crosswalk).map(x=>[x?.id,x]));
+ for(const c of rows)if(!standing.includes(c?.id)){
+  const here=own.get(c?.id),state=here&&crosswalkState(here);
+  return not(c?.id+' ('+c?.scheme+' '+c?.aliasId+', a crosswalk row of '+c?.conceptId+')',!here?'this library no longer holds it.':['retired','rejected'].includes(state)?'it is '+state+' in this library.':crosswalkRowHash(here)!==crosswalkRowHash(c)?'it was changed in this library after the release.':'the review the release holds of it does not stand.');
  }
  return null;
 }

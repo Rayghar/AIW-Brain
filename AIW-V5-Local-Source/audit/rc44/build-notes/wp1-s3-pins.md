@@ -238,3 +238,18 @@ Branch `rc44/wp1-s3-pins-fix`, from `ada5954`. Review: `/home/user/hb-review/rc4
   beside `review` and `releases`; confirmed by the lead in X1), `organization-service.js` (passes
   `accountKind(env, actor)`), `public/knowledge-concept-commands.js` (`publishRefusal(p, releaseId, actor, account)`: the
   account has no default any more, and anything but a person's account is refused first).
+
+### Item 2: X2 (must-fix 2), the organisation receives only what the library stands behind now
+
+- Done. Case **S3.22**, through the route: a concept the library withdrew by its id, a concept it retired and a crosswalk
+  row it retired after the release, each refused at publication with nothing signed ("The library does not stand behind
+  SYN-P001 now, so its release is not published: … SYN-P001 has been withdrawn" / "… SYN-P001 is retired in this
+  project: <reason>" / "The library does not stand behind KA-0001 (external Outbox, a crosswalk row of SYN-P001) now, so
+  its release is not published: it is retired in this library."); a library that stands behind its release publishes it.
+- Seen red: on the head of item 1 the withdrawn concept's release answered 201; with the fix, each of the three checks
+  taken out by mutation alone turns the case red again (201 at its step).
+- Code: `public/knowledge-concept-commands.js` `standsBehind(p, s, release)`, asked at the end of `publishRefusal` (so the
+  organisation route asks it with the release-actor rule, before `organizationKnowledgeRelease`): each concept of
+  `parts.concepts` usable as a whole in that release (`releasedConcepts`), each row of `parts.crosswalk` among
+  `releasedCrosswalk`'s rows of that release; a release that is not active is left to `organizationKnowledgeRelease`'s
+  own words. Server only: no route byte.
