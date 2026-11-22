@@ -85,8 +85,11 @@ async function strangler({second = false} = {}) {
   await S.ok('knowledge.review', {...F.REVIEW, formChecked: true, id: definition}, 'reviewer');
   await S.ok('knowledge.concept-review', {...CONCEPT_REVIEW, id: conceptRecordId}, 'reviewer');
   if (second) await S.ok('knowledge.concept', {...STRANGLER, conceptId: 'PAT-ADAPTER', title: 'Adapter'}, 'importer');
-  const release = async () => { const id = await S.ok('knowledge.release', {...F.REVIEW, title: 'Synthetic strangler fig 1', claimIds: [definition]}, 'releaser'); await S.ok('knowledge.activate', {...F.REVIEW, id, stamp: K.knowledgeStamp(S.document)}, 'releaser'); return id; };
-  return {S, sourceId, conceptRecordId, definition, release};
+  // (ruling P5 c: a release holds the verified rows the concept's standing review saw, so the concept is reviewed again, by
+  // the same second person, once its rows are verified, before its release)
+  const reviewAgain = () => S.ok('knowledge.concept-review', {...CONCEPT_REVIEW, id: conceptRecordId}, 'reviewer');
+  const release = async ({again = true} = {}) => { if (again) await reviewAgain(); const id = await S.ok('knowledge.release', {...F.REVIEW, title: 'Synthetic strangler fig 1', claimIds: [definition]}, 'releaser'); await S.ok('knowledge.activate', {...F.REVIEW, id, stamp: K.knowledgeStamp(S.document)}, 'releaser'); return id; };
+  return {S, sourceId, conceptRecordId, definition, release, reviewAgain};
 }
 // Another concept of the same library, registered, defined on the synthetic passage, reviewed and released by a third
 // person, its release active.
@@ -416,12 +419,16 @@ add('S2.8 (inert): a design document that holds crosswalk rows anyway, proposed,
 });
 
 // ------------------------------------------------------------------------------------------------ 9
-add('S2.9 (ruling E1 for the package\'s types): every crosswalk command type, sent by an agent account, a draft by Sol and an import against a reviewed concept and against a released one, leaves the concept\'s standing, its forms, its releases and what it resolves as they were; a person\'s request is saved', async () => {
+add('S2.9 (ruling E1 for the package\'s types; P5 f): every crosswalk command type, sent by an agent account, a draft by Sol, an import, the reviewer\'s and the releaser\'s own accounts as an import and as a draft by Sol, a request that states no author and one whose author names no account, against a reviewed concept and against a released one, leaves the concept\'s standing, its forms, its releases and what it resolves as they were; a person\'s request is saved', async () => {
   const {KC} = await mods(), {S, release, conceptRecordId} = await strangler();
   const standing = d => JSON.stringify({concept: KC.conceptRecords(d).map(c => [c.conceptId, c.state, c.hash]), forms: KC.conceptReading(d, 'PAT-STRANGLER-FIG').forms.map(f => [f.type, f.status]), releases: KC.releasedConcepts(d).map(c => [c.conceptId, c.eligible]), resolves: KC.resolveConcept(d, 'P-STRANGLER'), released: (d.knowledge.releases || []).map(r => r.checksum)});
   try {
     const verified = await S.ok('knowledge.crosswalk', P_STRANGLER, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: verified}, 'reviewer');
-    const KINDS = [['an agent account', 'bot', {}], ['a draft by Sol', 'architect', {authorKind: 'sol-draft'}], ['an import', 'importer', {authorKind: 'import'}]];
+    // (ruling P5 f: the kinds S1.29 walks, the reviewer's and the releaser's own accounts as an import and as a draft by Sol
+    // included; the request that states no author and the author that names no account, which the service never sends,
+    // are walked through the package's handler at the boundary)
+    const KINDS = [['an agent account', 'bot', {}], ['a draft by Sol', 'architect', {authorKind: 'sol-draft'}], ['an import', 'importer', {authorKind: 'import'}], ['an import sent from the account of the row\'s reviewer', 'reviewer', {authorKind: 'import'}], ['a draft by Sol sent from the releaser\'s account', 'releaser', {authorKind: 'sol-draft'}], ['a draft by Sol sent from the reviewer\'s account', 'reviewer', {authorKind: 'sol-draft'}], ['an import sent from the releaser\'s account', 'releaser', {authorKind: 'import'}]];
+    const {extensionHandler} = await import('./design-extension-boundary.js'), NOBODY = [['a request that states no author', 'architect', null], ['an author that names no account', 'architect', {kind: 'person', id: 'architect', reviewed: true}]];
     const requests = id => ({'knowledge.crosswalk': [{...P_STRANGLER, id, note: 'Changed.'}, {...P_STRANGLER, id, relation: 'narrower'}], 'knowledge.crosswalk-confirm': [{...PERSON_STEP, id}], 'knowledge.crosswalk-review': [{...ROW_REVIEW, id, decision: 'rejected'}, {...ROW_REVIEW, id}], 'knowledge.crosswalk-retire': [{...PERSON_STEP, id}]});
     assert.deepEqual(Object.keys(requests('x')).sort(), [...TYPES].sort(), 'every type of the package is walked');
     let sent = 0;
@@ -433,8 +440,11 @@ add('S2.9 (ruling E1 for the package\'s types): every crosswalk command type, se
         assert.notEqual(r.status, 200, stage + ': ' + type + ' sent by ' + who + ' was accepted');
         assert.equal(standing(S.document), before, stage + ': ' + type + ' by ' + who);
       }
+      for (const [type, payloads] of Object.entries(requests(verified))) for (const payload of payloads) for (const [who, actor, author] of NOBODY) {
+        sent++; assert.throws(() => extensionHandler(type)(clone(S.document), {type, payload}, AT, actor, {author}), Error, stage + ': ' + type + ' by ' + who + ' was accepted at the boundary');
+      }
     }
-    assert.equal(sent, 2 * 6 * 3);
+    assert.equal(sent, 2 * 6 * (KINDS.length + NOBODY.length)); assert.equal(KINDS.length + NOBODY.length, 9, 'the nine kinds of request');
     // A proposal is saved, an agent account's too: it lowers nothing; a person's retirement is saved, with its effect.
     const fresh = await S.ok('knowledge.crosswalk', {...P_STRANGLER, aliasId: 'P-FACADE', label: 'Facade', relation: 'narrower'}, 'bot');
     assert.equal(KC.crosswalkRecords(S.document).find(r => r.id === fresh).state, 'proposed'); assert.equal(KC.conceptRecords(S.document).find(c => c.id === conceptRecordId).state, 'reviewed', 'a proposed row lowers no concept\'s standing');
@@ -443,7 +453,7 @@ add('S2.9 (ruling E1 for the package\'s types): every crosswalk command type, se
 });
 
 // ------------------------------------------------------------------------------------------------ 10
-add('S2.10 (old documents and S0\'s helpers): with ' + PACKAGE + ' registered, the three references and the document with a review list read as at 94dbd4f; no key of the package exists until it is first written and no document names the package; a library that holds rows names it, its route stub exists, a step of a row moves no design stamp, a template copy carries no step, the trails and chains are the built-in ones and the findings are unique', async () => {
+add('S2.10 (old documents and S0\'s helpers): with ' + PACKAGE + ' registered, the three references and the document with a review list read as at 94dbd4f; no key of the package exists until it is first written and no document names the package; a library that holds rows names it and a template copy of it does not (ruling P2), its route stub exists, the steps a row holds move no design stamp, a template copy carries no step, the trails and chains are the built-in ones and the findings are unique', async () => {
   const {KC} = await mods(), X = await import('./public/design-extensions.js'), boundary = await import('./design-extension-boundary.js');
   await import('./worker.js');
   const mine = () => X.EXTENSIONS.find(e => e.id === PACKAGE);
@@ -468,7 +478,7 @@ add('S2.10 (old documents and S0\'s helpers): with ' + PACKAGE + ' registered, t
     assert.equal(S.document.workspace.packages, undefined, 'a library whose knowledge holds no row names no package');
     const id = await S.ok('knowledge.crosswalk', P_STRANGLER, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id}, 'reviewer');
     const p = S.document; assert.deepEqual(p.workspace.packages, [PACKAGE], 'a library that holds rows names the package that wrote them (ruling D2)');
-    assert.equal(R.assertStepsMoveNoStamp(p, d => rows(d)), 1, 'no person\'s or second person\'s step on a row moves a design stamp (ruling J3)');
+    assert.equal(R.assertStepsMoveNoStamp(p, d => rows(d)), 1, 'the steps a row holds (history, review, confirmed, provenance), written into it in place, move no design stamp (ruling J3); through the commands the knowledge family\'s log and version still move it (S2.16, a known limit for S3)');
     R.assertTemplateCopyClearsSteps(p, d => rows(d));
     const base = clone(p); delete base.knowledge.crosswalk; R.assertBuiltInTrailsUnchanged(base, p); R.assertBuiltInChainsUnchanged(base, p); R.assertFindingIdsUnique(p);
     assert.deepEqual(rv.reviewSource(p).knowledge.crosswalk.map(r => Object.keys(r).filter(k => ['history', 'review', 'confirmed', 'provenance'].includes(k))), [[]], 'the fingerprint reads what a row says, not its steps');
@@ -538,7 +548,7 @@ add('S2.12 (size, ruling A4 and M4): the client build passes every gate with the
 // that name the row and why; nothing resolves after a refusal; a third person (releaser) is accepted.
 const releaseOf = definition => ({...F.REVIEW, title: 'Synthetic strangler fig 1', claimIds: [definition]});
 add('S2.13 (ruling P1): a release holds no row its releaser stands behind: the author, the last editor, the person who confirmed a row no person wrote, and the person who verified an imported row are each refused the release, naming the row; a third person releases it', async () => {
-  const {KC} = await mods(), {S, definition} = await strangler();
+  const {KC} = await mods(), {S, definition, reviewAgain} = await strangler();
   try {
     const a = await S.ok('knowledge.crosswalk', P_STRANGLER, 'architect');
     await S.ok('knowledge.crosswalk', {...P_STRANGLER, id: a, note: 'Checked against the Playbook workbook.'}, 'second-architect');
@@ -547,6 +557,7 @@ add('S2.13 (ruling P1): a release holds no row its releaser stands behind: the a
     await S.ok('knowledge.crosswalk-confirm', {...PERSON_STEP, id: b}, 'steward');
     await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: b}, 'reviewer');
     assert.deepEqual(KC.crosswalkRecords(S.document).map(r => r.state), ['verified', 'verified']);
+    await reviewAgain();
     const words = {architect: new RegExp(a + ' \\(playbook P-STRANGLER, a crosswalk row of PAT-STRANGLER-FIG\\): .*architect wrote ' + a + '\\. A release holds no crosswalk row its releaser wrote'),
       'second-architect': new RegExp(a + ' \\(playbook P-STRANGLER, a crosswalk row of PAT-STRANGLER-FIG\\): .*second-architect wrote ' + a),
       steward: new RegExp(b + ' \\(playbook P-FACADE, a crosswalk row of PAT-STRANGLER-FIG\\): steward confirmed ' + b + ', which no person wrote, and so stands in its author\'s place: a third person releases it\\.'),
@@ -563,9 +574,9 @@ add('S2.13 (ruling P1): a release holds no row its releaser stands behind: the a
   } finally { S.close(); }
   // The same rule for a row drafted by Sol and one an agent account wrote: the confirming person and the verifier stand behind it.
   for (const [as, extra, kind] of [['architect', {authorKind: 'sol-draft'}, 'drafted by Sol or by an agent account'], ['bot', {}, 'drafted by Sol or by an agent account']]) {
-    const {S, definition} = await strangler();
+    const {S, definition, reviewAgain} = await strangler();
     try {
-      const x = await S.ok('knowledge.crosswalk', P_STRANGLER, as, extra); await S.ok('knowledge.crosswalk-confirm', {...PERSON_STEP, id: x}, 'steward'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: x}, 'reviewer');
+      const x = await S.ok('knowledge.crosswalk', P_STRANGLER, as, extra); await S.ok('knowledge.crosswalk-confirm', {...PERSON_STEP, id: x}, 'steward'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: x}, 'reviewer'); await reviewAgain();
       await S.refused(new RegExp('steward confirmed ' + x + ', which no person wrote'), 'knowledge.release', releaseOf(definition), 'steward');
       await S.refused(new RegExp('reviewer verified ' + x + ', which was ' + kind + ': a third person releases it'), 'knowledge.release', releaseOf(definition), 'reviewer');
       await S.ok('knowledge.release', releaseOf(definition), 'releaser');
@@ -590,5 +601,104 @@ add('S2.14 (ruling P4): the bound of 24 rows per concept counts the rows that st
     // The bound still holds for rows that stand: 23 more proposals fill it again, and the next is refused.
     for (let i = 25; i <= 47; i++) await S.ok('knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'external', aliasId: 'EXT-FILL-' + i, label: 'Filler ' + i, relation: 'narrower', note: 'Proposed by an agent account.'}, 'bot');
     await S.refused(FULL, 'knowledge.crosswalk', {...P_STRANGLER, aliasId: 'P-FACADE', label: 'Facade', relation: 'narrower'}, 'architect');
+  } finally { S.close(); }
+});
+
+// ------------------------------------------------------------------------------------------------ 15 (ruling P5 a)
+add('S2.15 (ruling P5 a): a released row whose register row no longer has the released copy\'s hash resolves nothing (a person\'s later edit, a register that lost the row); the concept view shows the register\'s state beside the release\'s', async () => {
+  const {KC} = await mods(), {S, release} = await strangler();
+  try {
+    const id = await S.ok('knowledge.crosswalk', P_STRANGLER, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id}, 'reviewer'); const releaseId = await release();
+    assert.equal(KC.resolveConcept(S.document, 'P-STRANGLER').conceptId, 'PAT-STRANGLER-FIG');
+    { const a = KC.conceptAliases(S.document, 'PAT-STRANGLER-FIG').find(x => x.rowId === id); assert.deepEqual([a.relation, a.state, a.register, a.release], ['same', 'released', 'verified', {releaseId, relation: 'same', resolves: true}]); }
+    { const q = clone(S.document); q.knowledge.crosswalk = []; assert.equal(KC.resolveConcept(q, 'P-STRANGLER'), null, 'a register that no longer holds the released row resolves nothing'); }
+    // A person changes the released row from same to distinct: the register reads it proposed, and nothing resolves from the release.
+    await S.ok('knowledge.crosswalk', {...P_STRANGLER, id, relation: 'distinct', reason: 'Not the same mechanism after all.'}, 'steward');
+    assert.equal(KC.crosswalkRecords(S.document).find(r => r.id === id).state, 'proposed');
+    assert.equal(KC.resolveConcept(S.document, 'P-STRANGLER'), null, 'the register\'s row no longer reads as the release copied it');
+    const a = KC.conceptAliases(S.document, 'PAT-STRANGLER-FIG').filter(x => x.rowId === id);
+    assert.deepEqual(a.map(x => [x.relation, x.state, x.register, x.release]), [['distinct', 'proposed', 'proposed', {releaseId, relation: 'same', resolves: false}]], 'one entry: the register\'s pending edit beside what the release holds');
+  } finally { S.close(); }
+});
+
+// ------------------------------------------------------------------------------------------------ 16 (ruling P5 b)
+// What a crosswalk step does to the library's design stamp, through the commands: the rows' own steps move no stamp (S2.10,
+// assertStepsMoveNoStamp, which writes the steps into the row in place), but every knowledge command, the crosswalk's
+// included, appends to knowledge.history and moves knowledge.version, which the design fingerprint reads on rc.10.73.42:
+// a known limit, owned by S3 with the knowledge keys (rulings B10 and P5 b). This case states it; S3 turns it around.
+add('S2.16 (ruling P5 b, a known limit for S3): through the commands, a person\'s confirmation and a second person\'s review of a row move the library\'s design stamp only through knowledge.history and knowledge.version', async () => {
+  const {S} = await strangler();
+  const stamp = d => { const q = rv.withFinalReview(clone(d), {upgrade: false}); return rv.reviewSourceStamp(q) + ' ' + rv.reviewDesignStamp(q); };
+  try {
+    const id = await S.ok('knowledge.crosswalk', {...P_STRANGLER, aliasId: 'P-FACADE', label: 'Facade', relation: 'narrower'}, 'importer', {authorKind: 'import'});
+    for (const [type, payload, as] of [['knowledge.crosswalk-confirm', {...PERSON_STEP, id}, 'steward'], ['knowledge.crosswalk-review', {...ROW_REVIEW, id}, 'reviewer']]) {
+      const before = clone(S.document); await S.ok(type, payload, as);
+      assert.notEqual(stamp(S.document), stamp(before), type + ' moves the library\'s design stamp (the known limit)');
+      assert.equal(S.document.knowledge.history.length, before.knowledge.history.length + 1); assert.notEqual(S.document.knowledge.version, before.knowledge.version);
+      const back = clone(S.document); back.knowledge.history = before.knowledge.history; back.knowledge.version = before.knowledge.version;
+      assert.equal(stamp(back), stamp(before), type + ': with the family\'s log and version put back, the stamp is the earlier one');
+    }
+  } finally { S.close(); }
+});
+
+// ------------------------------------------------------------------------------------------------ 17 (ruling P5 c)
+add('S2.17 (ruling P5 c): the concept\'s review records the rows it saw; a release holds only the verified rows its standing review saw verified, as they read: a row verified after the review waits for the next review of the concept, and nothing lapses', async () => {
+  const {KC} = await mods(), {S, release, conceptRecordId} = await strangler();
+  try {
+    const before = await S.ok('knowledge.crosswalk', P_STRANGLER, 'architect');
+    await S.ok('knowledge.concept-review', {...CONCEPT_REVIEW, id: conceptRecordId}, 'reviewer');
+    { const c = S.document.knowledge.concepts.find(x => x.id === conceptRecordId); assert.deepEqual(c.review.crosswalkSeen, [[before, KC.crosswalkRowHash(row(S.document, before)), 'proposed']], 'the review records each row that stands, with its hash and its state'); }
+    await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: before}, 'reviewer');
+    const after = await S.ok('knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'akr', aliasId: 'PAT-CIRCUIT-BREAKER', label: 'Circuit breaker', relation: 'narrower'}, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: after}, 'reviewer');
+    assert.equal(KC.conceptRecords(S.document).find(c => c.id === conceptRecordId).state, 'reviewed', 'a row verified after the concept\'s review lapses nothing');
+    const first = await release({again: false});
+    assert.equal(S.document.knowledge.releases.find(r => r.id === first).parts, undefined, 'the review saw neither row verified: the release holds none');
+    assert.equal(KC.resolveConcept(S.document, 'P-STRANGLER'), null, 'a row verified after the concept\'s review waits for its next review');
+    // The next review sees both, verified; the next release holds them.
+    const second = await release();
+    assert.deepEqual(S.document.knowledge.releases.find(r => r.id === second).parts.crosswalk.map(r => r.id), [before, after]);
+    assert.equal(KC.resolveConcept(S.document, 'P-STRANGLER').conceptId, 'PAT-STRANGLER-FIG');
+    // A concept with no row records no list (a review of rc44 S1 reads as it did).
+    { const q = (await strangler()); try { const c = q.S.document.knowledge.concepts[0]; assert.equal('crosswalkSeen' in c.review, false); } finally { q.S.close(); } }
+  } finally { S.close(); }
+});
+
+// ------------------------------------------------------------------------------------------------ 18 (ruling P5 d)
+add('S2.18 (ruling P5 d, B3 for rows): a row whose review stands, of either decision, is changed only by a signed-in person: a second person\'s rejection of a row never verified is not undone by an agent account, a draft by Sol or an import', async () => {
+  const {KC} = await mods(), {S} = await strangler();
+  try {
+    const id = await S.ok('knowledge.crosswalk', {...P_STRANGLER, conceptId: 'PAT-STRANGLER-FIG', aliasId: 'P-ADAPTER', label: 'Adapter'}, 'architect');
+    await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, decision: 'rejected', reason: 'The adapter is not the strangler fig.', id}, 'reviewer');
+    assert.equal(KC.crosswalkRecords(S.document).find(r => r.id === id).state, 'rejected');
+    for (const [as, extra] of [['bot', {}], ['architect', {authorKind: 'sol-draft'}], ['importer', {authorKind: 'import'}]]) await S.refused(new RegExp(id + ' was reviewed here or is in a release: only a signed-in person changes it'), 'knowledge.crosswalk', {...P_STRANGLER, aliasId: 'P-ADAPTER', label: 'Adapter', id, note: 'Proposed again.'}, as, extra);
+    assert.equal(KC.crosswalkRecords(S.document).find(r => r.id === id).state, 'rejected', 'the rejection stands');
+    await S.ok('knowledge.crosswalk', {...P_STRANGLER, aliasId: 'P-ADAPTER', label: 'Adapter', id, note: 'A person proposes it again.'}, 'steward');
+    assert.equal(KC.crosswalkRecords(S.document).find(r => r.id === id).state, 'proposed', 'a person\'s edit is taken, and the rejection lapses');
+  } finally { S.close(); }
+});
+
+// ------------------------------------------------------------------------------------------------ 19 (ruling P5 e)
+add('S2.19 (ruling P5 e): an alias with the shape of a design record\'s reference is refused in every scheme; a handbook alias is a topic of the library or a whole id-shaped token of the evidence passage, never a fragment or a word of it', async () => {
+  const {S, sourceId} = await strangler();
+  try {
+    for (const aliasId of ['REQ-001', 'COMP-001', 'ADR-001', 'IF-001']) await S.refused(new RegExp(aliasId + ' has the shape of a design record\'s reference \\(a prefix and a number, such as REQ-001\\): an alias names no design record'), 'knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'external', aliasId, label: aliasId, relation: 'narrower', note: 'From another register.'}, 'architect');
+    // The evidence: a plain claim of the library on the passage's first line, which names SYN-S001.
+    const evidence = await S.ok('knowledge.claim', {sourceId, lineStart: 1, lineEnd: 1, subjectId: 'The synthetic handbook entry', predicate: 'names', statement: 'The entry is SYN-S001, the strangler fig.', claimType: 'definition'}, 'importer');
+    for (const aliasId of ['A', 'the', 'fig', 'SYN', 'S001', 'SYN-S00']) await S.refused(new RegExp(aliasId + ' is neither a topic of this library nor a whole identifier the passage of ' + evidence + ' names'), 'knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'handbook', aliasId, label: aliasId, relation: 'narrower', evidenceClaimId: evidence}, 'architect');
+    await S.ok('knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'handbook', aliasId: 'SYN-S001', label: 'Strangler fig (synthetic handbook)', relation: 'narrower', evidenceClaimId: evidence}, 'architect');
+  } finally { S.close(); }
+});
+
+// ------------------------------------------------------------------------------------------------ 20 (ruling P5 g)
+// No row is written by a merge or a template copy, so none needs a confirmation for that reason (correcting the
+// builder's statement): a template copy keeps no knowledge (S2.10), and an alternative or a reviewed batch that carries a
+// crosswalk command is refused, so a merge has none to apply. (A guard: green on 37520d6 as after.)
+add('S2.20 (ruling P5 g): no crosswalk row can be written by a merge or a template copy: an alternative and a reviewed batch that carry a crosswalk command are refused through the service, and a template copy keeps no knowledge', async () => {
+  const {S} = await strangler();
+  try {
+    const commands = [{type: 'knowledge.crosswalk', payload: P_STRANGLER}];
+    for (const [type, payload] of [['workspace.alternative', {commands, stamp: 'x', title: 'An alternative with a row', reason: 'Holds a crosswalk row.'}], ['workspace.apply', {commands, stamp: 'x', reviewed: true, reason: 'A batch with a row.'}]])
+      await S.refused(/This action must use its chapter review workflow|Unknown Review & realize action/, type, payload, 'architect');
+    assert.equal(S.document.knowledge.crosswalk, undefined, 'no row was written'); assert.deepEqual(S.document.workbench?.alternatives || [], []);
   } finally { S.close(); }
 });
