@@ -58,7 +58,7 @@ import {readFileSync, existsSync, writeFileSync, mkdirSync} from 'node:fs';
 import worker, {commandHandler, commandShape} from '../worker.js';
 import * as R from '../rc44-s0-readings.mjs';
 import {server, A, B, C, AGENT, SELECTION_AT, CONCERN_NOTES, CONCERN_ANSWERS, CONCERN_TAGS, concernProject, decisionSays, selectionProject, PROFILE_FACTS, ARCHETYPE, bankPaymentApplied, governedConcernApplied, otherKindApplied} from '../rc44-wp2-fixtures.mjs';
-import {withFinalReview, CHAPTERS, inheritedFindings, reviewSourceStamp} from '../public/review-domain.js';
+import {withFinalReview, CHAPTERS, inheritedFindings, reviewSourceStamp, nonWaivable, treatmentsFor, DISPOSITIONS, WAIVERS, applyFinalReviewCommand, findingTreatment, reviewBlockers, findingCause, causeFindings, causeFindingStamp} from '../public/review-domain.js';
 import {EXTENSIONS} from '../public/design-extensions.js';
 import {extensionIssues, extensionConflicts, builtInType} from '../design-extension-boundary.js';
 import {isReviewCommand} from '../authorship.js';
@@ -455,7 +455,22 @@ export default async function ({block, pass, load}) {
       const acc = structuredClone(hand); decision(acc, id).status = 'accepted'; const accd = withFinalReview(acc, {upgrade: false});
       assert.equal(decisionCurrent(accd, decision(accd, id)), true, 'read as accepted as it stands');
       assert.throws(() => applyDecisionCommand(accd, {type: 'decision.governance', payload: {id, status: 'approved', reviewer: 'Governance board', evidence: 'Minutes 12'}}, AT), /Resolve content gaps/, 'and no approval evidence');
-      pass('S5 U1 hard constraint: after a person other than the chooser judged a chosen row fail (the verifier\'s walk H-A, through the server), a decision.save that drops that hard constraint from the decision\'s drivers is refused to a person, an agent account and a draft by Sol and changes nothing, while a save of the texts or of a driver that is no hard constraint is taken; no second person confirms the ineligible choice and it is not accepted; on a document whose drivers no longer name the constraint, the chosen candidate still reads ineligible, the package raises "The working choice breaks a hard constraint" in the built-in\'s words, and the confirm, the acceptance and the approval are refused');
+      // (the lead's ruling V2 of 2026-11-22, with A1, D11 and M3: one non-waivable class) on the same document, the package's error is in the class
+      // the built-in 'breaks' belongs to: review-domain's nonWaivable reads it, the three waivers are refused in words, for the finding and for its
+      // cause, the dialog offers the other treatments and no waiver, and it blocks the review until the design changes
+      { const f = inheritedFindings(hand).find(x => x.code === 'selection-breaks' && x.decisionId === id), WORDS = 'Error: “' + title + '” cannot be waived: change the design. Until then, fix it before review or carry it as an action.';
+        assert.ok(f && f.level === 'error', 'the review reads the package\'s error on the hand-made document');
+        assert.equal(nonWaivable(f), true, 'the package marks it hard, so the class\'s one reader reads it');
+        assert.deepEqual(treatmentsFor(f), DISPOSITIONS.filter(t => !WAIVERS.includes(t)), 'the dialog offers the other treatments and no waiver'); assert.deepEqual(treatmentsFor(f), ['Fix before review', 'Carry as action']);
+        const review = (doc, payload, type = 'review.disposition') => withFinalReview(applyFinalReviewCommand(doc, {type, payload}, AT, A).document), treat = extra => ({findingId: f.id, stamp: f.stamp, rationale: 'The chosen candidate is accepted as it is.', reviewer: 'A reviewer', reference: 'REF-1', reviewBy: '2099-12-31', reviewed: true, ...extra});
+        assert.equal(WAIVERS.length, 3);
+        for (const treatment of WAIVERS) {
+          assert.throws(() => review(hand, treat({treatment})), e => String(e) === WORDS, treatment + ' is refused for selection-breaks, in the words of ruling A1');
+          const key = findingCause(f).key, all = causeFindings(hand, key);
+          assert.throws(() => review(hand, {scope: 'cause', cause: key, stamp: causeFindingStamp(hand, all), treatment, rationale: 'One treatment for the cause.', reviewer: 'A reviewer', reference: 'REF-1', reviewBy: '2099-12-31', reviewed: true}), e => String(e) === WORDS, treatment + ': a treatment of its cause cannot waive it either'); }
+        const state = doc => [findingTreatment(doc, inheritedFindings(doc).find(x => x.id === f.id)), reviewBlockers(doc).some(x => x.id === f.id)];
+        assert.deepEqual(state(hand), ['Needs assessment', true], 'it blocks the review'); assert.deepEqual(state(review(hand, treat({treatment: 'Fix before review'}))), ['Fix before review', true], 'fix before review is taken and keeps it a blocker'); }
+      pass('S5 U1 hard constraint: after a person other than the chooser judged a chosen row fail (the verifier\'s walk H-A, through the server), a decision.save that drops that hard constraint from the decision\'s drivers is refused to a person, an agent account and a draft by Sol and changes nothing, while a save of the texts or of a driver that is no hard constraint is taken; no second person confirms the ineligible choice and it is not accepted; on a document whose drivers no longer name the constraint, the chosen candidate still reads ineligible, the package raises "The working choice breaks a hard constraint" in the built-in\'s words, and the confirm, the acceptance and the approval are refused; there the error is in the one non-waivable class (ruling V2): the three waivers are refused in words, for the finding and its cause, the dialog offers none, and it blocks the review');
     } finally { h.close(); }
   });
 
