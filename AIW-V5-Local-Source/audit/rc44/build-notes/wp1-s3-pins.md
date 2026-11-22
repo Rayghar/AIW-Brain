@@ -529,3 +529,18 @@ byte. Closed here on rc44/wp1-s3-lead, cases first:
   draws the panel exactly as no activity does (seen red: the actor was printed on every line).
 - **Notes**: item 4 (i)'s sum reads 765.
 - The knowledge workspace module is a lazy entry: no chapters-route bytes (re-measured at the merge).
+
+### After the narrow review of the lead's follow-up (2026-11-22)
+
+The narrow review of 9983f66 approves, with four should-fix points and two design concerns, closed here:
+- Size: the knowledge workspace lazy entry grows 23 B over 8a61aa3 (+16 B the successor read through pinRests, +7 B the
+  panel's own-step marker); wp1-s3-size.json atMerge 'opens with records' is re-recorded (added 147,315 B, total
+  3,375,963 B), and S3.10's measure mode passes. The chapters route does not move (3,228,648 B).
+- The comment above the own-successor loop says what the code reads (everything pinRests gives).
+- S3.24 also holds that the next successor that stands is offered after the source branch.
+- The panel marks the package's steps by a set of the trail's own entries, not by a field a document could carry.
+- Design concern 1, recorded as a known limit owned by S4: a successor whose support lapses other than by withdrawal (a
+  superseded source revision, an open contradiction, a repository tombstone after the notice) is still offered as newer,
+  though it cannot be activated; X4 (b) is about withdrawals, and the pinned version reads such lapses as 'changed'.
+- Design concern 2, added to the X5 (c) list: a repository invalidation withdraws sources through the governance command,
+  so the stored pinCurrency moves at the next server read, which refreshes it.

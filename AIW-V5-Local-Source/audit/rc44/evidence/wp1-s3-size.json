@@ -121,8 +121,8 @@
   "opens with records": {
    "host": "public/knowledge-workspace-ui.js",
    "route": 3228648,
-   "added": 147292,
-   "total": 3375940,
+   "added": 147315,
+   "total": 3375963,
    "files": 2,
    "beforeTheFixUp": {
     "route": 3228648,
@@ -131,7 +131,15 @@
     "files": 2,
     "commit": "138382f"
    },
-   "note": "458 B less than the merged tree before the fix-up: knowledge-pins.js 1,976 -> 769 B (the list-11 finding is no longer registered in the browser, ruling X5 a), knowledge-package.js 365 -> 448 B (packageStep, X4 e), knowledge-workspace-ui.js 48,645 -> 49,311 B (the history panel reads the package's steps from the activity, X4 e)."
+   "note": "458 B less than the merged tree before the fix-up: knowledge-pins.js 1,976 -> 769 B (the list-11 finding is no longer registered in the browser, ruling X5 a), knowledge-package.js 365 -> 448 B (packageStep, X4 e), knowledge-workspace-ui.js 48,645 -> 49,311 B (the history panel reads the package's steps from the activity, X4 e).",
+   "beforeTheLeadFollowUp": {
+    "route": 3228648,
+    "added": 147292,
+    "total": 3375940,
+    "files": 2,
+    "commit": "8a61aa3"
+   },
+   "leadFollowUp": "The lead's follow-up after the verifier and its narrow review (rc44/wp1-s3-lead): +23 B in the knowledge workspace lazy entry (the successor read by pinRests in knowledge-concepts.js +16 B; the history panel's own-step marker in knowledge-workspace-ui.js +7 B). The chapters route does not move (3,228,648 B)."
   }
  }
 }

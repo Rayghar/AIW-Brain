@@ -759,7 +759,13 @@ add('S3.24 (ruling X4): a withdrawn successor is not offered as newer, in the pr
     const v2 = M.k('release', {...F.REVIEW, title: 'Synthetic integration concepts 2', conceptIds: ['SYN-P001'], supersedes: M.releaseId}, 'releaser');
     assert.deepEqual([state(M.document).state, state(M.document).successor?.releaseId], ['newer-available', v2], 'the successor resting on its new source is offered');
     M.k('withdraw', {...F.REVIEW, id: src, stamp: K.knowledgeImpactStamp(M.document, src)}, 'steward');
-    assert.deepEqual([state(M.document).state, M.document.knowledge.pinCurrency[pins(M.document)[0].id].state], ['current', 'current'], 'a successor resting on a withdrawn source is no newer version'); }
+    assert.deepEqual([state(M.document).state, M.document.knowledge.pinCurrency[pins(M.document)[0].id].state], ['current', 'current'], 'a successor resting on a withdrawn source is no newer version');
+    // and the next successor that stands is offered (its form on another new source)
+    const src3 = M.k('source', F.sourcePayload('SYN-P001 Transactional outbox, third edition', [...F.SYN_P001, 'A third edition adds this line.']), 'importer'), claim3 = M.k('claim', F.formClaim(src3, 'SYN-P001', F.p001Forms().definition), 'importer');
+    M.k('concept', {...CONCEPT, id: M.record, forms: M.document.knowledge.concepts[0].forms.map(f => f.type === 'definition' ? {type: 'definition', claimId: claim3} : f)}, 'importer');
+    M.k('review', {...F.REVIEW, formChecked: true, id: claim3}, 'reviewer'); M.k('concept-review', {...CONCEPT_REVIEW, id: M.record}, 'reviewer');
+    const v3 = M.k('release', {...F.REVIEW, title: 'Synthetic integration concepts 3', conceptIds: ['SYN-P001'], supersedes: v2}, 'releaser');
+    assert.deepEqual([state(M.document).state, state(M.document).successor?.releaseId], ['newer-available', v3], 'the next successor that stands is offered'); }
   // The organisation's: OR2 succeeds OR1 and the organisation withdraws it; OR3 succeeds OR2.
   const W = await world();
   try {

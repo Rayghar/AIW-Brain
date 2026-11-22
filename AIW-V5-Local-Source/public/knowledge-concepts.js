@@ -306,8 +306,9 @@ export function conceptPinCurrency(p,pin,{today=null,held=null}={}){
  if(!release||!s.pins.includes(release.id))return {state:'replaced',title:'Review changed architectural support',detail:name+' is no longer active in this project.'};
  const h=list(held||releasedConcepts(p)).find(c=>c.release.id===release.id&&c.conceptId===pin.conceptId);
  if(!h||!h.eligible||h.part&&(h.conceptHash!==pin.conceptHash||release.checksum!==pin.releaseHash))return {state:'changed',title:'Review changed architectural support',detail:name+' no longer has eligible support: '+(h&&!h.eligible?h.reasons.join(' '):'the release no longer holds the version the pin names')+'.'};
- // The project's own successors, nearest first through the supersedes chain; one that is withdrawn (the release, or a form
- // of the concept in it) is passed over, so the newer version offered is one that stands (the fix-up, ruling X4). The
+ // The project's own successors, nearest first through the supersedes chain; one that rests on anything withdrawn (what
+ // pinRests gives for a pin on it: the concept, the release, its form claims and their sources) is passed over, so the
+ // newer version offered is one that stands (the fix-up and the lead's follow-up, ruling X4). The
  // organisation's successor is read so on the server, through its signed notices (refreshOrganizationAssurance).
  let own=null;if(!org)for(let ids=[release.id],seen=0;!own&&ids.length&&seen<31;seen++){const next=s.releases.filter(r=>ids.includes(r.supersedes));own=next.map(r=>[r,list(r.parts?.concepts).find(c=>c?.conceptId===pin.conceptId)]).find(([r,c])=>c&&c.conceptHash!==pin.conceptHash&&!withdrawn(p,pinRests(p,{conceptId:pin.conceptId,releaseId:r.id}).ids).length)||null;ids=next.map(r=>r.id);}
  const theirs=org?list(notice?.successor?.concepts).find(c=>c?.conceptId===pin.conceptId&&c.conceptHash!==pin.conceptHash):null;
