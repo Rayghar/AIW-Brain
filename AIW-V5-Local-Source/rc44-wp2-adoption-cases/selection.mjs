@@ -59,7 +59,7 @@ import {extensionIssues, extensionConflicts, builtInType} from '../design-extens
 import {isReviewCommand} from '../authorship.js';
 import {applyDecisionCommand, decisionFindings, decisionCurrent} from '../public/decisions-domain.js';
 import {readDecision} from '../public/decision-reading.js';
-import {applyKnowledgeCommand, knowledgeStamp, claimReceiptCurrent} from '../public/knowledge-governance.js';
+import {applyKnowledgeCommand, knowledgeStamp, claimReceiptCurrent, knowledgeImpactStamp} from '../public/knowledge-governance.js';
 import {applyArchitectureCommand, previewArchitectureDesign} from '../public/architecture-design.js';
 import {architectureMarkdown} from '../public/sdd-architecture.js';
 import {instantiateTemplate} from '../project-lifecycle.js';
@@ -87,6 +87,8 @@ const decision = (p, id) => p.decisions.records.find(d => d.id === id), alt = (d
 const FORBIDDEN = /^(score|scores|rank|ranks|ranking|weight|weights|weighted|total|lead)$/i;
 // Every key of a value, at any depth, with its path.
 const keysOf = (v, path = '', out = []) => { if (v && typeof v === 'object') for (const [k, x] of Object.entries(v)) { out.push(path + k); keysOf(x, path + k + '.', out); } return out; };
+// The SDD's "Selection basis" (the package's section, ruling U5): from its heading to the next heading of its level or above.
+const basisOf = md => { const at = md.indexOf('\n### Selection basis\n'); if (at < 0) return ''; const rest = md.slice(at + 1), end = rest.slice(1).search(/\n#{1,3} /); return end < 0 ? rest : rest.slice(0, end + 1); };
 
 export default async function ({block, pass, load}) {
   const S = await load(new URL('../public/adoption-selection.js', import.meta.url).href), D = await load(new URL('../public/adoption-domain.js', import.meta.url).href);
@@ -808,19 +810,61 @@ export default async function ({block, pass, load}) {
     pkg(); let {p, id} = threeCandidates();
     const d0 = decision(p, id), lib = alt(d0, 'Ticket consumer v2'), relay = alt(d0, 'Regional message relay'), inbox = alt(d0, 'Inbox and deduplication component');
     p = doc(send(p, 'selection.choose', {id, alternativeId: inbox.id, reason: 'The inbox deduplicates and stays in region North.', unproven: ['QD-008'], rejections: {[relay.id]: 'It keeps messages outside region North.', [lib.id]: 'It states nothing about where it keeps data.'}}));
-    const md = architectureMarkdown(withFinalReview(p)).markdown, at = md.indexOf(id + ' ·'), section = md.slice(at, md.indexOf('\n### ', at + 1) > 0 ? md.indexOf('\n### ', at + 1) : at + 6000);
+    const md = architectureMarkdown(withFinalReview(p)).markdown, at = md.indexOf(id + ' ·'), section = md.slice(at, md.indexOf('\n### ', at + 1) > 0 ? md.indexOf('\n### ', at + 1) : at + 6000), basis = basisOf(md);
     assert.ok(at >= 0, 'the decision is printed');
     // (ruling Q3; was: the first constraint printed A's typed reading "(topology eq single-region-north)" and the rows read
     // against it. Now neither constraint has one, and each row a person judged names its judge.)
-    assert.match(section, /\*\*Selection basis\*\*: a component for LR-001 · Payment API, against 2 hard constraints: Customer records stay in region North \(no typed reading: unknown until a person judges it\); Run only what the platform team operates \(no typed reading: unknown until a person judges it\)\./);
-    assert.match(section, /Inbox and deduplication component \(profile, released KC-\d+ in KR-\d+\): chosen · Customer records stay in region North: pass \(judged by architect-b\); Run only what the platform team operates: unknown, named unproven/);
-    assert.match(section, /Regional message relay \(profile, released KC-\d+ in KR-\d+\): rejected · Customer records stay in region North: fail \(judged by architect-b\)/);
+    // (ruling U5; was: the basis printed inside the decision record, "**Selection basis**: …", by sdd-architecture.js, each
+    // candidate's rows as stored at the choice, ", named unproven" on every candidate's row the choice named. Now the
+    // package prints it through S0's sections part, in the trade-off analysis, the record points there; each candidate's
+    // rows read "at the choice and now" (or both, each named), and ", named unproven" only on the chosen candidate's rows.)
+    assert.match(section, /\*\*Selection basis\*\*: in “Selection basis”, in the trade-off analysis below\./, 'the decision record points to its basis');
+    assert.match(basis, new RegExp('\\*\\*' + id + ' · Which component realises LR-001 · Payment API\\?\\*\\*: a component for LR-001 · Payment API, against 2 hard constraints: Customer records stay in region North \\(no typed reading: unknown until a person judges it\\); Run only what the platform team operates \\(no typed reading: unknown until a person judges it\\)\\.'));
+    assert.match(basis, /Inbox and deduplication component \(profile, released KC-\d+ in KR-\d+\): chosen · at the choice and now: Customer records stay in region North: pass \(judged by architect-b\); Run only what the platform team operates: unknown, named unproven\n/);
+    assert.match(basis, /Regional message relay \(profile, released KC-\d+ in KR-\d+\): rejected · at the choice and now: Customer records stay in region North: fail \(judged by architect-b\); Run only what the platform team operates: unknown\n/);
     assert.match(section, /Not chosen: It keeps messages outside region North\./); assert.match(section, /Not chosen: It states nothing about where it keeps data\./);
-    assert.ok(!/score|weigh/i.test(section.slice(section.indexOf('**Selection basis**'))), 'the basis weighs nothing');
+    assert.ok(!/score|weigh/i.test(basis), 'the basis weighs nothing');
     pass('S5 SDD: the decision record prints the selection basis (what is selected, each hard constraint, none with a typed reading), each candidate with its kind, its pinned knowledge, its outcome and its rows, the unproven rows named, and each rejected candidate with its reason; nothing is weighed');
   });
 
   // ------------------------------------------------------------ the fixtures read no clock (ruling Q7)
+  // ------------------------------------------------------------ the SDD's selection basis (ruling U5)
+  // The basis is the package's reading, printed by the package through S0's sections part (no workbench module imports a
+  // module of the package, ruling D3): ", named unproven" only on the chosen candidate's rows the chooser named; beside the
+  // rows stored at the choice, the reading now, for every candidate; the constraints from the selection's own reading, a
+  // late one included. At the fix-up's head the rejected relay printed "unknown, named unproven", a withdrawn rejected
+  // profile kept printing "pass" with no reading now, and a constraint that reached the selection after the choice was
+  // not listed ("against 2 hard constraints" while the selection read 3).
+  await block('S5 U5 SDD basis', async () => {
+    const e = pkg(), Q = (await import('../public/quality-domain.js')).applyQualityCommand;
+    assert.deepEqual(list(e.sections).map(s => [s.document, s.after, typeof s.markdown]), [['sdd', '## Trade-off analysis', 'function']], 'the package states its section through S0\'s sections part, in the trade-off analysis');
+    const sdd = readFileSync(new URL('../public/sdd-architecture.js', import.meta.url), 'utf8');
+    assert.ok(![...sdd.matchAll(/from '\.\/([^']+)'/g)].some(m => /^adoption-/.test(m[1])) && !/selection-withdrawn|candidateEligibility|selectionReading/.test(sdd), 'the workbench\'s SDD imports no module of the package and reads none of its findings');
+    let {p, id} = threeCandidates(); const d0 = decision(p, id), lib = alt(d0, 'Ticket consumer v2'), relay = alt(d0, 'Regional message relay'), inbox = alt(d0, 'Inbox and deduplication component');
+    p = doc(send(p, 'selection.choose', {id, alternativeId: inbox.id, reason: 'The inbox deduplicates and stays in region North.', unproven: ['QD-008'], rejections: {[relay.id]: 'It keeps messages outside region North.', [lib.id]: 'It states nothing about where it keeps data.'}}));
+    const line = (b, title) => b.split('\n').find(l => l.startsWith('- ' + title + ' (')) || '';
+    { const b = basisOf(architectureMarkdown(withFinalReview(p)).markdown);
+      assert.match(line(b, 'Inbox and deduplication component'), /: chosen · at the choice and now: Customer records stay in region North: pass \(judged by architect-b\); Run only what the platform team operates: unknown, named unproven$/, 'the chooser named the chosen candidate\'s unknown row unproven');
+      for (const t of ['Regional message relay', 'Ticket consumer v2']) { assert.ok(line(b, t), t + ' is printed'); assert.ok(!/named unproven/.test(line(b, t)), 'a rejected candidate\'s row is not named unproven: ' + line(b, t)); }
+      assert.match(line(b, 'Ticket consumer v2'), /\(library entry LIB-S5-\d+\): rejected · at the choice and now: Customer records stay in region North: unknown; Run only what the platform team operates: unknown$/); }
+    // the rejected relay's released profile is withdrawn: its reading now is printed beside the rows stored at the choice
+    const relayClaim = decision(p, id).alternatives.find(a => a.id === relay.id).candidate.ref.claimId, REVIEW = {reviewed: true, reviewer: 'Second reviewer', reason: 'Withdraw the relay profile.'};
+    const off = withFinalReview(applyKnowledgeCommand(p, {type: 'knowledge.withdraw', payload: {...REVIEW, id: relayClaim, stamp: knowledgeImpactStamp(p, relayClaim)}}, AT, 'author').document, {upgrade: false});
+    assert.ok(S.candidateEligibility(off, decision(off, id), alt(decision(off, id), 'Regional message relay')).reasons.length, 'the relay no longer stands');
+    { const b = basisOf(architectureMarkdown(withFinalReview(off)).markdown);
+      assert.match(line(b, 'Regional message relay'), new RegExp(': rejected · at the choice: Customer records stay in region North: fail \\(judged by architect-b\\); Run only what the platform team operates: unknown · now: Customer records stay in region North: unknown; Run only what the platform team operates: unknown \\(The released knowledge ' + relayClaim + ' is no longer current in this project[^)]*\\)$'), 'a withdrawn rejected profile does not keep printing fail as its reading now');
+      assert.match(line(b, 'Inbox and deduplication component'), /: chosen · at the choice and now: /, 'the chosen inbox still stands'); }
+    // a hard constraint that reaches the selection after the choice is listed, and read now on every candidate
+    const late = withFinalReview(Q(p, {type: 'quality.driver', payload: {kind: 'constraint', title: 'Encrypt payment data at rest', description: 'Every store of the payment path encrypts at rest.', impact: 'Rules out a store without encryption.', priority: 'High', requirementIds: ['REQ-001']}}, AT).document, {upgrade: false});
+    assert.equal(S.selectionConstraints(late, decision(late, id)).length, 3, 'the selection reads three hard constraints');
+    { const b = basisOf(architectureMarkdown(withFinalReview(late)).markdown);
+      assert.match(b, new RegExp('\\*\\*' + id + ' · [^*]+\\*\\*: a component for LR-001 · Payment API, against 3 hard constraints: Customer records stay in region North \\(no typed reading: unknown until a person judges it\\); Run only what the platform team operates \\(no typed reading: unknown until a person judges it\\); Encrypt payment data at rest \\(no typed reading: unknown until a person judges it\\)\\.'), 'the late constraint is listed');
+      assert.match(line(b, 'Inbox and deduplication component'), /: chosen · at the choice: Customer records stay in region North: pass \(judged by architect-b\); Run only what the platform team operates: unknown, named unproven · now: Customer records stay in region North: pass \(judged by architect-b\); Run only what the platform team operates: unknown, named unproven; Encrypt payment data at rest: unknown$/, 'and read now, unknown and not named unproven'); }
+    // a document with no selection prints no basis; the decision record of a selection points to it
+    assert.equal(basisOf(architectureMarkdown(withFinalReview(selectionProject())).markdown), '', 'no selection, no basis');
+    pass('S5 U5 SDD basis: the package prints the selection basis through S0\'s sections part, in the trade-off analysis, and the workbench\'s SDD imports none of it; ", named unproven" only on the chosen candidate\'s rows the chooser named; every candidate\'s rows "at the choice and now", or both, each named, with why a candidate no longer stands (the rejected relay whose profile is withdrawn); the constraints from the selection\'s own reading, a constraint that reached it after the choice included and read unknown, not named unproven; a document with no selection prints no basis');
+  });
+
   await block('S5 fixtures', async () => {
     // Each fixture of the package's suite, built under two clocks years apart, is the same document: none reads the
     // time, so a golden captured once holds on every later day.
