@@ -485,7 +485,13 @@ export function mergeStamper(prior,command,merger,at,{fourEyes=false,collections
  return (q,c,i)=>{
   const x=by[i],author={kind:x.kind,id:x.by,account:x.account,...(x.session?{session:x.session}:{})},next=q?.document;if(!next)return;
   stampAuthorship(before,next,c,q,author,at,{fourEyes});also?.(before,next,author);
-  for(const path of paths){const old=new Map(listAt(before,path).map(r=>[path===NARRATIVE?'':r?.id,r]));for(const r of listAt(next,path)){const s=stampOf(r);if(!plain(r)||!s||s.at!==at||JSON.stringify(s)===JSON.stringify(stampOf(old.get(path===NARRATIVE?'':r.id))))continue;const pv={...r.provenance,author:{...s,mergedBy:merger.id||null}};if(reviewer)pv.reviewed={by:reviewer,at,how:'merged'};r.provenance=tidyProvenance(pv);}}
+  // What this command stamped: a write (the author stamp), or only a keep or a confirmation its preparer sent (the
+  // review stamp): each names the merger beside it.
+  for(const path of paths){const old=new Map(listAt(before,path).map(r=>[path===NARRATIVE?'':r?.id,r]));for(const r of listAt(next,path)){
+   if(!plain(r))continue;const was=old.get(path===NARRATIVE?'':r.id),s=stampOf(r),v=plain(r.provenance?.reviewed)?r.provenance.reviewed:null,same=(x,y)=>JSON.stringify(x??null)===JSON.stringify(y??null);
+   const wrote=!!s&&s.at===at&&!same(s,stampOf(was)),kept=!wrote&&!!v&&v.at===at&&!same(v,was?.provenance?.reviewed);if(!wrote&&!kept)continue;
+   const pv={...r.provenance};if(wrote){pv.author={...s,mergedBy:merger.id||null};if(reviewer)pv.reviewed={by:reviewer,at,how:'merged'};}else pv.reviewed={...v,mergedBy:merger.id||null};r.provenance=tidyProvenance(pv);
+  }}
   before=snap(next);
  };
 }

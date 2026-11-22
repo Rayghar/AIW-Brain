@@ -1110,6 +1110,14 @@ await block('D12 a record a merge wrote', async () => {
       await refused('synthetic.accept', confirmed, A, MERGED(confirmed, A, B), 'the preparer\'s words still stand'); await refused('synthetic.accept', confirmed, B, /architect-b wrote /, 'and the merger applied them');
       ok(await send('synthetic.save', {id: saved, title: 'Saved again later, changed by a person'}, C)); assert.deepEqual(stamps(rec(saved)), ['person', C, undefined, undefined, undefined], 'a person\'s change is that person\'s write');
       await refused('synthetic.accept', saved, C, /architect-c wrote /, 'its writer'); }
+    // a keep a person prepared in an alternative (only a person carries one: ruling L1), merged by another person: the
+    // proposal is kept by whoever prepared the keep, with the merger named beside it; neither is the second person
+    // (a decision: a record an alternative can name by its id, which a package's record is not: workbench-domain.js targetSnapshot)
+    { ok(await send('decision.save', {question: 'Which store holds the drafts, as Sol proposes it?'}, AGENT)); const prop = d().decisions.records.at(-1).id; await rewrite(p => { p.decisions.records.find(x => x.id === prop).state = 'proposed'; });
+      const a = await stage([{type: 'record.keep', payload: {id: prop, chapter: 3}}], A); await merge(a.id, B); const pv = decision(prop).provenance;
+      assert.deepEqual([decision(prop).state === 'proposed', pv.author.kind, pv.author.by, pv.author.mergedBy, pv.reviewed.by, pv.reviewed.how, pv.reviewed.mergedBy], [false, 'sol-draft', AGENT, undefined, A, 'kept', B], 'kept by its preparer, merged by the merger: ' + JSON.stringify(pv));
+      await refused('vouch.accept', prop, B, MERGED(prop, A, B), 'the merger of a keep'); await refused('vouch.accept', prop, A, NO_PERSON(prop), 'the one who kept it is one person');
+      ok(await step('vouch.accept', prop, C), 'a third person'); }
     // 4. a topology node, a package's record of its own kind: a person's is stamped as theirs and reviewed by the merger; a
     // node a draft by Sol or an agent account prepared arrives as their proposal, which no merge stands behind (a person
     // keeps it: rulings F4 and L1)

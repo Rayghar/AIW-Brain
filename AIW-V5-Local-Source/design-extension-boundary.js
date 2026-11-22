@@ -93,14 +93,15 @@ function personBehind(p, record, actor) {
   // (ruling Y3: a merge is the merger's reviewed step, so the person who merged the record stands behind it as it reads)
   return !!review?.by && review.by !== actor && here(review.at) && (review.how === 'confirmed' || review.how === 'kept' || review.how === 'merged' || review.how === 'judgement' && review.outcome === 'kept');
 }
-// Who a merge's stamp names while the words it wrote stand (the lead's ruling Y3 of 2026-11-22; public/provenance.js
-// mergeStamper): whoever prepared the command in the alternative and the person who merged it. Neither is the second
-// person; a third signed-in person takes the step. A later change of what the record says is stamped as any save is, and
-// the stamp then names its writer only.
+// Who a merge's stamp names while what it wrote stands (the lead's ruling Y3 of 2026-11-22; public/provenance.js
+// mergeStamper): whoever prepared the command in the alternative and the person who merged it, on the author stamp of a
+// record the merge wrote, or beside a keep or a confirmation it applied. Neither is the second person; a third signed-in
+// person takes the step. A later change of what the record says is stamped as any save is, and the stamp then names its
+// writer only.
 function mergedRefusal(record, actor) {
-  const a = record?.provenance?.author;
-  if (!a?.mergedBy || a.by !== actor && a.mergedBy !== actor) return null;
-  return 'A second person\'s step needs two persons: ' + record.id + ' reads as ' + a.by + ' prepared it in an alternative and ' + a.mergedBy + ' merged it. A signed-in person who neither prepared nor merged ' + record.id + ' takes this step.';
+  const pv = record?.provenance, a = pv?.author, v = pv?.reviewed;
+  const by = a?.mergedBy && (a.by === actor || a.mergedBy === actor) ? [a.by, a.mergedBy] : v?.mergedBy === actor || v?.how === 'merged' && v.by === actor ? [v.how === 'merged' ? a?.by : v.by, v.mergedBy || v.by] : null;
+  return by && 'A second person\'s step needs two persons: ' + record.id + ' reads as ' + by[0] + ' prepared it in an alternative and ' + by[1] + ' merged it. A signed-in person who neither prepared nor merged ' + record.id + ' takes this step.';
 }
 // The stored record a second person's step acts on, by its id, in the collections the package states for the type
 // or for its prefix (provenance.paths): `second` may answer a projection, and the stamps are the stored record's.
