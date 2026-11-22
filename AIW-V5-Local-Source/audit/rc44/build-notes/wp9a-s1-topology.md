@@ -40,7 +40,17 @@ files, buckets 53/50/45, stylesheet 901,873 B, no violation.
 
 ### By item (fourth fix-up)
 
-- Item 1: in progress.
+- **Item 1, R1: done.** Case: S0's block "O2", the start check (`rc44-s0-extensions-validate.mjs`). Seen to fail on
+  `ce6eb90` (`.aiw-local/fixup4/r1-before.log`): all fifteen refusals were accepted (the narrative, `finalReview.judgements`,
+  `.dispositions` and `.actions`, `changes.events`, `workbench.history`, `members.roles`, another package's lifecycle
+  collection and its collection for the provenance reader alone, a path named twice, and five paths no table holds as a
+  built-in record collection: `runtime.things`, `security.risks`, `runtime.evidence`, `logical.assets`,
+  `knowledge.claims`). Now `design-extension-parts.js extensionIssues` accepts a path only when it is in both
+  `record-lifecycle.js COLLECTIONS` and `provenance.js RECORD_PATHS`, is none of `finalReview.*` (the narrative with
+  them), `changes.*`, `workbench.*` or `members.*`, is no collection a registered package states as its own, and is named
+  once; each refusal in its own words. The case also holds that every built-in record collection of a chapter's container
+  (35 of them) is accepted together, so the check refuses nothing it should take. wp9a S1.11 and S1.24 pass unchanged.
+- Item 2: in progress.
 
 ## Third fix-up (after the second verifier; the lead's rulings O1 to O5, with K to N)
 

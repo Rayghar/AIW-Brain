@@ -1608,6 +1608,23 @@ await block('O2 tracked paths', async () => {
   words({id: 'xy', track: f, lifecycle: {'journals.records': 3}, trackPaths: ['journals.records']}, /xy: trackPaths “journals\.records” is the package's own collection: the boundary stamps those already; trackPaths names built-in collections only\./, 'never a lifecycle collection of its own');
   words({id: 'xy', track: f, provenance: {records: {'journals.notes': 3}}, trackPaths: ['journals.notes']}, /trackPaths “journals\.notes” is the package's own collection/, 'nor one it states for the provenance reader');
   words({id: 'xy', track: f, provenance: {paths: {'xy.save': ['journals.items']}}, trackPaths: ['journals.items']}, /trackPaths “journals\.items” is the package's own collection/, 'nor one its commands write');
+  // (ruling R1) a built-in record collection only: one the lifecycle family keeps and the provenance reader reads (COLLECTIONS and RECORD_PATHS),
+  // never the review's (the narrative and every finalReview.* list), the change journal's, the workbench's or the members', never a collection a
+  // registered package states as its own, and each path once
+  { const misses = [], esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), refused = (paths, re, why) => { const issues = boundary.extensionIssues({id: 'xy', track: f, trackPaths: paths}); if (!issues.some(i => re.test(i))) misses.push(why + ' ' + JSON.stringify(paths) + ': ' + (issues.join(' | ') || 'accepted')); };
+    for (const path of ['finalReview.narrative', 'finalReview.judgements', 'finalReview.dispositions', 'finalReview.actions']) refused([path], new RegExp('^xy: trackPaths “' + esc(path) + '” is the review\'s: a tracker mends a chapter\'s records, never the review, the change journal, the workbench or the members\\.$'), 'the review\'s');
+    for (const [path, whose] of [['changes.events', 'the change journal\'s'], ['workbench.history', 'the workbench\'s'], ['members.roles', 'the members\'']]) refused([path], new RegExp('^xy: trackPaths “' + esc(path) + '” is ' + esc(whose) + ': a tracker mends a chapter\'s records'), whose);
+    // another registered package's own collections: its lifecycle rows and the rows it states for the provenance reader alone (the build's packages, read from the registry)
+    const held = boundary.packageCollections(), of = id => X.EXTENSIONS.find(x => x.id === id), theirs = held.find(([path, , id]) => Object.hasOwn(of(id).lifecycle || {}, path)), reader = held.find(([path, , id]) => !Object.hasOwn(of(id).lifecycle || {}, path));
+    assert.ok(theirs && reader, 'the registry holds a package with a lifecycle collection and one with a collection for the provenance reader alone: ' + JSON.stringify(held));
+    for (const [path, , id] of [theirs, reader]) refused([path], new RegExp('^xy: trackPaths “' + esc(path) + '” is ' + esc(id) + '\'s collection: a tracker mends built-in collections only, never another package\'s\\.$'), 'another package\'s');
+    refused(['runtime.zones', 'decisions.records', 'runtime.zones'], /^xy: trackPaths names “runtime\.zones” twice\.$/, 'a path twice');
+    for (const path of ['runtime.things', 'security.risks', 'runtime.evidence', 'logical.assets', 'knowledge.claims']) refused([path], new RegExp('^xy: trackPaths “' + esc(path) + '” is no collection of records that the lifecycle family keeps and the provenance reader reads \\(record-lifecycle\\.js COLLECTIONS, provenance\\.js RECORD_PATHS\\): a tracker mends built-in records only\\.$'), 'no built-in record collection');
+    assert.deepEqual(misses, [], 'the start check refuses each: ' + misses.join(' | '));
+    // and accepts every built-in record collection of a chapter's container, together
+    const builtIn = COLLECTIONS.map(([path]) => path).filter(path => path.includes('.') && RECORD_PATHS.some(([x]) => x === path) && !X.EXTENSIONS.some(x => [...Object.keys(x.lifecycle || {}), ...Object.keys(x.provenance?.records || {})].includes(path)));
+    assert.ok(builtIn.length >= 30 && builtIn.includes('runtime.zones') && builtIn.includes('processModel.claims') && !builtIn.includes('logical.assets'), 'the built-in record collections: ' + builtIn.join(', '));
+    assert.deepEqual(boundary.extensionIssues({id: 'xy', track: f, trackPaths: builtIn}), [], 'every built-in record collection may be mended'); }
   assert.deepEqual(boundary.extensionIssues(TRACKING), [], 'the synthetic package conforms');
   X.registerExtension(TRACKING);
   // assertTrackerStaysInPaths, on documents the handler of the package's own command leaves

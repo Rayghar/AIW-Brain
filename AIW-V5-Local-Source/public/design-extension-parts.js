@@ -268,8 +268,25 @@ export function extensionIssues(e) {
   if (e.trackPaths !== undefined) {
     if (!fn(e.track)) say('trackPaths names the built-in collections the package\'s tracker mends: it states track.');
     if (!(Array.isArray(e.trackPaths) && e.trackPaths.length && e.trackPaths.every(x => typeof x === 'string' && /^[a-z][A-Za-z]{0,40}\.[a-z][A-Za-z]{0,40}$/.test(x)))) say('trackPaths is a list of \'chapter.collection\' paths, each a collection of a chapter\'s container.');
-    else { const own = new Set([...Object.keys(plain(e.lifecycle) ? e.lifecycle : {}), ...Object.keys(plain(e.provenance?.records) ? e.provenance.records : {}), ...Object.values(plain(e.provenance?.paths) ? e.provenance.paths : {}).flatMap(v => list(v))]);
-      for (const path of e.trackPaths) if (own.has(path)) say('trackPaths “' + path + '” is the package\'s own collection: the boundary stamps those already; trackPaths names built-in collections only.'); }
+    else {
+      // (the lead's ruling R1 of 2026-11-22) A built-in record collection only: one the lifecycle family keeps and the
+      // provenance reader reads (both tables), never the review's (the narrative and every finalReview.* list), the change
+      // journal's, the workbench's or the members', never a collection a registered package states as its own (its
+      // lifecycle, provenance.records and provenance.nouns rows, and a list of its provenance.paths that is no key the
+      // workbench writes), and each path once.
+      const part = v => (plain(v) ? v : {}), rows = x => [...Object.keys(part(x.lifecycle)), ...Object.keys(part(x.provenance?.records)), ...Object.keys(part(x.provenance?.nouns)), ...Object.values(part(x.provenance?.paths)).flatMap(v => list(v))];
+      const own = new Set([...Object.keys(part(e.lifecycle)), ...Object.keys(part(e.provenance?.records)), ...Object.values(part(e.provenance?.paths)).flatMap(v => list(v))]), seen = new Set();
+      const WHOSE = {finalReview: 'the review\'s', changes: 'the change journal\'s', workbench: 'the workbench\'s', members: 'the members\''}, table = (t, path) => t.some(r => r[0] === path);
+      for (const path of e.trackPaths) {
+        const whose = WHOSE[path.split('.')[0]], theirs = EXTENSIONS.find(x => x.id !== e.id && rows(x).some(k => k === path && !workbenchKey(k)));
+        if (seen.has(path)) say('trackPaths names “' + path + '” twice.');
+        else if (own.has(path)) say('trackPaths “' + path + '” is the package\'s own collection: the boundary stamps those already; trackPaths names built-in collections only.');
+        else if (theirs) say('trackPaths “' + path + '” is ' + theirs.id + '\'s collection: a tracker mends built-in collections only, never another package\'s.');
+        else if (whose) say('trackPaths “' + path + '” is ' + whose + ': a tracker mends a chapter\'s records, never the review, the change journal, the workbench or the members.');
+        else if (!(table(COLLECTIONS, path) && table(RECORD_PATHS, path))) say('trackPaths “' + path + '” is no collection of records that the lifecycle family keeps and the provenance reader reads (record-lifecycle.js COLLECTIONS, provenance.js RECORD_PATHS): a tracker mends built-in records only.');
+        seen.add(path);
+      }
+    }
   }
   // lifecycle and provenance
   if (e.lifecycle !== undefined && !plain(e.lifecycle)) say('lifecycle is {path: chapter}.');
