@@ -255,6 +255,7 @@ add('S3.5 (withdrawal): the organisation withdraws a release; the pinned release
     // The library's own listings show no notice.
     assert.ok(!(await W.orgApi('releases', null, 'steward')).data.releases.some(r => r.kind === 'knowledge-notice'), 'the library releases list no notice');
     assert.ok(!(await W.orgApi('knowledge', null, 'steward')).data.releases.some(r => String(r.id).startsWith('notice:')), 'the knowledge releases list no notice');
+    { await D.read(); const r = await W.orgApi('install', {releaseId: 'notice:' + OR1.id, revision: D.state.revision, reviewed: true}, 'architect', D.id); assert.equal(r.status, 400); assert.equal(r.data.error, 'Choose an existing release.', 'a notice is no release a project installs'); }
   } finally { W.close(); }
 });
 
