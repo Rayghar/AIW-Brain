@@ -47,6 +47,14 @@ commit after each:
 Measured before any change (`node build.mjs` on `41d6fb4`): chapters route 3,230,605 B, projects 507,338 B, 148 script
 files, buckets 53/50/45, stylesheet 901,873 B, no violation.
 
+**T3 (recorded; no code).** The lead confirms what the fourth fix-up did beyond R2's words: a tracker call that removes a
+record of its `trackPaths` is refused as an add is; one that moves a chapter's seed reading is refused; a refused tracker
+call is the package's fault, answered 500 with code `fault` and the package named (`worker.js`, `isTrackerRefusal`).
+Open questions 15 and 16 are closed so. Unchanged on this head and still held by S0's block "O2" (the removed record,
+the need unseeded through its description, both refused 500 `fault` naming `zt-tracking`, nothing stored). wp2's
+tracker writes only wp2's own records and states no `trackPaths` (no `trackPaths` in any wp2 module on this head);
+wp2's suite calls `assertTrackerStaysInPaths` at wp2's next merge (not here: wp2's files are another worktree's).
+
 ## Fourth fix-up (after the third verifier; the lead's rulings R1 to R4)
 
 Branch `rc44/wp9a-s1-topology-fix-c7`, from `rc44/wp9a-s1-topology-fix-c6` (`ce6eb90`). Verifier:
