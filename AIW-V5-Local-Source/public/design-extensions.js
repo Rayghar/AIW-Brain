@@ -11,8 +11,9 @@
 //   commands {type: {apply, staged, person, second, validate, undo, large}}
 //                                                               the server's boundary (design-extension-boundary.js); canonical-command.js stagedBy
 //   track(prior, next, command, at)                             the server's boundary: the package's tracker, called for every commit; it answers nothing
-//   trackPaths ['chapter.collection']                           the server's boundary: the built-in collections the tracker mends, whose records a call
-//                                                               changed are stamped as the commit's (ruling O2, which retired M1's answer)
+//   trackPaths {'chapter.collection': [field]}                  the server's boundary: the built-in collections the tracker mends, each with the content
+//                                                               fields it may change there; every other field is put back, and what a call changed is
+//                                                               stamped as the commit's (rulings O2, which retired M1's answer, and T1)
 //   lifecycle {path: chapter}                                   record-lifecycle.js COLLECTIONS (and so provenance.js RECORD_PATHS)
 //   canRestore {path: (p, record) => void}                      record-lifecycle.js restore (the package's own collections; ruling L3)
 //   quietProposals {path: true}                                 record-lifecycle.js: dismissing or restoring a proposal moves no version (ruling M6)

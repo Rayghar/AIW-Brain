@@ -1096,7 +1096,8 @@ await block('S1.23 dismissing a proposal is no design change', () => {
 
 // (the lead's ruling O2; new problem 2 of the second verifier, which amends M1) The boundary, not the package, says what
 // the tracker changed: the package states the built-in collections its mend changes as trackPaths (the zones and the
-// placements), the boundary copies them before each call of the tracker and stamps as the commit's each record whose
+// placements, each with the fields the mend changes there: ruling T1), the boundary copies them before each call of the
+// tracker, puts back every field a path does not list, and stamps as the commit's each record whose
 // content the call changed (S1.21 holds that through the server), and the tracker answers nothing. It changes no other
 // built-in collection: rc44-s0-readings.mjs assertTrackerStaysInPaths runs it on its cases (a document with no
 // topology, the step that types the project, a node and a failure domain saved, a zone and a placement located, a zone
@@ -1133,7 +1134,7 @@ await block('S1.24 the tracker stays in its paths', () => {
     assert.throws(() => R.assertTrackerStaysInPaths({...mine(), trackPaths: {'runtime.zones': ['nodeId'], 'runtime.placements': ['nodeId']}}, cases), /tracker changed “domainIds” of [A-Z]+-\d+ in “runtime\.zones” \(case \d+, record\.restore\): a tracker changes only the content fields its trackPaths lists for the path/, 'the zone\'s failure domains are listed because the mend changes them');
   });
   assert.deepEqual(misses, [], misses.join(' | '));
-  pass('S1.24: the package states the built-in collections its mend changes (trackPaths: runtime.zones, runtime.placements); its tracker answers nothing, where it mends too; on ' + cases.length + ' cases (no topology, the step, a node, a failure domain, a zone and a placement located, a zone and a placement a restore brings back naming what is not there, a proposal kept) it changes nothing outside its own keys, its trackPaths and the change journal (rc44-s0-readings.mjs assertTrackerStaysInPaths)');
+  pass('S1.24: the package states the built-in collections its mend changes and the fields it changes there (trackPaths: runtime.zones nodeId and domainIds, runtime.placements nodeId; ruling T1), and a zone\'s domainIds left off the list fails the helper; its tracker answers nothing, where it mends too; on ' + cases.length + ' cases (no topology, the step, a node, a failure domain, a zone and a placement located, a zone and a placement a restore brings back naming what is not there, a proposal kept) it changes nothing outside its own keys, its trackPaths and the change journal (rc44-s0-readings.mjs assertTrackerStaysInPaths)');
 });
 
 await block('S1.9 staging; candidate knowledge reaches no topology reading', () => {

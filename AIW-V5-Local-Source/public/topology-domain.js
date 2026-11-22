@@ -331,10 +331,11 @@ const RESTORE={
 // a record that is there and no proposal keeps its name, whoever changed it last) loses that name (mend), however the
 // commit got there (a restore of a zone or of the plan a placement left with, a batch that retires and restores in one
 // go). So a zone never reads as standing in a domain that is not there: it reads by its own name again, and a person
-// locates it anew. The package states the two collections the mend changes (trackPaths below); the boundary copies them
-// before each call and stamps each zone and placement the call changed as the commit's (ruling O2, which retired the
-// tracker's answer of ruling M1: the tracker answers nothing). A zone or a placement the commit made has where it stands
-// journalled with it.
+// locates it anew. The package states the two collections the mend changes and the fields it changes there (trackPaths
+// below: a zone's nodeId and domainIds, a placement's nodeId, with the revision moved forward by one); the boundary copies
+// them before each call, puts back every other field (ruling T1) and stamps each zone and placement the call changed as
+// the commit's (ruling O2, which retired the tracker's answer of ruling M1: the tracker answers nothing). A zone or a
+// placement the commit made has where it stands journalled with it.
 function mend(p,r,path){
  const nodes=deploymentNodes(p),domains=failureDomains(p),there=standing,was=JSON.stringify([r.nodeId,r.domainIds]);
  if(path==='runtime.zones'){
@@ -392,8 +393,9 @@ export const TOPOLOGY_PART={
  commands:{'runtime.topology-start':{apply:applyTopologyCommand,person:true},'technology.domain':record,'technology.domain-proposals':{apply:applyTopologyCommand},'runtime.node':record,'runtime.locate':edit},
  checks:{10:topologyFindings},
  track:trackTopology,
- // (ruling O2) the built-in collections the tracker's mend changes: the boundary stamps what a call changed there
- trackPaths:['runtime.zones','runtime.placements'],
+ // (rulings O2, T1) the built-in collections the tracker's mend changes, each with the fields it changes there: the
+ // boundary puts back every other field and stamps what a call changed
+ trackPaths:{'runtime.zones':['nodeId','domainIds'],'runtime.placements':['nodeId']},
  lifecycle:{'technology.domains':6,'runtime.nodes':10},
  canRestore:RESTORE,
  // (ruling M6) a proposal says nothing to the design (L6): dismissing or restoring one moves no version and clears no check

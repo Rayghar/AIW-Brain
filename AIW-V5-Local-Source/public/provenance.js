@@ -450,9 +450,10 @@ export function stampChanged(prior,next,paths,author,at){
 // the tracker's call changed (rc44; the lead's rulings M1 and O2: wp9a's mend of a zone or a placement). `was` is the
 // boundary's own copy from before the call, never what the package says: the record is stamped as the commit's as
 // settle stamps a record the commit changed (a tracker confirms and keeps nothing: what it sets of a review is not a
-// person's), and a stamp the tracker wrote itself is not kept. Since ruling R2 the boundary refuses a call that adds a
-// record and puts back the record's lifecycle, review and provenance fields from its copy before it calls this; a record
-// with no `was` keeps no author or review stamp, the safe answer should one reach here. Server only:
+// person's), and a stamp the tracker wrote itself is not kept. Since rulings R2 and T1 the boundary refuses a call that
+// adds a record and puts back from its copy every field the package's trackPaths does not list for the collection (the
+// lifecycle, review, acceptance and approval fields and the provenance among them) before it calls this; a record with no
+// `was` keeps no author or review stamp, the safe answer should one reach here. Server only:
 // design-extension-boundary.js trackExtensions.
 export function stampTracked(was,now,author,at){
  if(!plain(now))return now;
