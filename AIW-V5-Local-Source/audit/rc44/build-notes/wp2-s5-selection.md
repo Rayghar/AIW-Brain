@@ -831,7 +831,8 @@ fail on the head it started from, then the change; a WIP commit after each item.
   3,231,469 B, as `withRetirementPutBack`) and on the merged tree (4391e5e: 3,231,587 B against 3,228,540 B, the same
   saving, 3,047 B); `S5 size` holds both (case first: "the put-back command is recorded" failed before the record). The
   steps were run one by one (this session's shell does not take the one-line form); the read-out step was run as written.
-- **In progress:** item 5 (V5, notes, the final checks).
+- **Done:** item 5 (V5 recorded; this section; the suites, syntax, lint and build below; the final commit).
+- **In progress:** nothing. **Next:** the lead's review and merge (wp1's S2.12 at the merge: open point 1).
 
 ### Known limits (third fix-up)
 
@@ -909,6 +910,27 @@ entry (+1,144 B there), the SDD basis (V4) on the server. Bookings on this head:
 + wp1 S2 118 + wp2 S1 325 + wp2 S5 864 + wp9a 342 + the pool (−2,949 B: `trackPathsPartNameO2` 0,
 `guidedConcernRetirementQ8` −3,047, `baselineDefectFmtL10` 34, `designRowChapterKeysL5` 64). wp2 1,189 of 1,200 B.
 Headroom on the route: 5,252 B. The bucket of files under 10 KB went from 53 to 52 with the merge (a ceiling, R4).
+
+### Suites (this round's head, on the merge, two at a time, the machine shared)
+
+- `rc44-s0-extensions`: 28 checks green (`O1 the bookings add up` included). `rc44-wp2-adoption`: green, 45 blocks (S1's 20,
+  S5's 25 with `S5 V1 view`). `rc44-wp9a-deployment`: 25 checks green (S1.10's share unmoved). `rc44-wp1-knowledge`: 56
+  passed, 3 pending, **1 red, S2.12** (a merge consequence in wp1's own case, deviation 1).
+- `design-concern-validate.mjs`: its first block passes; it stops at l.199 with the assertion that stops it at l.119 on an
+  archive of `5cae40a` run here (the two failure texts are identical, `'QD-002': ''` in the assessments): V5.
+- `architecture-intelligence-validate.mjs`: green.
+- The importers of the changed modules and the suites the second verifier ran: action-undo, architecture-verification,
+  architecture-whatif, chapter-insight, component-library, connected-design-projections, decision-prerequisite,
+  decision-reading, decisions, design-records, desk, development, drafter-groups, fingerprint, journey-context-model-dom,
+  journey-context, knowledge-retrieval, logical, operations, order-independence, outcome-design-journey, provenance,
+  rc42-g2-library, rc42-g3a-risk-and-limits, rc42-g3b-trace-and-delivery, rc42-g3c-evidence-fingerprint,
+  rc42-g4-trace-kernel, reconciliation, review, sdd-architecture, sdd-content, sdd-formats, sdd-modules, sol-coverage,
+  sol-sdd, tradeoff, utility, recovery-authority, brain-tradeoffs: **all green**. `command-equivalence`: red at l.60, the
+  same first message as on the archive of `5cae40a` run here (baseline-red).
+- `node check-syntax.mjs`: 944 modules pass (940 before the merge). `node scripts/lint.mjs --summary`: 162 problems, the
+  baseline's 162, 0 new. `node build.mjs`: every gate passes (table above).
+- Not run: the full regression (the lead's), the browser suites (red at the baseline on this machine), `scale` and
+  `sdd-size` (timers).
 
 ### Deviations, and my view
 
