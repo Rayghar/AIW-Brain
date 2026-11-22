@@ -844,3 +844,110 @@ fail on the head it started from, then the change; a WIP commit after each item.
 - A judgement taken after the choice is told from one taken before by its own mark (`afterChoice`), written when it is
   taken; a judgement written by hand into a live document is not told apart (documents are written only through the
   commands; a recovery import moves every judgement aside, Q6).
+- A hard constraint that reaches the selection only after the choice and is then judged (Q9 (1) with Q4) is printed "at
+  the choice" as unknown, not named unproven, because the choice's rows follow each judgement (as on abfdb56) and so hold
+  it; before it is judged it is printed in the reading now only, as `S5 U5 SDD basis` holds. The safe direction (nothing
+  reads proven that was not).
+
+### Third fix-up, line by line
+
+New problems (second verifier):
+1. The U3 gate breaks the view's own flow (a blank note leaves an empty draft selection decision; no way to add an option)
+   — done (V1): `S5 V1 view`, failed at 18a7c8a; the view checks every note before `selection.start` and offers each
+   option not yet compared, with its note fields. Found with it and fixed: the notes were read after the start's redraw
+   (the start failed at abfdb56 even with every note filled), and the redraw dropped the dialog's error line.
+2. `selection-breaks` is waivable — done (V2): `S5 U1 hard constraint` (extended), failed at 3d0b43d; `hard: true`.
+3. S0's `O1 the bookings add up` red at the merge — done (V3): the stale-figure regex reads signed figures; the bookings
+   joined; the block and `assertBookingsAddUp` green on the merge; the figures restated (`atMerge`, the lead's `addsUp`).
+4. The notes' row-9 table is stale — done (V4): the two rows restated.
+5. Nit (U5): a row judged after the choice printed "at the choice and now: … pass" — done (V4): `S5 U5 SDD basis`
+   (extended), failed at 8e5bd5b; named "after the choice", the chooser's naming kept at the choice.
+6. Nit (U4): a selection's start moves the design stamp and `decisions.version` — recorded as a known limit (V4), above.
+7. Nit (U2): the put-back figure is not repeatable — done (V4): `wp2-s5-size.json` `putBack` (the command and its figures on
+   the slice's tree and on the merge); `S5 size` holds them (failed before the record).
+
+The item the second verifier read as partly:
+- Should-fix 11 (the result and the notes corrected): the one stale row was the row-9 table — done (V4); this section
+  and the result correct the rest.
+
+Rulings:
+- V1 — done (item 2). V2 — done (item 3). V3 — done (items 0 and 1). V4 — done (item 4). V5 — recorded (below and in
+  "What later slices must know").
+
+V5, for the merge evidence:
+- `design-concern-validate.mjs`'s baseline red line moves from l.119 (at `5cae40a`) to l.199 (here): the same assertion, the
+  same failure (`'QD-002': ''` in the assessments), checked on this head and on an archive of `5cae40a` (see "Suites").
+- wp2 has **11 B** of chapters-route headroom (1,189 of 1,200 B; S1 325 + S5 864): wp2's later slices (S2 to S4, S6) ask the
+  lead for a booking before they add route bytes. This round added 0 B to the route (V1, V2 and V4 are in the lazy entry
+  and on the server).
+
+### Replaced assertions in this round, old -> new
+
+- `rc44-s0-extensions-validate.mjs` block `O1 the bookings add up`, the stale-figure case (the edit the lead confirms in
+  V3): `/^The bookings do not add up: the chapters route grew \d+ B against 9673661 \(\d+ - 3229840\), and the size files
+  book \d+ B: /` -> the same with `-?\d+` for the growth and for the booked total. Equally strict: the message shape and
+  every file's figure are still required. The ruling names the growth; the booked total is signed for the same reason
+  (one byte more than a negative growth is negative: "book -1299 B" on the merge).
+- No other assertion of a suite on `5cae40a` was changed. This slice's own suite gained cases (`S5 V1 view`; V2 in `S5 U1
+  hard constraint`; V4 in `S5 U5 SDD basis`; `atMerge` and `putBack` in `S5 size`) and its `S5 size` pass line says the
+  slice's own tree and this build apart.
+
+### Measurements (node build.mjs, dist/client-size-report.json)
+
+| | abfdb56 (start of this round) | the merge (4391e5e) | this round's head |
+|---|---|---|---|
+| Chapters route (`routes.chapters.code`) | 3,228,422 B | 3,228,540 B | **3,228,540 B** (cap 3,233,792 B unchanged) |
+| Projects route | 508,043 B | 508,161 B | 508,161 B |
+| Script files | 148 | 148 | 148 |
+| Buckets (under 10 KB / 10–50 / over 50) | 53 / 50 / 45 | 52 / 51 / 45 | 52 / 51 / 45 |
+| Stylesheet | 901,873 B | 901,873 B | 901,873 B |
+| Opens with records (host `architecture-task-ui.js`) | 3,360,760 B (132,338 B in 2 scripts) | 3,360,878 B (132,338 B) | 3,362,022 B (133,482 B in 2 scripts) |
+| Put back (the two files as at 082e06b) | 3,231,469 B | 3,231,587 B | — |
+
+This round adds nothing to the route: the view (V1) and the selection's finding and judgement (V2, V4) are in the lazy
+entry (+1,144 B there), the SDD basis (V4) on the server. Bookings on this head: the route less 9673661, −1,300 B, = lead 0
++ wp1 S2 118 + wp2 S1 325 + wp2 S5 864 + wp9a 342 + the pool (−2,949 B: `trackPathsPartNameO2` 0,
+`guidedConcernRetirementQ8` −3,047, `baselineDefectFmtL10` 34, `designRowChapterKeysL5` 64). wp2 1,189 of 1,200 B.
+Headroom on the route: 5,252 B. The bucket of files under 10 KB went from 53 to 52 with the merge (a ceiling, R4).
+
+### Deviations, and my view
+
+1. **wp1's S2.12 is red on the merge, and I left it.** Its assertion "the start commit is the integrated base and what the
+   other packages and the pool booked" (`rc44-wp1-cases-crosswalk.mjs` l.625) adds every size file's bookings to the
+   integrated base and expects wp1 S2's start, 3,230,605 B; any package that books after wp1 S2's start breaks it (here
+   S5's 864 B and the lead's −3,047 B: the sum is 3,228,422 B). It is wp1's own case, V names no edit of it, and the task
+   says not to edit wp1's own modules, so it is the lead's at the merge. My view: it should read the files booked at its
+   start only (as S1's `size` block subtracts the later wp2 bookings), e.g. `3229840 + (booked.othersTotal - S5 - …) +
+   (booked.poolTotal - the lead's later items)`, or assert the identity against `size.base` with the bookings named in
+   its own evidence; either keeps it as strict at its own head. Its other checks (`mine <= 250` on this build: 118 B) hold.
+2. **The view's start reads the notes before it sends anything** (V1 asks for the check; reading them first is what makes
+   the check and the candidates agree after the dialog redraws). Not a departure from V1, but beyond its letter, as is
+   keeping the dialog's error line through a redraw.
+3. **V4's SDD wording.** The basis prints the rows at the choice as they were (a row judged after the choice read unknown
+   there, named unproven when the chooser named it) and names the later judgement "after the choice" in the rows now;
+   the verifier's alternative ("as stored with the choice (updated by later judgements)") was not taken, because it would
+   not keep the chooser's naming, which V4 asks for. The judgement carries two new keys, written only when taken after a
+   choice.
+4. **`atMerge` and `putBack` are new fields of `wp2-s5-size.json`.** `slice`, `withRetirementPutBack`, `ownBytes` and the
+   saving stay the slice's own tree's: the put-back of a merged tree would book wp1 S2's 118 B as S5's. `--measure` carries
+   both new fields through; `--measure-merge` rewrites `atMerge` only.
+
+### What later slices must know (this round)
+
+- `selection-breaks` is hard (one non-waivable class); a package's error worded as a built-in non-waivable one marks
+  `hard: true`.
+- A judgement taken after a choice carries `afterChoice: true` (and `namedUnproven: true` when the chooser had named
+  the row); the SDD basis reads both.
+- The selection view checks every criterion note of an option before it sends a step, and offers each released option
+  not yet compared on an option selection that is not chosen (`data-sel-action="add-option" data-option="<id>"`, notes
+  `data-sel-note="<optionId>|<criterionId>"`). The view keeps the dialog's `[data-error]` line through a redraw.
+- A size file may restate a merged build beside its own measurement (`atMerge`); the bookings are read from `ownBytes`
+  and `sharedPoolBytes` only.
+- wp2's later slices ask the lead for a booking before they add route bytes (11 B left).
+
+### Open points for the lead
+
+1. wp1's S2.12 is red on the merge (deviation 1): the lead's at the merge; a proposal is above.
+2. `design-concern-validate.mjs`'s baseline red line is l.199 now (V5); the baseline bookkeeping that names l.119
+   (`audit/rc42/regression-2026-11-16.json`) is the lead's to update.
+3. The owner's decision on candidate profile content in design projects (Q11) is still pending.

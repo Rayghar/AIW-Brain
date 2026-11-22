@@ -89,8 +89,8 @@
   "opens with records": {
    "host": "public/architecture-task-ui.js",
    "route": 3228540,
-   "added": 132338,
-   "total": 3360878,
+   "added": 133482,
+   "total": 3362022,
    "files": 2
   },
   "note": "slice, withRetirementPutBack, ownBytes, routeDelta and retirementSaving are measured on the slice's own tree before the merge (abfdb56; no route module changed after 9df762c), where the put-back was built: S5 books its gross additions there, and the lead books the saving there. This block restates the merged build: its route less the integrated base is wp2's own bytes, the other packages' own and the shared pool's, exactly (the lead's merge check, assertBookingsAddUp)."
