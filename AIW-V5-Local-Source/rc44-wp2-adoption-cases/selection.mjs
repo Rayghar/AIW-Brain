@@ -5,9 +5,9 @@
 // The blocks, in the order they run:
 //   S5 fails today   record a library candidate as rejected without creating it as a component (the case that
 //                    fails before the slice: an alternative could name only components that exist);
-//   S5 registration  the five steps at the package's registration point; judge, choose and instantiate a signed-in
-//                    person's; no accept step of the slice's own (the profile's acceptance is adoption.accept, a second
-//                    person's: rulings D1, D7.1);
+//   S5 registration  the six steps at the package's registration point; judge, choose and instantiate a signed-in
+//                    person's; selection.confirm a second person's (ruling Q4); the profile's acceptance is
+//                    adoption.accept, a second person's (rulings D1, D7.1);
 //   S5 eligibility   three candidates against two hard constraints give rows pass, fail and unknown; the failing one
 //                    cannot be chosen; the unknown one only when named unproven, and approval evidence is then refused;
 //   S5 no score      no result object carries a score, a rank or a weight; candidates keep the order they were added;
@@ -41,13 +41,16 @@
 //   S5 parity row 9  a released concern compared through selection.* gives the decision and alternatives the guided
 //                    comparison gave at the base (public/architecture-design.js previewReleasedConcern, captured at
 //                    5cae40a), and the guided comparison still does;
-//   S5 SDD           the record prints the selection basis and each rejected candidate with its reason;
+//   S5 SDD           the record points to the selection basis, and prints each rejected candidate with its reason;
+//   S5 U5 SDD basis  the package prints the selection basis through S0's sections part: named unproven only on the
+//                    chosen candidate, every candidate's rows at the choice and now, a late constraint listed (U5);
 //   S5 fixtures      every fixture reads no clock (ruling Q7);
 //   S5 old documents the references, the document with a review list and the two fixtures read as at the base; the
 //                    shared helpers of rc44-s0-readings.mjs with the selection's records present;
 //   S5 surface       the selection view (adoption-ui.js), held in the comparison tools' entry and opened from the
 //                    library chooser by a dynamic import;
-//   S5 size          the client build passes every gate; wp2's route bytes (S1 and S5) within 600 B (ruling M4).
+//   S5 size          the client build passes every gate; S5 books its gross additions, the lead the retirement's saving;
+//                    wp2's own bytes (S1 and S5) within 1,200 B; the bookings add up (rulings M4, O1, U2).
 import assert from 'node:assert/strict';
 import {readFileSync, existsSync, writeFileSync, mkdirSync} from 'node:fs';
 import worker, {commandHandler, commandShape} from '../worker.js';
@@ -164,7 +167,7 @@ export default async function ({block, pass, load}) {
     assert.match(src, /import \{[^}]*claimReceiptCurrent[^}]*\} from '\.\/knowledge-governance\.js';/); assert.ok(!/knowledge-concepts|knowledge-structures|p\.knowledge\b/.test(src), 'no knowledge store of its own');
     assert.ok(!/from '\.\/adoption-(?:upgrade|builtins|definitions)\.js'/.test(src), 'the browser\'s entry holds no upgrade (ruling J12)');
     for (const t of types) assert.notDeepEqual(commandShape({type: t, payload: {}}), {error: 'Unknown project action.', code: 'unknown_command'}, t + ' is a command of this build');
-    pass('S5 registration: selection.start, .candidate, .judge, .choose and .instantiate at p40-adoption\'s registration point; judge, choose and instantiate a signed-in person\'s (refused for an agent account and a draft by Sol before the project is read); start and candidate may be a draft by Sol\'s proposal; no step is staged and none is a second person\'s of the slice\'s own: the accept step a selection leads to is adoption.accept');
+    pass('S5 registration: the six steps of the selection at p40-adoption\'s registration point (selection.start, .candidate, .judge, .choose, .confirm and .instantiate); judge, choose and instantiate a signed-in person\'s, and confirm a second person\'s, the one second-person step of the slice\'s own (each refused for an agent account and a draft by Sol before the project is read); start and candidate may be a draft by Sol\'s proposal; no step is staged; the profile\'s acceptance is adoption.accept, a second person\'s; the boundary stamps what a selection writes');
   });
 
   // ------------------------------------------------------------ eligibility
