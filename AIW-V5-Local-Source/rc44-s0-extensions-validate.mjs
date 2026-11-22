@@ -1590,6 +1590,8 @@ await block('L3 restore rule', () => {
 // was: it mended a Chapter 3 decision and a Chapter 5 contract, trackPaths ['decisions.records', 'interfaces.contracts'],
 // collections a chapter accepts or marks reviewed, which the start check now refuses.)
 const TRACK_FIELDS = {'logical.responsibilities': ['purpose', 'boundary'], 'technology.needs': ['description']};
+// (ruling T1) the fields a trackPaths list may never name, as the start check and assertTrackerStaysInPaths refuse them
+const NEVER_TRACKED = ['id', 'ref', 'code', 'alias', 'revision', 'history', 'state', 'origin', 'keptAt', 'confirmed', 'targetConfirmed', 'review', 'reviews', 'provenance', 'status', 'governance', 'approval', 'approvals', 'recorded', 'appliedImpact', 'assumptionsResolved', 'acceptedAt', 'acceptedBy', 'timeoutConfirmed', 'targetsConfirmed', 'estimatesConfirmed', 'retentionConfirmed', 'sourceSnapshot', 'logicalSnapshot', 'driverSnapshot', 'lastReview', 'reviewedAt', 'reviewer', 'approvedBy', 'governanceReference', 'selectedOptionId', 'selectedAlternativeId', 'stamp', 'sourceDriverIds', 'sourceDecisionIds', 'priorHistory'];
 const TRACKING = {
   id: 'zt-tracking',
   commands: {'tracking.mode': {apply(p, command, at) { const raw = command.payload || {}; p.trackingProbe = {mode: String(raw.mode || ''), target: String(raw.target || ''), at};
@@ -1679,7 +1681,7 @@ await block('O2 tracked paths', async () => {
       for (const path of found) accepted(path); }
     // (ruling T1) a field the tracker lists is content: never the record's identity, revision or history, never what says whether and how it stands
     // (TRACKED_STANDING), never what the chapters read as an acceptance, an approval, a review, a confirmation or a snapshot
-    for (const field of ['id', 'ref', 'code', 'alias', 'revision', 'history', 'state', 'origin', 'keptAt', 'confirmed', 'targetConfirmed', 'review', 'reviews', 'provenance', 'status', 'governance', 'approval', 'approvals', 'recorded', 'appliedImpact', 'assumptionsResolved', 'acceptedAt', 'acceptedBy', 'timeoutConfirmed', 'targetsConfirmed', 'estimatesConfirmed', 'retentionConfirmed', 'sourceSnapshot', 'logicalSnapshot', 'driverSnapshot', 'lastReview', 'reviewedAt', 'reviewer', 'approvedBy', 'governanceReference', 'selectedOptionId', 'selectedAlternativeId', 'stamp', 'sourceDriverIds', 'sourceDecisionIds', 'priorHistory'])
+    for (const field of NEVER_TRACKED)
       refused({'logical.responsibilities': ['purpose', field]}, new RegExp('^xy: trackPaths “logical\\.responsibilities” lists “' + esc(field) + '”, which a tracker never changes: a record\'s identity, revision and history, and whether and how it stands \\(its state, an acceptance, an approval, a review, a confirmation, a snapshot, its provenance\\), are the chapter\'s and the boundary\'s\\.$'), 'a field a tracker never changes');
     for (const field of ['constructor', 'toString', 'hasOwnProperty', 'valueOf']) refused({'logical.responsibilities': [field]}, new RegExp('^xy: trackPaths “logical\\.responsibilities” lists “' + field + '”, which names what every object carries: it is no field of a record\\.$'), 'a field every object carries');
     assert.deepEqual(misses, [], 'the start check refuses each: ' + misses.join(' | '));
@@ -1716,6 +1718,13 @@ await block('O2 tracked paths', async () => {
     assert.throws(() => assertTrackerStaysInPaths({...TRACKING, trackPaths: ['logical.responsibilities']}, [kase('mend')]), /^Error: assertTrackerStaysInPaths: zt-tracking states trackPaths as \{'chapter\.collection': \[field, …\]\}\.$/, 'the list of ruling O2');
     assert.throws(() => assertTrackerStaysInPaths({...TRACKING, trackPaths: {'logical.responsibilities': ['purpose', 'confirmed']}}, [kase('mend')]), /^Error: assertTrackerStaysInPaths: zt-tracking lists “confirmed” for “logical\.responsibilities”, which a tracker never changes\.$/, 'a standing field');
     assert.throws(() => assertTrackerStaysInPaths({...TRACKING, trackPaths: {'logical.responsibilities': ['purpose', 'revision']}}, [kase('mend')]), /lists “revision” for “logical\.responsibilities”, which a tracker never changes/, 'the revision');
+    // (ruling T1: the helper holds the same) and every other field the start check refuses: the helper states the rule itself (it imports only modules of
+    // the baseline), as it states TRACKED_STANDING, and this suite holds the two equal on every field the start check's case names and on content fields
+    for (const field of NEVER_TRACKED.filter(x => !['id', 'revision', ...R.TRACKED_STANDING].includes(x))) assert.throws(() => assertTrackerStaysInPaths({...TRACKING, trackPaths: {'logical.responsibilities': ['purpose', field]}}, [kase('mend')]), new RegExp('^Error: assertTrackerStaysInPaths: zt-tracking lists “' + field + '” for “logical\\.responsibilities”, which a tracker never changes\\.$'), 'the helper refuses ' + field);
+    { const names = [...NEVER_TRACKED, 'purpose', 'boundary', 'description', 'nodeId', 'domainIds', 'title', 'name', 'notes', 'owner', 'requirementIds'];
+      assert.equal(typeof R.trackFieldRefused, 'function', 'rc44-s0-readings.mjs states trackFieldRefused(field)');
+      assert.deepEqual(names.filter(x => R.trackFieldRefused(x)), names.filter(x => boundary.trackFieldRefused(x)), 'the helper refuses the fields the start check refuses');
+      assert.deepEqual(names.filter(x => boundary.trackFieldRefused(x)), NEVER_TRACKED, 'and only those of these'); }
     assert.throws(() => assertTrackerStaysInPaths({id: 'xy'}, [kase('mend')]), /xy states no tracker/); assert.throws(() => assertTrackerStaysInPaths(TRACKING, []), /no case/); }
   // through the server: who sent the commit stamps what the tracker changed; an answer is ignored; what it may not change is put back or refused
   const h = await harness(), d = () => h.state.document, ok = (r, why) => assert.equal(r.status, 200, why + ': ' + JSON.stringify(r.body).slice(0, 300)), res = id => d().logical.responsibilities.find(r => r.id === id), stamp = id => res(id).provenance?.author;

@@ -97,21 +97,24 @@ export function assertBuiltInChainsUnchanged(base, withRecords) {
 // they were, in their order, and the journal's counter moves by the events the tracker added; the whole document
 // outside those keys is as it was. And inside its trackPaths (the lead's rulings R2 and T1 of 2026-11-22: a tracker
 // mends content; it decides nothing and makes nothing, and it changes only what it lists): trackPaths is
-// {'chapter.collection': [field, …]}, none of the fields a record's id or revision or one of TRACKED_STANDING (the
-// start check refuses more: design-extension-parts.js trackFieldRefused); no record is added and none removed; no field
-// a path does not list moves on a record; and a revision moves only forward, by one, and only where a listed field
-// changed (as the boundary puts back what it may not change: design-extension-boundary.js trackExtensions).
-// TRACKED_STANDING is stated here because this file imports only modules of the baseline; S0's suite holds it equal to
-// the boundary's. Throws with the key, the record and the case named (fields in alphabetical order); answers {cases,
+// {'chapter.collection': [field, …]}, none of its fields one the start check refuses (trackFieldRefused below: a
+// record's identity, revision and history, TRACKED_STANDING, and what the chapters read as an acceptance, an approval,
+// a review, a confirmation or a snapshot); no record is added and none removed; no field a path does not list moves on
+// a record; and a revision moves only forward, by one, and only where a listed field changed (as the boundary puts back
+// what it may not change: design-extension-boundary.js trackExtensions). TRACKED_STANDING and trackFieldRefused are
+// stated here because this file imports only modules of the baseline; S0's suite holds them equal to the boundary's
+// (design-extension-parts.js). Throws with the key, the record and the case named (fields in alphabetical order); answers {cases,
 // changed: {path: the cases whose call changed it}, journalled: the events the calls added}.
 export const TRACKED_STANDING = Object.freeze(['state', 'origin', 'keptAt', 'confirmed', 'targetConfirmed', 'review', 'reviews', 'provenance']);
+const TRACK_NEVER = new Set(['id', 'ref', 'code', 'alias', 'revision', 'history', ...TRACKED_STANDING, 'status', 'governance', 'approval', 'approvals', 'recorded', 'appliedImpact', 'assumptionsResolved', 'sourceDriverIds', 'sourceDecisionIds']);
+export const trackFieldRefused = field => TRACK_NEVER.has(field) || /confirm|snapshot|stamp|review|approv|accept|govern|history|resolved|^selected[A-Z]/i.test(field);
 export function assertTrackerStaysInPaths(extension, cases) {
   const name = extension?.id || 'the package', plainOf = v => (v && typeof v === 'object' && !Array.isArray(v) ? v : {}), list = v => (Array.isArray(v) ? v : []), refOf = r => (r && typeof r === 'object' ? r.ref || r.code || r.id : null) || 'a record';
   if (typeof extension?.track !== 'function') throw Error('assertTrackerStaysInPaths: ' + name + ' states no tracker.');
   if (!Array.isArray(cases) || !cases.length) throw Error('assertTrackerStaysInPaths: no case for ' + name + '\'s tracker.');
   if (extension.trackPaths !== undefined && !(Object.keys(plainOf(extension.trackPaths)).length && Object.values(extension.trackPaths).every(v => Array.isArray(v) && v.length && v.every(x => typeof x === 'string')))) throw Error('assertTrackerStaysInPaths: ' + name + ' states trackPaths as {\'chapter.collection\': [field, …]}.');
   const fields = Object.entries(plainOf(extension.trackPaths)), paths = fields.map(([path]) => path), out = {cases: 0, changed: Object.fromEntries(paths.map(x => [x, 0])), journalled: 0};
-  for (const [path, listed] of fields) for (const f of listed) if (f === 'id' || f === 'revision' || TRACKED_STANDING.includes(f)) throw Error('assertTrackerStaysInPaths: ' + name + ' lists “' + f + '” for “' + path + '”, which a tracker never changes.');
+  for (const [path, listed] of fields) for (const f of listed) if (trackFieldRefused(f)) throw Error('assertTrackerStaysInPaths: ' + name + ' lists “' + f + '” for “' + path + '”, which a tracker never changes.');
   const own = [...list(extension.designKeys), ...list(extension.evidenceKeys), ...Object.keys(plainOf(extension.design)), ...Object.keys(plainOf(extension.lifecycle)), ...Object.keys(plainOf(extension.provenance?.records)), ...Object.values(plainOf(extension.provenance?.paths)).flatMap(list)].filter(k => typeof k === 'string');
   const at = (p, path) => path.split('.').reduce((v, k) => (v && typeof v === 'object' ? v[k] : undefined), p);
   const outside = (p, journal) => { const q = structuredClone(p); for (const path of [...own, ...paths]) { const [a, b] = path.split('.'); if (b === undefined) delete q[a]; else if (q[a] && typeof q[a] === 'object') delete q[a][b]; }

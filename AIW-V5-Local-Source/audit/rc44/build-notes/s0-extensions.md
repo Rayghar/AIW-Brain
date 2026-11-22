@@ -838,10 +838,10 @@ A package with a tracker calls `assertTrackerStaysInPaths(extension, cases)` (ru
 `{prior, next, command, at}` with `next` the commit's document as the command left it: the tracker is run on a copy
 of `next`, and the whole document outside the package's own keys, its `trackPaths` and the change journal must be as
 it was; `prior` must not move; the journal's earlier events stand as they were and its counter moves by the events the
-tracker added; inside its `trackPaths` (a map `{path: [fields]}`, no field of which is `id`, `revision` or one of
-`TRACKED_STANDING`) no record is added or removed, no field a path does not list moves, and a revision moves only
-forward by one where a listed field changed (rulings R2 and T1; the helper states `TRACKED_STANDING` itself, and S0's
-suite holds it equal to the boundary's). It answers `{cases, changed:
+tracker added; inside its `trackPaths` (a map `{path: [fields]}`, none of whose fields is one the start check refuses)
+no record is added or removed, no field a path does not list moves, and a revision moves only forward by one where a
+listed field changed (rulings R2 and T1; the helper states `TRACKED_STANDING` and `trackFieldRefused` itself, since it
+imports only modules of the baseline, and S0's suite holds both equal to the boundary's). It answers `{cases, changed:
 {path: cases whose call changed it}, journalled}`, so the suite can assert that its cases reach the mend.
 
 A package's size case reads the bookings of every size file with `routeBookings(ownFile)` (rulings M4 and O1): an own
