@@ -203,4 +203,8 @@ Branch `rc44/wp1-s2-crosswalk-fix`, from `37520d6`. Review: `/home/user/hb-revie
 (four must-fix, eight should-fix, eight design concerns). Order of work, each case first and seen red on `37520d6`, a WIP
 commit after each item: 1 P1; 2 P2; 3 P3 and P4; 4 P5 (a) to (h); 5 P6; 6 P7; 7 P8 (notes only); 8 notes, size, suites.
 
-- **State:** item 1 in progress.
+- **State:** item 1 done; item 2 next.
+
+| Item | Done, with its case (red on `37520d6` with) |
+|---|---|
+| P1 (must-fix 1): a release holds no row its releaser stands behind | done: `formCapability.release` reads the rows the release would hold (`releaseRows`, the one list `parts` copies) and refuses, naming the row and why, the row's author or an editor (`verifierRefusal` on `crosswalkAuthors`), the person who confirmed a row no person wrote, and the person who verified a row an import, a draft by Sol or an agent account wrote ("a third person releases it"). Whose words a row is: the boundary's author stamp (`provenance.author`: a person's own, or `from`/`kind` import or sol-draft; an agent account's commit is a sol-draft, so the words say "drafted by Sol or by an agent account"). S2.13 ("knowledge.release by architect {} was accepted") |

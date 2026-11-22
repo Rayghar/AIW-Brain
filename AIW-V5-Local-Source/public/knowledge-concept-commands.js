@@ -19,7 +19,7 @@ import {verifierRefusal} from './architecture-obligations.js';
 import {QUALITY_TYPES} from './quality-domain.js';
 import {FORM_TYPES,FORM_CLAIM_TYPE,FORM_PREDICATE,CONCEPT_KINDS,CONCEPT_SCOPES,CONCEPT_ID,RECORD_REFERENCE,ALIAS_SCHEMES,conceptFormIssues,conceptFormRecord} from './concept-form.js';
 import {recordGraph} from './record-graph.js';
-import {conceptRecords,conceptHash,conceptAuthors,conceptCovered,formIssues,crosswalkRecords,crosswalkRowHash,crosswalkCovered} from './knowledge-concepts.js';
+import {conceptRecords,conceptHash,conceptAuthors,conceptCovered,formIssues,crosswalkRecords,crosswalkRowHash,crosswalkCovered,crosswalkAuthors} from './knowledge-concepts.js';
 import {catalogue} from './catalogue-store.js';
 import {catalogueMark,catalogueRelation} from './catalogue-curation.js';
 import {templateFields} from './component-snapshot.js';
@@ -261,16 +261,32 @@ export function formCapability(author=null,limits=KNOWLEDGE_LIMIT_TIERS.project)
     const wrote=verifierRefusal({id:c.id,actor:c.actor,history:[],owner:''},actor,author?.account);if(wrote)throw Error(wrote);
     if(c.authoredAs!=='person'&&c.review?.actor===actor)throw Error(actor+' verified '+c.id+', which was '+(c.authoredAs==='import'?'imported':'drafted')+': a third person releases it.');
    }
+   // The same rule for every crosswalk row the release would hold (ruling P1 of 2026-11-22): not by one who wrote or
+   // edited it, not by the person who confirmed a row no person wrote (they stand in its author's place), not by the
+   // person who verified a row an import, a draft by Sol or an agent account wrote. Refused, naming the row: none is
+   // left out silently.
+   for(const x of releaseRows(p,claims)){
+    const at=x.id+' ('+x.scheme+' '+x.aliasId+', a crosswalk row of '+x.conceptId+'): ',origin=rowOrigin(x),wrote=verifierRefusal(crosswalkAuthors(x),actor,author?.account);
+    if(wrote)throw Error(at+wrote+' A release holds no crosswalk row its releaser wrote: a person who wrote none of the concept\'s forms and rows releases it.');
+    if(origin!=='person'&&x.provenance?.reviewed?.by===actor)throw Error(at+actor+' confirmed '+x.id+', which no person wrote, and so stands in its author\'s place: a third person releases it.');
+    if(origin!=='person'&&x.review?.actor===actor)throw Error(at+actor+' verified '+x.id+', which was '+(ORIGIN_WORDS[origin]||'written by no person')+': a third person releases it.');
+   }
   },
   // What a release of forms holds beside its claims (rc44, wp1 slice S2): the crosswalk rows a second person verified of
   // the concepts it releases, as they read, without the boundary's stamps. The release's checksum covers them, so a row
   // names an identity only as it was released (knowledge-concepts.js releasedCrosswalk). None: no parts at all, so a
   // release of forms without rows is the release of rc44 S1, checksum and all. Parts of concepts and changes: slice S3.
-  parts(p,claims){const ids=new Set(claims.filter(c=>c.form).map(c=>c.subjectId)),rows=crosswalkRecords(p).filter(r=>r.state==='verified'&&ids.has(r.conceptId)).map(r=>Object.fromEntries(Object.entries(copy(r)).filter(([k])=>!RELEASE_LEAVES.includes(k))));return rows.length?{crosswalk:rows}:null;},
+  parts(p,claims){const rows=releaseRows(p,claims).map(r=>Object.fromEntries(Object.entries(copy(r)).filter(([k])=>!RELEASE_LEAVES.includes(k))));return rows.length?{crosswalk:rows}:null;},
   command:context=>conceptCommand(context,author,limits)
  };
 }
 const RELEASE_LEAVES=['state','provenance','confirmed'];
+// The rows a release of these claims holds: the verified rows of the concepts whose forms it releases. One list, which
+// the release-actor rule reads and parts copies.
+function releaseRows(p,claims){const ids=new Set(claims.filter(c=>c.form).map(c=>c.subjectId));return crosswalkRecords(p).filter(r=>r.state==='verified'&&ids.has(r.conceptId));}
+// Whose words a row is, by the boundary's author stamp: a person's own ('person'), or the kind its words came from
+// (an import; a draft by Sol, which an agent account's commit is too); a row with no stamp is no person's.
+const rowOrigin=r=>{const a=r?.provenance?.author;return a?.kind==='person'&&a.by?a.from||'person':a?.kind||null;},ORIGIN_WORDS={import:'imported','sol-draft':'drafted by Sol or by an agent account'};
 export function applyConceptCommand(input,command,at=new Date().toISOString(),actor='local-review',{author=null}={}){
  // The mark that makes a project a library is read against a library's history bound: a library recovered here without
  // its mark (recovery-service.js; ruling G5) may hold more history than a project, and a person marks it again.

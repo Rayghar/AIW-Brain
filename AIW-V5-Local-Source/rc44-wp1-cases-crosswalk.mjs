@@ -479,3 +479,45 @@ add('S2.12 (size, ruling A4 and M4): the client build passes every gate with the
     if (process.argv.includes('--measure') || process.env.AIW_RC44_WP1_MEASURE === '1') { assert.deepEqual({chapters: measured.chapters, scripts: measured.scripts, under10k: measured.under10k}, {chapters: size.slice.chapters, scripts: size.slice.scripts, under10k: size.slice.under10k}, 'at the slice\'s commit the build measures what the evidence says'); assert.deepEqual(opens, {route: size['opens with records'].route, added: size['opens with records'].added, total: size['opens with records'].total, files: size['opens with records'].files}); }
   }
 });
+
+// ------------------------------------------------------------------------------------------------ 13 (ruling P1)
+// A release holds no row its releaser stands behind: the forms' release rule read for every row the release would hold.
+// The rows of one library: `a` written by architect and edited by second-architect (a person's), and `b` imported, which
+// steward confirmed (ruling F4) and reviewer verified. Each of those four, sending the release, is refused, in words
+// that name the row and why; nothing resolves after a refusal; a third person (releaser) is accepted.
+const releaseOf = definition => ({...F.REVIEW, title: 'Synthetic strangler fig 1', claimIds: [definition]});
+add('S2.13 (ruling P1): a release holds no row its releaser stands behind: the author, the last editor, the person who confirmed a row no person wrote, and the person who verified an imported row are each refused the release, naming the row; a third person releases it', async () => {
+  const {KC} = await mods(), {S, definition} = await strangler();
+  try {
+    const a = await S.ok('knowledge.crosswalk', P_STRANGLER, 'architect');
+    await S.ok('knowledge.crosswalk', {...P_STRANGLER, id: a, note: 'Checked against the Playbook workbook.'}, 'second-architect');
+    await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: a}, 'reviewer');
+    const b = await S.ok('knowledge.crosswalk', {...P_STRANGLER, aliasId: 'P-FACADE', label: 'Facade', relation: 'narrower'}, 'importer', {authorKind: 'import'});
+    await S.ok('knowledge.crosswalk-confirm', {...PERSON_STEP, id: b}, 'steward');
+    await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: b}, 'reviewer');
+    assert.deepEqual(KC.crosswalkRecords(S.document).map(r => r.state), ['verified', 'verified']);
+    const words = {architect: new RegExp(a + ' \\(playbook P-STRANGLER, a crosswalk row of PAT-STRANGLER-FIG\\): .*architect wrote ' + a + '\\. A release holds no crosswalk row its releaser wrote'),
+      'second-architect': new RegExp(a + ' \\(playbook P-STRANGLER, a crosswalk row of PAT-STRANGLER-FIG\\): .*second-architect wrote ' + a),
+      steward: new RegExp(b + ' \\(playbook P-FACADE, a crosswalk row of PAT-STRANGLER-FIG\\): steward confirmed ' + b + ', which no person wrote, and so stands in its author\'s place: a third person releases it\\.'),
+      reviewer: new RegExp(b + ' \\(playbook P-FACADE, a crosswalk row of PAT-STRANGLER-FIG\\): reviewer verified ' + b + ', which was imported: a third person releases it\\.')};
+    for (const [as, pattern] of Object.entries(words)) {
+      await S.refused(pattern, 'knowledge.release', releaseOf(definition), as);
+      assert.equal(KC.resolveConcept(S.document, 'P-STRANGLER'), null, as + ': nothing resolves after a refusal'); assert.equal((S.document.knowledge.releases || []).length, 0, as + ': no release is stored');
+    }
+    // A third person: accepted; the release holds both rows, and the identity resolves once the release is active.
+    const id = await S.ok('knowledge.release', releaseOf(definition), 'releaser');
+    assert.deepEqual(S.document.knowledge.releases.at(-1).parts.crosswalk.map(r => r.id), [a, b]);
+    await S.ok('knowledge.activate', {...F.REVIEW, id, stamp: K.knowledgeStamp(S.document)}, 'releaser');
+    assert.equal(KC.resolveConcept(S.document, 'P-STRANGLER').conceptId, 'PAT-STRANGLER-FIG');
+  } finally { S.close(); }
+  // The same rule for a row drafted by Sol and one an agent account wrote: the confirming person and the verifier stand behind it.
+  for (const [as, extra, kind] of [['architect', {authorKind: 'sol-draft'}, 'drafted by Sol or by an agent account'], ['bot', {}, 'drafted by Sol or by an agent account']]) {
+    const {S, definition} = await strangler();
+    try {
+      const x = await S.ok('knowledge.crosswalk', P_STRANGLER, as, extra); await S.ok('knowledge.crosswalk-confirm', {...PERSON_STEP, id: x}, 'steward'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: x}, 'reviewer');
+      await S.refused(new RegExp('steward confirmed ' + x + ', which no person wrote'), 'knowledge.release', releaseOf(definition), 'steward');
+      await S.refused(new RegExp('reviewer verified ' + x + ', which was ' + kind + ': a third person releases it'), 'knowledge.release', releaseOf(definition), 'reviewer');
+      await S.ok('knowledge.release', releaseOf(definition), 'releaser');
+    } finally { S.close(); }
+  }
+});
