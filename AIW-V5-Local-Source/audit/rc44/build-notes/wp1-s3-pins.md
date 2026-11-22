@@ -343,7 +343,7 @@ red before with, the change.
   active pins, active links and open migrations; the words say what to do. What still binds a long-lived design is the
   document's character bound (8,000,000), as for every record.
 - **(i) S2.12 asserts against the bookings recorded at wp1 S2's start** (should-fix 8). `audit/rc44/evidence/wp1-s2-size.json`
-  gains `bookingsAtStart` (5cae40a: wp2-s1 325 B, wp9a-s1 342 B and its two pool items 34 B and 64 B; 3,229,840 + 769 =
+  gains `bookingsAtStart` (5cae40a: wp2-s1 325 B, wp9a-s1 342 B and its two pool items 34 B and 64 B; 3,229,840 + 765 =
   3,230,605 B); the lead gave leave in X4 to add the record and edit S2.12 so. **Replaced assertion (S2.12)**, old: the
   two equalities read every size file less a list of bookings filed after S2's start (wp2 S5's, wp1 S3's, the lead's
   Q8 saving), which each later merge edited (W2, and the working form of item 0). New: they read the recorded bookings,
@@ -514,3 +514,18 @@ registered in the browser), knowledge-package.js 365 -> 448 B, knowledge-workspa
 - An organisation knowledge release's `from.supersedes`: a release id, or a list of ids when it supersedes several.
 - The package `p10-knowledge` states no `checks` until S5 (X5 a); `conceptLinkFindings` stays exported as its reader.
 - The bounds: 200 active pins, 2,000 active links, 200 open migrations a project.
+
+## Lead follow-up after the verifier (2026-11-22)
+
+The verifier's verdict on 8a61aa3 is *not yet* (19 of 20 fixed): the own-release branch of X4 (b) was incomplete, with two
+nits. The two weakened entries it lists are wp2 S5's, by rulings U2 and V3, inherited from rc44/integration byte for
+byte. Closed here on rc44/wp1-s3-lead, cases first:
+- **A successor resting on a withdrawn source** (X4 b, own branch): conceptPinCurrency reads each successor by what it
+  rests on, the ids pinRests gives for a pin on that release (the release, its form claims and their sources), as the
+  pinned version is read. Case in S3.24: a successor whose changed definition cites a new source is offered, then the
+  source is withdrawn and the pin reads current, stored and read (seen red: newer-available).
+- **The history panel's old reading** (nit): the actor is printed only on the package's steps, so the family's own lines
+  read as before. S3.27 asserts each history line as before (no actor), and that an activity holding no package step
+  draws the panel exactly as no activity does (seen red: the actor was printed on every line).
+- **Notes**: item 4 (i)'s sum reads 765.
+- The knowledge workspace module is a lazy entry: no chapters-route bytes (re-measured at the merge).

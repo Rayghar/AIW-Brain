@@ -749,6 +749,17 @@ add('S3.24 (ruling X4): a withdrawn successor is not offered as newer, in the pr
     assert.deepEqual([state(M.document).state, M.document.knowledge.pinCurrency[pins(M.document)[0].id].state], ['current', 'current'], 'a withdrawn successor is no newer version');
     const v3 = next(v2, 'Synthetic integration concepts 3', '2028-06-30');
     assert.deepEqual([state(M.document).state, state(M.document).successor.releaseId], ['newer-available', v3], 'the successor of the withdrawn one is'); }
+  // (the lead's follow-up after the verifier) a successor whose changed form rests on a source that is then withdrawn is no
+  // newer version either: it is read by what it rests on (pinRests), as the pinned version is
+  { const M = await libraryDoc(); M.document = (await packaged(M.document, 'knowledge.concept-pin', {conceptId: 'SYN-P001', releaseId: M.releaseId, ...STEP}, 'architect')).document;
+    const src = M.k('source', F.sourcePayload('SYN-P001 Transactional outbox, second edition', [...F.SYN_P001, 'A second edition adds this line.']), 'importer');
+    const claim = M.k('claim', F.formClaim(src, 'SYN-P001', F.p001Forms().definition), 'importer');
+    M.k('concept', {...CONCEPT, id: M.record, forms: M.document.knowledge.concepts[0].forms.map(f => f.type === 'definition' ? {type: 'definition', claimId: claim} : f)}, 'importer');
+    M.k('review', {...F.REVIEW, formChecked: true, id: claim}, 'reviewer'); M.k('concept-review', {...CONCEPT_REVIEW, id: M.record}, 'reviewer');
+    const v2 = M.k('release', {...F.REVIEW, title: 'Synthetic integration concepts 2', conceptIds: ['SYN-P001'], supersedes: M.releaseId}, 'releaser');
+    assert.deepEqual([state(M.document).state, state(M.document).successor?.releaseId], ['newer-available', v2], 'the successor resting on its new source is offered');
+    M.k('withdraw', {...F.REVIEW, id: src, stamp: K.knowledgeImpactStamp(M.document, src)}, 'steward');
+    assert.deepEqual([state(M.document).state, M.document.knowledge.pinCurrency[pins(M.document)[0].id].state], ['current', 'current'], 'a successor resting on a withdrawn source is no newer version'); }
   // The organisation's: OR2 succeeds OR1 and the organisation withdraws it; OR3 succeeds OR2.
   const W = await world();
   try {
@@ -809,7 +820,11 @@ add('S3.27 (ruling X4): the knowledge workspace\'s history panel shows the desig
     assert.match(plain, new RegExp('^Recorded knowledge history · ' + doc.knowledge.history.length + '<'), 'without the activity: the family\'s log alone');
     assert.match(both, new RegExp('^Recorded knowledge history · ' + (doc.knowledge.history.length + 2) + '<'), 'with it: the log and the package\'s two steps');
     for (const [type, id] of [['concept-pin', pinId], ['concept-link', linkId]]) assert.match(both, new RegExp(' · ' + type + ' · ' + id + ' · architect<'), type + ' is in the trail, with who took it');
-    for (const h of doc.knowledge.history) assert.ok(both.includes(' · ' + h.type.replace('knowledge.', '') + ' · ' + h.id), h.type + ' of the log is still in it');
+    for (const h of doc.knowledge.history) assert.ok(both.includes(' · ' + h.type.replace('knowledge.', '') + ' · ' + h.id + '<br>'), h.type + ' of the log is still in it, as it read before the slice (no actor on the family\'s own lines)');
+    // (the lead's follow-up after the verifier) the family's own lines read as before: no actor is printed on them, with or
+    // without the activity, and an activity that holds no package step draws the panel exactly as no activity does
+    for (const h of doc.knowledge.history.filter(h => h.actor)) assert.ok(!plain.includes(' · ' + h.id + ' · ' + h.actor + '<'), h.type + ' ' + h.id + ' is drawn without its actor, as before');
+    assert.equal(KW.renderKnowledgeReleases(doc, events.filter(e => !KG.packageStep(e.command))), KW.renderKnowledgeReleases(doc), 'an activity with no package step changes nothing');
     assert.ok(!events.filter(e => !KG.packageStep(e.command)).some(e => e.command && both.includes(' · ' + e.command + ' ')), 'no other activity is listed');
     const mine = Object.keys(X.EXTENSIONS.find(e => e.id === PACKAGE).commands);
     assert.ok(mine.every(KG.packageStep), 'every command type of the package is a step the panel reads');

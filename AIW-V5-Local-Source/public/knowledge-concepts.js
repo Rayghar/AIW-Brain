@@ -309,7 +309,7 @@ export function conceptPinCurrency(p,pin,{today=null,held=null}={}){
  // The project's own successors, nearest first through the supersedes chain; one that is withdrawn (the release, or a form
  // of the concept in it) is passed over, so the newer version offered is one that stands (the fix-up, ruling X4). The
  // organisation's successor is read so on the server, through its signed notices (refreshOrganizationAssurance).
- let own=null;if(!org)for(let ids=[release.id],seen=0;!own&&ids.length&&seen<31;seen++){const next=s.releases.filter(r=>ids.includes(r.supersedes));own=next.map(r=>[r,list(r.parts?.concepts).find(c=>c?.conceptId===pin.conceptId)]).find(([r,c])=>c&&c.conceptHash!==pin.conceptHash&&!withdrawn(p,[r.id,...list(c.forms).map(f=>f.claimId)]).length)||null;ids=next.map(r=>r.id);}
+ let own=null;if(!org)for(let ids=[release.id],seen=0;!own&&ids.length&&seen<31;seen++){const next=s.releases.filter(r=>ids.includes(r.supersedes));own=next.map(r=>[r,list(r.parts?.concepts).find(c=>c?.conceptId===pin.conceptId)]).find(([r,c])=>c&&c.conceptHash!==pin.conceptHash&&!withdrawn(p,pinRests(p,{conceptId:pin.conceptId,releaseId:r.id}).ids).length)||null;ids=next.map(r=>r.id);}
  const theirs=org?list(notice?.successor?.concepts).find(c=>c?.conceptId===pin.conceptId&&c.conceptHash!==pin.conceptHash):null;
  if(own||theirs){const successor=own?{releaseId:own[0].id,title:own[0].title,version:own[1].version,conceptHash:own[1].conceptHash}:{releaseId:notice.successor.id,title:notice.successor.title,version:theirs.version,conceptHash:theirs.conceptHash};
   return {state:'newer-available',title:'Review a newer knowledge version',detail:name+' is pinned; '+quote(successor.title)+' holds v'+successor.version+'.',successor};}
