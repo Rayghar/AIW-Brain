@@ -1399,6 +1399,106 @@ await block('Z4 four eyes in a merge', async () => {
   pass('Z4: with four eyes on, a merge whose command confirms what its own preparer wrote is refused, naming the command, the alternative and its preparer and saying what to do; the alternative without the confirmation merges and another signed-in person confirms it after');
 });
 
+// Z5. One merge path: a command of an alternative that names no preparer (saved before this build, carried from one, or
+// imported) stamps what it writes as nobody's, built-in and package records alike; the merge-level stamping as the
+// merger's is retired. Such records fail closed: a person saves, confirms or keeps them before a second person's step.
+await block('Z5 one merge path', async () => {
+  need(); if (!X.EXTENSIONS.some(e => e.id === VOUCH.id)) X.registerExtension(VOUCH);
+  const k = await mergeKit(), {d, ok, send, stage, merge, stamps, rewrite, rec} = k, decision = id => d().decisions.records.find(x => x.id === id), none = [undefined, undefined, undefined, undefined, undefined];
+  const refused = async (type, id, as, words) => { const r = await k.step(type, id, as); assert.equal(r.status, 400, type + ' as ' + as + ' on ' + id + ': ' + JSON.stringify(r.body).slice(0, 200)); assert.match(r.error, words, r.error); };
+  const NO_AUTHOR = id => new RegExp('^' + id + ' names no author: save it again first\\.$'), NO_PERSON = id => new RegExp('needs two persons: no person other than \\S+ stands behind ' + id + ' as it stands');
+  try {
+    // a person's decision, which an alternative saved before this build (its list taken out of the stored row) changes, beside a new decision and a package's record
+    ok(await send('decision.save', {question: 'Which queue holds the retries?'}, A)); const target = d().decisions.records.at(-1).id; assert.deepEqual(stamps(decision(target)).slice(0, 2), ['person', A]);
+    const old = await stage([{type: 'decision.save', payload: {id: target, question: 'Which queue holds the retries, as an older build kept the redraft?'}}, {type: 'decision.save', payload: {question: 'Which store keeps the drafts, from an older build?'}}, {type: 'synthetic.save', payload: {title: 'From an alternative saved before this build'}}], AGENT);
+    await rewrite(p => { delete p.workbench.alternatives.find(x => x.id === old.id).authors; });
+    await merge(old.id, B); const made = d().decisions.records.at(-1).id, syn = k.h.last();
+    assert.equal(decision(target).question, 'Which queue holds the retries, as an older build kept the redraft?');
+    assert.deepEqual([stamps(decision(target)), stamps(decision(made)), stamps(rec(syn))], [none, none, none], 'what the merge wrote is stamped as nobody\'s, the changed record too (it read as A\'s before: ' + JSON.stringify(decision(target).provenance) + ')');
+    // it fails closed: nobody takes a second person's step on it, the merger and a third person included
+    for (const as of [B, C]) { await refused('vouch.accept', target, as, NO_AUTHOR(target)); await refused('synthetic.accept', syn, as, as === B ? /architect-b wrote / : NO_PERSON(syn)); }
+    // until a person saves or confirms it: then a second person takes the step
+    ok(await send('decision.save', {id: target, question: 'Which queue holds the retries, as C read the redraft?'}, C)); ok(await k.step('vouch.accept', target, D), 'a second person, once a person saved it');
+    ok(await send('synthetic.confirm', {id: syn}, C)); ok(await k.step('synthetic.accept', syn, D), 'a second person, once a person confirmed it');
+    // a mixed list (a command carried from such an alternative names nobody, null): each command is stamped as its entry says
+    ok(await send('decision.save', {question: 'Which store keeps the audit trail?'}, A)); const t2 = d().decisions.records.at(-1).id;
+    const mixed = await stage([{type: 'synthetic.save', payload: {title: 'Prepared by A in a mixed list'}}, {type: 'decision.save', payload: {id: t2, question: 'Which store keeps the audit trail, from an older build?'}}], A);
+    await rewrite(p => { p.workbench.alternatives.find(x => x.id === mixed.id).authors[1] = null; });
+    await merge(mixed.id, B); const named = d().synthetic.records.at(-1);
+    assert.deepEqual([stamps(named), named.actor, stamps(decision(t2))], [['person', A, B, B, 'merged'], A, none], 'the named command is its preparer\'s, merged by B; the unnamed one is nobody\'s');
+    await refused('synthetic.accept', named.id, A, /reads as architect-a prepared it in an alternative and architect-b merged it/); await refused('vouch.accept', t2, C, NO_AUTHOR(t2));
+    ok(await k.step('synthetic.accept', named.id, C), 'a third person');
+    // the storage upgrade's report counts the stored draft alternatives that name nobody for some command (here: one with
+    // no list, one with an entry null; the merged ones are no drafts)
+    { const third = await stage([{type: 'synthetic.save', payload: {title: 'A draft with no list'}}], A), fourth = await stage([{type: 'synthetic.save', payload: {title: 'A draft whose list names a preparer'}}, {type: 'synthetic.save', payload: {title: 'And one carried with none'}}], A);
+      await stage([{type: 'synthetic.save', payload: {title: 'A draft that names its preparer'}}], A);
+      await rewrite(p => { delete p.workbench.alternatives.find(x => x.id === third.id).authors; p.workbench.alternatives.find(x => x.id === fourth.id).authors[1] = null; });
+      const row = await k.h.env.DB.prepare('SELECT document,revision,updated_at FROM projects WHERE owner_id=? AND id=?').bind(A, k.h.pid).first(), stored = await readStoredProject(k.h.env, A, row.document);
+      assert.ok(await storeStorageUpgrade(k.h.env, {owner: A, actor: A, role: 'owner'}, k.h.pid, row, stored, withFinalReview(structuredClone(stored.document))), 'stored');
+      const events = (await k.h.env.DB.prepare('SELECT document FROM project_activity WHERE owner_id=? AND project_id=?').bind(A, k.h.pid).all()).results.map(r => JSON.parse(r.document)).filter(e => e.kind === 'storage');
+      assert.equal(events.length, 1); assert.ok(events[0].summary.endsWith('the previous version is kept for recovery. 2 draft alternatives name no one who prepared some of their commands (saved before this version of AIW, carried from one, or restored): a merge stamps what those commands write as nobody\'s, so a signed-in person saves, confirms or keeps each such record before a second person\'s step.'), events[0].summary.slice(-400)); }
+  } finally { k.h.close(); }
+  // a project with no such alternative: the report says nothing of them (the case of block 2 holds its whole sentence)
+  pass('Z5: an alternative that names no preparer, wholly or for one command, merges stamping what those commands write as nobody\'s, a changed built-in record and a package\'s record alike, so a second person\'s step on it is refused until a person saves or confirms it; a named command in the same merge is stamped as its preparer\'s; the merge-level stamping as the merger\'s is retired; the storage upgrade\'s report counts the draft alternatives that name nobody');
+});
+
+// Z6. The review's should-fix items (the lead's ruling Z6): a merge request carries no commands of its own (one outcome);
+// the words for the merger of a keep or a confirmation say kept or confirmed. (Mixed lists: block Z5; the reviser's from:
+// block Z3; unstatedStaged reads the commands markPackages reads: worker.js, no behaviour changes; the words: block D5.)
+// A second person's step on a requirement, as a package may state one: a requirement carries a confirmation of its own.
+const VOUCH_REQ = {id: 'zn-vouch-requirement', commands: {'vouchreq.accept': {apply(p, c, at, actor) { const r = p.artefacts.find(x => x.id === c.payload?.id); if (!r) throw Error('Choose a requirement.'); r.review = {actor, at}; return {document: p, selected: r.id}; }, second: (p, c) => { const r = (p.artefacts || []).find(x => x.id === c.payload?.id); return r ? {id: r.id, actor: r.provenance?.author?.by ?? null, history: []} : null; }}}, provenance: {paths: {vouchreq: ['artefacts']}}};
+await block('Z6 a merge carries no commands; the merger of a keep or a confirmation', async () => {
+  need(); for (const e of [VOUCH, VOUCH_REQ]) if (!X.EXTENSIONS.some(x => x.id === e.id)) { assert.deepEqual(boundary.extensionIssues(e), []); X.registerExtension(e); }
+  const k = await mergeKit(), {d, ok, send, stage, merge, stamps, rewrite} = k, decision = id => d().decisions.records.find(x => x.id === id), req = id => d().artefacts.find(x => x.id === id);
+  const words = (id, by, how, merger) => new RegExp('^A second person.s step needs two persons: ' + id + ' reads as ' + by + ' ' + how + ' it in an alternative and ' + merger + ' merged it\\. A signed-in person who neither ' + how + ' nor merged ' + id + ' takes this step\\.$');
+  try {
+    // (should-fix 1) a merge request that carries commands of its own is refused, and nothing is written or named
+    { const a = await stage([{type: 'decision.save', payload: {question: 'Which store keeps the drafts, as a person prepared it?'}}], A); await k.h.read(B);
+      const x = d().workbench.alternatives.find(y => y.id === a.id), r = await send('workspace.merge', {id: a.id, stamp: rebaseWorkingAlternative(d(), x).stamp, reviewed: true, reason: 'Merged by a person.', commands: [{type: 'synthetic.save', payload: {title: 'Carried by the request'}}]}, B);
+      assert.equal(r.status, 400, 'one outcome: refused: ' + JSON.stringify(r.body).slice(0, 200)); assert.equal(r.error, 'A merge applies the commands the alternative holds: send none with it.');
+      await k.h.read(B); assert.deepEqual([d().workbench.alternatives.find(y => y.id === a.id).status, d().synthetic, list(d().workspace?.packages).includes(SYNTHETIC.id)], ['draft', undefined, false], 'nothing is merged, written or named (ruling P2)');
+      await merge(a.id, B); assert.deepEqual(stamps(d().decisions.records.at(-1)), ['person', A, B, B, 'merged'], 'merged as the alternative holds it'); }
+    // (should-fix 4) a keep a person prepared, merged by another: the merger is refused in words that say kept
+    { ok(await send('decision.save', {question: 'Which store holds the drafts, as Sol proposes it?'}, AGENT)); const prop = d().decisions.records.at(-1).id; await rewrite(p => { p.decisions.records.find(x => x.id === prop).state = 'proposed'; });
+      const a = await stage([{type: 'record.keep', payload: {id: prop, chapter: 3}}], A); await merge(a.id, B);
+      const r = await k.step('vouch.accept', prop, B); assert.equal(r.status, 400); assert.match(r.error, words(prop, A, 'kept', B)); ok(await k.step('vouch.accept', prop, C), 'a third person'); }
+    // and a confirmation a person prepared (a requirement B wrote, confirmed by A in an alternative, merged by C)
+    { ok(await send('artefact', {type: 'requirement', title: 'Record the fee paid', description: 'The service records the fee paid with its receipt.', acceptance: 'Given a payment, when it is received, then the receipt is kept.', owner: 'Permits office', priority: 'Must'}, B));
+      const own = d().artefacts.find(x => x.title === 'Record the fee paid'), a = await stage([{type: 'artefact', payload: {...own, confirmed: true}}], A); await merge(a.id, C);
+      assert.deepEqual([req(own.id).confirmed, ...stamps(req(own.id)), req(own.id).provenance.reviewed.mergedBy], [true, 'person', B, undefined, A, 'confirmed', C], 'B wrote it, A confirmed it, C merged the confirmation');
+      const r = await k.step('vouchreq.accept', own.id, C); assert.equal(r.status, 400); assert.match(r.error, words(own.id, A, 'confirmed', C));
+      ok(await k.step('vouchreq.accept', own.id, D), 'a fourth person'); }
+  } finally { k.h.close(); }
+  pass('Z6: a merge request that carries commands of its own is refused in words and writes and names nothing; the merger of a keep or of a confirmation an alternative carried is refused in words that say kept or confirmed');
+});
+// Z7. Readings: a merge is a person's review of the batch, which D1 counts as a person standing behind the record, but it
+// confirms no record's words. The SDD counts a merged record as its preparer's, not as confirmed, and names its merger;
+// the review plan lists a merged draft by Sol until a person confirms or keeps it; a record's label names the merger.
+await block('Z7 a merge confirms no record\'s words', async () => {
+  need();
+  const {reviewPlan} = await import('./public/review-plan.js'), {recordProvenance} = await import('./public/provenance.js');
+  const k = await mergeKit(), {d, ok, send, stage, merge, rec} = k, listed = p => reviewPlan(p).steps.filter(s => s.kind === 'records' && /synthetic/.test(s.id)).reduce((n, s) => n + s.count, 0);
+  try {
+    ok(await send('synthetic.save', {title: 'Written directly'}, A)); const p0 = d(), r0 = provenanceReading(p0), plan0 = listed(p0);
+    const a = await stage([{type: 'synthetic.save', payload: {title: 'Drafted by the agent account'}}], AGENT); await merge(a.id, B); const sol = k.h.last();
+    const b = await stage([{type: 'synthetic.save', payload: {title: 'Prepared by A'}}], A); await merge(b.id, B); const own = k.h.last();
+    const r1 = provenanceReading(d());
+    assert.deepEqual([r1.total - r0.total, r1.by.sol - r0.by.sol, r1.by.person - r0.by.person, r1.confirmed - r0.confirmed], [2, 1, 1, 0], 'each counted as its preparer\'s, neither as confirmed');
+    const text = architectureMarkdown(d()).markdown, e = text.slice(text.indexOf('## E. Provenance'));
+    assert.match(e, /Merged from workbench alternatives: 2 records, counted as written by whoever prepared them; merged by architect-b\. A merge is a person.s review of the alternative and confirms no record.s words\./, 'Appendix E names the merger');
+    assert.ok(!architectureMarkdown(p0).markdown.includes('Merged from workbench alternatives'), 'a document with no merged record prints no such line');
+    assert.equal(listed(d()), plan0 + 1, 'the review plan lists the merged draft by Sol (the person\'s merged record is no draft)');
+    assert.deepEqual([recordProvenance(d(), rec(sol), 3).label, recordProvenance(d(), rec(own), 3).label], ['Drafted by Sol · merged by architect-b, not reviewed', 'Written by architect-a · merged by architect-b'], 'the label names the merger');
+    assert.deepEqual([recordProvenance(d(), rec(sol), 3).reviewed, recordProvenance(d(), rec(own), 3).reviewed], [null, null], 'a merge is no review of the record');
+    // a person confirms it: then it is confirmed and leaves the plan
+    ok(await send('synthetic.confirm', {id: sol}, C)); assert.equal(listed(d()), plan0, 'confirmed by a person, it leaves the plan'); assert.equal(provenanceReading(d()).confirmed - r0.confirmed, 1);
+    assert.equal(recordProvenance(d(), rec(sol), 3).label, 'Drafted by Sol · confirmed by architect-c');
+    // D1 still counts the merge as a person behind the record: a third person takes a second person's step on the agent's merged record
+    ok(await k.step('synthetic.accept', own, C), 'a third person accepts the person\'s merged record');
+  } finally { k.h.close(); }
+  pass('Z7: a merged record counts as its preparer\'s and not as confirmed in the SDD, whose Appendix E names the merger; the review plan lists a merged draft by Sol until a person confirms it; the label names the merger; D1 still counts the merge');
+});
+
 // ---------------------------------------------------------------- should-fix 3, 6, 11 and ruling D7.5: the start check
 await block('SF start check', () => {
   need();
