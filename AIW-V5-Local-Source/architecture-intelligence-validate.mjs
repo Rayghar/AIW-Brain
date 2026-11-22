@@ -124,7 +124,8 @@ const startedRun=applySelectionCommand(ruled.p,{type:'selection.start',payload:{
 assert.equal(opened.selection.concern.receipt.claimId,ruled.claimId,'The common native action opens exactly the current released concern');assert.equal(opened.selection.driverId,compare.driverId);assert.equal(opened.selection.prepared,'sol-draft');
 const rootContext=brainContext(ruled.p,{chapter:1,id:'REQ-001'}),generation={context:{chapter:1,id:'REQ-001'},basisStamp:rootContext.stamp,sources:[]};
 assert(generationCurrent(started,generation),'Creating a proposed task cannot invalidate the source that suggested it');
-let answered=started;for(const o of (await import('./public/domain-knowledge.js')).releasedDesignConcern(ruled.p,compare.concernId.slice('knowledge:'.length)).options.map(x=>x.id))answered=applySelectionCommand(answered,{type:'selection.candidate',payload:{id:opened.id,candidate:{kind:'option',ref:{optionId:o}}}},at,'synthetic-architect',sol).document;
+// (the draft answers each option on the concern's one criterion, as an option is compared once assessed on each: ruling U3)
+let answered=started;for(const o of (await import('./public/domain-knowledge.js')).releasedDesignConcern(ruled.p,compare.concernId.slice('knowledge:'.length)).options.map(x=>x.id))answered=applySelectionCommand(answered,{type:'selection.candidate',payload:{id:opened.id,candidate:{kind:'option',ref:{optionId:o}},notes:{rollback:'Synthetic draft answer'}}},at,'synthetic-architect',sol).document;
 assert(answered.decisions.records.find(d=>d.id===opened.id).alternatives.length>=2,'The draft is answered: the concern\'s options are its candidates');
 assert(generationCurrent(answered,generation),'Answering a draft is not an architectural source change');
 // (U4) and a person's choice is a design change the requirement's context reads

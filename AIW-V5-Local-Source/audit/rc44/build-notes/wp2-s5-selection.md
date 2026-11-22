@@ -521,5 +521,12 @@ case first, seen to fail on the head it started from, then the change; a WIP com
 - **Done:** item 2 (U4): architecture-intelligence-validate.mjs's two assertions restored exactly as on 5cae40a (failed
   at 8738d5d on 'Creating a proposed task cannot invalidate the source that suggested it'), case `S5 U4 proposal` (failed
   without the change), then the change in `public/journey-context.js` (route +39 B, 3,228,383 -> 3,228,422).
-- **In progress:** item 3 (U3).
-- **Next:** U3, U5, U2, U6, the notes.
+- **Done:** item 3 (U3): `design-concern-validate.mjs` re-pointed (each replaced assertion marked "U3: was … ->" in the
+  suite); its task readers read the documents the guided path made at `5cae40a` (`rc44-wp2-design-concern-held.json`,
+  captured by the suite as it was there); case `S5 U3 concern`. Both failed first (no option was refused for want of its
+  criterion notes; the view had no note fields); then `selection.candidate` of kind option refuses an option not assessed
+  on every released criterion, and the view asks a note per option and criterion (both off the route). The suite now runs
+  to its baseline red assertion (l.119 at `5cae40a`, l.199 now) and stops there for the same reason (`QD-002: ''` in the
+  assessments).
+- **In progress:** item 4 (U5).
+- **Next:** U5, U2, U6, the notes.

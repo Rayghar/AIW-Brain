@@ -16,7 +16,8 @@
 //                         profile: a released, eligible component profile (knowledge scope, pinned to its release and
 //                         claim hash); library / archetype: what the reviewed candidate path accepts
 //                         (component-library.js proposalSource); existing: a component of the project; build / buy;
-//                         option: a released option of the selection's concern. Candidate knowledge can be read, not
+//                         option: a released option of the selection's concern, with `notes` {criterionId: text}
+//                         assessing it on every released criterion (ruling U3). Candidate knowledge can be read, not
 //                         selected.
 //   selection.judge       {id, alternativeId, constraintId, state, evidence, reason}   a signed-in person's, for a row
 //                         that reads unknown; the judgement keeps its actor and account kind. After the choice, only a
@@ -295,6 +296,10 @@ function candidate(p,raw,at,actor,author){
  }else if(kind==='option'){
   const notes=plain(raw.notes)?raw.notes:{};for(const v of Object.values(notes))if(typeof v!=='string'||v.length>SELECTION_LIMITS.text)throw Error('Record each criterion\'s note as text of at most '+SELECTION_LIMITS.text+' characters.');
   const {option,payload}=optionOf(p,s,typeof c.ref?.optionId==='string'?c.ref.optionId:'',notes);
+  // (ruling U3) a released option is compared once it is assessed on every released criterion, as the guided comparison
+  // asked before it prepared a decision: a blank alternative does not masquerade as a comparison
+  const open=list(releasedDesignConcern(p,s.concern.id)?.criteria).filter(k=>!String(notes[k.id]||'').trim()).map(k=>k.label);
+  if(open.length)throw Error('Assess every released approach before it is compared: '+option.title+' · '+open.join(', ')+'.');
   ref={scope:'knowledge',optionId:option.id,claimId:s.concern.receipt.claimId,releaseId:s.concern.receipt.releaseId};fields=payload;title=option.title;
  }else if(!title)throw Error('Name the candidate.');
  const same=JSON.stringify(ref);if(ref&&list(d.alternatives).some(a=>a.candidate&&JSON.stringify(a.candidate.ref)===same))throw Error('This candidate is already compared in '+d.id+'.');
