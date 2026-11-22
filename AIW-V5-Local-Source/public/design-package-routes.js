@@ -19,3 +19,5 @@ import {registerExtension} from './design-extensions.js';
 registerExtension({id:'p30-deployment-route',needs:p=>p.runtime?.topology,load:()=>import('./deploy-view.js')});
 // p40-adoption (wp2): held in the lazy entry of the comparison tools (ruling D7.6), which imports adoption-package.js.
 registerExtension({id:'p40-adoption-route',needs:p=>p.adoptions,load:()=>import('./architecture-task-ui.js')});
+// p10-knowledge (wp1): held in the lazy entry of the knowledge workspace (ruling D7.6), which imports knowledge-package.js.
+registerExtension({id:'p10-knowledge-route',needs:p=>p.knowledge?.crosswalk,load:()=>import('./knowledge-workspace-ui.js')});

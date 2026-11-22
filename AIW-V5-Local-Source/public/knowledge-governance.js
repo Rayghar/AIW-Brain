@@ -294,6 +294,9 @@ export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),
   if(s.releases.length>=30)throw Error('This project has reached its release limit.');
   const release={id:next(s,'KR'),title:required(r.title,'a release title',180),claims:copy(claims),sourceIds:[...new Set(claims.map(c=>c.sourceId))],createdAt:at,actor,reviewer:text(r.reviewer,180),reason:text(r.reason),supersedes:r.supersedes||null,authority:'Project-reviewed conditional guidance; no scoring or automatic model mutation'};
   if(release.supersedes&&!s.releases.some(x=>x.id===release.supersedes))throw Error('Choose the previous release.');
+  // A release of forms holds the verified crosswalk rows of its concepts beside its claims (rc44, wp1 slice S2; the form
+  // capability's parts): in the checksum, and only when there is one, so a release without them is as it was.
+  const parts=forms?.parts?.(p,claims);if(parts)release.parts=parts;
   release.checksum=digest(release);s.releases.push(release);selected=release.id;break;
  }
  case 'knowledge.activate':{

@@ -21,6 +21,8 @@ import {architectureUnitEditor,architectureUnitPayload,architectureUnitReviewHTM
 import {timeHTML} from './format.js';
 import {solRecord} from './brain-reasoning-ui.js';
 import {catalogue,catalogueLoaded,loadCatalogue} from './catalogue-store.js';
+// The design package of the knowledge register (rc44, wp1): this entry holds it in the browser (its route stub loads it).
+import './knowledge-package.js';
 let wantView=null,wantProduct='',wantReference='',referenceSourceId='',context=null,hooks=null,projectId='',productCompare='',query='',discoveryQuery='',graphQuery='',graphFocus='',conceptId='',compareId='',view='explore',form='',fields={},selectedLeads=new Set(),repositorySelected=new Set(),repositoryPreview=null,transferPreview=null,transferScope=null,transferConfirmed=false,dirty=false,pending=null,busy=false,error='',notice='';
 const field=(key,label,multiline=false,value=fields[key]||'',attrs='')=>`<label class="brain-field"><span>${label}</span>${multiline?`<textarea data-k-field="${key}" rows="3" maxlength="${key==='body'?60000:2000}">${esc(value)}</textarea>`:`<input data-k-field="${key}" value="${esc(value)}" maxlength="${key==='path'?500:2000}" ${attrs}>`}</label>`;
 const select=(key,label,options,value=fields[key]||'')=>`<label class="brain-field"><span>${label}</span><select data-k-field="${key}">${options.map(([id,name])=>`<option value="${esc(id)}" ${id===value?'selected':''}>${esc(name)}</option>`).join('')}</select></label>`;

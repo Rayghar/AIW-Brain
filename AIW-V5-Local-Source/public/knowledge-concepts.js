@@ -14,6 +14,8 @@ import {verifierRefusal} from './architecture-obligations.js';
 import {digest} from './brain-integrity.js';
 import {FORM_TYPES,FORM_TIER,conceptFormIssues} from './concept-form.js';
 import {copy,list} from './util.js';
+import {METHOD_CROSSWALK,builtInRow} from './knowledge-crosswalk.js';
+import {STYLE_CATALOGUE} from './design-reasoning.js';
 
 const order=type=>FORM_TYPES.indexOf(type);
 // A form's issues as its claim stands: against the claim's passage, with the claim's own statement, conditions and
@@ -21,7 +23,7 @@ const order=type=>FORM_TYPES.indexOf(type);
 // carries one: that is asked here, on every read, as it is at the command (ruling G4 of 2026-11-18), so a unit written
 // into a claim of any other form makes the form unusable and is handed to nobody.
 export const formIssues=claim=>{
- const type=claim?.form?.type,issues=conceptFormIssues(claim?.form,{excerpt:claim?.excerpt,lineStart:claim?.lineStart,claim:{statement:claim?.statement,conditions:claim?.conditions,limitations:claim?.limitations}});
+ const type=claim?.form?.type,issues=conceptFormIssues(claim?.form,{excerpt:claim?.excerpt,lineStart:claim?.lineStart,claim:{statement:claim?.statement,conditions:claim?.conditions,limitations:claim?.limitations,architectureUnit:claim?.architectureUnit}});
  return FORM_TYPES.includes(type)&&type!=='applicability'&&Object.hasOwn(claim,'architectureUnit')?[...issues,(/^[aeiou]/.test(type)?'An ':'A ')+type+' form carries no structured architecture unit: only an applicability form does.']:issues;
 };
 const sourceOf=(s,claim,release)=>release?.organizationId?list(release.sources).find(x=>x.id===claim.sourceId):s.sources.find(x=>x.id===claim.sourceId);
@@ -115,7 +117,7 @@ export function releasedConcepts(p){
 // What a concept reads as here: the register's concept with each of its forms, the forms active releases hold, and for
 // each of those releases whether the concept is usable there as a whole, with the reasons when it is not.
 export function conceptReading(p,conceptId){
- const s=knowledgeState(p),concept=conceptRecords(p).find(c=>c.conceptId===conceptId),released=releasedConcepts(p).filter(c=>c.conceptId===conceptId);
+ const s=knowledgeState(p),concept=conceptRecords(p).find(c=>c.conceptId===conceptId),all=releasedConcepts(p),released=all.filter(c=>c.conceptId===conceptId);
  if(!concept&&!released.length)return null;
  const hits=releasedForms(p),forms=[];
  for(const f of list(concept?.forms)){
@@ -124,7 +126,7 @@ export function conceptReading(p,conceptId){
  }
  for(const c of released)for(const f of c.forms)if(!forms.some(x=>x.claimId===f.claimId&&x.releaseId===f.releaseId))forms.push(f);
  const head=concept||{conceptId,title:conceptId,kind:null,family:'',scope:[],stages:[],lenses:[]};
- return {conceptId,title:head.title,kind:head.kind,family:head.family,scope:copy(head.scope),stages:copy(head.stages),lenses:copy(head.lenses),state:concept?concept.state:'released',forms:forms.sort(byForm),releases:released.map(c=>({releaseId:c.release.id,title:c.release.title,eligible:c.eligible,reasons:c.reasons}))};
+ return {conceptId,title:head.title,kind:head.kind,family:head.family,scope:copy(head.scope),stages:copy(head.stages),lenses:copy(head.lenses),state:concept?concept.state:'released',forms:forms.sort(byForm),releases:released.map(c=>({releaseId:c.release.id,title:c.release.title,eligible:c.eligible,reasons:c.reasons})),aliases:aliasesIn(p,conceptId,all)};
 }
 // The teaching forms a concept offers here, each with its state and label: released, reviewed, or a candidate nobody reviewed yet.
 export function conceptTeachingForms(p,conceptId){
@@ -144,3 +146,90 @@ export function conceptDecisionReading(p,pinId){
  return {...at,forms:held.forms.filter(f=>f.tier==='decision').map(f=>({type:f.type,content:f.content,architectureUnit:f.architectureUnit,receipt:f.receipt})),reasons:[]};
 }
 export const conceptDecisionForms=(p,pinId)=>conceptDecisionReading(p,pinId).forms;
+
+// ---------------------------------------------------------------- the crosswalk and one identity (rc44, wp1 slice S2)
+// A crosswalk row (knowledge.crosswalk[], KA; written by the design package p10-knowledge, knowledge-concept-commands.js)
+// maps an alias {scheme, aliasId} onto a concept of the register, with a relation: same, narrower, broader, realises or
+// distinct. Its standing is derived on every read, as a concept's is: retired; verified or rejected, while the review a
+// second person recorded stands (taken by a person's account, of the row exactly as it reads now, by someone who wrote
+// no revision of it: verifierRefusal on the row's projection, the one rule the boundary asked when the step was taken);
+// proposed otherwise. Only a `same` row that a second person verified and an active release of this project holds names
+// an identity; a proposed row, a row a document says its own author verified, and a verified row no release holds name
+// none, and nothing here is read by a check, a gate, a score or a conformance reading.
+// The built-in rows, navigation only (design d.2): the comparison options of scheme aiw-method, and the Playbook's five
+// style ids as the same as their catalogue styles, read from STYLE_CATALOGUE, their one definition.
+export const BUILT_IN_CROSSWALK=Object.freeze([...METHOD_CROSSWALK,...Object.entries(STYLE_CATALOGUE).map(([alias,id])=>builtInRow('playbook',alias,id,'same'))]);
+const CROSSWALK_CONTENT=['id','conceptId','scheme','aliasId','label','relation','evidenceClaimId','note','targetContent'];
+// What a row's review covered: what the row says (who wrote it, when, its steps and stamps are bookkeeping).
+export const crosswalkRowHash=r=>digest(Object.fromEntries(CROSSWALK_CONTENT.map(k=>[k,r?.[k]??null])));
+// Who wrote a row, for the second-person rule: its author and every editor (ruling D7.1: the projection the step reads).
+export const crosswalkAuthors=r=>({id:r?.id,actor:r?.actor,owner:'',history:list(r?.history).map(h=>({revision:h?.revision,actor:h?.actor}))});
+const rowReview=r=>{const v=r?.review;return !!v&&(v.decision==='verified'||v.decision==='rejected')&&!!v.actor&&v.account==='person'&&v.rowHash===crosswalkRowHash(r)&&!verifierRefusal(crosswalkAuthors(r),v.actor,v.account);};
+export const crosswalkState=r=>r?.retired?'retired':rowReview(r)?r.review.decision:'proposed';
+export const crosswalkRecords=p=>list(knowledgeState(p).crosswalk).map(r=>({...r,state:crosswalkState(r)}));
+// Whether a row is covered as a concept is (rulings B3, E1 and G2 read for rows): a second person verified it here at
+// some time, or a release of this project holds it. Only a signed-in person then changes it.
+// A row whose review stands, of either decision, is covered too (ruling P5 d of 2026-11-22): a second person's rejection
+// is not undone by a request that is nobody's.
+export const crosswalkCovered=(p,r)=>{const v=r?.review;return rowReview(r)||!!v?.actor&&v.account==='person'&&(v.decision==='verified'||!!v.verifiedBefore)||knowledgeState(p).releases.some(x=>list(x.parts?.crosswalk).some(y=>y?.id===r?.id));};
+// The rows the project's active releases hold as copied (a release of forms holds the verified rows of its concepts,
+// parts.crosswalk; an organisation's release carries none until slice S3), from releases as they were made (checksum).
+const heldCrosswalk=p=>{const s=knowledgeState(p);return s.releases.filter(r=>s.pins.includes(r.id)&&list(r.parts?.crosswalk).length&&r.checksum===digest({...r,checksum:undefined})).flatMap(release=>release.parts.crosswalk.map(row=>({row,release})));};
+// Of those, the rows that still name what they were verified as: the row's review standing as copied, its concept usable
+// as a whole in that release, and this project's register holding the row exactly as the release copied it (its hash;
+// ruling P5 a), neither retired nor rejected since. Anything else fails closed: a person's later edit, a register that
+// lost the row.
+export function releasedCrosswalk(p){return releasedRows(p,null);}
+function releasedRows(p,known){
+ const own=new Map(list(knowledgeState(p).crosswalk).map(r=>[r?.id,r])),held=heldCrosswalk(p),concepts=held.length?known||releasedConcepts(p):[];
+ return held.filter(({row:r,release})=>{const here=own.get(r?.id);return crosswalkState(r)==='verified'&&!!here&&crosswalkRowHash(here)===crosswalkRowHash(r)&&!['retired','rejected'].includes(crosswalkState(here))&&concepts.some(c=>c.release.id===release.id&&c.conceptId===r.conceptId&&c.eligible);});
+}
+const BUILT_IN_WORDS='AIW built-in mapping, not reviewed by a person';
+// The one resolver of identity: the concept an id names, {conceptId, relation, via: {scheme, aliasId, rowId, releaseId},
+// authority: 'governed'}, or null. In order: an id that is itself a concept an active release holds, usable as a whole;
+// a released `same` row. An alias two rows give two concepts names none. `scheme` narrows the aliases read. It answers
+// governed identities only (ruling P6 of 2026-11-22): no built-in row answers it; builtInNavigation reads those.
+export function resolveConcept(p,id,scheme=null){
+ if(typeof id!=='string'||!id)return null;
+ const concepts=releasedConcepts(p);return resolveIn(releasedRows(p,concepts),concepts,id,scheme);
+}
+// The resolver's own rule over the released rows and concepts read once (conceptAliases asks it for each row).
+// One id names one concept (rulings P3, S2 and S8): an id that is a usable released concept and, in any scheme, a governed
+// alias the same as another concept names none; an alias a scheme names answers only when the bare id names the same
+// concept, so that no form of the resolver, and no reading of the concept view, names two concepts for one id.
+function resolveIn(rows,concepts,id,scheme){
+ const fits=r=>r.relation==='same'&&r.aliasId===id&&(!scheme||r.scheme===scheme),one=list=>new Set(list.map(r=>r.conceptId)).size===1;
+ const own=concepts.filter(c=>c.eligible&&c.conceptId===id);
+ if(own.length&&rows.some(h=>h.row.relation==='same'&&h.row.aliasId===id&&h.row.conceptId!==id))return null;
+ if(own.length&&!scheme)return {conceptId:id,relation:'same',via:{scheme:'concept',aliasId:id,rowId:null,releaseId:own[0].release.id},authority:'governed'};
+ const governed=rows.filter(h=>fits(h.row));
+ if(!governed.length||!one(governed.map(h=>h.row)))return null;
+ if(scheme&&resolveIn(rows,concepts,id,null)?.conceptId!==governed[0].row.conceptId)return null;
+ return {conceptId:governed[0].row.conceptId,relation:'same',via:{scheme:governed[0].row.scheme,aliasId:id,rowId:governed[0].row.id,releaseId:governed[0].release.id},authority:'governed'};
+}
+// The built-in rows of an alias, for navigation only (ruling P6): AIW's own table, reviewed by no person, answered under a
+// name that says so and with no conceptId at its top level, so that no reader can take it for an identity.
+// {navigation: [{scheme, aliasId, targetId, relation}], authority: 'built-in', label} or null.
+export function builtInNavigation(id,scheme=null){
+ const rows=BUILT_IN_CROSSWALK.filter(r=>r.aliasId===id&&(!scheme||r.scheme===scheme));
+ return rows.length?{navigation:rows.map(r=>({scheme:r.scheme,aliasId:r.aliasId,targetId:r.conceptId,relation:r.relation})),authority:'built-in',label:BUILT_IN_WORDS+': navigation only, never an identity'}:null;
+}
+// The aliases of a concept, for the concept view: its rows in the register with their standing (released when an
+// active release holds the row as verified and the register still reads it so), and beside it what an active release
+// holds of the row (ruling P5 a): `register` is the register's state, `release` the release's copy and whether it still
+// resolves. A row a release holds that the register does not is listed as unregistered. Then the built-in rows that name it.
+export function conceptAliases(p,conceptId){return aliasesIn(p,conceptId,releasedConcepts(p));}
+function aliasesIn(p,conceptId,concepts){
+ const held=heldCrosswalk(p).filter(h=>h.row.conceptId===conceptId),rows=releasedRows(p,concepts),released=rows.filter(h=>h.row.conceptId===conceptId),out=[];
+ const entry=(r,state,register,h,ok)=>({scheme:r.scheme,aliasId:r.aliasId,label:r.label,relation:r.relation,state,register,release:h?{releaseId:h.release.id,relation:h.row.relation,resolves:ok}:null,authority:'governed',targetContent:r.targetContent??null,rowId:r.id,releaseId:state==='released'?h.release.id:null});
+ // A released row reads as released only while the resolver answers through it (the lead's follow-up to P3): a `same`
+ // row whose alias another usable concept bears resolves nothing, so it reads as the register holds it, with its release
+ // beside it; a row of another relation is released navigation and resolves no identity.
+ // (resolves: the resolver answers through the row for its scheme, which it does only while the bare id names the same
+ // concept: ruling S8)
+ const through=h=>h.row.relation==='same'&&resolveIn(rows,concepts,h.row.aliasId,h.row.scheme)?.via?.rowId===h.row.id;
+ for(const r of crosswalkRecords(p))if(r.conceptId===conceptId){const ok=released.find(x=>x.row.id===r.id),go=!!ok&&through(ok);out.push(ok&&(go||ok.row.relation!=='same')?entry(ok.row,'released',r.state,ok,go):entry(r,r.state,r.state,ok||held.find(x=>x.row.id===r.id),false));}
+ for(const h of held)if(!out.some(x=>x.rowId===h.row.id))out.push(entry(h.row,'unregistered',null,h,false));
+ for(const r of BUILT_IN_CROSSWALK)if(r.conceptId===conceptId)out.push({scheme:r.scheme,aliasId:r.aliasId,label:BUILT_IN_WORDS,relation:r.relation,state:'built-in',register:null,release:null,authority:'built-in',targetContent:null,rowId:null,releaseId:null});
+ return out;
+}

@@ -213,6 +213,11 @@ export function conceptFormIssues(form,{excerpt,lineStart,claim=null}={}){
  if(decision&&object(claim)){
   const pool=new Set(everyQuote(form).flatMap(numbers)),texts=v=>Array.isArray(v)?v:typeof v==='string'?v.split('\n'):[];
   for(const [name,list] of [['statement',[claim.statement]],['conditions',texts(claim.conditions)],['limitations',texts(claim.limitations)]])list.forEach((t,i)=>{for(const n of numbers(typeof t==='string'?t:''))if(!pool.has(n)){out.push('The claim\'s '+name+(name==='statement'?'':'['+i+']')+' states the number '+n+', which no quote of the form contains.');break;}});
+  // The structured unit an applicability form carries is handed over by a pin (ruling I2 of 2026-11-18): every text and
+  // value of it, its mechanism, rationales, obligations, exclusions, placement and predicates, states a number only where
+  // some quote of the form holds it, as the claim's own texts do. Read at knowledge.claim and on every read (formIssues).
+  const leaves=(v,at)=>typeof v==='string'||typeof v==='number'?[[at,String(v)]]:Array.isArray(v)?v.flatMap((x,i)=>leaves(x,at+'['+i+']')):object(v)?Object.entries(v).flatMap(([k,x])=>leaves(x,at+'.'+k)):[];
+  if(object(claim.architectureUnit))for(const [at,t] of leaves(claim.architectureUnit,'architectureUnit'))for(const n of numbers(t))if(!pool.has(n)){out.push(at+' states the number '+n+', which no quote of the form contains.');break;}
  }
  return out;
 }
