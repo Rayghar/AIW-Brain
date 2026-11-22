@@ -17,8 +17,30 @@ here is approved, accepted, released or promoted.
 - **Done since:** the second fix-up's verifier (merge, three new problems) and the lead's rulings O1 to O5.
 - **Done since:** the third fix-up (rulings O1 to O5), section "Third fix-up" below (branch
   `rc44/wp9a-s1-topology-fix-c6`, from `rc44/wp9a-s1-topology-fix-c5` at `5cae40a`); the suite at 25 blocks, green.
-- **In progress:** nothing.
+- **Done since:** the third fix-up's verifier (merge, two hardening problems and a nit) and the lead's rulings R1 to R4.
+- **In progress:** the fourth fix-up (rulings R1 to R4), section "Fourth fix-up" below (branch
+  `rc44/wp9a-s1-topology-fix-c7`, from `rc44/wp9a-s1-topology-fix-c6` at `ce6eb90`).
 - **Next:** the lead's merge; see "What later slices inherit" and "Open questions (for the lead)".
+
+## Fourth fix-up (after the third verifier; the lead's rulings R1 to R4)
+
+Branch `rc44/wp9a-s1-topology-fix-c7`, from `rc44/wp9a-s1-topology-fix-c6` (`ce6eb90`). Verifier:
+`/home/user/hb-review/rc44-build/wp9a-s1-topology.verify3.json` (verdict merge; two hardening problems of O2's row and a
+nit). Order of work, each case first and seen to fail on the head the item started from, a WIP commit after each:
+1. R1, the trackPaths start check: each refusal a case in S0's block "O2".
+2. R2, a tracker mends content, decides nothing and makes nothing: the boundary restores, refuses an added record; the
+   helper holds it; cases through the server for a person's and an agent account's commit.
+3. R3, routeBookings names the file it cannot read: one hostile case in S0's block "O1".
+4. R4, S1.10's share of the lazy entry (own modules pinned, own import and export lists) and the files-under-10-KB
+   bucket read as a ceiling in S0's and wp9a's size cases; re-measured; the O1 merge check on the final head.
+5. The notes, the suites, the final commit.
+
+Measured before any change (`node build.mjs` on `ce6eb90`): chapters route 3,230,605 B, projects 507,338 B, 148 script
+files, buckets 53/50/45, stylesheet 901,873 B, no violation.
+
+### By item (fourth fix-up)
+
+- Item 1: in progress.
 
 ## Third fix-up (after the second verifier; the lead's rulings O1 to O5, with K to N)
 
