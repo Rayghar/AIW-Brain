@@ -1024,7 +1024,9 @@ first, seen to fail on the head it started from, then the change; a WIP commit a
   +237 B for W1 and W3, the route unchanged at 3,228,540 B); `S5 size` holds that on the build `atMerge` names its
   `opens with records` is this build's (case first: failed with 133,482 B against 133,719 B) and that the top-level block
   says which tree it measures; the pass line prints the merge's figure, then the slice's own tree's.
-- **In progress:** item 4 (the notes line by line, the suites, syntax, lint, build, the final commit).
+- **Done:** item 4: this section line by line, the suites, syntax, lint and build below, the final commit.
+- **In progress:** nothing. **Next:** the lead's review and merge (S2.12's list of later bookings at each merge: open
+  point 1).
 
 ### Fourth fix-up, line by line
 
@@ -1083,7 +1085,31 @@ This round adds nothing to the route. In the lazy entry (metafiles of both build
 26,752 B (+48, W1's `judgementsFrom`), `adoption-ui.js` 10,125 -> 10,314 B (+189, W3's check); the SDD basis (W1) is on
 the server. Bookings unchanged: the route less 9673661, −1,300 B, = lead 0 + wp1 S2 118 + wp2 S1 325 + wp2 S5 864 + wp9a
 342 + the pool (−2,949 B). wp2 1,189 of 1,200 B (11 B left). Route headroom 5,252 B. No gate was raised; `client-bundle.mjs`
-and `build.mjs` are unchanged.
+and `build.mjs` are unchanged. "Opens with records" on both builds read by `R.opensWithRecords` from each build's metafile.
+
+### Suites (this round's head, two at a time, the machine shared)
+
+- The four rc44 suites, on this branch's build: `rc44-wp2-adoption` 45 blocks green; `rc44-s0-extensions` 28 checks green
+  (`O1 the bookings add up` included); `rc44-wp9a-deployment` 25 checks green (S1.10 included); `rc44-wp1-knowledge` 57
+  passed, 3 pending, **0 failed** (S2.12 green: W2).
+- `design-concern-validate.mjs`: its first block passes; it stops at l.199 with `'QD-002': ''` in the assessments, the
+  failure text identical to the one at l.119 on an archive of `5cae40a` run here this round (V5: same assertion, same
+  reason). `architecture-intelligence-validate.mjs`: green.
+- The importers of the changed modules and the suites the third verifier ran (the package is registered by worker.js, so
+  every suite that reads a design through the server reads it): action-undo, architecture-verification,
+  architecture-whatif, chapter-insight, component-library, connected-design-projections, decision-prerequisite,
+  decision-reading, decisions, design-records, desk, development, drafter-groups, fingerprint, journey-context-model-dom,
+  journey-context, knowledge-retrieval, logical, operations, order-independence, outcome-design-journey, provenance,
+  rc42-g2-library, rc42-g3a-risk-and-limits, rc42-g3b-trace-and-delivery, rc42-g3c-evidence-fingerprint,
+  rc42-g4-trace-kernel, reconciliation, review, sdd-architecture, sdd-content, sdd-formats, sdd-modules, sol-coverage,
+  sol-sdd, tradeoff, utility, recovery-authority, brain-tradeoffs, workspace, persistence: **all 41 green**.
+- `node check-syntax.mjs`: 944 modules pass. `node scripts/lint.mjs --summary`: 162 problems, the baseline's 162, 0 new.
+  `node build.mjs`: every gate passes (table above).
+- Not run: the full regression (the lead's), the browser suites (red at the baseline on this machine; the view is driven
+  in node through happy-dom, `S5 V1 view`), `scale` and `sdd-size` (timers).
+- `command-equivalence` (baseline-red): red at l.60 on this head and on the archive of `5cae40a` run here, with the same
+  first message ("a working choice made: the saved document is the one the route saved before round 12 ·
+  $.workbench.history[1] …"; only the time and the undo id differ).
 
 ### Deviations, and my view
 
