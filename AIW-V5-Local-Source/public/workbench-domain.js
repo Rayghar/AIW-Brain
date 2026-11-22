@@ -145,8 +145,9 @@ function applySeeding(p,raw,at,actor){if(!['off','on'].includes(raw.state))throw
 // digest; a command that differs from both is the reviser's, and names the kind of whoever prepared the command it
 // replaces (the same type and record, at its place first) as `from`, as settle names the words a person's write started
 // from: a revised draft by Sol is still disclosed as from Sol's draft. Its history entry keeps the list it replaced. An
-// alternative saved before this build has no list, and a command carried from one names nobody (null). merged(result, command, index): the server's stamping of what each command
-// of a merge wrote (provenance.js mergeStamper), called after each; merged.by(index), the account that prepared the
+// alternative saved before this build has no list, and a command carried from one names nobody (null).
+// merged(result, command, index): the server's stamping of what each command of a merge wrote (provenance.js
+// mergeStamper), called after each; merged.by(index), the account that prepared the
 // command when the alternative names it, is the domain's actor for it, as in a direct write (ruling Z1: the record's actor
 // and history name the preparer; the merger is named on the stamp and on the alternative's acceptance). Without an
 // author (a caller that is not the server) none of it is written.
