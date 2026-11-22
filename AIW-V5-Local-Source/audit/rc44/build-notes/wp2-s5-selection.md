@@ -777,4 +777,18 @@ fail on the head it started from, then the change; a WIP commit after each item.
   file's bookings, this slice's 864 B and the lead's −3,047 B included, to the integrated base and expects wp1 S2's start
   commit, 3,230,605 B; on the merge that sum is 3,228,422 B). S2.12 is wp1's own case and V names no edit of it: not
   mine to change (see "Open points for the lead" of this section).
-- **In progress:** item 1 (V3).
+- **Done:** item 1 (V3). S0's block `O1 the bookings add up` failed on the merge in its stale-figure case (seen: "wp1-s2-size.json
+  stale: The bookings do not add up: the chapters route grew -1300 B …, and the size files book -1299 B"). Its regex reads
+  the growth, and the bookings it is held to, as signed numbers (`grew \d+ B` -> `grew -?\d+ B`, `book \d+ B` -> `book -?\d+
+  B`; the message shape and every file's figure still required); the whole block and `assertBookingsAddUp` pass on the
+  merged build (S0: 28 checks). The restatement: `wp2-s5-size.json` gains `atMerge` (written by `node
+  rc44-wp2-adoption-validate.mjs --measure-merge` on the merged tree; a new case in `S5 size`, seen to fail first: "the
+  evidence restates the build at the merge … (atMerge): undefined"): the route 3,228,540 B, −1,300 B against 9673661;
+  wp2's own 1,189 B of 1,200 B (S1 325 + S5 864, 11 B left); the other packages' own (wp1 S2 118, wp9a 342, the lead's
+  0); the pool −2,949 B (`trackPathsPartNameO2` 0, `guidedConcernRetirementQ8` −3,047, `baselineDefectFmtL10` 34,
+  `designRowChapterKeysL5` 64); headroom 5,252 B. The case holds that it adds up and that, on the build it names, the
+  other packages' bytes and the pool are the books'. `slice`, `withRetirementPutBack`, `ownBytes`, `routeDelta` and
+  `retirementSaving` stay as measured on the slice's own tree before the merge (the put-back is that tree's); `--measure`
+  carries `atMerge` through. The lead's file restates the same (`addsUp` at 3,228,540 B). wp9a's S1.10 re-run on the
+  merge: green, and its lists bound did not move (lists 168 B, share 22,674 B, modules as pinned): nothing to re-measure.
+- **In progress:** item 2 (V1).
