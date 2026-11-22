@@ -1103,7 +1103,8 @@ await block('D12 a record a merge wrote', async () => {
     // change makes it that person's, as any save does
     { const a = await stage([{type: 'synthetic.save', payload: {title: 'Saved again later'}}, {type: 'synthetic.save', payload: {title: 'Confirmed later'}}], A); await merge(a.id, B);
       const [saved, confirmed] = d().synthetic.records.slice(-2).map(r => r.id);
-      ok(await send('synthetic.save', {id: saved, title: 'Saved again later'}, C)); assert.deepEqual(stamps(rec(saved)), ['person', A, B, B, 'merged'], 'an unchanged save stamps nothing');
+      // (the package's record keeps who saved it, `actor`, among what it says: so the merger's save is the unchanged one)
+      ok(await send('synthetic.save', {id: saved, title: 'Saved again later'}, B)); assert.deepEqual(stamps(rec(saved)), ['person', A, B, B, 'merged'], 'an unchanged save stamps nothing');
       await refused('synthetic.accept', saved, A, MERGED(saved, A, B), 'still the preparer\'s words');
       ok(await send('synthetic.confirm', {id: confirmed}, C)); assert.deepEqual(stamps(rec(confirmed)), ['person', A, B, C, 'confirmed'], 'a confirmation is a review, not a write');
       await refused('synthetic.accept', confirmed, A, MERGED(confirmed, A, B), 'the preparer\'s words still stand'); await refused('synthetic.accept', confirmed, B, /architect-b wrote /, 'and the merger applied them');
@@ -1111,14 +1112,18 @@ await block('D12 a record a merge wrote', async () => {
       await refused('synthetic.accept', saved, C, /architect-c wrote /, 'its writer'); }
     // 4. a topology node, a package's record of its own kind: a person's is stamped as theirs and reviewed by the merger; a
     // node a draft by Sol or an agent account prepared arrives as their proposal, which no merge stands behind (a person
-    // keeps it: rulings F4 and L1); and an agent account's change of a person's node, merged, is the agent's
+    // keeps it: rulings F4 and L1)
     { ok(await send('runtime.topology-start', {}), 'typed');
       const a = await stage([{type: 'runtime.node', payload: {title: 'Sweden Central', kind: 'region'}}], A); await merge(a.id, B); const placed = d().runtime.nodes.at(-1).id;
       assert.deepEqual(stamps(node(placed)), ['person', A, B, B, 'merged'], 'a person\'s node');
       for (const [as, extra] of [[AGENT, {}], [A, {authorKind: 'sol-draft'}]]) { const b = await stage([{type: 'runtime.node', payload: {title: 'Iceland ' + as, kind: 'region', origin: 'sol-draft'}}], as, extra); await merge(b.id, B); const n = d().runtime.nodes.at(-1);
-        assert.deepEqual([n.state, n.origin, authorship(n).kind, ...stamps(n)], ['proposed', 'sol-draft', 'sol-draft', undefined, undefined, undefined, undefined, undefined], 'a proposal: no merge stands behind it'); }
-      const c = await stage([{type: 'runtime.node', payload: {id: placed, reason: 'Drafted reason.', origin: 'sol-draft'}}], AGENT); await merge(c.id, B);
-      assert.deepEqual([node(placed).reason, ...stamps(node(placed))], ['Drafted reason.', 'sol-draft', AGENT, B, B, 'merged'], 'the agent account\'s change, merged by a person, is the agent\'s and reviewed by that person (it read as the merger\'s)'); }
+        assert.deepEqual([n.state, n.origin, authorship(n).kind, ...stamps(n)], ['proposed', 'sol-draft', 'sol-draft', undefined, undefined, undefined, undefined, undefined], 'a proposal: no merge stands behind it'); } }
+    // and an agent account's change of a person's record, merged by a person, is the agent's, reviewed by the merger (it
+    // read as the merger's before this build: the packages' restamp of a collection they hold, here decisions.records)
+    { const target = d().decisions.records.find(x => x.provenance?.author?.kind === 'person' && x.provenance.author.by === A).id;
+      const a = await stage([{type: 'decision.save', payload: {id: target, question: 'Which queue holds the retries, as the agent account redrafted it?'}}], AGENT); await merge(a.id, B);
+      assert.deepEqual([decision(target).question, ...stamps(decision(target))], ['Which queue holds the retries, as the agent account redrafted it?', 'sol-draft', AGENT, B, B, 'merged']);
+      await refused('vouch.accept', target, B, MERGED(target, AGENT, B), 'the merger'); }
     // 5. an adoption: no command an alternative carries writes one (its steps are a person's or a second person's, and
     // the selection's are never staged), so a merge writes none
     for (const type of ['adoption.accept', 'adoption.reassess', 'selection.start', 'selection.choose']) {

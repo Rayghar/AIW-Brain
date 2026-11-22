@@ -90,7 +90,17 @@ function personBehind(p, record, actor) {
   // (ruling F3: a project copied from a template carries the template's stamps; they were made in another project)
   const a = record.provenance?.author, review = reviewOf(p, record), from = [p?.finalReview?.imported?.at, p?.workspace?.templateOrigin?.at].filter(Boolean).sort().pop(), here = at => !(from && !(at > from));
   if (a?.kind === 'person' && a.by && a.by !== actor && here(a.at)) return true;
-  return !!review?.by && review.by !== actor && here(review.at) && (review.how === 'confirmed' || review.how === 'kept' || review.how === 'judgement' && review.outcome === 'kept');
+  // (ruling Y3: a merge is the merger's reviewed step, so the person who merged the record stands behind it as it reads)
+  return !!review?.by && review.by !== actor && here(review.at) && (review.how === 'confirmed' || review.how === 'kept' || review.how === 'merged' || review.how === 'judgement' && review.outcome === 'kept');
+}
+// Who a merge's stamp names while the words it wrote stand (the lead's ruling Y3 of 2026-11-22; public/provenance.js
+// mergeStamper): whoever prepared the command in the alternative and the person who merged it. Neither is the second
+// person; a third signed-in person takes the step. A later change of what the record says is stamped as any save is, and
+// the stamp then names its writer only.
+function mergedRefusal(record, actor) {
+  const a = record?.provenance?.author;
+  if (!a?.mergedBy || a.by !== actor && a.mergedBy !== actor) return null;
+  return 'A second person\'s step needs two persons: ' + record.id + ' reads as ' + a.by + ' prepared it in an alternative and ' + a.mergedBy + ' merged it. A signed-in person who neither prepared nor merged ' + record.id + ' takes this step.';
 }
 // The stored record a second person's step acts on, by its id, in the collections the package states for the type
 // or for its prefix (provenance.paths): `second` may answer a projection, and the stamps are the stored record's.
@@ -108,6 +118,8 @@ const plainPart = v => (v && typeof v === 'object' && !Array.isArray(v) ? v : {}
 // or a draft by Sol changes, by a type whose prefix states no paths or by a command that names no record, no longer
 // reads as a person's, and a second person's step on it is refused until a person saves or confirms it.
 export const stampExtensions = (prior, next, author, at) => (EXTENSIONS.length ? stampChanged(prior, next, ownCollections(), author, at) : next);
+// The same collections, for the stamping of a merge's commands one by one (ruling Y3; provenance.js mergeStamper).
+export const stampedCollections = () => (EXTENSIONS.length ? ownCollections() : []);
 // The handler worker.js calls for a package's type, (document, command, at, actor, {author, revision}) as every
 // handler is called, or null. It refuses what the type says of itself, then applies.
 export function extensionHandler(type) {
@@ -123,7 +135,7 @@ export function extensionHandler(type) {
       const subject = c.second(p, command), records = (Array.isArray(subject) ? subject : [subject]).filter(r => r && typeof r === 'object');
       if (!records.length) throw Error(type + ' names no record a second person could act on.');
       for (const r of records) {
-        const refusal = verifierRefusal(r, actor, author.account); if (refusal) throw Error(refusal);
+        const refusal = verifierRefusal(r, actor, author.account) || mergedRefusal(storedRecord(p, e, type, r.id), actor); if (refusal) throw Error(refusal);
         if (!personBehind(p, storedRecord(p, e, type, r.id), actor)) throw Error('A second person\'s step needs two persons: no person other than ' + actor + ' stands behind ' + r.id + ' as it stands (it was written by an agent account, drafted by Sol, imported or restored, or it names no author). A second signed-in person saves or confirms ' + r.id + ' first.');
       }
     }
@@ -142,6 +154,16 @@ function appliedWith(p, command) {
   const out = innerCommands(command).filter(c => c !== command);
   if (command?.type === 'workspace.merge') out.push(...plainList(plainList(p?.workbench?.alternatives).find(a => a.id === command.payload?.id)?.commands));
   return out;
+}
+// An event a package's staged handler adds inside a reviewed batch or a merge states no author fields (the lead's rulings
+// H3 and Y3 of 2026-11-22): there the handler is called by the staged path (canonical-command.js applyCanonical) with
+// four arguments, where this boundary does not wrap it. worker.js calls this after the command is applied and before the
+// trackers run: when the request applies a package's command beside itself, every event the apply added states none of
+// the fields the server stamps (no built-in staged handler journals; the built-in trackers and the packages' run later),
+// so the commit's stamp is the only one, as for a tracker and for a package's command sent on its own.
+export function unstatedStaged(prior, next, command) {
+  if (EXTENSIONS.length && appliedWith(prior, command).some(c => extensionCommand(c?.type))) unstated(next, eventsOf(prior).length);
+  return next;
 }
 // The commands a request keeps for later: the ones an alternative holds when it is saved or revised, which a merge
 // then applies.

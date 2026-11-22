@@ -460,6 +460,52 @@ export function stampTracked(was,now,author,at){
  if(!plain(was)){if(plain(now.provenance)){const pv={...now.provenance};delete pv.author;delete pv.reviewed;if(Object.keys(pv).length)now.provenance=tidyProvenance(pv);else delete now.provenance;}return now;}
  if(author)settle(was,now,author,at,false,false,true);return now;
 }
+// ---------------------------------------------------------------- who wrote what a merge writes (rc44; the lead's ruling Y3 of 2026-11-22)
+// notePreparers(prior, next, command, author, at): an alternative keeps who prepared each command it holds, as the
+// server classified the commit that saved it (authorship.js commitAuthor): authors[i] {kind, by, account, at, session?}
+// beside commands[i] (workbench-domain.js workspace.alternative). A revision names its reviser for a command it changes
+// or adds and keeps the preparer of one it carries as it was (the same command, keys in any order); the list it replaces
+// is kept with the commands in the revision's history entry. The list is written only from this build on: an alternative
+// saved before it has none, and a command carried from such a one names nobody (null). Server only: worker.js.
+const canon=v=>Array.isArray(v)?'['+v.map(canon).join(',')+']':plain(v)?'{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+canon(v[k])).join(',')+'}':JSON.stringify(v??null);
+const preparer=(author,at)=>({kind:author.kind,by:author.id||null,account:author.account,at,...(author.session?{session:author.session}:{})});
+export function notePreparers(prior,next,command,author,at){
+ const raw=command?.payload,type=command?.type;if(!author||!plain(raw)||type!=='workspace.alternative'&&type!=='workspace.revise-alternative')return next;
+ const had=new Map(list(prior?.workbench?.alternatives).filter(plain).map(a=>[a.id,a])),mine=list(next?.workbench?.alternatives).filter(plain);
+ if(type==='workspace.alternative'){for(const a of mine)if(!had.has(a.id))a.authors=list(a.commands).map(()=>preparer(author,at));return next;}
+ const a=mine.find(x=>x.id===raw.id),was=had.get(raw.id);if(!a||!was||a.revision===was.revision)return next;
+ const old=list(was.commands).map((c,i)=>[canon(c),plain(list(was.authors)[i])?was.authors[i]:null]);
+ a.authors=list(a.commands).map(c=>{const k=canon(c),i=old.findIndex(([x])=>x===k);return i<0?preparer(author,at):old.splice(i,1)[0][1];});
+ const h=list(a.history).at(-1);if(plain(h)&&Array.isArray(was.authors))h.authors=was.authors;
+ return next;
+}
+// mergeStamper(prior, command, merger, at, {fourEyes, collections, also}): what stamps the records workspace.merge
+// writes, command by command (workbench-domain.js calls it with each command's result: the option `merged`), or null.
+// A record a command of the merge made or changed is stamped as written by whoever prepared that command in the
+// alternative (its author kind and actor as the alternative recorded them: a draft by Sol stays a draft by Sol, an agent
+// account's stays the agent's), by the same stamping as any commit (stampAuthorship, and `also` for the collections the
+// design packages hold), and as reviewed by the person who merged it (provenance.reviewed {by, at, how: 'merged'}): the
+// merge is their reviewed step. The author stamp names the merger too (mergedBy), so that while the merged words stand
+// the second-person rule refuses both (design-extension-boundary.js); a later change of what the record says is stamped
+// as any save is. A proposal a merge makes is stamped by nobody, as any proposal (settle): a person keeps it. An
+// alternative that names nobody for a command (saved before this build), or whose list was written before the project
+// was restored here or copied from a template (a step taken elsewhere is no step here: ruling F3), merges as before:
+// null, and no stamp is invented. `collections` are the packages' (design-extension-boundary.js stampedCollections);
+// each command is compared with a copy of those and of its own collections as the merge left them before it.
+export function mergeStamper(prior,command,merger,at,{fourEyes=false,collections=[],also=null}={}){
+ const a=list(prior?.workbench?.alternatives).find(x=>plain(x)&&x.id===command?.payload?.id),cs=list(a?.commands),by=list(a?.authors);
+ const from=[prior?.finalReview?.imported?.at,prior?.workspace?.templateOrigin?.at].filter(Boolean).sort().pop();
+ if(!merger||!cs.length||by.length!==cs.length||!by.every(x=>plain(x)&&COMMIT_KINDS.includes(x.kind)&&typeof x.at==='string'&&!(from&&!(x.at>from))))return null;
+ const paths=[...new Set([...cs.flatMap(pathsOfCommand),...collections])],reviewer=personAuthor(merger)?merger.id||null:null;
+ const snap=p=>{const s={retired:{records:structuredClone(list(p?.retired?.records))}};for(const path of paths){const v=path===NARRATIVE?p?.finalReview?.narrative:null,[k,sub]=path.split('.');if(path===NARRATIVE){if(plain(v))s.finalReview={narrative:structuredClone(v)};continue;}const x=sub?p?.[k]?.[sub]:p?.[k];if(!Array.isArray(x))continue;if(sub)(s[k]=plain(s[k])?s[k]:{})[sub]=structuredClone(x);else s[k]=structuredClone(x);}return s;};
+ let before=snap(prior);
+ return (q,c,i)=>{
+  const x=by[i],author={kind:x.kind,id:x.by,account:x.account,...(x.session?{session:x.session}:{})},next=q?.document;if(!next)return;
+  stampAuthorship(before,next,c,q,author,at,{fourEyes});also?.(before,next,author);
+  for(const path of paths){const old=new Map(listAt(before,path).map(r=>[path===NARRATIVE?'':r?.id,r]));for(const r of listAt(next,path)){const s=stampOf(r);if(!plain(r)||!s||s.at!==at||JSON.stringify(s)===JSON.stringify(stampOf(old.get(path===NARRATIVE?'':r.id))))continue;const pv={...r.provenance,author:{...s,mergedBy:merger.id||null}};if(reviewer)pv.reviewed={by:reviewer,at,how:'merged'};r.provenance=tidyProvenance(pv);}}
+  before=snap(next);
+ };
+}
 // The provenance block a command carries (round 12, GR-GOV-09): the source, citations and basis of payload.provenance,
 // checked (provenanceBlock: each citation must name a row, a source version or a record the project holds) and set on the
 // record the command wrote, apart from what the record says. A key sent replaces the record's (empty clears it); a key

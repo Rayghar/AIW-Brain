@@ -49,7 +49,7 @@ import {storageUpgradeNeeded,storeStorageUpgrade} from './storage-upgrade.js';
 // Who or what wrote each commit and record (round 12, D-06): the commit's author, what a draft or an agent may not do,
 // and the records the commit wrote, stamped as its (authorship.js, public/provenance.js).
 import {commitAuthor,accountKind,refuseUnreviewable,activityTitle,versionBrief} from './authorship.js';
-import {stampAuthorship,innerCommands,attachProvenanceBlocks} from './public/provenance.js';
+import {stampAuthorship,innerCommands,attachProvenanceBlocks,notePreparers,mergeStamper} from './public/provenance.js';
 import {cachedBuild,exportKey} from './export-cache.js';
 import {documentCopy,handOver,memoPass} from './public/document-memo.js';
 // The server's fast paths (journal sharing in documentCopy, the runtime's SHA-256) and sameJSON (round 12).
@@ -94,7 +94,7 @@ import './public/readings-upgrade.js';
 // shared machinery (public/design-extensions.js); their commands reach their handlers through the boundary below, and a
 // package that does not conform to the registration contract stops the server here, when it starts.
 import './design-packages.js';
-import {installBuiltInCommands,assertExtensions,extensionCommand,extensionHandler,extensionLarge,validateExtensions,trackExtensions,isTrackerRefusal,stampExtensions,placeSections,markPackages,missingPackages,missingPackagesRefusal,upgradeDueRefusal} from './design-extension-boundary.js';
+import {installBuiltInCommands,assertExtensions,extensionCommand,extensionHandler,extensionLarge,validateExtensions,trackExtensions,isTrackerRefusal,stampExtensions,stampedCollections,unstatedStaged,placeSections,markPackages,missingPackages,missingPackagesRefusal,upgradeDueRefusal} from './design-extension-boundary.js';
 installCatalogue(BRAIN_CATALOGUE);
 const log=(event,details)=>console.error(JSON.stringify({at:new Date().toISOString(),event,...details}));
 // Command types reach their domain module by prefix (round 2, B2-05): one registry instead of a ternary chain, and
@@ -677,12 +677,20 @@ async function route(request,env,ctx){
       // read carries a baseline's metadata, not its parts: project-storage.js openBaseline).
       const frozenSources=new Map(),viewed=type==='workspace.view'?input.command.payload?.exploration?.baselineId:null,viewedEntry=typeof viewed==='string'?prior.finalReview?.baselines?.find(b=>b.id===viewed):null;
       if(viewedEntry?.frozen)frozenSources.set(viewed,(await openBaseline(env,owner,projectId,viewedEntry,['source'])).source);
-      try{if(type==='knowledge.link'&&!journeyIndex(prior).nodes.has(input.command.payload?.objectId))throw Error('Choose an existing object in this project.');const own=documentCopy(prior),packaged=extensionHandler(type);validateExtensions(prior,input.command,{at,actor,author});result=packaged?packaged(own,input.command,at,actor,{author,revision:input.revision}):type==='knowledge.fetch'?await acquireRepositorySource(own,input.command.payload||{},env,actor,at):type.startsWith('knowledge.')?applyConceptCommand(own,input.command,at,actor,{author}):type==='intelligence.adopt'?await adoptSavedIntelligence(env,owner,projectId,own,input.command.payload||{},at,actor):type==='workspace.view'?applyWorkbenchCommand(own,input.command,at,actor,{baselineSource:id=>frozenSources.get(id)||null}):commandHandler(type)(own,input.command,at,actor,{author,revision:input.revision});result.document=withFinalReview(result.document===prior?result.document:handOver(result.document));carryProvenance(prior,result.document,at);recordSuggestions(result.document,carriers,{actor,at,selected:result.selected??null,prior});
+      // A merge stamps what each of its commands writes as written by whoever prepared it in the alternative, and as
+      // reviewed by the person who merged it (rc44; the lead's ruling Y3: provenance.js mergeStamper, which the merge
+      // calls with each command's result); an alternative saved before this build merges as before (merged is null).
+      const merged=type==='workspace.merge'?mergeStamper(prior,input.command,author,at,{fourEyes:prior.workspace?.governance?.fourEyes===true,collections:stampedCollections(),also:(before,next,by)=>stampExtensions(before,next,by,at)}):null;
+      try{if(type==='knowledge.link'&&!journeyIndex(prior).nodes.has(input.command.payload?.objectId))throw Error('Choose an existing object in this project.');const own=documentCopy(prior),packaged=extensionHandler(type);validateExtensions(prior,input.command,{at,actor,author});result=packaged?packaged(own,input.command,at,actor,{author,revision:input.revision}):type==='knowledge.fetch'?await acquireRepositorySource(own,input.command.payload||{},env,actor,at):type.startsWith('knowledge.')?applyConceptCommand(own,input.command,at,actor,{author}):type==='intelligence.adopt'?await adoptSavedIntelligence(env,owner,projectId,own,input.command.payload||{},at,actor):type==='workspace.view'?applyWorkbenchCommand(own,input.command,at,actor,{baselineSource:id=>frozenSources.get(id)||null}):commandHandler(type)(own,input.command,at,actor,{author,revision:input.revision,...(merged?{merged}:{})});result.document=withFinalReview(result.document===prior?result.document:handOver(result.document));carryProvenance(prior,result.document,at);recordSuggestions(result.document,carriers,{actor,at,selected:result.selected??null,prior});
+        // An event a design package's staged handler added inside a reviewed batch or a merge states no author fields (rc44;
+        // rulings H3 and Y3): the commit's stamp below is the only one. An alternative keeps who prepared each command (Y3).
+        unstatedStaged(prior,result.document,input.command);notePreparers(prior,result.document,input.command,author,at);
         // A design package whose command this commit applied (its own, one a batch carries, one a merge applies) is
         // named in the document it wrote (rc44, slice S0; ruling D2: workspace.packages).
         if(result.document!==prior)markPackages(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command);
         // The records the commit wrote are stamped as its, and a brief it changed is kept as a new version of its source.
-        stampAuthorship(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command,result,author,at,{fourEyes:prior.workspace?.governance?.fourEyes===true});stampExtensions(prior,result.document,author,at);attachProvenanceBlocks(prior,result.document,input.command,result);versionBrief(prior,result.document,author,at)}catch(e){const message=publicMessage(e);return json({error:message,...(/^Unknown .* action\.$/.test(message)?{code:'unknown_command'}:{})},400)}
+        // (a merge whose records the stamper above stamped is not restamped as the merger's: ruling Y3)
+        stampAuthorship(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command,result,author,at,{fourEyes:prior.workspace?.governance?.fourEyes===true});if(!merged)stampExtensions(prior,result.document,author,at);attachProvenanceBlocks(prior,result.document,input.command,result);versionBrief(prior,result.document,author,at)}catch(e){const message=publicMessage(e);return json({error:message,...(/^Unknown .* action\.$/.test(message)?{code:'unknown_command'}:{})},400)}
       let impact;
       // The trackers derive journal and impact records from the change; a fault in them is a programming fault
       // (answered as such, round 2, B2-06), never a storage outage. A design package's tracker that the boundary refuses (rc44,

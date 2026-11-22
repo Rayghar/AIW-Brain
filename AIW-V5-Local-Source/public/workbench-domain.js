@@ -138,7 +138,9 @@ function applySeeding(p,raw,at,actor){if(!['off','on'].includes(raw.state))throw
 // change is applied by a person who reviewed its changes (reviewed:true); a governed batch drafted by Sol (author kind
 // sol-draft, D-06) is applied as what it is, unreviewed (reviewed:false), and never has to claim a review nobody made.
 // Its history entry keeps who sent it, of what kind, whether a person reviewed it, and why.
-export function applyWorkbenchCommand(input,command,at,actor,{diagramNodes=null,baselineSource=null,author=null,release=null}={}){
+// merged(result, command, index): the server's stamping of what each command of a merge wrote (rc44, the lead's ruling
+// Y3: provenance.js mergeStamper), called after each; the browser's previews pass none.
+export function applyWorkbenchCommand(input,command,at,actor,{diagramNodes=null,baselineSource=null,author=null,release=null,merged=null}={}){
  if(command.type==='workspace.diagram-arrangement')return applyDiagramArrangement(structuredClone(input),command.payload||{},at,actor,diagramNodes);
  if(command.type==='workspace.seeding')return applySeeding(documentCopy(input),command.payload||{},at,actor);
  const raw=command.payload||{};let p=documentCopy(input);p.workbench??={version:1,alternatives:[],analyses:[],catalogue:[],views:[],assignments:[]};const m=p.workbench;let selected,selectedIds;
@@ -167,7 +169,7 @@ export function applyWorkbenchCommand(input,command,at,actor,{diagramNodes=null,
   const a=m.alternatives.find(a=>a.id===raw.id);if(!a||a.status!=='draft')throw Error('Choose a draft alternative.');const r=rebaseWorkingAlternative(p,a);if(raw.stamp!==r.stamp)throw Error('The alternative or current design changed. Compare again.');
   for(const f of r.conflicts){const choice=raw.resolutions?.[f.index+':'+f.field];if(!['current','proposed'].includes(choice)||f.field==='record')throw Error('Resolve every changed field explicitly. Removed records require a new alternative.');if(choice==='current')setChangeField(r.commands[f.index].payload,f.field,f.current);}
   if(raw.reviewed!==true||!text(raw.reason))throw Error('Review the merge and record its rationale.');
-  for(const c of r.commands)p=applyCanonical(p,c,at,actor).document;const saved=p.workbench.alternatives.find(x=>x.id===a.id);saved.status='accepted';saved.revision++;saved.accepted={at,actor,reason:text(raw.reason),commands:r.commands,basis:workingBasis(input),resolutions:raw.resolutions||{}};
+  r.commands.forEach((c,i)=>{const q=applyCanonical(p,c,at,actor);p=q.document;merged?.(q,c,i);});const saved=p.workbench.alternatives.find(x=>x.id===a.id);saved.status='accepted';saved.revision++;saved.accepted={at,actor,reason:text(raw.reason),commands:r.commands,basis:workingBasis(input),resolutions:raw.resolutions||{}};
  }else if(command.type==='workspace.set-aside'){
   const a=m.alternatives.find(a=>a.id===raw.id);if(!a||a.status!=='draft'||!text(raw.reason))throw Error('Choose a draft alternative and explain why it is not selected.');a.status='not selected';a.revision++;a.disposition={at,actor,reason:text(raw.reason)};
  }else if(command.type==='workspace.analysis'){
