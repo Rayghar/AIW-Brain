@@ -75,16 +75,20 @@ export default async function ({block, pass, load}) {
   // the author the server classified (authorship.js).
   const send = (p, type, payload, actor = A, author = person(actor)) => { const h = commandHandler(type); assert.equal(typeof h, 'function', type + ' is a command of this build'); return h(structuredClone(p), {type, payload}, AT, actor, {author}); };
   const doc = r => withFinalReview(r.document, {upgrade: false});
-  const PREDICATE = {fact: 'topology', op: 'eq', value: 'single-region-north'};
+  const PREDICATE = {fact: 'topology', op: 'eq', value: 'single-region-north'}; // a typed reading, refused since ruling Q3
   const released = (p, key) => { const c = p.knowledge.claims.find(x => x.subjectId === 'component-profile:' + key); return {scope: 'knowledge', claimId: c.id, releaseId: p.knowledge.releases.at(-1).id}; };
   const library = p => ({scope: 'project', entryId: p.workbench.catalogue.find(e => e.title === 'Ticket consumer v2').id});
-  // The selection of the eligibility case: for the Payment API's responsibility, the two hard constraints with a
-  // person's typed reading of the first, and three candidates in this order: the inbox profile, the relay profile, the
-  // library entry.
+  // The selection of the eligibility case: for the Payment API's responsibility, the two hard constraints, and three
+  // candidates in this order: the inbox profile, the relay profile, the library entry. No typed reading of a hard
+  // constraint is stated (ruling Q3: until the hard gates exist a person judges each row); a second person judges the
+  // first constraint of both profiles from what each released profile states: the inbox passes, the relay fails.
+  // (Ruling Q3; was: A stated a typed reading of the first constraint at the start, against which both rows read.)
+  const JUDGED = {inbox: {state: 'pass', evidence: 'The released profile states topology single-region-north (KC record).', reason: 'Its data stays in region North.'}, relay: {state: 'fail', evidence: 'The released profile states topology multi-region (KC record).', reason: 'It forwards data across regions.'}};
   const threeCandidates = () => {
-    let p = selectionProject(), r = send(p, 'selection.start', {kind: 'component', responsibilityIds: ['api'], owner: 'Payments architect', predicates: {'QD-007': PREDICATE}});
+    let p = selectionProject(), r = send(p, 'selection.start', {kind: 'component', responsibilityIds: ['api'], owner: 'Payments architect'});
     const id = r.selected; p = doc(r);
     for (const [kind, ref, title] of [['profile', released(p, 'inbox'), 'Inbox and deduplication component'], ['profile', released(p, 'relay'), 'Regional message relay'], ['library', library(p), 'Ticket consumer v2']]) p = doc(send(p, 'selection.candidate', {id, candidate: {kind, ref}, title}));
+    for (const [key, title] of [['inbox', 'Inbox and deduplication component'], ['relay', 'Regional message relay']]) p = doc(send(p, 'selection.judge', {id, alternativeId: alt(decision(p, id), title).id, constraintId: 'QD-007', ...JUDGED[key]}, B));
     return {p, id};
   };
   // What Chapter 3 asks before the architect accepts a decision (decisions-domain.js decisionFindings), as a person
@@ -140,11 +144,14 @@ export default async function ({block, pass, load}) {
   await block('S5 eligibility', async () => {
     pkg(); let {p, id} = threeCandidates();
     const d = decision(p, id);
-    assert.deepEqual(S.selectionConstraints(p, d).map(c => [c.id, c.driverId, c.hard, c.source, c.predicate || null]), [['QD-007', 'QD-007', true, 'driver', PREDICATE], ['QD-008', 'QD-008', true, 'driver', null]], 'the two hard constraints that reach the responsibility, the first with the person\'s typed reading');
-    const rows = title => S.candidateEligibility(p, d, alt(d, title)).rows.map(r => [r.constraintId, r.state, r.basis]);
-    assert.deepEqual(rows('Inbox and deduplication component'), [['QD-007', 'pass', 'evaluated'], ['QD-008', 'unknown', 'evaluated']]);
-    assert.deepEqual(rows('Regional message relay'), [['QD-007', 'fail', 'evaluated'], ['QD-008', 'unknown', 'evaluated']]);
-    assert.deepEqual(rows('Ticket consumer v2'), [['QD-007', 'unknown', 'evaluated'], ['QD-008', 'unknown', 'evaluated']], 'a candidate that states no fact is unknown, never neutral');
+    // (ruling Q3; was: the first constraint carried A's typed reading and both profiles' rows read "evaluated" against it.
+    // Now no constraint carries one, and each row is a second person's judgement, with its evidence and reason, or unknown.)
+    assert.deepEqual(S.selectionConstraints(p, d).map(c => [c.id, c.driverId, c.hard, c.source, c.predicate || null]), [['QD-007', 'QD-007', true, 'driver', null], ['QD-008', 'QD-008', true, 'driver', null]], 'the two hard constraints that reach the responsibility, neither with a typed reading');
+    const rows = title => S.candidateEligibility(p, d, alt(d, title)).rows.map(r => [r.constraintId, r.state, r.basis || null, r.by || null]);
+    assert.deepEqual(rows('Inbox and deduplication component'), [['QD-007', 'pass', 'person', B], ['QD-008', 'unknown', null, null]]);
+    assert.deepEqual(rows('Regional message relay'), [['QD-007', 'fail', 'person', B], ['QD-008', 'unknown', null, null]]);
+    assert.deepEqual(rows('Ticket consumer v2'), [['QD-007', 'unknown', null, null], ['QD-008', 'unknown', null, null]], 'a candidate nobody judged is unknown, never neutral');
+    assert.deepEqual(S.candidateEligibility(p, d, alt(d, 'Regional message relay')).rows[0].evidence, JUDGED.relay.evidence, 'a judgement keeps its evidence');
     assert.deepEqual(['Inbox and deduplication component', 'Regional message relay', 'Ticket consumer v2'].map(t => S.candidateEligibility(p, d, alt(d, t)).state), ['unproven', 'ineligible', 'unproven']);
     assert.deepEqual(alt(d, 'Inbox and deduplication component').candidate.facts.topology, {value: PROFILE_FACTS.inbox.topology, status: 'declared', source: {kind: 'knowledge', claimId: released(p, 'inbox').claimId, field: 'scope.topology'}}, 'the facts are the released profile\'s, with where they are stated');
     const choose = (title, more = {}) => send(p, 'selection.choose', {id, alternativeId: alt(decision(p, id), title).id, reason: 'Fits the payment path.', rejections: Object.fromEntries(decision(p, id).alternatives.filter(a => a.title !== title).map(a => [a.id, 'Not this one: ' + a.title])), ...more});
@@ -162,7 +169,7 @@ export default async function ({block, pass, load}) {
     p = acceptDecision(p, id);
     assert.equal(decision(p, id).status, 'accepted');
     assert.throws(() => applyDecisionCommand(p, {type: 'decision.governance', payload: {id, status: 'approved', reviewer: 'Governance board', evidence: 'Minutes 12'}}, AT), /Resolve content gaps and decision assumptions before recording approval evidence/, 'approval evidence is refused while a row is unproven');
-    pass('S5 eligibility: against "Customer records stay in region North" (with a person\'s typed reading) and "Run only what the platform team operates" the inbox profile reads pass and unknown, the relay profile fail and unknown, the library entry unknown twice; the failing candidate cannot be chosen; the library entry is chosen only once both its unknown rows are named unproven, which the decision\'s assumptions then carry, and approval evidence is refused while they are open');
+    pass('S5 eligibility: against "Customer records stay in region North" and "Run only what the platform team operates" (no typed reading: a second person judged the first for both profiles) the inbox profile reads pass and unknown, the relay profile fail and unknown, the library entry unknown twice; the failing candidate cannot be chosen; the library entry is chosen only once both its unknown rows are named unproven, which the decision\'s assumptions then carry, and approval evidence is refused while they are open');
   });
 
   // ------------------------------------------------------------ no score, rank or weight; insertion order
@@ -321,15 +328,33 @@ export default async function ({block, pass, load}) {
   // ------------------------------------------------------------ a draft by Sol proposes
   await block('S5 Sol', async () => {
     pkg(); let p = selectionProject();
-    assert.throws(() => send(p, 'selection.start', {kind: 'component', responsibilityIds: ['api'], owner: 'Sol', predicates: {'QD-007': PREDICATE}}, A, sol(A)), /typed reading of a hard constraint is a signed-in person's/, 'a draft by Sol states no typed reading of a hard constraint');
-    assert.throws(() => send(p, 'selection.start', {kind: 'component', responsibilityIds: ['api'], owner: 'An agent', predicates: {'QD-007': PREDICATE}}, AGENT, agent(AGENT)), /typed reading of a hard constraint is a signed-in person's/);
+    // (ruling Q3; was: a draft by Sol and an agent account were refused a typed reading, a person's was taken. Now it is
+    // refused to everyone, whatever is sent under the key, and a person judges each row with evidence and a reason.)
+    for (const [who, actor, author] of [['a draft by Sol', A, sol(A)], ['an agent account', AGENT, agent(AGENT)], ['a person', A, person(A)]]) for (const predicates of [{'QD-007': PREDICATE}, {}, null])
+      assert.throws(() => send(p, 'selection.start', {kind: 'component', responsibilityIds: ['api'], owner: 'Payments architect', predicates}, actor, author), /No typed reading of a hard constraint is stated/, who + ' states no typed reading of a hard constraint: ' + JSON.stringify(predicates));
     const r = send(p, 'selection.start', {kind: 'component', responsibilityIds: ['api'], owner: 'Payments architect'}, A, sol(A)), id = r.selected; p = doc(r);
     assert.equal(decision(p, id).selection.prepared, 'sol-draft', 'a selection a draft by Sol starts is a proposal');
     p = doc(send(p, 'selection.candidate', {id, candidate: {kind: 'library', ref: library(p)}, title: 'Ticket consumer v2'}, A, sol(A)));
     assert.equal(alt(decision(p, id), 'Ticket consumer v2').candidate.by, 'sol', 'a candidate a draft by Sol adds is marked as Sol\'s');
     p = doc(send(p, 'selection.candidate', {id, candidate: {kind: 'existing', ref: {componentId: 'api-pod'}}, title: 'Keep the Payment service'}));
     assert.ok(!('by' in alt(decision(p, id), 'Keep the Payment service').candidate), 'a person\'s is not');
-    pass('S5 Sol: a draft by Sol, and an agent account, are refused a typed reading of a hard constraint; a selection a draft by Sol starts is marked as a proposal (prepared sol-draft) and a candidate it adds is marked by Sol; a person\'s candidate is not');
+    // the start's author is kept in fields of its own, with the account kind, whatever steps follow (should-fix 2)
+    const started = structuredClone(decision(p, id).selection.started);
+    assert.deepEqual(started, {actor: A, at: AT, account: 'person', kind: 'sol-draft'}, 'the start keeps who started it and how');
+    const lib = alt(decision(p, id), 'Ticket consumer v2'), keep = alt(decision(p, id), 'Keep the Payment service');
+    p = doc(send(p, 'selection.judge', {id, alternativeId: keep.id, constraintId: 'QD-007', state: 'pass', evidence: 'Ticket OPS-7.', reason: 'Runs in region North.'}, B));
+    p = doc(send(p, 'selection.choose', {id, alternativeId: keep.id, reason: 'It exists.', unproven: ['QD-008'], rejections: {[lib.id]: 'A second consumer.'}}, C));
+    assert.deepEqual(decision(p, id).selection.started, started, 'and keeps it after a judgement and a choice by others');
+    assert.deepEqual([decision(p, id).selection.actor, decision(p, id).selection.account], [C, 'person'], 'the selection\'s last step is the choice');
+    // an agent account's selection and candidate say so (prepared and by: agent), in the reading, the view and the SDD
+    let q = selectionProject(); const r2 = send(q, 'selection.start', {kind: 'component', responsibilityIds: ['api'], owner: 'Payments architect'}, AGENT, agent(AGENT)), k = r2.selected; q = doc(r2);
+    q = doc(send(q, 'selection.candidate', {id: k, candidate: {kind: 'library', ref: library(q)}, title: 'Ticket consumer v2'}, AGENT, agent(AGENT)));
+    assert.deepEqual([decision(q, k).selection.prepared, decision(q, k).selection.started.account, alt(decision(q, k), 'Ticket consumer v2').candidate.by], ['agent', 'agent', 'agent'], 'an agent account\'s selection is prepared by an agent and its candidate is marked so');
+    assert.deepEqual([S.selectionReading(q, decision(q, k)).prepared, S.selectionReading(q, decision(q, k)).started.account], ['agent', 'agent']);
+    const U = await load(new URL('../public/adoption-ui.js', import.meta.url).href), view = U.selectionView(q, {decisionId: k});
+    assert.match(view, /prepared by an agent account/); assert.match(view, /added by an agent account/);
+    const md = architectureMarkdown(withFinalReview(q)).markdown; assert.match(md, /Prepared by an agent account\./); assert.match(md, /Ticket consumer v2 \(library entry [^)]*, added by an agent account\)/);
+    pass('S5 Sol: no typed reading of a hard constraint is stated, by a draft by Sol, an agent account or a person; a selection a draft by Sol starts is marked as a proposal (prepared sol-draft) and a candidate it adds is marked by Sol; a person\'s candidate is not; the start\'s author is kept with its account kind after others judge and choose; an agent account\'s selection and candidate are marked as an agent\'s in the reading, the view and the SDD');
   });
 
   // ------------------------------------------------------------ through the server's boundary
@@ -346,7 +371,7 @@ export default async function ({block, pass, load}) {
     await h.ok('knowledge.release', {...REVIEW, title: 'Synthetic component profiles', claimIds: [claimId]});
     await h.ok('knowledge.activate', {...REVIEW, id: h.doc().knowledge.releases.at(-1).id, stamp: knowledgeStamp(h.doc())});
     const ref = {scope: 'knowledge', claimId, releaseId: h.doc().knowledge.releases.at(-1).id};
-    const started = await h.ok('selection.start', {kind: 'component', responsibilityIds: ['api'], owner: 'Payments architect', predicates: {'QD-007': PREDICATE}}), id = started.selected;
+    const started = await h.ok('selection.start', {kind: 'component', responsibilityIds: ['api'], owner: 'Payments architect'}), id = started.selected;
     assert.match(id, /^ADR-/); assert.equal(decision(h.doc(), id).provenance?.author?.kind, 'person', 'the decision a person\'s selection writes is stamped as theirs');
     await h.ok('selection.candidate', {id, candidate: {kind: 'profile', ref}, title: 'Inbox and deduplication component'});
     await h.ok('selection.candidate', {id, candidate: {kind: 'archetype', ref: {scope: 'catalogue', archetypeId: ARCHETYPE.id}}, title: ARCHETYPE.name});
@@ -355,11 +380,14 @@ export default async function ({block, pass, load}) {
     { const r = await h.send('selection.judge', judge, AGENT); assert.equal(r.status, 400); assert.match(r.error, /agent or service account does not review, confirm, accept or approve/); }
     { const r = await h.send('selection.judge', judge, A, {authorKind: 'sol-draft'}); assert.equal(r.status, 400, 'a draft by Sol judges nothing: ' + JSON.stringify(r.body).slice(0, 200)); }
     assert.deepEqual(list(decision(h.doc(), id).selection.judgements), [], 'nothing is written by either');
-    { const r = await h.send('selection.judge', {...judge, constraintId: 'QD-007'}, B); assert.equal(r.status, 400); assert.match(r.error, /only a row that reads unknown is judged/i, 'a row the profile\'s facts answer is not judged'); }
     await h.ok('selection.judge', judge, B);
+    // (ruling Q3; was: a row the profile's facts answered through A's typed reading was not judged. Now a row a person
+    // judged is not judged again, by anyone.)
+    for (const as of [B, C]) { const r = await h.send('selection.judge', {...judge, state: 'fail'}, as); assert.equal(r.status, 400); assert.match(r.error, /only a row that reads unknown is judged/i, 'a row a person judged is not judged again'); }
+    await h.ok('selection.judge', {...judge, constraintId: 'QD-007', evidence: 'The released profile states topology single-region-north.', reason: 'Its data stays in region North.'}, B);
     const j = decision(h.doc(), id).selection.judgements[0];
     assert.deepEqual([j.alternativeId, j.constraintId, j.state, j.actor, j.account], [inbox.id, 'QD-008', 'pass', B, 'person'], 'a person\'s judgement keeps its actor and account kind');
-    assert.deepEqual(S.candidateEligibility(h.doc(), decision(h.doc(), id), alt(decision(h.doc(), id), 'Inbox and deduplication component')).rows.map(r => [r.constraintId, r.state, r.basis, r.by || null]), [['QD-007', 'pass', 'evaluated', null], ['QD-008', 'pass', 'person', B]]);
+    assert.deepEqual(S.candidateEligibility(h.doc(), decision(h.doc(), id), alt(decision(h.doc(), id), 'Inbox and deduplication component')).rows.map(r => [r.constraintId, r.state, r.basis, r.by || null]), [['QD-007', 'pass', 'person', B], ['QD-008', 'pass', 'person', B]]);
     // choose and instantiate: a signed-in person's
     const others = {[alt(decision(h.doc(), id), ARCHETYPE.name).id]: 'An archetype holds no profile of the inbox.'}, choose = {id, alternativeId: inbox.id, reason: 'The inbox deduplicates and stays in region North.', rejections: others};
     { const r = await h.send('selection.choose', choose, AGENT); assert.equal(r.status, 400); }
@@ -376,7 +404,7 @@ export default async function ({block, pass, load}) {
     await h.ok('adoption.accept', {id: adp.id, revision: adp.revision, deviationIds: [], note: 'Read against the model.'}, C);
     const accepted = D.adoptionRecords(h.doc()).find(a => a.id === adp.id);
     assert.equal(D.adoptionAccepted(h.doc(), accepted), true, 'accepted by a second person'); assert.deepEqual([accepted.review.actor, accepted.review.account], [C, 'person']);
-    pass('S5 server: an agent account\'s and a draft by Sol\'s judgement are refused and write nothing; a row the profile\'s facts answer is not judged; a person\'s judgement keeps its actor and account kind and the row reads it; choose and instantiate are refused to an agent account and a draft by Sol; the profile adoption is refused to the person who instantiated it and to an agent account, and accepted by a second signed-in person');
+    pass('S5 server: an agent account\'s and a draft by Sol\'s judgement are refused and write nothing; a row a person judged is not judged again; a person\'s judgement keeps its actor and account kind and the row reads it; choose and instantiate are refused to an agent account and a draft by Sol; the profile adoption is refused to the person who instantiated it and to an agent account, and accepted by a second signed-in person');
   });
 
   // ------------------------------------------------------------ instantiate
@@ -460,12 +488,14 @@ export default async function ({block, pass, load}) {
     p = doc(send(p, 'selection.choose', {id, alternativeId: inbox.id, reason: 'The inbox deduplicates and stays in region North.', unproven: ['QD-008'], rejections: {[relay.id]: 'It keeps messages outside region North.', [lib.id]: 'It states nothing about where it keeps data.'}}));
     const md = architectureMarkdown(withFinalReview(p)).markdown, at = md.indexOf(id + ' ·'), section = md.slice(at, md.indexOf('\n### ', at + 1) > 0 ? md.indexOf('\n### ', at + 1) : at + 6000);
     assert.ok(at >= 0, 'the decision is printed');
-    assert.match(section, /\*\*Selection basis\*\*: a component for LR-001 · Payment API, against 2 hard constraints: Customer records stay in region North \(topology eq single-region-north\); Run only what the platform team operates \(no typed reading: unknown until a person judges it\)\./);
-    assert.match(section, /Inbox and deduplication component \(profile, released KC-\d+ in KR-\d+\): chosen · Customer records stay in region North: pass; Run only what the platform team operates: unknown, named unproven/);
-    assert.match(section, /Regional message relay \(profile, released KC-\d+ in KR-\d+\): rejected · Customer records stay in region North: fail/);
+    // (ruling Q3; was: the first constraint printed A's typed reading "(topology eq single-region-north)" and the rows read
+    // against it. Now neither constraint has one, and each row a person judged names its judge.)
+    assert.match(section, /\*\*Selection basis\*\*: a component for LR-001 · Payment API, against 2 hard constraints: Customer records stay in region North \(no typed reading: unknown until a person judges it\); Run only what the platform team operates \(no typed reading: unknown until a person judges it\)\./);
+    assert.match(section, /Inbox and deduplication component \(profile, released KC-\d+ in KR-\d+\): chosen · Customer records stay in region North: pass \(judged by architect-b\); Run only what the platform team operates: unknown, named unproven/);
+    assert.match(section, /Regional message relay \(profile, released KC-\d+ in KR-\d+\): rejected · Customer records stay in region North: fail \(judged by architect-b\)/);
     assert.match(section, /Not chosen: It keeps messages outside region North\./); assert.match(section, /Not chosen: It states nothing about where it keeps data\./);
     assert.ok(!/score|weigh/i.test(section.slice(section.indexOf('**Selection basis**'))), 'the basis weighs nothing');
-    pass('S5 SDD: the decision record prints the selection basis (what is selected, each hard constraint with its typed reading or none), each candidate with its kind, its pinned knowledge, its outcome and its rows, the unproven rows named, and each rejected candidate with its reason; nothing is weighed');
+    pass('S5 SDD: the decision record prints the selection basis (what is selected, each hard constraint, none with a typed reading), each candidate with its kind, its pinned knowledge, its outcome and its rows, the unproven rows named, and each rejected candidate with its reason; nothing is weighed');
   });
 
   // ------------------------------------------------------------ the fixtures read no clock (ruling Q7)
@@ -499,7 +529,8 @@ export default async function ({block, pass, load}) {
     R.assertTemplateCopyClearsSteps(p, q => q.decisions.records.filter(d => d.selection));
     { const copy = instantiateTemplate(withFinalReview({...p, workspace: {...p.workspace, reusableTemplate: true}}), 'copy', 'A copy', AT), d = decision(copy, id);
       assert.equal(d.selection, null, 'a project copied from a template carries no selection step: the choice, the judgements and the typed readings are a person\'s in the template');
-      assert.equal(readDecision(copy, d), null, 'and its alternatives are still not weighed'); assert.deepEqual(S.selectionReading(copy, d), null); }
+      // (ruling Q1; was: readDecision(copy, d) is null. Now the reading is answered and weighs nothing.)
+      assert.ok(readDecision(copy, d).drivers.every(x => !x.weight && !x.cls) && readDecision(copy, d).lead === null, 'and its alternatives are still not weighed'); assert.deepEqual(S.selectionReading(copy, d), null); }
     { const a = D.adoptionRecords(p).find(x => x.kind === 'profile'), q = structuredClone(p); D.adoptionRecords(q).find(x => x.id === a.id).review = {actor: C, at: AT, account: 'person', revision: a.revision, seq: 9, note: '', deviationIds: []}; R.assertTemplateCopyClearsSteps(q, x => D.adoptionRecords(x)); }
     assert.ok(R.assertStepsMoveNoStamp(p, x => D.adoptionRecords(x)) > 0, 'no person\'s step on the profile adoption moves a design stamp');
     pass('S5 old documents: the three references, the document with a review list and the two fixtures without a selection read byte for byte as at ' + BASE.capturedFrom + ' (graph, model, trails, findings, stamps, readiness, provenance, registers, SDD, ARS) and gain no key; with a selection chosen and instantiated the profile adoption moves no built-in layer or chain, finding ids are unique, the selection\'s steps and the adoption\'s acceptance are cleared in a template copy, and no step moves a design stamp');
@@ -511,6 +542,7 @@ export default async function ({block, pass, load}) {
     let {p, id} = threeCandidates(); const html = U.selectionView(p, {decisionId: id});
     for (const t of ['Customer records stay in region North', 'Run only what the platform team operates', 'Inbox and deduplication component', 'Regional message relay', 'Ticket consumer v2']) assert.ok(html.includes(t), 'the view names ' + t);
     assert.match(html, /data-selection-row="QD-007" data-state="pass"/); assert.match(html, /data-selection-row="QD-007" data-state="fail"/); assert.match(html, /data-selection-row="QD-008" data-state="unknown"/);
+    assert.ok(!/typed reading|predicate/i.test(html.replace('no typed reading', '')), 'the view states no typed reading'); assert.match(html, /topology single-region-north/, 'and shows what each released profile states, for the person who judges');
     assert.match(html, /MSG 004 Transactional outbox relay[\s\S]*?Candidate · not reviewed[\s\S]*?<button[^>]*disabled[^>]*title="Candidate knowledge can be read, not selected\."/, 'the candidate profile is read, labelled, and its Add is disabled with the reason');
     assert.ok(!/score|rank|weigh/i.test(html), 'the view weighs nothing');
     const src = f => readFileSync(new URL('../public/' + f + '.js', import.meta.url), 'utf8'), lib = src('component-library-ui'), host = src('architecture-task-ui');

@@ -1,14 +1,16 @@
 // Component selection as a recorded decision (rc44, wp2 slice S5; audit/rc44/design/wp2-adoption.md §b.2, §c.2, §e.1
 // row 9). A selection is a Chapter 3 decision: these steps write the decision's own fields through the chapter's own
 // handler (decisions-domain.js applyDecisionCommand) and keep the selection's basis beside it, created when first
-// written: decision.selection {kind, responsibilityIds | requirementId, driverId, concern, predicates, reviewTrigger,
-// prepared, judgements, choice, instantiated, actor, at, account} and, on each alternative it compares,
+// written: decision.selection {kind, responsibilityIds | requirementId, driverId, concern, reviewTrigger, prepared,
+// started, judgements, choice, instantiated, actor, at, account} and, on each alternative it compares,
 // alternative.candidate {kind, ref, facts, by?, outcome?}. Candidates are kept in the order they were added; no field
 // holds a score, a rank or a weight, and the decision's weighing (decision-reading.js readDecision) reads none.
-//   selection.start       {kind: 'component', responsibilityIds, owner, question?, reviewTrigger?, predicates?}
+//   selection.start       {kind: 'component', responsibilityIds, owner, question?, reviewTrigger?}
 //                         {kind: 'option', concernId, requirementId, driverId, owner, reason}   any author; a draft by
-//                         Sol's is a proposal (prepared 'sol-draft'). A typed reading of a hard constraint
-//                         (predicates {driverId: {fact, op, value}}) is a signed-in person's statement.
+//                         Sol's is a proposal (prepared 'sol-draft'), an agent account's is marked (prepared 'agent').
+//                         No typed reading of a hard constraint is stated (ruling Q3: until the hard gates exist, a
+//                         person judges each row): `predicates` is refused, whoever sends it. The start's author is kept
+//                         in `started` {actor, at, account, kind}, which later steps do not overwrite.
 //   selection.candidate   {id, candidate: {kind, ref}, title?, summary?, notes?}   any author; Sol's is marked by Sol.
 //                         profile: a released, eligible component profile (knowledge scope, pinned to its release and
 //                         claim hash); library / archetype: what the reviewed candidate path accepts
@@ -26,17 +28,17 @@
 //                         with its pinned reference and the decision; a profile is applied as an adoption of kind
 //                         profile with its obligations open, which a second person accepts (adoption.accept).
 // Eligibility is read, never stored: each hard constraint that reaches the decision (a constraint driver whose
-// force is hard: decision-reading.js constraintForce) is one row per candidate, evaluated with the shared three-valued
-// rule (architecture-facts.js evaluateApplicability) against the candidate's facts, which come from released knowledge
-// only and only while it is current: pass, fail or unknown. Unknown is never neutral. A row that reads unknown may be
-// judged by a signed-in person. Knowledge is read through the existing rule only (knowledge-governance.js
-// releasedClaims, claimReceiptCurrent): a candidate or unreleased claim reaches no row, gate or reading.
+// force is hard: decision-reading.js constraintForce) is one row per candidate: pass or fail where a signed-in person
+// judged it, with evidence and a reason, and unknown until then (design f.2: no typed hard gate exists before wp9b, so
+// no row is evaluated). Unknown is never neutral. The facts a candidate states (released knowledge only, and only while
+// it is current) are shown beside its rows for the person who judges them. Knowledge is read through the existing rule
+// only (knowledge-governance.js releasedClaims, claimReceiptCurrent): a candidate or unreleased claim reaches no row,
+// gate or reading.
 import {applyDecisionCommand,decisionCurrent,SELECTION_STEP} from './decisions-domain.js';
 import {applyRealisationCommand} from './realisation-domain.js';
 import {constraintForce} from './decision-reading.js';
 import {driverKind} from './quality-domain.js';
 import {driverScope,driverScopeIndex} from './driver-scope.js';
-import {evaluateApplicability,APPLICABILITY_OPERATORS,safeFactKey} from './architecture-facts.js';
 import {releasedClaims,claimReceipt,claimReceiptCurrent,knowledgeState} from './knowledge-governance.js';
 import {releasedDesignConcern} from './domain-knowledge.js';
 import {concernComparison} from './architecture-design.js';
@@ -56,7 +58,6 @@ const need=(p,id)=>{const d=decisionOf(p,id);if(!d||!plain(d.selection))throw Er
 // The decision's own fields, through the chapter's own handler, as an inner step of the selection (ruling Q2): the one
 // way its choice, candidates, rejection reasons and effect on a hard constraint are written.
 const decide=(p,type,payload,at)=>applyDecisionCommand(p,{type,payload,[SELECTION_STEP]:true},at).document;
-const person=author=>author?.kind==='person'&&author?.account==='person';
 
 // ---------------------------------------------------------------- component profiles in the project's knowledge
 // A component profile is a claim on the subject component-profile:<id> that carries a structured architecture unit
@@ -77,10 +78,10 @@ export function selectableProfiles(p){
 
 // ---------------------------------------------------------------- the constraints and the eligibility of a candidate
 // The hard constraints of a selection: the constraint drivers the decision names whose force is hard, in the
-// decision's order, each with the typed reading a person stated for it, if any. Read from the drivers as they stand.
+// decision's order. Read from the drivers as they stand; none carries a typed reading (ruling Q3).
 export function selectionConstraints(p,d){
  const s=d?.selection;if(!plain(s))return [];
- return list(d.driverIds).map(id=>list(p?.quality?.drivers).find(x=>x.id===id)).filter(x=>x&&driverKind(x)==='constraint'&&constraintForce(p,x).hard).map(x=>({id:x.id,source:'driver',driverId:x.id,label:x.title,hard:true,...(plain(s.predicates?.[x.id])?{predicate:copy(s.predicates[x.id])}:{})}));
+ return list(d.driverIds).map(id=>list(p?.quality?.drivers).find(x=>x.id===id)).filter(x=>x&&driverKind(x)==='constraint'&&constraintForce(p,x).hard).map(x=>({id:x.id,source:'driver',driverId:x.id,label:x.title,hard:true}));
 }
 // Whether what a candidate rests on still stands in this project.
 function current(p,d,c){
@@ -88,18 +89,16 @@ function current(p,d,c){
  if(c?.kind==='option')return !!d.selection.concern&&claimReceiptCurrent(p,d.selection.concern.receipt);
  return true;
 }
-const evaluate=(k,facts)=>{if(!k.predicate)return null;const c=evaluateApplicability({requires:[{id:k.id,label:k.label,...k.predicate}]},facts).checks[0];return c.state==='known'?'pass':c.state==='blocked'?'fail':null;};
-// A candidate's rows against the hard constraints: evaluated from its facts (pass or fail), or a signed-in person's
-// judgement of a row that reads unknown, or unknown.
+// A candidate's rows against the hard constraints: a signed-in person's judgement of the row, or unknown. A candidate
+// whose basis no longer stands here (its released knowledge, its library entry, its archetype, its component) reads
+// unknown on every row, whatever was judged of it, and says why.
 export function candidateEligibility(p,d,a){
- const c=a?.candidate,constraints=selectionConstraints(p,d),standing=!!c&&current(p,d,c),facts=standing&&plain(c.facts)?c.facts:{};
+ const c=a?.candidate,constraints=selectionConstraints(p,d),standing=!!c&&current(p,d,c);
  const reasons=c&&!standing?['The released knowledge '+(c.kind==='option'?'of the concern':c.ref?.claimId||'')+' is no longer current in this project: it states no fact here, and the candidate is not selected from it.']:[];
  const judged=list(d?.selection?.judgements).filter(j=>j?.alternativeId===a?.id&&j.actor&&j.account==='person'&&['pass','fail'].includes(j.state));
  const rows=constraints.map(k=>{
-  const state=evaluate(k,facts),fact=k.predicate?{fact:k.predicate.fact,expected:copy(k.predicate.value),...(state&&facts[k.predicate.fact]?{value:copy(facts[k.predicate.fact].value)}:{})}:{};
-  if(state)return {constraintId:k.id,state,basis:'evaluated',...fact};
-  const j=judged.findLast(x=>x.constraintId===k.id);
-  return j?{constraintId:k.id,state:j.state,basis:'person',evidence:j.evidence,reason:j.reason,by:j.actor,at:j.at,...fact}:{constraintId:k.id,state:'unknown',basis:'evaluated',...fact};
+  const j=standing&&judged.findLast(x=>x.constraintId===k.id);
+  return j?{constraintId:k.id,state:j.state,basis:'person',evidence:j.evidence,reason:j.reason,by:j.actor,at:j.at}:{constraintId:k.id,state:'unknown'};
  });
  return {state:rows.some(r=>r.state==='fail')?'ineligible':rows.some(r=>r.state==='unknown')?'unproven':'eligible',rows,reasons};
 }
@@ -107,10 +106,10 @@ export function candidateEligibility(p,d,a){
 // their rows and outcome, the choice and what was instantiated. Null for a decision that is no selection.
 export function selectionReading(p,d){
  const s=d?.selection;if(!plain(s))return null;
- return {id:d.id,kind:s.kind,prepared:s.prepared,responsibilityIds:copy(list(s.responsibilityIds)),concern:s.concern?{id:s.concern.id,title:s.concern.title}:null,constraints:selectionConstraints(p,d),
+ return {id:d.id,kind:s.kind,prepared:s.prepared,started:s.started?{by:s.started.actor,at:s.started.at,account:s.started.account}:null,responsibilityIds:copy(list(s.responsibilityIds)),concern:s.concern?{id:s.concern.id,title:s.concern.title}:null,constraints:selectionConstraints(p,d),
   candidates:list(d.alternatives).filter(a=>a?.candidate).map(a=>({alternativeId:a.id,title:a.title,kind:a.candidate.kind,ref:copy(a.candidate.ref),facts:copy(a.candidate.facts||{}),eligibility:candidateEligibility(p,d,a),outcome:a.candidate.outcome||'open',rejection:a.rejectionReason||'',...(a.candidate.by?{by:a.candidate.by}:{})})),
   choice:s.choice?{alternativeId:s.choice.alternativeId,unproven:copy(list(s.choice.unproven)),by:s.choice.actor,at:s.choice.at}:null,instantiated:s.instantiated?{componentId:s.instantiated.componentId,adoptionId:s.instantiated.adoptionId||null,by:s.instantiated.actor,at:s.instantiated.at}:null,
-  considered:['the hard constraints that reach the decision','the facts released knowledge states of each candidate','a signed-in person\'s judgement of a row that reads unknown'],notConsidered:['quality effects','cost','measured behaviour','anything a candidate does not state']};
+  considered:['the hard constraints that reach the decision','a signed-in person\'s judgement of each row, with its evidence and reason','the facts released knowledge states of each candidate, shown to the person who judges'],notConsidered:['quality effects','cost','measured behaviour','anything a candidate does not state']};
 }
 
 // ---------------------------------------------------------------- the rows in Chapter 3 (ruling Q2)
@@ -144,20 +143,10 @@ export function selectionFindings(p){
 }
 
 // ---------------------------------------------------------------- the commands
+// The selection's last step (actor, at, account); the start's author is kept apart, in `started`.
 const step=(s,actor,at,author)=>Object.assign(s,{actor:actor||null,at,account:author?.account??null});
-function predicatesOf(p,raw,driverIds,author){
- if(raw.predicates===undefined||raw.predicates===null)return {};
- if(!plain(raw.predicates))throw Error('State each typed reading as {fact, op, value} under its constraint.');
- if(Object.keys(raw.predicates).length&&!person(author))throw Error('A typed reading of a hard constraint is a signed-in person\'s statement: a draft by Sol, an import or an agent account states none.');
- const out={},hard=new Set(list(p.quality?.drivers).filter(x=>driverIds.includes(x.id)&&driverKind(x)==='constraint'&&constraintForce(p,x).hard).map(x=>x.id));
- for(const [id,x] of Object.entries(raw.predicates)){
-  if(!hard.has(id))throw Error('A typed reading is stated for a hard constraint that reaches the decision: '+String(id).slice(0,40)+' is not one.');
-  const ok=plain(x)&&safeFactKey(x.fact)&&APPLICABILITY_OPERATORS.includes(x.op)&&(x.op==='present'?x.value===undefined:x.op==='oneOf'?Array.isArray(x.value)&&x.value.length>0&&x.value.length<=24:['string','number','boolean'].includes(typeof x.value)&&String(x.value).length<=240);
-  if(!ok)throw Error('The typed reading of '+id+' names a literal fact, a supported comparison and a value.');
-  out[id]={fact:x.fact,op:x.op,...(x.op==='present'?{}:{value:copy(x.value)})};
- }
- return out;
-}
+// How an author is marked on what it writes: a draft by Sol, an import, an agent account or a person.
+const kindOf=author=>author?.kind==='sol-draft'||author?.kind==='import'?author.kind:author?.account==='agent'?'agent':'person';
 // The one builder of a released concern's comparison (architecture-design.js concernComparison), its steps kept, not
 // written: [the decision's payload, then one alternative's payload per released option, in the concern's order].
 const comparison=(p,concern,t,notes)=>{const steps=[],[,,options]=concernComparison(p,{...t,governedConcern:concern},null,notes,(type,payload)=>{steps.push(payload);return '';});return {options,steps};};
@@ -171,6 +160,7 @@ function optionOf(p,s,optionId,notes){
  const {id,...payload}=C.steps[1+i];return {option:C.options[i],payload};
 }
 function start(p,raw,at,actor,author){
+ if('predicates' in raw)throw Error('No typed reading of a hard constraint is stated: a person judges each row with evidence and a reason.');
  const owner=words(raw.owner,'Name the architect accountable for this selection.',180);let s;
  if(raw.kind==='option'){
   const concern=releasedDesignConcern(p,typeof raw.concernId==='string'?raw.concernId:'');if(!concern)throw Error('Choose a current, released architecture concern.');
@@ -188,7 +178,7 @@ function start(p,raw,at,actor,author){
   s={kind:'component',responsibilityIds:ids};
  }else throw Error('Say what is selected: a component, or the options of a released concern.');
  const d=list(p.decisions.records).at(-1);
- d.selection={...s,predicates:predicatesOf(p,raw,list(d.driverIds),author),reviewTrigger:optional(raw.reviewTrigger,400),prepared:author?.kind||'person',judgements:[],choice:null};
+ d.selection={...s,reviewTrigger:optional(raw.reviewTrigger,400),prepared:kindOf(author),started:{actor:actor||null,at,account:author?.account??null,kind:author?.kind||'person'},judgements:[],choice:null};
  step(d.selection,actor,at,author);
  return {document:p,selected:d.id};
 }
@@ -216,7 +206,8 @@ function candidate(p,raw,at,actor,author){
  const same=JSON.stringify(ref);if(ref&&list(d.alternatives).some(a=>a.candidate&&JSON.stringify(a.candidate.ref)===same))throw Error('This candidate is already compared in '+d.id+'.');
  const said=s.kind==='component'?Object.fromEntries(['summary','benefits','costs','consequences'].map(k=>[k,optional(raw[k],4000)]).filter(([,v])=>v)):{};
  p=decide(p,'decision.alternative',{...said,...(s.kind==='component'?{responsibilityIds:copy(s.responsibilityIds)}:{}),...fields,id:d.id,title},at);
- d=decisionOf(p,raw.id);d.alternatives.at(-1).candidate={kind,ref,facts,...(author?.kind==='sol-draft'?{by:'sol'}:{})};
+ const by={'sol-draft':'sol',agent:'agent',import:'import'}[kindOf(author)];
+ d=decisionOf(p,raw.id);d.alternatives.at(-1).candidate={kind,ref,facts,...(by?{by}:{})};
  return {document:p,selected:d.id};
 }
 function judge(p,raw,at,actor,author){
@@ -224,8 +215,8 @@ function judge(p,raw,at,actor,author){
  const a=list(d.alternatives).find(x=>x.id===raw.alternativeId&&x.candidate);if(!a)throw Error('Choose a candidate of the selection.');
  const k=selectionConstraints(p,d).find(x=>x.id===raw.constraintId);if(!k)throw Error('Choose a hard constraint of the selection.');
  if(!['pass','fail'].includes(raw.state))throw Error('Judge the row pass or fail.');
- const read=evaluate(k,current(p,d,a.candidate)&&plain(a.candidate.facts)?a.candidate.facts:{});
- if(read)throw Error('Only a row that reads unknown is judged: “'+k.label+'” reads '+read+' for '+a.title+' from what it states.');
+ const read=candidateEligibility(p,d,a).rows.find(r=>r.constraintId===k.id).state;
+ if(read!=='unknown')throw Error('Only a row that reads unknown is judged: “'+k.label+'” reads '+read+' for '+a.title+', as '+candidateEligibility(p,d,a).rows.find(r=>r.constraintId===k.id).by+' judged it.');
  const evidence=words(raw.evidence,'Record the evidence for the judgement.'),reason=words(raw.reason,'Record the reason for the judgement.');
  s.judgements=[...list(s.judgements),{alternativeId:a.id,constraintId:k.id,state:raw.state,evidence,reason,actor:actor||null,at,account:author?.account??null}];
  step(s,actor,at,author);

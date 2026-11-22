@@ -193,11 +193,10 @@ from, then the change; a WIP commit after each item.
 
 ### Progress
 
-- **Done:** item 1 (Q7), item 2 (Q1), item 3 (Q2).
-- **In progress:** item 4 (Q3). At the WIP commit of item 3, `S5 server`, `S5 instantiate` and `S5 old documents` are
-  red until item 4: a row read against a typed reading has no judge and no evidence, so its effect in Chapter 3 asks
-  for support; and S1's `size` block is red until item 9 (wp2's allowance is 800 B since Q10).
-- **Next:** items 5 to 9 in the order of the task (Q4, Q5 and Q6, Q8, Q9, notes and size).
+- **Done:** item 1 (Q7), item 2 (Q1), item 3 (Q2), item 4 (Q3). Every S5 block is green; S1's `size` block is red until
+  item 9 (wp2's allowance is 800 B since Q10; the route is over until item 7 retires the guided path's code).
+- **In progress:** item 5 (Q4).
+- **Next:** items 6 to 9 in the order of the task (Q5 and Q6, Q8, Q9, notes and size).
 
 ### Items
 
@@ -247,3 +246,24 @@ from, then the change; a WIP commit after each item.
    changed; the effect on a driver that is no hard constraint stays Chapter 3's; both mismatches are errors that refuse
    acceptance. The suite's `completion` helper (this slice's own) no longer states "neutral" for the hard constraints of a
    selection: it sends them back as the selection wrote them (old -> new recorded in the code).
+4. **Q3, must-fix 3, design concern 3, should-fix 2 — done.** No person-stated typed reading before wp9b: design f.2
+   stands. `selection.start` refuses `predicates`, whatever is sent under the key and whoever sends it ("No typed reading
+   of a hard constraint is stated: a person judges each row with evidence and a reason."); `predicatesOf`, the evaluated
+   rows and their basis are gone, and the view and the SDD state no typed reading. A row is a signed-in person's
+   judgement (pass or fail, with evidence and a reason, `basis: 'person'`, by, at) or unknown; a row a person judged is
+   not judged again; the facts a released profile states are shown beside its rows in the view for the person who
+   judges. A candidate whose basis no longer stands reads unknown on every row, whatever was judged of it, with the
+   reason. The start's author is kept in `selection.started {actor, at, account, kind}`, which no later step overwrites
+   (`actor`, `at`, `account` stay the last step's); `prepared` is `agent` for an agent account's start and a candidate an
+   agent account adds is marked `by: 'agent'` (beside `sol` for a draft by Sol), shown in the reading, the view ("prepared
+   by an agent account", "added by an agent account") and the SDD ("Prepared by an agent account.", ", added by an agent
+   account"). Cases: `S5 Sol` (failed first: the typed reading was taken from a person), `S5 eligibility`, `S5 server`,
+   `S5 SDD`, `S5 surface`. Replaced assertions, old -> new (this slice's suite; each recorded in the code):
+   `threeCandidates` stated A's typed reading -> states none, and B judges the first constraint of both profiles (pass,
+   fail) with evidence; `S5 eligibility` rows "evaluated" against the typed reading -> rows a second person judged, with
+   judge and evidence, and unknown rows with no basis; `S5 Sol` a draft by Sol and an agent account refused a typed
+   reading -> everyone refused, for three shapes of the key, and the start's author kept after a judgement and a choice
+   by others, and an agent account's marks in the reading, view and SDD; `S5 server` a row the typed reading answered is
+   not judged -> a row a person judged is not judged again (by the judge or a third person); `S5 SDD` the typed reading
+   printed -> "no typed reading" for both constraints and each judged row naming its judge; `S5 old documents` a template
+   copy's `readDecision` is null -> its reading weighs nothing (item 8 changes what a copy is).

@@ -113,18 +113,18 @@ export const refOf = r => str(r?.ref) || str(r?.code) || str(r?.id);
 export const refList = (refs, max = LIST_MAX) => sharedRefList(refs, max);
 // A bulleted list of at most LIST_MAX lines; the rest counted on a line of its own, with where they are listed.
 // rc44 wp2 S5: the basis of a component selection (decision.selection, adoption-selection.js), printed after the
-// alternatives it considered: what is selected, each hard constraint with the typed reading a person stated or none,
+// alternatives it considered: what is selected, each hard constraint (none carries a typed reading: ruling Q3),
 // and each candidate in the order it was added with its kind, what it is pinned to, its outcome and its rows as they
 // read when the choice was made, the rows named unproven among them. Nothing is weighed. Read from the record only.
 const CANDIDATE_KINDS = {profile: 'profile', library: 'library entry', archetype: 'catalogue archetype', existing: 'existing component', build: 'build', buy: 'buy', option: 'released option'};
 function selectionBasis(p, d, alts) {
   const s = d.selection, drivers = list(d.driverIds).map(id => list(p.quality?.drivers).find(x => x.id === id)).filter(x => x && driverKind(x) === 'constraint' && constraintForce(p, x).hard);
-  const typed = x => { const k = s.predicates?.[x.id]; return k ? k.fact + ' ' + k.op + (k.value === undefined ? '' : ' ' + (Array.isArray(k.value) ? k.value.join(', ') : k.value)) : 'no typed reading: unknown until a person judges it'; };
+  const typed = () => 'no typed reading: unknown until a person judges it'; // ruling Q3: no typed hard gate before wp9b
   const what = s.kind === 'option' ? 'the released options of ' + md(s.concern?.title || s.concern?.id) : 'a component for ' + list(s.responsibilityIds).map(id => { const r = list(p.logical?.responsibilities).find(x => x.id === id); return r ? (r.ref || r.id) + ' · ' + md(r.title) : id; }).join(', ');
   const pinned = c => { const r = c.ref || {}; return c.kind === 'profile' ? ', released ' + r.claimId + ' in ' + r.releaseId : c.kind === 'library' ? ' ' + (r.entryId || '') : c.kind === 'archetype' ? ' ' + (r.archetypeId || '') : c.kind === 'existing' ? ' ' + (r.componentId || '') : c.kind === 'option' ? ' ' + (r.optionId || '') : ''; };
   const label = id => md(drivers.find(x => x.id === id)?.title || id), chosen = s.choice?.rows || {};
-  const line = a => { const c = a.candidate, rows = list(chosen[a.id]?.rows); return md(a.title) + ' (' + (CANDIDATE_KINDS[c.kind] || c.kind) + pinned(c) + (c.by === 'sol' ? ', proposed by Sol' : '') + '): ' + (c.outcome || 'open') + (rows.length ? ' · ' + rows.map(r => label(r.constraintId) + ': ' + r.state + (r.basis === 'person' ? ' (judged by ' + md(r.by) + ')' : '') + (r.state === 'unknown' && list(s.choice?.unproven).includes(r.constraintId) ? ', named unproven' : '')).join('; ') : ''); };
-  return '**Selection basis**: ' + what + ', against ' + (drivers.length ? drivers.length + ' hard constraint' + (drivers.length > 1 ? 's' : '') + ': ' + drivers.map(x => md(x.title) + ' (' + typed(x) + ')').join('; ') : 'no hard constraint') + '.' + (s.prepared === 'sol-draft' ? ' Prepared as a draft by Sol.' : '') + '\n\n' + bullets(alts.filter(a => a.candidate).map(line), {rest: k => 'And ' + plural(k, 'more candidate') + ' (Chapter 3 · ' + d.id + ').'});
+  const line = a => { const c = a.candidate, rows = list(chosen[a.id]?.rows); return md(a.title) + ' (' + (CANDIDATE_KINDS[c.kind] || c.kind) + pinned(c) + (c.by === 'sol' ? ', proposed by Sol' : c.by === 'agent' ? ', added by an agent account' : '') + '): ' + (c.outcome || 'open') + (rows.length ? ' · ' + rows.map(r => label(r.constraintId) + ': ' + r.state + (r.basis === 'person' ? ' (judged by ' + md(r.by) + ')' : '') + (r.state === 'unknown' && list(s.choice?.unproven).includes(r.constraintId) ? ', named unproven' : '')).join('; ') : ''); };
+  return '**Selection basis**: ' + what + ', against ' + (drivers.length ? drivers.length + ' hard constraint' + (drivers.length > 1 ? 's' : '') + ': ' + drivers.map(x => md(x.title) + ' (' + typed(x) + ')').join('; ') : 'no hard constraint') + '.' + (s.prepared === 'sol-draft' ? ' Prepared as a draft by Sol.' : s.prepared === 'agent' ? ' Prepared by an agent account.' : '') + '\n\n' + bullets(alts.filter(a => a.candidate).map(line), {rest: k => 'And ' + plural(k, 'more candidate') + ' (Chapter 3 · ' + d.id + ').'});
 }
 export function bullets(lines, {max = LIST_MAX, rest = n => 'And ' + more(n) + '.'} = {}) {
   const xs = lines.filter(Boolean);
