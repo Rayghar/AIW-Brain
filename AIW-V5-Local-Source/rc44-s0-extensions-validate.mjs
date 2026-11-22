@@ -1458,7 +1458,11 @@ await block('8 client build', async () => {
   assert.equal(size.allowance.chapters, 915); assert.equal(size.delta, size.slice.chapters - size.baseline.chapters); assert.ok(size.delta > 0 && size.delta <= 915, 'the route delta measured at the slice is at most 915 B: ' + size.delta);
   assert.ok(size.slice.chapters <= BUDGET.routes.chapters);
   { const w = size['opens with records']; assert.ok(w && /holds no package records/.test(w.gate) && /opensWithRecords/.test(w.how) && w.hosts?.[HOST]?.total === w.hosts[HOST].route + w.hosts[HOST].added, 'the size file says what the gate measures and how a package measures what a document with its records opens with'); }
-  assert.ok(measured.chapters >= size.slice.chapters - 700, 'the route as built now is the slice\'s or a later one\'s: ' + measured.chapters);
+  // (the lead's ruling U2 of 2026-11-22; was: measured >= the slice's route - 700 B. A later slice may retire an old path, whose saving the lead
+  // books as a negative item of the shared pool in the lead's own file: the lower bound is the slice's route less 700 B, less the savings the
+  // lead books there, each an integer, and no more.)
+  const LEAD = 'audit/rc44/evidence/lead-bookings-size.json', saved = existsSync(LEAD) ? -Object.values(JSON.parse(readFileSync(LEAD, 'utf8')).sharedPoolBytes || {}).filter(b => { assert.ok(Number.isInteger(b), 'the lead\'s pool items are counts of bytes'); return b < 0; }).reduce((n, b) => n + b, 0) : 0;
+  assert.ok(measured.chapters >= size.slice.chapters - 700 - saved, 'the route as built now is the slice\'s or a later one\'s: ' + measured.chapters + ' (the lower bound ' + (size.slice.chapters - 700 - saved) + ': the slice\'s ' + size.slice.chapters + ' B less 700 B, less the ' + saved + ' B the lead books as saved)');
   if (process.env.AIW_S0_MEASURE || process.argv.includes('--measure')) assert.deepEqual(measured, size.slice, 'at the slice\'s commit the build measures what the evidence says');
   pass('8: the client build passes every gate with the caps unchanged; S0 measured ' + size.delta + ' B on the chapters route (' + size.baseline.chapters + ' → ' + size.slice.chapters + ' of ' + BUDGET.routes.chapters + '), 148 script files; the registry is ' + on[0][1].bytesInOutput + ' B; this build: ' + measured.chapters + ' B');
 });
