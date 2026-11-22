@@ -86,8 +86,9 @@ suite was touched):
 - I have no objection to the other rulings.
 
 **What later slices must know.**
-1. *A second person's step needs a stamped person behind the record.* Records written by `workspace.merge` (D12) or
-   by an upgrade step carry no author stamp, and a stamp made before the project was restored here does not count. A
+1. *A second person's step needs a stamped person behind the record.* Records written by `workspace.merge` (D12;
+   since slice S0-D12 only from an alternative saved before it) or by an upgrade step carry no author stamp, and a
+   stamp made before the project was restored here does not count. A
    package with a `second` type gives a person a way to confirm such a record: a person's command that sets
    `confirmed: true` on it, in a collection of the type's `provenance.paths` (the boundary then stamps who
    confirmed). Without one, the only way is an edit that changes what the record says.
@@ -315,6 +316,18 @@ this reaches the chapters route (`design-extension-parts.js` is in no bundle; th
 in `design-extensions.js` is stripped by the build); wp9a's map and the assembly's join are in the lazy entry (wp9a's
 notes, "Fifth fix-up", item 4).
 
+## With slice S0-D12: who wrote what a merge writes (rulings D12, H3, Y3; 2026-11-22)
+
+Done by the lead's slice on `rc44/s0-d12-merge-author`, from `53ce4cf`, each case first and seen to fail (the slice's
+notes, `s0-d12-merge-author.md`, say how). Route: 0 B (booked in the lead's file as `mergeAuthorY3`).
+
+| Ruling | What S0 gained | Where | Case (in `rc44-s0-extensions-validate.mjs`) |
+|---|---|---|---|
+| Y3 | An alternative keeps who prepared each command (`authors[i] {kind, by, account, at, session?}` beside `commands[i]`); a revision names its reviser for what it changes or adds and keeps the preparer of what it carries | `public/workbench-domain.js` (server only: `applyWorkbenchCommand` is in no client bundle) | "D12 a record a merge wrote" (replaced, old -> new in the slice's notes) |
+| Y3 | A merge stamps what each command wrote as written by its preparer (by the same `stampAuthorship` and the packages' `stampChanged` as any commit) and as reviewed by the merger (`reviewed {by, at, how: 'merged'}`, `author.mergedBy`); the merge-level stamping does not run over it; an alternative that names nobody, or whose list predates a restore, merges as before | `public/provenance.js` `mergeStamper` (server only), `worker.js`, the option `merged` of `applyWorkbenchCommand` | same block |
+| Y3, D1 | A merge's review counts as a person behind the record (`personBehind`); while a merge's stamps stand, the preparer and the merger are refused as the second person, in words that fit any package (`mergedRefusal`) | `design-extension-boundary.js` | same block |
+| H3 | An event a package's staged handler adds inside a reviewed batch or a merge states no author fields (`unstatedStaged`, after the apply, before the trackers) | `design-extension-boundary.js`, `worker.js` | "H3 a staged handler states no author" |
+
 ## Contract for packages
 
 A package is an optional part of the design model that lives in its own modules. It tells the shared machinery what it
@@ -540,7 +553,11 @@ are taken. Until the server has installed its resolver no type is free. The type
      (`provenance.author`) is a person's, or a person has confirmed or kept it as it now reads
      (`provenance.reviewed`, or a judgement of the review plan that kept it). One person accepting what only an agent
      account or a draft by Sol wrote is one person, not two. A record with no author stamp has no person behind it
-     (one a merge wrote: ruling D12), and neither has one whose stamp was made before the project was restored here.
+     (one a merge wrote before slice S0-D12, or from an alternative saved before it: ruling D12), and neither has one
+     whose stamp was made before the project was restored here. Since slice S0-D12 (ruling Y3) a record a merge
+     writes is stamped as written by whoever prepared the command in the alternative and as reviewed by the person who
+     merged it (`provenance.reviewed.how` `'merged'`, which counts as a person behind it); while those stamps stand
+     neither the preparer nor the merger is the second person (section "With slice S0-D12" above).
      The refusal says what must happen first: "A second person's step needs two persons: no person other than <actor>
      stands behind <id> as it stands (…). A second signed-in person saves or confirms <id> first."
 
@@ -1037,7 +1054,8 @@ the `evidence/` folder: A7; comments and source scanners: A8). What is open now:
    `/api/organizations` (catalogue, pins), `/api/operations` (policy, source sync). Rename and archive do not touch
    the design; the knowledge and organisation routes do. Refuse them all at one place (every non-GET project route
    except access and recovery), or only those that change the design?
-3. **Ruling D12 stands open and is the lead's** (wave 2): until a merge stamps what it writes, a second person's step
+3. **Ruling D12 stands open and is the lead's** (wave 2; settled by ruling Y3, built in slice S0-D12: section "With
+   slice S0-D12" above): until a merge stamps what it writes, a second person's step
    on a merged record needs a person's change or confirmation first. The same holds for records an upgrade step or a
    template copy wrote.
 4. **`workspace.packages` only grows.** A document whose package records are all retired still names the package and
