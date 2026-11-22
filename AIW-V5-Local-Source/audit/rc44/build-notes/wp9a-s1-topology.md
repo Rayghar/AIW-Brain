@@ -20,8 +20,32 @@ here is approved, accepted, released or promoted.
 - **Done since:** the third fix-up's verifier (merge, two hardening problems and a nit) and the lead's rulings R1 to R4.
 - **Done since:** the fourth fix-up (rulings R1 to R4), section "Fourth fix-up" below (branch
   `rc44/wp9a-s1-topology-fix-c7`, from `rc44/wp9a-s1-topology-fix-c6` at `ce6eb90`); the suite at 25 blocks, green.
-- **In progress:** nothing.
+- **Done since:** the fourth fix-up's verifier (not yet: R2 partly, one new problem and two nits) and the lead's rulings
+  T1 to T3.
+- **In progress:** the fifth fix-up (rulings T1 to T3), section "Fifth fix-up" below (branch
+  `rc44/wp9a-s1-topology-fix-c8`, from `rc44/wp9a-s1-topology-fix-c7` at `41d6fb4`).
 - **Next:** the lead's merge; see "What later slices inherit" and "Open questions (for the lead)".
+
+## Fifth fix-up (after the fourth verifier; the lead's rulings T1 to T3)
+
+Branch `rc44/wp9a-s1-topology-fix-c8`, from `rc44/wp9a-s1-topology-fix-c7` (`41d6fb4`). Verifier:
+`/home/user/hb-review/rc44-build/wp9a-s1-topology.verify4.json` (verdict not yet: R2 partly; new problem 1, a tracker
+that passes the start check can accept a decision, record governance, forge an approval, move a revision back and keep a
+forged snapshot; two nits). Order of work, each case first and seen to fail on the head the item started from, a WIP
+commit after each:
+1. T1, an allow-list: `trackPaths` as `{path: [fields]}` with its start check (each refusal a case in S0's block "O2");
+   the boundary restores every field not listed and lets `revision` move only forward by one when a listed field
+   changed; `assertTrackerStaysInPaths` holds the same; S0's server case extended (status accepted, governance, recorded,
+   approval, a revision moved back, a snapshot; a person's and an agent account's commit); wp9a states
+   `{'runtime.zones': ['nodeId', 'domainIds'], 'runtime.placements': ['nodeId']}`; the contract text and the comments.
+2. T2, the start check reads its table with `Object.hasOwn`, `constructor.name` among the refusals; the fourth fix-up's
+   open questions renumbered 15 to 17.
+3. T3, recorded (no code).
+4. Re-measured; wp9a's size evidence and S1.10's pins where a module moved; the O1 merge check on the final head.
+5. The notes, the suites, the final commit.
+
+Measured before any change (`node build.mjs` on `41d6fb4`): chapters route 3,230,605 B, projects 507,338 B, 148 script
+files, buckets 53/50/45, stylesheet 901,873 B, no violation.
 
 ## Fourth fix-up (after the third verifier; the lead's rulings R1 to R4)
 
