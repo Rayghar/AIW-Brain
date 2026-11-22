@@ -86,7 +86,13 @@ files, buckets 53/50/45, stylesheet 901,873 B, no violation.
   - The S0 contract text (`s0-extensions.md`: the `trackPaths` row and paragraph, the helper, a section for this
     fix-up) and the comments of `design-extension-boundary.js`, `provenance.js` and `worker.js` say the same.
   - S0 28 of 28; wp9a S1.5, S1.6, S1.8, S1.11, S1.12, S1.14, S1.15, S1.21 to S1.24 green.
-- Item 3: in progress.
+- **Item 3, R3: done.** Case: S0's block "O1", one hostile file that is not valid JSON and one that is JSON but no
+  object, each in a scratch copy of the evidence directory. Seen to fail on `ce6eb90` (`.aiw-local/fixup4/r3-before.log`:
+  "Expected double-quoted property name in JSON at position 16" and "Cannot read properties of null", neither naming the
+  file). Now `rc44-s0-readings.mjs routeBookings` refuses each with its path: "<path> is no size file this check can
+  read: it is not valid JSON (<the parser's words>)." and "... : a size file is a JSON object." (the second is a little
+  more than the ruling's words; a `null` file threw a general fault before).
+- Item 4: in progress.
 
 ## Third fix-up (after the second verifier; the lead's rulings O1 to O5, with K to N)
 

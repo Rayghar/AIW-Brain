@@ -165,7 +165,8 @@ export const LEAD_BOOKINGS = 'lead-bookings-size.json';
 export function routeBookings(ownFile, dir = 'audit/rc44/evidence') {
   const out = {own: {}, others: {}, pool: {}, othersTotal: 0, poolTotal: 0}, booked = new Map();
   for (const name of readdirSync(dir).filter(f => /-size\.json$/.test(f)).sort()) {
-    const file = dir + '/' + name, e = JSON.parse(readFileSync(file, 'utf8')), own = e.ownBytes ?? e.delta, lead = name === LEAD_BOOKINGS;
+    // (the lead's ruling R3 of 2026-11-22) a file it cannot read is refused with its path, as every refusal below names its file
+    const file = dir + '/' + name, e = (() => { let v; try { v = JSON.parse(readFileSync(file, 'utf8')); } catch (x) { throw Error(file + ' is no size file this check can read: it is not valid JSON (' + x.message + ').'); } if (!v || typeof v !== 'object' || Array.isArray(v)) throw Error(file + ' is no size file this check can read: a size file is a JSON object.'); return v; })(), own = e.ownBytes ?? e.delta, lead = name === LEAD_BOOKINGS;
     if (!Number.isInteger(own) || own < 0) throw Error(file + ' states no route bytes of its own (ownBytes, or delta): an integer of at least 0, not ' + JSON.stringify(own) + '.');
     if (lead && own !== 0) throw Error(file + ' is the lead\'s: it books the shared pool only (ownBytes 0), not ' + own + '.');
     out.own[file] = own; if (file !== ownFile) { out.others[file] = own; out.othersTotal += own; }
