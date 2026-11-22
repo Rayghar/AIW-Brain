@@ -71,5 +71,21 @@
    "total": 469
   },
   "note": "A document that holds crosswalk rows (knowledge.crosswalk, a library's) also loads the knowledge workspace's lazy entry, which holds the package's browser part (its design row), before it is first drawn: the route and the static closure of that entry, each script counted once. The entry grew by 469 B (133,731 B to 134,200 B, its bound 377,856 B): the built-in method rows and the design row, less the table the coverage module no longer holds."
+ },
+ "fixUp": {
+  "rulings": "P1 to P8 of 2026-11-22",
+  "from": "37520d6",
+  "measured": "node build.mjs at the fix-up's head, 2026-11-22 (dist/client-size-report.json)",
+  "chapters": 3230723,
+  "projects": 507456,
+  "scripts": 148,
+  "under10k": 52,
+  "from10to50k": 51,
+  "over50k": 45,
+  "css": 901873,
+  "violations": [],
+  "deltaAgainst37520d6": 0,
+  "deltaAgainst5cae40a": 118,
+  "note": "The fix-up changes server modules only (public/knowledge-concepts.js and public/knowledge-concept-commands.js, which no client module imports, rc44-wp1-cases-forms.mjs S1.14; and S0's project-lifecycle.js, a server module): no client output moved. S2.12 with AIW_RC44_WP1_MEASURE=1 measures exactly the figures above and the same 'opens with records'. ownBytes stays 118 (an integer of at least 0, ruling O1)."
  }
 }

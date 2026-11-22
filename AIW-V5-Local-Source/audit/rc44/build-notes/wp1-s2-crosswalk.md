@@ -207,7 +207,7 @@ Branch `rc44/wp1-s2-crosswalk-fix`, from `37520d6`. Review: `/home/user/hb-revie
 (four must-fix, eight should-fix, eight design concerns). Order of work, each case first and seen red on `37520d6`, a WIP
 commit after each item: 1 P1; 2 P2; 3 P3 and P4; 4 P5 (a) to (h); 5 P6; 6 P7; 7 P8 (notes only); 8 notes, size, suites.
 
-- **State:** items 1 to 6 done; item 7 next.
+- **State:** items 1 to 7 done; item 8 (notes, size, suites, the final commit) in progress.
 
 | Item | Done, with its case (red on `37520d6` with) |
 |---|---|
@@ -225,3 +225,65 @@ commit after each item: 1 P1; 2 P2; 3 P3 and P4; 4 P5 (a) to (h); 5 P6; 6 P7; 7 
 | P5 (h) (should-fix 8) | done: the mutation is recorded here and in `audit/rc44/evidence/wp1-s2-crosswalk-suites.json`: `decision-suggestions.js` line 29 made to match `pt.catalogue` turns S2.7 red ("decision-suggestions.js reads the catalogue name of a Playbook entry"); restored. Limit found: the same read written as `pt['cata' + 'logue']` passes the scan and is not met by the runtime trap, because no reading of the references calls that reader. The source scan is what bites |
 | P6 (design concern 4): built-in rows are navigation by construction | done: `resolveConcept` answers governed identities only (its answers always carry `authority: 'governed'`); the built-in rows are read through `builtInNavigation(id, scheme?)`, `{navigation: [{scheme, aliasId, targetId, relation}], authority: 'built-in', label: '… navigation only, never an identity'}`, with no `conceptId` at its top level. S2.21 (red: "KC.builtInNavigation is not a function"; before that, S-LAYERED answered the resolver). Old -> new in S2.2: `resolveConcept(blank, alias)` deep-equal to the built-in answer (conceptId, relation same, via, authority built-in, label) -> `resolveConcept(blank, alias) === null` and `builtInNavigation(alias)` deep-equal to the same row as navigation (scheme, alias, target, relation, authority, label); `resolveConcept(blank, 'S-MODMONO').conceptId === 'STYLE-MODULAR-MONOLITH'` -> `builtInNavigation('S-MODMONO').navigation[0].targetId === 'STYLE-MODULAR-MONOLITH'`. No product module reads either reader (S2's readers are the server's and the suites') |
 | P7 (design concern 5): a governed identity traces to a source passage | done (`traced`, at the proposal, on an edit and at verification, on the row as it stands): a `same` row of scheme `handbook` or `external` names `evidenceClaimId`, a claim of this library whose passage holds the alias as a whole token (a handbook alias, as P5 e asks, a whole identifier; a topic id alone is no passage); an `akr` row is verified only while the catalogue record it names exists and reads as the row's `targetContent` ("… reads authored in the catalogue AKR-0.10.73.5, not template as KA-0005 says: a person saves the row again"). S2.22 (red: "knowledge.crosswalk by architect {} was accepted" for an external `same` row with no evidence). Fixture change: S2.6's external row `EXT-OWN-WORDS` relates `narrower`, not `same` (a `same` row with a note only is now refused; S2.6 holds what the server reads of targetContent, which a relation does not change; no assertion changed). Reading: an external alias needs only a whole token of the passage (any shape the alias rule allows), a handbook alias an identifier (P5 e) |
+| P8: left to named owners | no code, as ruled. **S3:** organisation releases carry `parts` inside the signed checksum (`orgContent` copies none yet, so a design project that pins an organisation release resolves no governed row); the release-actor rule of P1 for an organisation's release (`releaseRows` is the one list to read); the recovery of an organisation release's parts (project releases' parts are neutralised here, S2.11); the knowledge keys and the library's fingerprint (B10, P5 b): S2.16 states today's limit and S3 replaces it with its opposite, recorded old -> new. **Close of wave 2 (the lead, D10):** where a library's package readers load; a document with rows opens with the route + 145,475 B in 2 scripts. **The lead at the merge:** wp9a's exact bound on its lazy entry should read wp9a's own modules and import and export lists, not the entry's whole growth; every size case should read the files-under-10-KB bucket as a ceiling (S0's, wp2's and wp9a's size cases compare it with 53 on their evidence; this slice moves it to 52, so a `--measure` of any of them after this merge fails with no file added). Neither is this slice's to edit, and none of their files was touched |
+
+### One line per item of the review
+
+- Must-fix 1 (the release takes rows its releaser stands behind): done, P1, S2.13.
+- Must-fix 2 (a template copy names p10-knowledge with no record of it): done, P2, S2.10.
+- Must-fix 3 (one id names two concepts in turn): done, P3, S2.4 (both orderings).
+- Must-fix 4 (the bound counts retired and rejected rows): done, P4, S2.14.
+- Should-fix 1 (an edited released row still resolves): done, P5 a, S2.15.
+- Should-fix 2 (S2.10's message claims more than it tests; the stamp moves through the commands): done, P5 b, S2.10's message and S2.16.
+- Should-fix 3 (a row verified after the concept's review is released under it): done, P5 c, S2.17.
+- Should-fix 4 (a non-person undoes a rejection): done, P5 d, S2.18.
+- Should-fix 5 (aliases shaped as record references; handbook aliases as substrings): done, P5 e, S2.19.
+- Should-fix 6 (S2.9 walks fewer kinds than S1.29): done, P5 f, S2.9 (nine kinds; one gap found and closed).
+- Should-fix 7 (the merge / template-copy statement): done, P5 g, corrected here and in the result; S2.20.
+- Should-fix 8 (S2.7's mutation): done, P5 h, recorded here and in the suites evidence.
+- Design concerns: 1 (E5 and D2) -> P2; 2 (wp9a's exact bound) and 3 (the under-10-KB bucket) -> P8, the lead's; 4 (built-in answers shaped as identity) -> P6, S2.21; 5 (no source passage) -> P7, S2.22; 6 (organisation releases) and 8 (the knowledge keys) -> P8, S3; 7 (D10) -> P8, the close of wave 2.
+
+### Where I read a ruling in a way the lead should check
+
+1. **P2, "the same reader that adds the name".** No server reader adds a name from records (the boundary names a package by the
+   command types a commit applied, and by an upgrade step that writes), and the contract's reader of "holds a record" is the
+   route stub's `needs`, which only the browser registers. I read the package's own statement of its keys (the one the
+   boundary's stamping and the fingerprint read). If the lead wants one exported reader for the boundary and the copy, it
+   belongs in `design-extension-parts.js`, which P2 does not confirm; I did not edit it.
+2. **P5 c, "the hashes of the standing rows it saw".** A row's hash covers what it says, not its review, so a hash alone would
+   let a row seen proposed and verified after the review into the release, which the ruling says waits. The review records
+   `[id, hash, state]` for each row that stands, and the release takes a row only as the review saw it verified. This is
+   stricter than hashes alone and is what the ruling's own consequence needs.
+3. **P5 f.** The walk found that an author naming no account passed the boundary's person check for the package's types
+   (the boundary asks `kind === 'person'` and not an agent account). I closed it in the package with the knowledge family's
+   own `personOnly` (S1's rule, reused; no new rule). The boundary's check itself is S0's: the server always states an account,
+   so it is not reachable through the service, but the lead may want S0's handler to ask `account === 'person'` for every
+   package. Not done here (S0's file, not confirmed).
+4. **P7, akr rows.** The ruling says an akr row traces to the catalogue record it names, whose content the server reads. I
+   read that as: the record must exist at the proposal (as before) and again at verification, and still read as the row's
+   `targetContent`. A `same` row to a relation stub is not refused (not ruled); the lead may want that.
+5. **P7, external aliases.** An external alias needs a whole token of the evidence passage of any shape the alias rule
+   allows (a glossary word included); a handbook alias needs a whole identifier (P5 e). If the lead wants external aliases to
+   be identifiers too, it is one word in `traced`.
+
+### Contracts for later slices, as they now are
+
+- `resolveConcept(p, id, scheme = null)` answers governed identities only: `{conceptId, relation: 'same', via: {scheme,
+  aliasId, rowId|null, releaseId}, authority: 'governed'}` or null. Null also for an id that is a usable released concept
+  and a governed `same` alias of another (P3), and for a released row whose register row is absent or has another hash (P5 a).
+- `builtInNavigation(id, scheme = null)` -> `{navigation: [{scheme, aliasId, targetId, relation}], authority: 'built-in',
+  label}` or null: AIW's own rows, navigation only (P6).
+- `conceptAliases(p, conceptId)`: each governed entry has `register` (the register's state) and `release` (`{releaseId,
+  relation, resolves}` or null); `state` is `released` only when it resolves; a row only a release holds is `unregistered`.
+- A concept's review holds `crosswalkSeen: [[rowId, rowHash, state], …]` when the concept has rows that stand; a release of
+  forms holds (`parts.crosswalk`) only the verified rows that review saw verified at their hash (`releaseRows` in
+  `knowledge-concept-commands.js`, the one list the release-actor rule reads and `parts` copies). S3 builds `parts.concepts`
+  and `parts.changes` beside it and reads the same list for an organisation's release.
+- Row rules at the command: an alias shaped as `RECORD_REFERENCE` is refused; a `same` alias that is another concept's id is
+  refused (proposal, edit, verification); handbook and external `same` rows name an evidence claim whose passage holds the
+  alias as a whole token; akr rows are verified only while their catalogue record reads as the row says; the bound is 24 rows
+  that stand per concept; a row whose review stands, of either decision, is changed by a signed-in person only.
+- `instantiateTemplate` names only the packages whose records the copy keeps (any later package inherits this: state the
+  keys that hold your records as `design`, `designKeys`, `evidenceKeys`, `lifecycle`, `provenance.records` or
+  `provenance.paths`, or a copy of a template drops your name).
+- No crosswalk row can be written by a merge or a template copy (S2.20, S2.10): the statement of the first build is withdrawn.
