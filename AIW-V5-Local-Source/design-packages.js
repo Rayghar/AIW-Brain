@@ -6,4 +6,6 @@
 // arrives, and its route stub {id, needs, load} says when that must be before a document is drawn.
 //
 // A slice that adds a package adds its line below, and nothing else in the shared machinery.
+import './knowledge-package-server.js'; // p10-knowledge: the knowledge register's crosswalk (wp1)
+import './public/topology.js'; // p30-deployment: the typed deployment topology (wp9a)
 import './adoption-server.js'; // p40-adoption: applied mechanisms bound to the model (wp2)

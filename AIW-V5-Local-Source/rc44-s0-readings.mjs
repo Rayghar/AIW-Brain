@@ -5,6 +5,7 @@
 // reads the baseline tree: `node rc44-s0-readings.mjs --capture` prints the SHA-256 of each reading per reference
 // (rc44-s0-extensions-baseline.json was captured so from an unchanged checkout of 94dbd4f).
 import {createHash} from 'node:crypto';
+import {readdirSync, readFileSync} from 'node:fs';
 import {createProject} from './shared/projects-domain.js';
 import {withFinalReview, reviewRequirements, inheritedFindings, finalFindings, chapterSummaries, reviewSourceStamp, reviewDesignStamp, evidenceStamp, traceStamp, assembleSDD, reviewBlockerCount, CHAPTERS} from './public/review-domain.js';
 import {recordGraph} from './public/record-graph.js';
@@ -87,6 +88,65 @@ export function assertBuiltInChainsUnchanged(base, withRecords) {
   }
   return chains;
 }
+// assertTrackerStaysInPaths(extension, cases) (the lead's ruling O2 of 2026-11-21): a package's tracker changes nothing
+// of a document but the package's own keys (its design and evidence keys, the keys of its design row, its lifecycle and
+// provenance collections), the built-in collections it states as trackPaths, and the change journal, to which it only
+// adds: the boundary stamps what a call changed in its trackPaths, and nothing else of the built-in design may move
+// unseen. For each case {prior, next, command, at} (next: the commit's document as the command left it) it runs
+// extension.track(prior, a copy of next, command, at) and compares: prior is as it was; the events of next stand as
+// they were, in their order, and the journal's counter moves by the events the tracker added; the whole document
+// outside those keys is as it was. And inside its trackPaths (the lead's rulings R2 and T1 of 2026-11-22: a tracker
+// mends content; it decides nothing and makes nothing, and it changes only what it lists): trackPaths is
+// {'chapter.collection': [field, …]}, none of its fields one the start check refuses (trackFieldRefused below: a
+// record's identity, revision and history, TRACKED_STANDING, and what the chapters read as an acceptance, an approval,
+// a review, a confirmation or a snapshot); no record is added and none removed; no field a path does not list moves on
+// a record; and a revision moves only forward, by one, and only where a listed field changed (as the boundary puts back
+// what it may not change: design-extension-boundary.js trackExtensions). TRACKED_STANDING and trackFieldRefused are
+// stated here because this file imports only modules of the baseline; S0's suite holds them equal to the boundary's
+// (design-extension-parts.js). Throws with the key, the record and the case named (fields in alphabetical order); answers {cases,
+// changed: {path: the cases whose call changed it}, journalled: the events the calls added}.
+export const TRACKED_STANDING = Object.freeze(['state', 'origin', 'keptAt', 'confirmed', 'targetConfirmed', 'review', 'reviews', 'provenance']);
+const TRACK_NEVER = new Set(['id', 'ref', 'code', 'alias', 'revision', 'history', ...TRACKED_STANDING, 'status', 'governance', 'approval', 'approvals', 'recorded', 'appliedImpact', 'assumptionsResolved', 'sourceDriverIds', 'sourceDecisionIds']);
+export const trackFieldRefused = field => TRACK_NEVER.has(field) || /confirm|snapshot|stamp|review|approv|accept|govern|history|resolved|^selected[A-Z]/i.test(field);
+export function assertTrackerStaysInPaths(extension, cases) {
+  const name = extension?.id || 'the package', plainOf = v => (v && typeof v === 'object' && !Array.isArray(v) ? v : {}), list = v => (Array.isArray(v) ? v : []), refOf = r => (r && typeof r === 'object' ? r.ref || r.code || r.id : null) || 'a record';
+  if (typeof extension?.track !== 'function') throw Error('assertTrackerStaysInPaths: ' + name + ' states no tracker.');
+  if (!Array.isArray(cases) || !cases.length) throw Error('assertTrackerStaysInPaths: no case for ' + name + '\'s tracker.');
+  if (extension.trackPaths !== undefined && !(Object.keys(plainOf(extension.trackPaths)).length && Object.values(extension.trackPaths).every(v => Array.isArray(v) && v.length && v.every(x => typeof x === 'string')))) throw Error('assertTrackerStaysInPaths: ' + name + ' states trackPaths as {\'chapter.collection\': [field, …]}.');
+  const fields = Object.entries(plainOf(extension.trackPaths)), paths = fields.map(([path]) => path), out = {cases: 0, changed: Object.fromEntries(paths.map(x => [x, 0])), journalled: 0};
+  for (const [path, listed] of fields) for (const f of listed) if (trackFieldRefused(f)) throw Error('assertTrackerStaysInPaths: ' + name + ' lists “' + f + '” for “' + path + '”, which a tracker never changes.');
+  const own = [...list(extension.designKeys), ...list(extension.evidenceKeys), ...Object.keys(plainOf(extension.design)), ...Object.keys(plainOf(extension.lifecycle)), ...Object.keys(plainOf(extension.provenance?.records)), ...Object.values(plainOf(extension.provenance?.paths)).flatMap(list)].filter(k => typeof k === 'string');
+  const at = (p, path) => path.split('.').reduce((v, k) => (v && typeof v === 'object' ? v[k] : undefined), p);
+  const outside = (p, journal) => { const q = structuredClone(p); for (const path of [...own, ...paths]) { const [a, b] = path.split('.'); if (b === undefined) delete q[a]; else if (q[a] && typeof q[a] === 'object') delete q[a][b]; }
+    if (q.changes && typeof q.changes === 'object') { delete q.changes.events; delete q.changes.counter; if (!journal && JSON.stringify(q.changes) === '{"schemaVersion":1}') delete q.changes; } return q; };
+  const keyOf = (a, b) => { for (const k of new Set([...Object.keys(a), ...Object.keys(b)])) if (JSON.stringify(a[k]) !== JSON.stringify(b[k])) { const x = plainOf(a[k]), y = plainOf(b[k]), inner = [...new Set([...Object.keys(x), ...Object.keys(y)])].find(j => JSON.stringify(x[j]) !== JSON.stringify(y[j])); return inner && (a[k] && typeof a[k] === 'object' && !Array.isArray(a[k])) ? k + '.' + inner : k; } return null; };
+  const same = (a, b, k) => JSON.stringify(a?.[k]) === JSON.stringify(b?.[k]);
+  cases.forEach((c, i) => {
+    const where = '(case ' + (i + 1) + ', ' + (c?.command?.type || 'no command') + ')', prior = structuredClone(c.prior), next = structuredClone(c.next), was = JSON.stringify(c.prior);
+    extension.track(prior, next, c.command, c.at);
+    if (JSON.stringify(prior) !== was) throw Error(name + '\'s tracker changed the document as the request found it (prior, ' + where.slice(1, -1) + '): prior is read, never written.');
+    const before = list(c.next.changes?.events), after = list(next.changes?.events), added = after.length - before.length;
+    if (added < 0 || JSON.stringify(after.slice(0, before.length)) !== JSON.stringify(before)) throw Error(name + '\'s tracker changed the change journal\'s earlier events ' + where + ': a tracker only adds to the journal.');
+    const moved = (next.changes?.counter ?? 0) - (c.next.changes?.counter ?? 0); if (moved !== added) throw Error(name + '\'s tracker moved the change journal\'s counter by ' + moved + ' for ' + added + ' events it added ' + where + '.');
+    const key = keyOf(outside(c.next, 'changes' in c.next), outside(next, 'changes' in c.next)); if (key) throw Error(name + '\'s tracker changed “' + key + '” outside its own keys, its trackPaths and the change journal ' + where + ': state the built-in collections it mends as trackPaths, so that the boundary stamps what it changes, or leave them as they are.');
+    for (const [path, listed] of fields) {
+      const was = new Map(), loose = [], made = ' to “' + path + '” ' + where + ': a tracker mends the records of its trackPaths; it makes none and removes none.', mine = new Set(listed);
+      for (const r of list(at(c.next, path))) if (r && typeof r === 'object' && r.id != null) was.set(r.id, [...was.get(r.id) || [], r]); else loose.push(JSON.stringify(r));
+      for (const r of list(at(next, path))) {
+        const id = r && typeof r === 'object' ? r.id : null, old = id != null ? was.get(id)?.shift() : undefined;
+        if (old === undefined) { const n = id == null ? loose.indexOf(JSON.stringify(r)) : -1; if (n < 0) throw Error(name + '\'s tracker added ' + refOf(r) + made); loose.splice(n, 1); continue; }
+        const unlisted = [...new Set([...Object.keys(old), ...Object.keys(r)])].filter(k => k !== 'revision' && !mine.has(k) && !same(old, r, k)).sort();
+        if (unlisted.length) throw Error(name + '\'s tracker changed ' + unlisted.map(k => '“' + k + '”').join(', ') + ' of ' + refOf(old) + ' in “' + path + '” ' + where + ': a tracker changes only the content fields its trackPaths lists for the path; every other field of a record (its identity and history, whether and how it stands, an acceptance, an approval, a review, a confirmation, a snapshot) is the chapter\'s and the boundary\'s.');
+        const mended = listed.some(k => !same(old, r, k)), from = old.revision ?? 0;
+        if (!same(old, r, 'revision') && !(mended && Number.isInteger(from) && r.revision === from + 1)) throw Error(name + '\'s tracker moved the revision of ' + refOf(old) + ' in “' + path + '” from ' + JSON.stringify(old.revision) + ' to ' + JSON.stringify(r.revision) + ' ' + where + ': a mend moves a revision forward by one, and only when it changes a field its trackPaths lists.');
+      }
+      const gone = [...was.values()].flat()[0] ?? (loose.length ? JSON.parse(loose[0]) : undefined);
+      if (gone !== undefined) throw Error(name + '\'s tracker removed ' + refOf(gone) + made.replace(' to “', ' from “'));
+    }
+    out.cases++; out.journalled += added; for (const path of paths) if (JSON.stringify(at(c.next, path)) !== JSON.stringify(at(next, path))) out.changed[path]++;
+  });
+  return out;
+}
 export function assertFindingIdsUnique(p) {
   const seen = new Set(), all = inheritedFindings(p);
   for (const f of all) { if (seen.has(f.id)) throw Error('Two findings share the id “' + f.id + '”: a treatment of one would cover the other. A package\'s finding id is its own (by convention code:record id, with a code no other package or chapter uses).'); seen.add(f.id); }
@@ -102,6 +162,53 @@ export function assertFindingIdsUnique(p) {
 // stub loads ('public/architecture-task-ui.js'), `dataNames` the data modules the gate sets apart from code
 // (Object.keys(BUDGET.data) of client-bundle.mjs). It answers {route, added, total, files}: the route as the gate
 // counts it, what the lazy entry adds to it, their sum, and how many scripts the entry adds.
+// routeBookings(ownFile) (the lead's rulings K6, M4 and O1 of 2026-11-21): the chapters-route bytes the rc44 size
+// evidence books, read from every audit/rc44/evidence/*-size.json: each package's own, as its evidence records it at its
+// own head (ownBytes, or the delta of a file that books the whole of its growth to its package), an integer of at least
+// 0 (a slice that adds nothing to the route books 0), and the shared pool's (sharedPoolBytes, {item: bytes}, in
+// whichever file records the change), each item an integer that one file books. A negative pool item is the lead's
+// alone, in the lead's own file (LEAD_BOOKINGS, which books nothing of its own: ownBytes 0), for what merging packages
+// adds or saves together (ruling N1: stub bytes are not additive). A package's size case holds that the route's growth
+// against the integrated base, less every other package's own bytes and less the shared pool's, is inside its
+// allowance. Answers {own: {file: bytes} of every file, others: {file: bytes} but ownFile's, pool: {file:item: bytes},
+// othersTotal, poolTotal}; refuses, naming the file, what it cannot trust.
+export const LEAD_BOOKINGS = 'lead-bookings-size.json';
+export function routeBookings(ownFile, dir = 'audit/rc44/evidence') {
+  const out = {own: {}, others: {}, pool: {}, othersTotal: 0, poolTotal: 0}, booked = new Map();
+  for (const name of readdirSync(dir).filter(f => /-size\.json$/.test(f)).sort()) {
+    // (the lead's ruling R3 of 2026-11-22) a file it cannot read is refused with its path, as every refusal below names its file
+    const file = dir + '/' + name, e = (() => { let v; try { v = JSON.parse(readFileSync(file, 'utf8')); } catch (x) { throw Error(file + ' is no size file this check can read: it is not valid JSON (' + x.message + ').'); } if (!v || typeof v !== 'object' || Array.isArray(v)) throw Error(file + ' is no size file this check can read: a size file is a JSON object.'); return v; })(), own = e.ownBytes ?? e.delta, lead = name === LEAD_BOOKINGS;
+    if (!Number.isInteger(own) || own < 0) throw Error(file + ' states no route bytes of its own (ownBytes, or delta): an integer of at least 0, not ' + JSON.stringify(own) + '.');
+    if (lead && own !== 0) throw Error(file + ' is the lead\'s: it books the shared pool only (ownBytes 0), not ' + own + '.');
+    out.own[file] = own; if (file !== ownFile) { out.others[file] = own; out.othersTotal += own; }
+    if (e.sharedPoolBytes !== undefined && !(e.sharedPoolBytes && typeof e.sharedPoolBytes === 'object' && !Array.isArray(e.sharedPoolBytes))) throw Error(file + ': the shared pool\'s bytes are {item: bytes}.');
+    for (const [item, bytes] of Object.entries(e.sharedPoolBytes || {})) {
+      if (!Number.isInteger(bytes)) throw Error(file + ': the shared pool\'s ' + item + ' is no count of bytes.');
+      if (bytes < 0 && !lead) throw Error(file + ': the shared pool\'s ' + item + ' is ' + bytes + ' B: a negative pool item is the lead\'s alone, in ' + LEAD_BOOKINGS + '.');
+      if (booked.has(item)) throw Error('The shared pool\'s ' + item + ' is booked twice: by ' + booked.get(item) + ' and by ' + file + '. One file books each item.');
+      booked.set(item, file); out.pool[file + ':' + item] = bytes; out.poolTotal += bytes;
+    }
+  }
+  return out;
+}
+// assertBookingsAddUp(route, base, dir) (the lead's merge check, ruling O1): on a build, the chapters route
+// (routes.chapters.code) less the integrated base ({commit, chapters}) is every size file's own bytes plus the shared
+// pool's, exactly. A stale, foreign or mistyped file fails it, and the failure names each file's figure. Answers
+// {grew, own, pool}.
+export function assertBookingsAddUp(route, base, dir = 'audit/rc44/evidence') {
+  const b = routeBookings(null, dir), own = Object.values(b.own).reduce((n, x) => n + x, 0), grew = route - base.chapters;
+  if (grew !== own + b.poolTotal) throw Error('The bookings do not add up: the chapters route grew ' + grew + ' B against ' + base.commit + ' (' + route + ' - ' + base.chapters + '), and the size files book ' + (own + b.poolTotal) + ' B: ' + Object.entries(b.own).map(([f, n]) => f.split('/').pop() + ' ' + n + ' B of its own').join(', ') + '; the shared pool ' + b.poolTotal + ' B (' + (Object.entries(b.pool).map(([k, n]) => k.split('/').pop() + ' ' + n + ' B').join(', ') || 'no item') + '). A size file is stale, foreign or mistyped: measure it again at its own head.');
+  return {grew, own, pool: b.poolTotal};
+}
+// assertUnder10kCeiling(slice, base, gate) (the lead's rulings P8 and R4 of 2026-11-22): a size case reads the
+// files-under-10-KB bucket as a ceiling, as client-bundle.mjs does: at most the gate (BUDGET.tiny), and at most the
+// base's count plus the script files the slice adds (slice and base: {scripts, under10k}). A slice may leave fewer
+// small files than its base; it may not add one beyond the files it adds. Throws in words; answers the ceiling.
+export function assertUnder10kCeiling(slice, base, gate) {
+  const added = Math.max(0, slice.scripts - base.scripts), ceiling = Math.min(gate, base.under10k + added);
+  if (!(Number.isInteger(slice.under10k) && slice.under10k <= ceiling)) throw Error(slice.under10k + ' script files under 10 KB: at most ' + ceiling + ' (the gate ' + gate + ', and the base\'s ' + base.under10k + ' plus the ' + added + ' script file' + (added === 1 ? '' : 's') + ' the slice adds).');
+  return ceiling;
+}
 export function opensWithRecords(metafile, entry, dataNames = []) {
   const outputs = metafile.outputs, scripts = Object.keys(outputs).filter(f => f.endsWith('.js'));
   const isData = input => dataNames.some(name => input.endsWith('public/' + name + '.js'));

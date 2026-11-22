@@ -389,7 +389,7 @@ function setOwned(now,author,reviewed,old=null,edited=null,at=null){
 // What the commit did to one record it wrote or decided on: a record it made, or one whose content it changed, is
 // stamped as the commit's (with what a person's write started from); a person's confirmation or keep of a record is
 // stamped as reviewed by them; whatever the domain's save dropped or a payload brought in is put back as it was.
-function settle(old,now,author,at,fourEyes=false,forceConfirmation=false){
+function settle(old,now,author,at,fourEyes=false,forceConfirmation=false,tracked=false){
  const priorAuthor=stampOf(old),priorReview=plain(old?.provenance?.reviewed)?old.provenance.reviewed:null;
  let a=priorAuthor,rv=priorReview;
  const created=!old,edits=created?['created']:contentEdits(old,now);
@@ -402,7 +402,8 @@ function settle(old,now,author,at,fourEyes=false,forceConfirmation=false){
   // A record a person makes in guidance's words (the domain says so by its origin) is the person's, from guidance.
   if(created&&author.kind==='person'&&personAuthor(author)&&GUIDANCE_ORIGINS.has(now.origin))a={...a,from:'guidance'};
  }
- if(personAuthor(author)){
+ // (a design package's tracker confirms and keeps nothing, and edits no draft in a person's name: tracked, ruling O2)
+ if(personAuthor(author)&&!tracked){
   const confirming=(forceConfirmation||!confirmedNow(old))&&confirmedNow(now),keeping=!created&&old.state==='proposed'&&now.state!=='proposed'&&!edits.length;
   // Four eyes (a project's setting): a person does not confirm, or keep, what they wrote themselves.
   if(fourEyes&&(confirming||keeping)&&a?.kind==='person'&&a.by&&a.by===author.id)throw Error('Four eyes: '+author.id+' wrote '+(now.ref||now.id||'this record')+'. Another signed-in person confirms it.');
@@ -411,7 +412,7 @@ function settle(old,now,author,at,fourEyes=false,forceConfirmation=false){
   if(confirming)rv={by:author.id||null,at,how:'confirmed'};
  }
  if(rv?.how==='confirmed'&&!confirmedNow(now))rv=null;
- setOwned(now,a,rv,old,!created&&author.kind==='person'&&personAuthor(author)?edits:null,at);
+ setOwned(now,a,rv,old,!created&&!tracked&&author.kind==='person'&&personAuthor(author)?edits:null,at);
 }
 // stampAuthorship(prior, next, command, result, author, at): the records of next the command made, named, confirmed or
 // kept (a bulk step names them by a filter), in the collections its type keeps them in, settled one by one (settle
@@ -444,6 +445,20 @@ export function stampChanged(prior,next,paths,author,at){
   for(const now of after){const was=plain(now)&&now.id!=null?old.get(now.id):null;if(was)settle(was,now,author,at);}
  }
  return next;
+}
+// stampTracked(was, now, author, at): one record of a collection a design package's tracker mends (its trackPaths) that
+// the tracker's call changed (rc44; the lead's rulings M1 and O2: wp9a's mend of a zone or a placement). `was` is the
+// boundary's own copy from before the call, never what the package says: the record is stamped as the commit's as
+// settle stamps a record the commit changed (a tracker confirms and keeps nothing: what it sets of a review is not a
+// person's), and a stamp the tracker wrote itself is not kept. Since rulings R2 and T1 the boundary refuses a call that
+// adds a record and puts back from its copy every field the package's trackPaths does not list for the collection (the
+// lifecycle, review, acceptance and approval fields and the provenance among them) before it calls this; a record with no
+// `was` keeps no author or review stamp, the safe answer should one reach here. Server only:
+// design-extension-boundary.js trackExtensions.
+export function stampTracked(was,now,author,at){
+ if(!plain(now))return now;
+ if(!plain(was)){if(plain(now.provenance)){const pv={...now.provenance};delete pv.author;delete pv.reviewed;if(Object.keys(pv).length)now.provenance=tidyProvenance(pv);else delete now.provenance;}return now;}
+ if(author)settle(was,now,author,at,false,false,true);return now;
 }
 // The provenance block a command carries (round 12, GR-GOV-09): the source, citations and basis of payload.provenance,
 // checked (provenanceBlock: each citation must name a row, a source version or a record the project holds) and set on the

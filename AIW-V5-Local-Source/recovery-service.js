@@ -74,6 +74,10 @@ export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??
  // approval of an accepted residual risk never counts as independent on this workbench.
  for(const r of Array.isArray(p?.security?.risks)?p.security.risks:[])strip(r);
  for(const g of Array.isArray(p?.security?.governance)?p.security.governance:[])strip(g);
+ // rc44 (wp9a; the lead's ruling M2): who chose typed topology is a person's step taken on the workbench the package came
+ // from. It is kept as history (runtime.topology.importedReview) and the step is nobody's here, whatever the package says
+ // of itself or of its dates, until a person here takes it. A document with no step taken gains no key.
+ {const t=p?.runtime?.topology;if(t&&typeof t==='object'&&t.review){t.importedReview=t.review;t.review=null;}}
  const m=p.finalReview;if(!m||typeof m!=='object')return p;
  strip(m.intake);strip(m.checks);
  for(const r of m.reviews||[])strip(r);
@@ -101,6 +105,10 @@ export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??
  const library=p.knowledge?.library;
  if(library&&typeof library==='object'){if(library.actor!=null)library.importedActor=library.actor;library.actor=null;if(library.enabled===true){library.importedEnabled=true;library.enabled=false;}}
  for(const r of p.knowledge?.releases||[])for(const c of r.claims||[])verifier(c);
+ // A crosswalk row's review (rc44, wp1 slice S2), in the register and as a release holds it, is the same assertion: a row
+ // names an identity here only once a second person here reviews it and a release here holds it.
+ for(const r of Array.isArray(p.knowledge?.crosswalk)?p.knowledge.crosswalk:[])verifier(r);
+ for(const r of p.knowledge?.releases||[])for(const c of Array.isArray(r?.parts?.crosswalk)?r.parts.crosswalk:[])verifier(c);
  // Round 12 (GR-DOM-09): a pinned organisation knowledge release was verified on the workbench it came from; here its
  // claims stay ineligible until this workbench's organisation is found to sign exactly it (refreshOrganizationAssurance).
  for(const r of Array.isArray(p.knowledge?.organizationReleases)?p.knowledge.organizationReleases:[])if(r&&typeof r==='object')r.assurance={eligible:false,status:IMPORTED_AUTHORITY,signature:r.signature??null};

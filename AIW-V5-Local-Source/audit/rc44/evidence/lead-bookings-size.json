@@ -1,0 +1,55 @@
+{
+ "schema": "aiw.rc44.slice-size.v3",
+ "name": "the lead's bookings: what merging packages adds or saves together on the chapters route, and S0's rows that a package's slice needed (rulings K6, N1, O1, O2)",
+ "measuredWith": "client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)",
+ "whatWasMeasured": "Nothing of its own: this file books no package's bytes (ownBytes 0). Each item of sharedPoolBytes is a measured change of the chapters route that is no package's own, recorded under items with the build it was measured on. Only this file may book a negative item (ruling O1), for what merging packages saves together (ruling N1: stub bytes are not additive). The lead's merge check (rc44-s0-readings.mjs assertBookingsAddUp, S0's suite block 'O1 the bookings add up') holds that on a build the chapters route less the integrated base is every size file's own bytes plus the shared pool's, exactly.",
+ "allowance": {
+  "chapters": 0,
+  "of": "the lead's own file books no bytes of its own; its items are the shared pool's (rulings F1 and H1: 1,656 B for the seven later packages, of which wp9a's evidence books 98 B)",
+  "scripts": 148
+ },
+ "caps": {
+  "chapters": 3233792,
+  "projects": 1242112,
+  "scripts": 148,
+  "under10k": 61,
+  "css": 902144
+ },
+ "bases": {
+  "integrated": {
+   "commit": "9673661",
+   "chapters": 3229840
+  }
+ },
+ "ownBytes": 0,
+ "sharedPoolBytes": {
+  "trackPathsPartNameO2": 0
+ },
+ "items": {
+  "trackPathsPartNameO2": {
+   "bytes": 0,
+   "ruling": "O2 (wp9a slice 1, third fix-up): S0's row trackPaths, the part's name in design-extension-parts.js with its start check",
+   "measuredOn": "the third fix-up of wp9a slice 1 after its item 2, against its start 5cae40a, each with node build.mjs (dist/client-size-report.json routes.chapters.code): 3,230,605 B before and after",
+   "why": "design-extension-parts.js is in no client bundle (S0's block 8 asserts it), and the boundary's copy of the trackPaths, stampTracked and settle are server-only: the route did not move. Booked at 0 so that the row is on the books."
+  }
+ },
+ "slice": {
+  "chapters": 3230605,
+  "measuredOn": "wp9a slice 1 after its third fix-up"
+ },
+ "addsUp": {
+  "route": 3230605,
+  "lessIntegrated": 765,
+  "ownBytes": {
+   "lead-bookings-size.json": 0,
+   "wp2-s1-size.json": 325,
+   "wp9a-s1-size.json": 342
+  },
+  "sharedPool": {
+   "lead-bookings-size.json": 0,
+   "wp9a-s1-size.json": 98
+  },
+  "check": "rc44-s0-readings.mjs assertBookingsAddUp: 765 = 0 + 325 + 342 + 0 + 98"
+ },
+ "productionAccepted": false
+}

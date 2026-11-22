@@ -56,6 +56,12 @@ export const PATH_CHAPTERS = {artefacts: 1, relationships: 1, 'requirementGroups
 // COLLECTIONS is the table as the list of [path, chapter] its readers walk, rebuilt when a package registers.
 export const COLLECTIONS = [];
 extendTable(PATH_CHAPTERS, e => e.lifecycle, () => { COLLECTIONS.splice(0, Infinity, ...Object.entries(PATH_CHAPTERS)); });
+// (rc44, ruling L3) A package's rule that refuses the restore of a record of its own collection (canRestore), read
+// where a chapter's own rule is; the start check keeps it to the package's own lifecycle collections.
+const PACKAGE_RESTORE = {}; extendTable(PACKAGE_RESTORE, e => e.canRestore);
+// (rc44, ruling M6) A package's own collection whose proposals say nothing to the design (quietProposals): a proposal of
+// it that is retired (dismissed) or restored moves no version and clears no check or handoff; a keep is a design change.
+const QUIET = {}; extendTable(QUIET, e => e.quietProposals);
 // A first-class record leaves the design only through the one retire path (round 12, GR-GOV-24): the hard deletes that
 // stood beside it (deleteArtefact, quality.delete, process.remove of an element or a claim) are refused with these words.
 export const RETIRE_ONLY = 'A record leaves the design through Retire, with your reason: it is kept with who and when, and can be restored (record.retire).';
@@ -158,7 +164,7 @@ function retireOne(p, id, raw, at, actor, rules) {
   const deps = dependentsOf(p, xs), named = [...referencesTo(p, id, [...xs, ...deps]), ...xs.flatMap(x => rules[x.path]?.namedBy?.(p, x.record) || [])];
   if (named.length) throw Error(`${ref} is still named by ${named.slice(0, 6).join(', ')}${named.length > 6 ? ' and ' + (named.length - 6) + ' more' : ''}. Remove those links first.`);
   p.retired ??= {records: []}; p.retired.records ??= [];
-  const leave = (x, extra = {}) => { const list = listAt(p, x.path), i = list.indexOf(x.record); list.splice(i, 1); p.retired.records.push({id: x.record.id, path: x.path, chapter: x.chapter, index: i, at, actor: actor || '', reason, priorState: isProposed(x.record) ? 'proposed' : 'authored', record: {...x.record, state: 'retired'}, ...extra}); touch(p, x.path); };
+  const leave = (x, extra = {}) => { const list = listAt(p, x.path), i = list.indexOf(x.record); list.splice(i, 1); p.retired.records.push({id: x.record.id, path: x.path, chapter: x.chapter, index: i, at, actor: actor || '', reason, priorState: isProposed(x.record) ? 'proposed' : 'authored', record: {...x.record, state: 'retired'}, ...extra}); if (!(QUIET[x.path] && isProposed(x.record))) touch(p, x.path); };
   // Last index first, so each splice leaves the earlier positions as they were kept.
   for (const x of [...xs].sort((a, b) => b.index - a.index)) leave(x);
   for (const d of [...deps].sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : b.index - a.index)) leave(d, {with: d.with});
@@ -173,11 +179,11 @@ function restoreOne(p, id, raw, rules) {
     if (!list) throw Error('The chapter that held ' + x.id + ' has no list for it now.');
     if (list.some(r => r?.id === x.id)) throw Error(`Another record now has the id ${x.id}. Restore is refused so that neither is lost.`);
   }
-  for (const x of group.filter(x => !x.with)) rules[x.path]?.canRestore?.(p, x.record);
+  for (const x of group.filter(x => !x.with)) (rules[x.path]?.canRestore || PACKAGE_RESTORE[x.path])?.(p, x.record);
   for (const x of [...group].sort((a, b) => a.index - b.index)) {
     const record = {...x.record}; if (x.priorState === 'proposed') record.state = 'proposed'; else delete record.state;
     const list = listAt(p, x.path); list.splice(Math.min(x.index, list.length), 0, record);
-    touch(p, x.path);
+    if (!(QUIET[x.path] && record.state === 'proposed')) touch(p, x.path);
     if (!x.with) rules[x.path]?.restored?.(p, record);
   }
   p.retired.records = all.filter(x => !group.includes(x));

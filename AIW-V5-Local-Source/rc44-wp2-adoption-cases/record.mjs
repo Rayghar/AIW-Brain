@@ -827,10 +827,14 @@ export default async function ({block, pass, load}) {
       + 'console.log(JSON.stringify({before, needs, plain, early, after: EXTENSIONS.map(x => x.id), parts: e ? Object.keys(e).sort() : null, digests: R.digests(read()), old: R.digests(R.reference("bank-payment"))}));';
     const r = spawnSync(process.execPath, ['--input-type=module', '-e', script], {encoding: 'utf8', maxBuffer: 1 << 26}); assert.equal(r.status, 0, 'the browser-like process: ' + r.stderr.slice(0, 500));
     const out = JSON.parse(r.stdout.trim().split('\n').at(-1));
-    assert.deepEqual(out.before, [PACKAGE + '-route'], 'before any document is read the route holds the stub and no package');
+    // (with wp9a merged; was: out.before equals [PACKAGE + '-route']) The route holds the stub of every package of the
+    // build, read from the browser's list, and no package; ensureExtensions adds this package and no other.
+    const stubs = [...readFileSync('public/design-package-routes.js', 'utf8').matchAll(/^registerExtension\(\{id:'([a-z0-9-]+)'/gm)].map(m => m[1]).sort();
+    assert.ok(stubs.includes(PACKAGE + '-route') && stubs.every(id => id.endsWith('-route')), 'the browser\'s list names this package\'s stub: ' + stubs.join(', '));
+    assert.deepEqual(out.before, stubs, 'before any document is read the route holds the stubs and no package');
     assert.equal(out.needs, true, 'the stub asks for the lazy entry for a document that holds adoptions'); assert.equal(out.plain, false, 'and for none without');
     assert.equal(out.early, false, 'until the entry has arrived no reader knows the adoption (the built-in emitter skips its task): the store loads it before the first draw');
-    assert.deepEqual(out.after, [PACKAGE, PACKAGE + '-route'], 'ensureExtensions loads the entry, and the package registers when it arrives');
+    assert.deepEqual(out.after, [...stubs, PACKAGE].sort(), 'ensureExtensions loads the entry, and the package registers when it arrives (was: [PACKAGE, PACKAGE + \'-route\'])');
     assert.deepEqual(out.parts, ['checks', 'commands', 'design', 'hops', 'id', 'layers', 'prefixes', 'provenance', 'records', 'track'], 'the browser\'s package has no upgrade step (ruling J12): the browser reads no old document with it');
     assert.deepEqual(Object.keys(pkg()).sort(), [...out.parts, 'upgrade', 'upgradeNote'].sort(), 'the server\'s is the same package with its upgrade');
     assert.deepEqual(out.digests, digests(asWritten(structuredClone(doc))), 'and the document reads there as the server reads it: graph, model, trails, findings, stamps, readiness, provenance, registers, SDD, ARS');
@@ -863,8 +867,12 @@ export default async function ({block, pass, load}) {
     assert.ok(size['opens with records'].total === size['opens with records'].route + size['opens with records'].added && size['opens with records'].route === size.slice.chapters);
     assert.ok(size['opens with records'].added < 79189 + 20000, 'the lazy entry grew by the readers only: ' + size['opens with records'].added + ' B beside the route (79,189 B before any package; 97,372 B at the first build, with the upgrade in it)');
     if (process.argv.includes('--measure')) assert.deepEqual(measured, size.slice);
-    assert.ok(measured.chapters <= BUDGET.routes.chapters); assert.ok(measured.chapters - INTEGRATED.chapters <= 600, 'this build is inside the allowance of wp2: ' + (measured.chapters - INTEGRATED.chapters) + ' B');
-    pass('size: the client build passes every gate with the caps unchanged; wp2 measured ' + size.delta + ' B on the chapters route against the integrated base (' + INTEGRATED.chapters + ' → ' + size.slice.chapters + ' of ' + BUDGET.routes.chapters + '; allowance of wp2: 600 B), 148 script files, no stylesheet rule; the package is held in the lazy entry of ' + HOST + ' without the upgrade; opens with records: ' + size['opens with records'].total + ' B (' + size['opens with records'].added + ' B in ' + size['opens with records'].files + ' scripts beside the route); this build: ' + measured.chapters + ' B');
+    // (the lead's ruling M4; was: "this build is inside the allowance of wp2" as the whole route against the integrated base, which counted every
+    // package's bytes and the shared pool's as wp2's) this build, less the integrated base, less the bytes each other package's size evidence records as
+    // its own and the shared pool's (R.routeBookings), is inside 600 B; with no other package's evidence it is the assertion it was
+    const booked = R.routeBookings(EVIDENCE), mine = measured.chapters - INTEGRATED.chapters - booked.othersTotal - booked.poolTotal;
+    assert.ok(measured.chapters <= BUDGET.routes.chapters); assert.ok(mine > 0 && mine <= 600, 'this build is inside the allowance of wp2: ' + mine + ' B (the route grew ' + (measured.chapters - INTEGRATED.chapters) + ' B; other packages\' own ' + booked.othersTotal + ' B, ' + JSON.stringify(booked.others) + '; the shared pool ' + booked.poolTotal + ' B)');
+    pass('size: the client build passes every gate with the caps unchanged; wp2 measured ' + size.delta + ' B on the chapters route against the integrated base (this build: ' + mine + ' B of wp2\'s once other packages\' own bytes and the shared pool\'s are taken out, ruling M4) (' + INTEGRATED.chapters + ' → ' + size.slice.chapters + ' of ' + BUDGET.routes.chapters + '; allowance of wp2: 600 B), 148 script files, no stylesheet rule; the package is held in the lazy entry of ' + HOST + ' without the upgrade; opens with records: ' + size['opens with records'].total + ' B (' + size['opens with records'].added + ' B in ' + size['opens with records'].files + ' scripts beside the route); this build: ' + measured.chapters + ' B');
   });
   if (h) h.close();
 }

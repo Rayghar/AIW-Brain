@@ -94,7 +94,7 @@ import './public/readings-upgrade.js';
 // shared machinery (public/design-extensions.js); their commands reach their handlers through the boundary below, and a
 // package that does not conform to the registration contract stops the server here, when it starts.
 import './design-packages.js';
-import {installBuiltInCommands,assertExtensions,extensionCommand,extensionHandler,extensionLarge,validateExtensions,trackExtensions,stampExtensions,placeSections,markPackages,missingPackages,missingPackagesRefusal,upgradeDueRefusal} from './design-extension-boundary.js';
+import {installBuiltInCommands,assertExtensions,extensionCommand,extensionHandler,extensionLarge,validateExtensions,trackExtensions,isTrackerRefusal,stampExtensions,placeSections,markPackages,missingPackages,missingPackagesRefusal,upgradeDueRefusal} from './design-extension-boundary.js';
 installCatalogue(BRAIN_CATALOGUE);
 const log=(event,details)=>console.error(JSON.stringify({at:new Date().toISOString(),event,...details}));
 // Command types reach their domain module by prefix (round 2, B2-05): one registry instead of a ternary chain, and
@@ -281,7 +281,7 @@ export function trackCommandChanges(prior,next,command,at,{author=null}={}){
     if(command.type==='workspace.apply')for(const c of Array.isArray(command.payload?.commands)?command.payload.commands:[]){trackModelChange(prior,next,c,at);trackInterfaceChange(prior,next,c,at);}
     // The design packages' trackers (rc44, slice S0; ruling D4), after every built-in tracker: for this command, a
     // built-in one too, and for each command it carries.
-    trackExtensions(prior,next,command,at);
+    trackExtensions(prior,next,command,at,{author});
     quietChanges(prior,(next.changes?.events||[]).slice(already),author);
     return impact;
   }));
@@ -684,9 +684,10 @@ async function route(request,env,ctx){
         stampAuthorship(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command,result,author,at,{fourEyes:prior.workspace?.governance?.fourEyes===true});stampExtensions(prior,result.document,author,at);attachProvenanceBlocks(prior,result.document,input.command,result);versionBrief(prior,result.document,author,at)}catch(e){const message=publicMessage(e);return json({error:message,...(/^Unknown .* action\.$/.test(message)?{code:'unknown_command'}:{})},400)}
       let impact;
       // The trackers derive journal and impact records from the change; a fault in them is a programming fault
-      // (answered as such, round 2, B2-06), never a storage outage.
+      // (answered as such, round 2, B2-06), never a storage outage. A design package's tracker that the boundary refuses (rc44,
+      // ruling R2: it added, removed or decided a record) is the package's fault: nothing is stored, and the answer names it.
       try{impact=trackCommandChanges(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command,at,{author});delete result.appliedCommands;}
-      catch(e){log('command-fault',{owner,project:projectId,type,message:String(e?.message||e),stack:typeof e?.stack==='string'?e.stack.split('\n').slice(0,6).join(' | '):null});return json({error:'This action could not be completed. Your input is kept; reload the project and try again.',code:'fault'},500);}
+      catch(e){log('command-fault',{owner,project:projectId,type,message:String(e?.message||e),stack:typeof e?.stack==='string'?e.stack.split('\n').slice(0,6).join(' | '):null});return json({error:isTrackerRefusal(e)?e.message:'This action could not be completed. Your input is kept; reload the project and try again.',code:'fault'},500);}
       if(impact)result.document.workspace={...result.document.workspace,lastImpact:impact};
       // Consecutive saves of one record's fields by one person fold into one change (round 12, GR-STO-07: journal-archive.js
       // foldChange), never across author kinds; the activity row names the change they make.

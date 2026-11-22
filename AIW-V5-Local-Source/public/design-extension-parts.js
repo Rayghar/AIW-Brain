@@ -149,7 +149,7 @@ export function packageCollections() {
 // An id is a key of the registry's own table, so the one lower-case name every object carries is no id.
 const ID = /^(?!constructor$)[a-z][a-z0-9-]{1,60}$/, TYPE = /^[A-Za-z][A-Za-z0-9]{0,40}$/, PATH = /^[a-z][A-Za-z]{0,40}(\.[a-z][A-Za-z]{0,40})?$/;
 export const COMMAND_TYPE = /^[a-z][A-Za-z0-9-]{0,60}\.[A-Za-z][A-Za-z0-9-]{0,60}$/;
-const PARTS = new Set(['id', 'objectTypes', 'prefixes', 'records', 'layers', 'hops', 'checks', 'commands', 'track', 'lifecycle', 'provenance', 'designKeys', 'evidenceKeys', 'design', 'upgrade', 'upgradeNote', 'sections', 'needs', 'load']);
+const PARTS = new Set(['id', 'objectTypes', 'prefixes', 'records', 'layers', 'hops', 'checks', 'commands', 'track', 'trackPaths', 'lifecycle', 'canRestore', 'quietProposals', 'provenance', 'designKeys', 'evidenceKeys', 'design', 'upgrade', 'upgradeNote', 'sections', 'needs', 'load']);
 const HOP_PARTS = new Set(['layer', 'types', 'from', 'dir', 'ctx', 'only']);
 const COMMAND_PARTS = new Set(['apply', 'staged', 'person', 'second', 'validate', 'undo', 'large']);
 const LEVELS = new Set(Object.values(OBJECT_TYPES).map(t => t.level));
@@ -171,6 +171,24 @@ const overKey = (a, b) => a === b || !a.includes('.') && b.split('.')[0] === a |
 // literal, and the prefix of every Chapter 1 artefact type: a business rule's BR, a review treatment's RF and a
 // Chapter 4 connection's code LC are in no template). A package's kind takes none of them.
 export const WORKBENCH_PREFIXES = new Set('ACT ADR ALT APP ASM BR CON DAT DF DX ENV EXT GRP IF INT JRN LC LR MAP OBJ OUT PL QD REL REQ RF RM RP RUN SCP SEC SRC STK TB TC TD THR TM TN TO TR ZON CHG RG DES USE QS TRV WA UNDO TXT TS TRANS TI SS SPEC SOL SG SF SA RV RS RR RJ RA QC PROC PLT MIG LIB INV GV FR EV DL DC CT CD BL ASR AN AC AIW'.split(' '));
+// What a package's tracker may change of a built-in record (the lead's rulings R2 and T1 of 2026-11-22): content, never
+// what decides. TRACKED_STANDING is what says whether and how a record stands: its state and origin and a need's keptAt,
+// which the lifecycle family reads, its confirmations and reviews, and its provenance, which is the server's.
+// trackFieldRefused(field) is every field a trackPaths list may not name: those, the record's identity (id, ref, code,
+// alias), its revision (which the boundary moves) and its history, and every field the chapters read as an acceptance,
+// an approval, a review, a confirmation, a resolution, a choice or a snapshot (status, governance, approval, approvals,
+// recorded, appliedImpact, assumptionsResolved, acceptedAt and acceptedBy, every *Confirmed flag, every *Snapshot and
+// stamp, the readings a record keeps of others: sourceDriverIds, sourceDecisionIds, and the selected option or
+// alternative), matched by name. TRACK_REFUSED_PATHS are the collections whose records a chapter accepts, approves or
+// marks reviewed (ruling T1, belt and braces): the decisions and their conflicts, the quality conflicts, the technology
+// realisations and the logical mappings (the lead's list), the module structure a person accepts (requirementGroups,
+// state accepted), the components and capabilities a person marks reviewed (status reviewed), and the contracts and data
+// a person records a review of (review). trackedFields(e): the package's trackPaths as [[path, [field]]].
+export const TRACKED_STANDING = Object.freeze(['state', 'origin', 'keptAt', 'confirmed', 'targetConfirmed', 'review', 'reviews', 'provenance']);
+const TRACK_NEVER = new Set(['id', 'ref', 'code', 'alias', 'revision', 'history', ...TRACKED_STANDING, 'status', 'governance', 'approval', 'approvals', 'recorded', 'appliedImpact', 'assumptionsResolved', 'sourceDriverIds', 'sourceDecisionIds']);
+export const trackFieldRefused = field => TRACK_NEVER.has(field) || /confirm|snapshot|stamp|review|approv|accept|govern|history|resolved|^selected[A-Z]/i.test(field);
+export const TRACK_REFUSED_PATHS = Object.freeze(['requirementGroups.records', 'quality.conflicts', 'decisions.records', 'decisions.conflicts', 'logical.mappings', 'realisation.components', 'technology.capabilities', 'technologyRealisation.records', 'interfaces.contracts', 'interfaces.data']);
+export const trackedFields = e => Object.entries(plain(e?.trackPaths) ? e.trackPaths : {}).filter(([, v]) => Array.isArray(v)).map(([path, v]) => [path, v.filter(x => typeof x === 'string')]);
 // What a package states that the contract does not allow, each as a sentence; none for a package that conforms. A row
 // that is built in, or that a package earlier by id states, is named: the shared tables leave it out (design-extensions.js
 // extendTable), so the package would silently lack it.
@@ -262,6 +280,45 @@ export function extensionIssues(e) {
   }
   // The package's tracker (ruling D4): one for the package, called for every commit; a command states none of its own.
   if (e.track !== undefined && !fn(e.track)) say('track is a function (prior, next, command, at): the package\'s tracker, called for every command.');
+  // (the lead's rulings O2 of 2026-11-21 and T1 of 2026-11-22) trackPaths {'chapter.collection': [field, …]}: the
+  // built-in collections the tracker mends, each with the content fields its mend changes there (an allow-list). The
+  // boundary copies their records before each call, puts back every field a path does not list, lets a revision move
+  // only forward by one where a listed field changed, and stamps as the commit's what the call changed
+  // (design-extension-boundary.js trackExtensions); a package's own collections are stamped already (stampExtensions).
+  if (e.trackPaths !== undefined) {
+    if (!fn(e.track)) say('trackPaths names the built-in collections the package\'s tracker mends: it states track.');
+    const entries = plain(e.trackPaths) ? Object.entries(e.trackPaths) : [];
+    if (!(entries.length && entries.every(([path]) => /^[a-z][A-Za-z]{0,40}\.[a-z][A-Za-z]{0,40}$/.test(path)))) say('trackPaths is {\'chapter.collection\': [field, …]}: the built-in collections the tracker mends, each a collection of a chapter\'s container, with the content fields it mends there.');
+    else {
+      // (the lead's ruling R1 of 2026-11-22) A built-in record collection only: one the lifecycle family keeps and the
+      // provenance reader reads (both tables), never the review's (the narrative and every finalReview.* list), the change
+      // journal's, the workbench's or the members', never a collection a registered package states as its own (its
+      // lifecycle, provenance.records and provenance.nouns rows, and a list of its provenance.paths that is no key the
+      // workbench writes); (ruling T1) never one whose records a chapter accepts, approves or marks reviewed
+      // (TRACK_REFUSED_PATHS); each with one or more content fields, each once, none of them a field a tracker never
+      // changes (trackFieldRefused). (Ruling T2) WHOSE is read by its own keys only: a chapter named after what every object
+      // carries (constructor, toString) is no container of the review's or the journal's, and no built-in record collection.
+      const part = v => (plain(v) ? v : {}), rows = x => [...Object.keys(part(x.lifecycle)), ...Object.keys(part(x.provenance?.records)), ...Object.keys(part(x.provenance?.nouns)), ...Object.values(part(x.provenance?.paths)).flatMap(v => list(v))];
+      const own = new Set([...Object.keys(part(e.lifecycle)), ...Object.keys(part(e.provenance?.records)), ...Object.values(part(e.provenance?.paths)).flatMap(v => list(v))]);
+      const WHOSE = {finalReview: 'the review\'s', changes: 'the change journal\'s', workbench: 'the workbench\'s', members: 'the members\''}, table = (t, path) => t.some(r => r[0] === path);
+      for (const [path, fields] of entries) {
+        const head = path.split('.')[0], whose = Object.hasOwn(WHOSE, head) ? WHOSE[head] : undefined, theirs = EXTENSIONS.find(x => x.id !== e.id && rows(x).some(k => k === path && !workbenchKey(k)));
+        if (own.has(path)) say('trackPaths “' + path + '” is the package\'s own collection: the boundary stamps those already; trackPaths names built-in collections only.');
+        else if (theirs) say('trackPaths “' + path + '” is ' + theirs.id + '\'s collection: a tracker mends built-in collections only, never another package\'s.');
+        else if (whose) say('trackPaths “' + path + '” is ' + whose + ': a tracker mends a chapter\'s records, never the review, the change journal, the workbench or the members.');
+        else if (!(table(COLLECTIONS, path) && table(RECORD_PATHS, path))) say('trackPaths “' + path + '” is no collection of records that the lifecycle family keeps and the provenance reader reads (record-lifecycle.js COLLECTIONS, provenance.js RECORD_PATHS): a tracker mends built-in records only.');
+        else if (TRACK_REFUSED_PATHS.includes(path)) say('trackPaths “' + path + '” holds records a chapter accepts, approves or marks reviewed: a tracker mends none of them.');
+        if (!(Array.isArray(fields) && fields.length && fields.every(x => typeof x === 'string' && /^[a-z][A-Za-z0-9]{0,40}$/.test(x)))) { say('trackPaths “' + path + '” lists the content fields the tracker mends there: one or more field names.'); continue; }
+        const seen = new Set();
+        for (const field of fields) {
+          if (seen.has(field)) say('trackPaths “' + path + '” lists “' + field + '” twice.');
+          else if (field in {}) say('trackPaths “' + path + '” lists “' + field + '”, which names what every object carries: it is no field of a record.');
+          else if (trackFieldRefused(field)) say('trackPaths “' + path + '” lists “' + field + '”, which a tracker never changes: a record\'s identity, revision and history, and whether and how it stands (its state, an acceptance, an approval, a review, a confirmation, a snapshot, its provenance), are the chapter\'s and the boundary\'s.');
+          seen.add(field);
+        }
+      }
+    }
+  }
   // lifecycle and provenance
   if (e.lifecycle !== undefined && !plain(e.lifecycle)) say('lifecycle is {path: chapter}.');
   for (const [path, chapter] of Object.entries(plain(e.lifecycle) ? e.lifecycle : {})) {
@@ -271,6 +328,21 @@ export function extensionIssues(e) {
     if (workbenchKey(path)) say('collection “' + path + '” is on a key the workbench itself writes: a package\'s records retire from the package\'s own collection.');
     // record-lifecycle.js keeps the owning container's version, review and handoff: a list that is a key of the document has none (ruling D6.11).
     else if (PATH.test(path) && !path.includes('.')) say('collection “' + path + '” is a list inside a container (container.list): a retirement moves the container\'s version and clears its review and handoff.');
+  }
+  // (the lead's ruling L3 of 2026-11-20) canRestore {path: (p, record) => void}: a package refuses the restore of a record
+  // of its own lifecycle collection (it throws, in a reader's words) where the record would name what is not there.
+  // Only on the package's own collections: whether a package gets a rule on a built-in collection is ruled at wp9a slice 2.
+  if (e.canRestore !== undefined && !plain(e.canRestore)) say('canRestore is {path: (p, record) => void}, on the package\'s own lifecycle collections.');
+  for (const [path, f] of Object.entries(plain(e.canRestore) ? e.canRestore : {})) {
+    if (!fn(f)) say('the restore rule of “' + path + '” is a function (p, record) that refuses in words, or answers nothing.');
+    if (!(plain(e.lifecycle) && Object.hasOwn(e.lifecycle, path))) say('the restore rule of “' + path + '” is on a collection the package does not state in lifecycle: a package rules on its own collections only.');
+  }
+  // (the lead's ruling M6 of 2026-11-21) quietProposals {path: true}: a proposal of the package's own lifecycle collection
+  // says nothing to the design, so dismissing or restoring one moves no version and clears no check (record-lifecycle.js).
+  if (e.quietProposals !== undefined && !plain(e.quietProposals)) say('quietProposals is {path: true}, on the package\'s own lifecycle collections.');
+  for (const [path, v] of Object.entries(plain(e.quietProposals) ? e.quietProposals : {})) {
+    if (v !== true) say('quietProposals “' + path + '” is true or not stated.');
+    if (!(plain(e.lifecycle) && Object.hasOwn(e.lifecycle, path))) say('quietProposals “' + path + '” is on a collection the package does not state in lifecycle: a package speaks for its own collections only.');
   }
   const pv = e.provenance;
   if (pv !== undefined && !(plain(pv) && Object.keys(pv).every(k => k === 'nouns' || k === 'paths' || k === 'records') && ['nouns', 'paths', 'records'].every(k => pv[k] === undefined || plain(pv[k])))) say('provenance is {nouns: {path: noun}, paths: {command type or prefix: [path]}, records: {path: chapter}}.');
@@ -303,12 +375,13 @@ export function extensionIssues(e) {
   }
   // What a package's records say to the design fingerprint (the lead's ruling J3 of 2026-11-19; review-domain.js
   // reviewSource reads the statement in place of the raw key): a function for a key of the document that is the
-  // package's own. Such a key is design by its statement, so the probe of designKeys above does not ask the
-  // fingerprint about it (a statement answers nothing for a document without the package's records).
+  // package's own, or for a new key of a chapter's container (chapter.key, ruling L5: never one the workbench writes).
+  // Such a key is design by its statement, so the probe of designKeys above does not ask the fingerprint about it (a
+  // statement answers nothing for a document without the package's records).
   if (e.design !== undefined && !plain(e.design)) say('design is {key: p => what the key says to the design fingerprint}.');
   for (const [k, f] of Object.entries(plain(e.design) ? e.design : {})) {
     if (!fn(f)) say('the design statement of “' + k + '” is a function (p) that answers what the key says, or nothing.');
-    if (!/^[a-z][A-Za-z]{0,40}$/.test(k)) say('the design statement of “' + k + '” names a key of the document (the row carries no key inside a chapter\'s container).');
+    if (!PATH.test(k)) say('the design statement of “' + k + '” names a key of the document, or chapter.key for a new key of a chapter\'s container.');
     else if (workbenchKey(k)) say('the design statement of “' + k + '” is on a key the workbench itself writes: a package states what its own key says.');
     if (list(e.evidenceKeys).includes(k)) say('“' + k + '” is stated as design and as evidence.');
   }
@@ -337,7 +410,8 @@ export function extensionConflicts() {
     // A prefix a package mints for a built-in type is its own as a kind's prefix is (ruling J10).
     for (const prefix of Object.values(plain(e.prefixes) ? e.prefixes : {})) if (typeof prefix === 'string') claim('id prefix', prefix, e.id);
     // One key has one statement of what it says to the design fingerprint (ruling J3): the fingerprint would read the later one.
-    for (const k of Object.keys(plain(e.design) ? e.design : {})) { const first = stated.get(k); if (first && first !== e.id) out.push('the design statement of “' + k + '” is stated by ' + first + ' and by ' + e.id + ': one key has one statement.'); else stated.set(k, e.id); }
+    // (a statement of a key and one of a key inside it are one key's two statements too: chapter.key, ruling L5)
+    for (const k of Object.keys(plain(e.design) ? e.design : {})) { const first = [...stated].find(([s]) => overKey(s, k))?.[1]; if (first && first !== e.id) out.push('the design statement of “' + k + '” is stated by ' + first + ' and by ' + e.id + ': one key has one statement.'); else stated.set(k, e.id); }
     for (const [k, t] of Object.entries(plain(e.layers) ? e.layers : {})) if (!BUILT_IN_LAYERS.includes(k)) { claim('layer', k, e.id); claim('the layer of the type', t, e.id); }
     for (const k of Object.keys(plain(e.commands) ? e.commands : {})) claim('command', k, e.id);
     for (const k of Object.keys(plain(e.provenance?.nouns) ? e.provenance.nouns : {})) claim('the noun of', k, e.id);
