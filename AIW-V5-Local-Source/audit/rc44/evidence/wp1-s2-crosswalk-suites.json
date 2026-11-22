@@ -17,7 +17,8 @@
  "mutations": [
   "design row of p10-knowledge removed: S2.10 fails (\"A person's step moves the design stamp: the design fingerprint reads history of KA-0004\")",
   "knowledge.crosswalk-review stated person instead of second: S2.5 fails (\"the review is a second person's step\")",
-  "the active-release test of releasedCrosswalk removed: S2.1 still passes, because a release that is not active holds no concept usable as a whole either (two conditions guard it)"
+  "the active-release test of releasedCrosswalk removed: S2.1 still passes, because a release that is not active holds no concept usable as a whole either (two conditions guard it)",
+  "(fix-up, ruling P5 h) S2.7 is a guard, green on 5cae40a and 37520d6: with public/decision-suggestions.js line 29 changed to also match `pt.catalogue` (named(text, pt.name) || named(text, pt.catalogue || '')), S2.7 fails (\"decision-suggestions.js reads the catalogue name of a Playbook entry\"); restored. The same read written as pt['cata' + 'logue'] passes the source scan and is not met by the runtime trap, because no reading of the three references calls that suggestion reader: the source scan is what bites, and the trap covers what the readings call"
  ],
  "finalRun": [
   {

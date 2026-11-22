@@ -179,7 +179,11 @@ function conceptCommand({p,s,r,type,at,actor,next},author,limits){
   // A dispute or a rejection of a concept that was verified here keeps who verified it and when (ruling G2 of
   // 2026-11-18): the concept stays covered, and only a person changes it. The key exists only then.
   const before=c.review?.decision==='verified'&&c.review.actor&&c.review.account==='person'?{actor:c.review.actor,at:c.review.at}:c.review?.verifiedBefore;
-  c.review={decision:r.decision,actor,account:author.account,reviewer:text(r.reviewer,180),at,reason:text(r.reason),identityChecked:r.identityChecked===true,formsChecked:r.formsChecked===true,crosswalkChecked:r.crosswalkChecked===true,conceptHash:conceptHash(c,s.claims,s.topics),...(r.decision!=='verified'&&before?{verifiedBefore:before}:{})};return c.id;
+  // The crosswalk the review checked (ruling P5 c of 2026-11-22): each row of the concept that stands (neither retired nor
+  // rejected), as [id, hash, state]. A release holds a row only as this review saw it verified; a concept with no row
+  // records no list, so a review of rc44 S1 reads as it did.
+  const seen=list(s.crosswalk).filter(x=>x?.conceptId===c.conceptId&&!['retired','rejected'].includes(crosswalkState(x))).map(x=>[x.id,crosswalkRowHash(x),crosswalkState(x)]);
+  c.review={decision:r.decision,actor,account:author.account,reviewer:text(r.reviewer,180),at,reason:text(r.reason),identityChecked:r.identityChecked===true,formsChecked:r.formsChecked===true,crosswalkChecked:r.crosswalkChecked===true,conceptHash:conceptHash(c,s.claims,s.topics),...(seen.length?{crosswalkSeen:seen}:{}),...(r.decision!=='verified'&&before?{verifiedBefore:before}:{})};return c.id;
  }
  case 'knowledge.concept-retire':{libraryOnly(s);personOnly(author,actor);assertReview(r);const c=concept();if(c.retired)throw Error(c.id+' is already retired.');c.retired={at,actor,reviewer:text(r.reviewer,180),reason:text(r.reason)};return c.id;}
  // Only an unreleased concept is restored: a retirement of a released one stands, and a successor concept follows it.
@@ -281,9 +285,13 @@ export function formCapability(author=null,limits=KNOWLEDGE_LIMIT_TIERS.project)
  };
 }
 const RELEASE_LEAVES=['state','provenance','confirmed'];
-// The rows a release of these claims holds: the verified rows of the concepts whose forms it releases. One list, which
-// the release-actor rule reads and parts copies.
-function releaseRows(p,claims){const ids=new Set(claims.filter(c=>c.form).map(c=>c.subjectId));return crosswalkRecords(p).filter(r=>r.state==='verified'&&ids.has(r.conceptId));}
+// The rows a release of these claims holds: the verified rows of the concepts whose forms it releases, each as the
+// concept's standing review saw it verified (its id, hash and state; ruling P5 c): a row verified after that review waits
+// for the concept's next review, and nothing lapses. One list, which the release-actor rule reads and parts copies.
+function releaseRows(p,claims){
+ const ids=new Set(claims.filter(c=>c.form).map(c=>c.subjectId)),seen=new Map(list(knowledgeState(p).concepts).filter(c=>ids.has(c.conceptId)).map(c=>[c.conceptId,list(c.review?.crosswalkSeen)]));
+ return crosswalkRecords(p).filter(r=>r.state==='verified'&&list(seen.get(r.conceptId)).some(x=>Array.isArray(x)&&x[0]===r.id&&x[1]===crosswalkRowHash(r)&&x[2]==='verified'));
+}
 // Whose words a row is, by the boundary's author stamp: a person's own ('person'), or the kind its words came from
 // (an import; a draft by Sol, which an agent account's commit is too); a row with no stamp is no person's.
 const rowOrigin=r=>{const a=r?.provenance?.author;return a?.kind==='person'&&a.by?a.from||'person':a?.kind||null;},ORIGIN_WORDS={import:'imported','sol-draft':'drafted by Sol or by an agent account'};
@@ -308,7 +316,7 @@ export function applyConceptCommand(input,command,at=new Date().toISOString(),ac
 // took it and the kind of their account, and every read asks verifierRefusal and a person's account of that again
 // (knowledge-concepts.js crosswalkState). A row's standing is never taken from a request: what it says is checked, its
 // targetContent is read here from the catalogue, and its status is derived on every read.
-const RELATIONS=['same','narrower','broader','realises','distinct'],ALIAS=/^[A-Za-z0-9][A-Za-z0-9/-]*$/,ROWS_PER_CONCEPT=24,METHOD_TOPICS=['interaction','reads','persistence',...Object.keys(COMPOSITION_TOPICS)];
+const RELATIONS=['same','narrower','broader','realises','distinct'],ALIAS=/^[A-Za-z0-9][A-Za-z0-9/-]*$/,ID_TOKEN=/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/,ROWS_PER_CONCEPT=24,METHOD_TOPICS=['interaction','reads','persistence',...Object.keys(COMPOSITION_TOPICS)];
 // What the catalogue record a row points at holds, as the server reads it (design d.5: the template detector stays out of
 // the browser): marked (catalogue-curation.js), a relation stub, the generator's template, or the record's own words. The
 // record is the alias of an akr row, and the concept otherwise (a concept takes the id of the catalogue record that is
@@ -320,11 +328,15 @@ function targetContent(scheme,aliasId,conceptId){
 // One id names one concept (ruling P3 of 2026-11-22): the alias of a `same` row is not the id of another concept of the
 // register, whichever was registered first; asked at the proposal and again at verification.
 function oneIdentity(s,aliasId,conceptId){const other=list(s.concepts).find(c=>c.conceptId===aliasId&&c.conceptId!==conceptId);if(other)throw Error(aliasId+' is a concept of this register ('+other.id+'): one id names one concept, so it is no alias the same as '+conceptId+'.');}
+// Whether a passage names an id as a whole token: capitals and digits in hyphenated parts, bounded by what is no part of one.
+const wholeToken=(text,id)=>ID_TOKEN.test(id)&&String(text||'').split(/[^A-Za-z0-9-]+/).some(t=>t.replace(/^-+|-+$/g,'')===id);
 function crosswalkInput(s,r,existing){
  const scheme=r.scheme,aliasId=typeof r.aliasId==='string'?r.aliasId.trim():'',conceptId=text(r.conceptId,200);
  if(scheme==='lens')throw Error('A lens row maps a quality lens to a Chapter 2 category: it is no crosswalk row of a concept (wp1 slice S4).');
  if(!ALIAS_SCHEMES.includes(scheme))throw Error('Choose the alias\'s scheme ('+ALIAS_SCHEMES.filter(x=>x!=='lens').join(', ')+').');
  if(!aliasId||aliasId.length>120||!ALIAS.test(aliasId))throw Error('Record the alias id: letters, digits and hyphens (a method alias also one slash), at most 120 characters.');
+ // An alias is no design record's reference (ruling P5 e, as B7 is for a concept id), in any scheme.
+ if(RECORD_REFERENCE.test(aliasId))throw Error(aliasId+' has the shape of a design record\'s reference (a prefix and a number, such as REQ-001): an alias names no design record.');
  if(existing&&(existing.scheme!==scheme||existing.aliasId!==aliasId||existing.conceptId!==conceptId))throw Error('A crosswalk row keeps its alias and its concept: propose another row.');
  const concept=list(s.concepts).find(c=>c.conceptId===conceptId);
  if(!concept)throw Error(conceptId.slice(0,80)+' is not in the concept register: a crosswalk row names a registered concept.');
@@ -336,7 +348,9 @@ function crosswalkInput(s,r,existing){
  if(scheme==='akr'&&!catalogueRelation(aliasId))throw Error(aliasId+' is neither a catalogue record nor a relation stub of '+catalogue().releaseId+'.');
  if(scheme==='playbook'&&!playbookEntry(aliasId))throw Error(aliasId+' is not an entry of the SA Playbook.');
  if(scheme==='aiw-method'){const [topic,optionId,...rest]=aliasId.split('/');if(rest.length||!METHOD_TOPICS.includes(topic)||!architectureOptions(topic).some(o=>o.id===optionId))throw Error(aliasId+' is not a built-in comparison option (topic/option).');}
- if(scheme==='handbook'&&!list(s.topics).some(t=>t.topicId===aliasId)&&!String(evidence?.excerpt||'').includes(aliasId))throw Error(aliasId+' is neither a topic of this library nor named by the passage of the claim given as evidence.');
+ // A handbook alias is a topic of this library or a whole identifier its evidence passage names (ruling P5 e): never a
+ // fragment of one or a word.
+ if(scheme==='handbook'&&!list(s.topics).some(t=>t.topicId===aliasId)&&!wholeToken(evidence?.excerpt,aliasId))throw Error(aliasId+' is neither a topic of this library nor named by the passage of the claim given as evidence'+(evidence?' ('+evidence.id+')':'')+' as a whole identifier.');
  if(scheme==='external'&&!note)throw Error('Say where the external alias comes from (note).');
  const target=targetContent(scheme,aliasId,conceptId);
  return {conceptId,scheme,aliasId,label:required(r.label,'the alias\'s label',160),relation:r.relation,evidenceClaimId,note,...(target?{targetContent:target}:{})};
@@ -362,16 +376,18 @@ function crosswalkCommand({p,s,r,type,at,actor,next},author){
   if(sameFields(existing,x))return {selected:existing.id,unchanged:true};
   // A row a second person verified here, or a release holds, is changed by a signed-in person only (rulings B3, E1 and
   // G2, read for rows); a request that is nobody's would add its sender to the row's editors and lapse the review.
-  const refusal=kindRefusal(author);if(refusal&&crosswalkCovered(p,existing))throw Error(existing.id+' was verified here or is in a release: only a signed-in person changes it. '+refusal);
+  const refusal=kindRefusal(author);if(refusal&&crosswalkCovered(p,existing))throw Error(existing.id+' was '+(crosswalkState(existing)==='rejected'?'rejected':'verified')+' here or is in a release: only a signed-in person changes it. '+refusal);
   if(existing.history.length>=200)throw Error(existing.id+' has 200 revisions. Propose another row.');
   // An edit keeps the author and every earlier editor (they never review it); its review lapses on read (it covered the
   // row's hash), and a confirmation was of what the row said before.
   Object.assign(existing,x,{revision:existing.revision+1,lastEditor:actor});if(!x.targetContent)delete existing.targetContent;delete existing.confirmed;
   existing.history.push({revision:existing.revision,at,actor,change:text(r.reason,300)||'Edited'});return existing.id;
  }
- case 'knowledge.crosswalk-confirm':{assertReview(r);const x=find();if(x.retired)throw Error(x.id+' is retired.');if(x.confirmed===true)return {selected:x.id,unchanged:true};x.confirmed=true;return x.id;}
+ // (ruling P5 f: the steps below are a person's; the boundary refuses every other kind, and a request that states no
+ // author or no account is refused here, as the knowledge family's person-only steps are)
+ case 'knowledge.crosswalk-confirm':{personOnly(author,actor);assertReview(r);const x=find();if(x.retired)throw Error(x.id+' is retired.');if(x.confirmed===true)return {selected:x.id,unchanged:true};x.confirmed=true;return x.id;}
  case 'knowledge.crosswalk-review':{
-  assertReview(r);const x=find();
+  personOnly(author,actor);assertReview(r);const x=find();
   if(!['verified','rejected'].includes(r.decision))throw Error('Record a review outcome (verified or rejected).');
   if(x.retired)throw Error(x.id+' is retired: it is not reviewed.');
   if(r.decision==='verified'){
@@ -387,7 +403,7 @@ function crosswalkCommand({p,s,r,type,at,actor,next},author){
   const before=x.review?.decision==='verified'&&x.review.actor&&x.review.account==='person'?{actor:x.review.actor,at:x.review.at}:x.review?.verifiedBefore;
   x.review={decision:r.decision,actor,account:author?.account??null,reviewer:text(r.reviewer,180),at,reason:text(r.reason),aliasChecked:r.aliasChecked===true,rowHash:crosswalkRowHash(x),...(r.decision!=='verified'&&before?{verifiedBefore:before}:{})};return x.id;
  }
- case 'knowledge.crosswalk-retire':{assertReview(r);const x=find();if(x.retired)throw Error(x.id+' is already retired.');x.retired={at,actor,reviewer:text(r.reviewer,180),reason:text(r.reason)};return x.id;}
+ case 'knowledge.crosswalk-retire':{personOnly(author,actor);assertReview(r);const x=find();if(x.retired)throw Error(x.id+' is already retired.');x.retired={at,actor,reviewer:text(r.reviewer,180),reason:text(r.reason)};return x.id;}
  default:return undefined;
  }
 }

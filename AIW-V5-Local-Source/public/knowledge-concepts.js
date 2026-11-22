@@ -169,19 +169,19 @@ export const crosswalkState=r=>r?.retired?'retired':rowReview(r)?r.review.decisi
 export const crosswalkRecords=p=>list(knowledgeState(p).crosswalk).map(r=>({...r,state:crosswalkState(r)}));
 // Whether a row is covered as a concept is (rulings B3, E1 and G2 read for rows): a second person verified it here at
 // some time, or a release of this project holds it. Only a signed-in person then changes it.
-export const crosswalkCovered=(p,r)=>{const v=r?.review;return !!v?.actor&&v.account==='person'&&(v.decision==='verified'||!!v.verifiedBefore)||knowledgeState(p).releases.some(x=>list(x.parts?.crosswalk).some(y=>y?.id===r?.id));};
-// The rows the project's active releases hold (a release of forms holds the verified rows of its concepts,
-// parts.crosswalk; an organisation's release carries none until slice S3), each still as it was verified: the release
-// as it was made (its checksum), the row's review standing as copied, its concept usable as a whole in that release,
-// and the row neither retired nor rejected in this project's register since. Anything else fails closed.
+// A row whose review stands, of either decision, is covered too (ruling P5 d of 2026-11-22): a second person's rejection
+// is not undone by a request that is nobody's.
+export const crosswalkCovered=(p,r)=>{const v=r?.review;return rowReview(r)||!!v?.actor&&v.account==='person'&&(v.decision==='verified'||!!v.verifiedBefore)||knowledgeState(p).releases.some(x=>list(x.parts?.crosswalk).some(y=>y?.id===r?.id));};
+// The rows the project's active releases hold as copied (a release of forms holds the verified rows of its concepts,
+// parts.crosswalk; an organisation's release carries none until slice S3), from releases as they were made (checksum).
+const heldCrosswalk=p=>{const s=knowledgeState(p);return s.releases.filter(r=>s.pins.includes(r.id)&&list(r.parts?.crosswalk).length&&r.checksum===digest({...r,checksum:undefined})).flatMap(release=>release.parts.crosswalk.map(row=>({row,release})));};
+// Of those, the rows that still name what they were verified as: the row's review standing as copied, its concept usable
+// as a whole in that release, and this project's register holding the row exactly as the release copied it (its hash;
+// ruling P5 a), neither retired nor rejected since. Anything else fails closed: a person's later edit, a register that
+// lost the row.
 export function releasedCrosswalk(p){
- const s=knowledgeState(p),own=new Map(list(s.crosswalk).map(r=>[r?.id,r])),out=[];let concepts=null;
- for(const release of s.releases){
-  if(!s.pins.includes(release.id)||!list(release.parts?.crosswalk).length||release.checksum!==digest({...release,checksum:undefined}))continue;
-  concepts??=releasedConcepts(p);
-  for(const r of release.parts.crosswalk){const here=own.has(r?.id)?crosswalkState(own.get(r.id)):null;if(crosswalkState(r)==='verified'&&here!=='retired'&&here!=='rejected'&&concepts.some(c=>c.release.id===release.id&&c.conceptId===r.conceptId&&c.eligible))out.push({row:r,release});}
- }
- return out;
+ const own=new Map(list(knowledgeState(p).crosswalk).map(r=>[r?.id,r])),held=heldCrosswalk(p),concepts=held.length?releasedConcepts(p):[];
+ return held.filter(({row:r,release})=>{const here=own.get(r?.id);return crosswalkState(r)==='verified'&&!!here&&crosswalkRowHash(here)===crosswalkRowHash(r)&&!['retired','rejected'].includes(crosswalkState(here))&&concepts.some(c=>c.release.id===release.id&&c.conceptId===r.conceptId&&c.eligible);});
 }
 const BUILT_IN_WORDS='AIW built-in mapping, not reviewed by a person';
 // The one resolver: the concept an id names, {conceptId, relation, via: {scheme, aliasId, rowId, releaseId}, authority},
@@ -202,11 +202,14 @@ export function resolveConcept(p,id,scheme=null){
  return built.length&&one(built)?{conceptId:built[0].conceptId,relation:'same',via:{scheme:built[0].scheme,aliasId:id,rowId:null,releaseId:null},authority:'built-in',label:BUILT_IN_WORDS}:null;
 }
 // The aliases of a concept, for the concept view: its rows in the register with their standing (released when an
-// active release holds the row as verified), and the built-in rows that name it.
+// active release holds the row as verified and the register still reads it so), and beside it what an active release
+// holds of the row (ruling P5 a): `register` is the register's state, `release` the release's copy and whether it still
+// resolves. A row a release holds that the register does not is listed as unregistered. Then the built-in rows that name it.
 export function conceptAliases(p,conceptId){
- const released=releasedCrosswalk(p).filter(h=>h.row.conceptId===conceptId),out=[],entry=(r,state,h)=>({scheme:r.scheme,aliasId:r.aliasId,label:r.label,relation:r.relation,state,authority:'governed',targetContent:r.targetContent??null,rowId:r.id,releaseId:h?.release.id??null});
- for(const r of crosswalkRecords(p))if(r.conceptId===conceptId){const h=released.find(x=>x.row.id===r.id);out.push(h?entry(h.row,'released',h):entry(r,r.state,null));}
- for(const h of released)if(!out.some(x=>x.rowId===h.row.id))out.push(entry(h.row,'released',h));
- for(const r of BUILT_IN_CROSSWALK)if(r.conceptId===conceptId)out.push({scheme:r.scheme,aliasId:r.aliasId,label:BUILT_IN_WORDS,relation:r.relation,state:'built-in',authority:'built-in',targetContent:null,rowId:null,releaseId:null});
+ const held=heldCrosswalk(p).filter(h=>h.row.conceptId===conceptId),released=releasedCrosswalk(p).filter(h=>h.row.conceptId===conceptId),out=[];
+ const entry=(r,state,register,h,ok)=>({scheme:r.scheme,aliasId:r.aliasId,label:r.label,relation:r.relation,state,register,release:h?{releaseId:h.release.id,relation:h.row.relation,resolves:ok}:null,authority:'governed',targetContent:r.targetContent??null,rowId:r.id,releaseId:ok?h.release.id:null});
+ for(const r of crosswalkRecords(p))if(r.conceptId===conceptId){const ok=released.find(x=>x.row.id===r.id);out.push(ok?entry(ok.row,'released',r.state,ok,true):entry(r,r.state,r.state,held.find(x=>x.row.id===r.id),false));}
+ for(const h of held)if(!out.some(x=>x.rowId===h.row.id))out.push(entry(h.row,'unregistered',null,h,false));
+ for(const r of BUILT_IN_CROSSWALK)if(r.conceptId===conceptId)out.push({scheme:r.scheme,aliasId:r.aliasId,label:BUILT_IN_WORDS,relation:r.relation,state:'built-in',register:null,release:null,authority:'built-in',targetContent:null,rowId:null,releaseId:null});
  return out;
 }

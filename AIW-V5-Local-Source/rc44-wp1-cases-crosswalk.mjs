@@ -670,7 +670,7 @@ add('S2.18 (ruling P5 d, B3 for rows): a row whose review stands, of either deci
     const id = await S.ok('knowledge.crosswalk', {...P_STRANGLER, conceptId: 'PAT-STRANGLER-FIG', aliasId: 'P-ADAPTER', label: 'Adapter'}, 'architect');
     await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, decision: 'rejected', reason: 'The adapter is not the strangler fig.', id}, 'reviewer');
     assert.equal(KC.crosswalkRecords(S.document).find(r => r.id === id).state, 'rejected');
-    for (const [as, extra] of [['bot', {}], ['architect', {authorKind: 'sol-draft'}], ['importer', {authorKind: 'import'}]]) await S.refused(new RegExp(id + ' was reviewed here or is in a release: only a signed-in person changes it'), 'knowledge.crosswalk', {...P_STRANGLER, aliasId: 'P-ADAPTER', label: 'Adapter', id, note: 'Proposed again.'}, as, extra);
+    for (const [as, extra] of [['bot', {}], ['architect', {authorKind: 'sol-draft'}], ['importer', {authorKind: 'import'}]]) await S.refused(new RegExp(id + ' was rejected here or is in a release: only a signed-in person changes it'), 'knowledge.crosswalk', {...P_STRANGLER, aliasId: 'P-ADAPTER', label: 'Adapter', id, note: 'Proposed again.'}, as, extra);
     assert.equal(KC.crosswalkRecords(S.document).find(r => r.id === id).state, 'rejected', 'the rejection stands');
     await S.ok('knowledge.crosswalk', {...P_STRANGLER, aliasId: 'P-ADAPTER', label: 'Adapter', id, note: 'A person proposes it again.'}, 'steward');
     assert.equal(KC.crosswalkRecords(S.document).find(r => r.id === id).state, 'proposed', 'a person\'s edit is taken, and the rejection lapses');
@@ -684,7 +684,7 @@ add('S2.19 (ruling P5 e): an alias with the shape of a design record\'s referenc
     for (const aliasId of ['REQ-001', 'COMP-001', 'ADR-001', 'IF-001']) await S.refused(new RegExp(aliasId + ' has the shape of a design record\'s reference \\(a prefix and a number, such as REQ-001\\): an alias names no design record'), 'knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'external', aliasId, label: aliasId, relation: 'narrower', note: 'From another register.'}, 'architect');
     // The evidence: a plain claim of the library on the passage's first line, which names SYN-S001.
     const evidence = await S.ok('knowledge.claim', {sourceId, lineStart: 1, lineEnd: 1, subjectId: 'The synthetic handbook entry', predicate: 'names', statement: 'The entry is SYN-S001, the strangler fig.', claimType: 'definition'}, 'importer');
-    for (const aliasId of ['A', 'the', 'fig', 'SYN', 'S001', 'SYN-S00']) await S.refused(new RegExp(aliasId + ' is neither a topic of this library nor a whole identifier the passage of ' + evidence + ' names'), 'knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'handbook', aliasId, label: aliasId, relation: 'narrower', evidenceClaimId: evidence}, 'architect');
+    for (const aliasId of ['A', 'the', 'fig', 'SYN', 'S001', 'SYN-S00']) await S.refused(new RegExp(aliasId + ' is neither a topic of this library nor named by the passage of the claim given as evidence \\(' + evidence + '\\) as a whole identifier'), 'knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'handbook', aliasId, label: aliasId, relation: 'narrower', evidenceClaimId: evidence}, 'architect');
     await S.ok('knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'handbook', aliasId: 'SYN-S001', label: 'Strangler fig (synthetic handbook)', relation: 'narrower', evidenceClaimId: evidence}, 'architect');
   } finally { S.close(); }
 });
