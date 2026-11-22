@@ -196,3 +196,11 @@ the command function, which the client does not hold).
    `knowledge-crosswalk.js`.
 8. **Ruling I2 is closed here** (S2.0). Its reading: every text and value of the unit, which may refuse a unit whose
    typed predicate states a number no quote holds (stricter than the ruling's list).
+
+## Fix-up (the lead's rulings P1 to P8 of 2026-11-22, after the adversarial review of 37520d6)
+
+Branch `rc44/wp1-s2-crosswalk-fix`, from `37520d6`. Review: `/home/user/hb-review/rc44-build/wp1-s2-crosswalk.review.json`
+(four must-fix, eight should-fix, eight design concerns). Order of work, each case first and seen red on `37520d6`, a WIP
+commit after each item: 1 P1; 2 P2; 3 P3 and P4; 4 P5 (a) to (h); 5 P6; 6 P7; 7 P8 (notes only); 8 notes, size, suites.
+
+- **State:** item 1 in progress.
