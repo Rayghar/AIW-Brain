@@ -25,7 +25,9 @@ No external authority is involved or impersonated: the slice changes who the ser
   merge made carried no author stamp (D12). `stampExtensions` (H2) then restamped every **existing** record of a
   collection a package holds (wp2's `selection` paths hold `decisions.records`, `realisation.components`,
   `logical.assets`) that the merge changed as the merger's: an agent account's change, merged by a person, read as the
-  person's.
+  person's. And a record a merge made from a draft by Sol or an agent account's alternative carried no stamp, so,
+  unless its own fields said otherwise (an origin), the provenance reader read it as written by a person (its default):
+  the SDD counted it so. It now reads "Drafted by Sol · reviewed by <merger>".
 - A package's staged handler inside a batch (`applyCanonical` -> `x.apply`) is called with four arguments; an event it
   added kept whatever author fields it wrote (H3). The boundary stripped them only for a tracker and for a command sent
   on its own (`unstated`).
@@ -138,9 +140,18 @@ measurement, why). S0's block "O1 the bookings add up" passes on this build.
 
 ## Suites
 
-Run on this head (see the result's `suitesRun`): S0's suite in full, the four rc44 suites, the provenance, workbench
-and alternative suites that import `public/workbench-domain.js`, `public/provenance.js` or the boundary, action-undo and
-the authorship suites; `node check-syntax.mjs`; `node scripts/lint.mjs --summary`; `node build.mjs`.
+Not the full regression (the lead's). Run on this branch, one after another, on a loaded machine:
+- The four rc44 suites: S0 (29 checks), wp9a (25), wp2, wp1: green on the head.
+- Every suite that imports `public/workbench-domain.js`, `public/provenance.js` or the boundary, with action-undo,
+  action-undo-api and the authorship suites (journal-archive, local-accounts, model-reconciliation, module-model,
+  drafter-groups, rc42-g1-tech-approval, rc42-g7-data-contracts, review-plan, sol-disclosure): green, but for two.
+- `sol-disclosure` and `command-equivalence` fail, each in the same words on `94dbd4f` (a git archive, run alone) and on
+  `53ce4cf` as on this branch ("The desk no longer holds F:capacity:run-001, F:capacity:run-008 …"; "a working choice
+  made: the saved document is the one the route saved before round 12 · $.workbench.history[1] …"): red at the
+  baseline, as the lead's merge evidence classifies them.
+- `review-plan` took 332 s here and 384 s on an archive of `53ce4cf` at the same time (37 s in the lead's run): load.
+- `node check-syntax.mjs`: 945 modules. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, 0 new.
+  `node build.mjs`: every gate passes (measurements above).
 
 ## Open questions (for the lead)
 
