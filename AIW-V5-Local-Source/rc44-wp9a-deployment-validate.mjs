@@ -1121,13 +1121,16 @@ await block('S1.24 the tracker stays in its paths', () => {
     cases.push(kase(q, 'record.restore', {id: I.apiPlan, chapter: 10}, B)); }
   { const q = doc(p, 'technology.domain-proposals'), proposal = q.technology.domains.find(x => x.state === 'proposed'); cases.push(kase(q, 'record.keep', {id: proposal.id, chapter: 6}, B)); }
   const misses = [], check = (why, test) => { try { test(); } catch (e) { misses.push(why + ': ' + e.message.split('\n')[0]); } };
-  check('the package states the built-in collections its mend changes', () => assert.deepEqual(mine().trackPaths, ['runtime.zones', 'runtime.placements']));
+  // (ruling T1; was: the list ['runtime.zones', 'runtime.placements']) the built-in collections its mend changes, each with the fields it changes there
+  check('the package states the built-in collections its mend changes and the fields it changes there', () => assert.deepEqual(mine().trackPaths, {'runtime.zones': ['nodeId', 'domainIds'], 'runtime.placements': ['nodeId']}));
   // the tracker answers nothing, also where it mends
   for (const c of cases.slice(-3, -1)) check('the tracker answers nothing (' + c.command.type + ')', () => { const next = structuredClone(c.next), answer = T.trackTopology(c.prior, next, c.command, AT); assert.equal(answer, undefined, 'it answered ' + String(JSON.stringify(answer)).slice(0, 120)); assert.notEqual(JSON.stringify(next.runtime), JSON.stringify(c.next.runtime), 'and it mended'); });
   check('the tracker stays in its paths', () => {
     assert.equal(typeof R.assertTrackerStaysInPaths, 'function', 'rc44-s0-readings.mjs states assertTrackerStaysInPaths');
     const read = R.assertTrackerStaysInPaths(mine(), cases);
     assert.equal(read.cases, cases.length); assert.deepEqual(read, {cases: cases.length, changed: {'runtime.zones': 1, 'runtime.placements': 1}, journalled: 7}, 'the tracker\'s calls mend a zone and a placement (the two restores) and journal seven changes: ' + JSON.stringify(read));
+    // (ruling T1) the allow-list binds the mend: a zone's domainIds the package did not list would be a field it does not change
+    assert.throws(() => R.assertTrackerStaysInPaths({...mine(), trackPaths: {'runtime.zones': ['nodeId'], 'runtime.placements': ['nodeId']}}, cases), /tracker changed “domainIds” of [A-Z]+-\d+ in “runtime\.zones” \(case \d+, record\.restore\): a tracker changes only the content fields its trackPaths lists for the path/, 'the zone\'s failure domains are listed because the mend changes them');
   });
   assert.deepEqual(misses, [], misses.join(' | '));
   pass('S1.24: the package states the built-in collections its mend changes (trackPaths: runtime.zones, runtime.placements); its tracker answers nothing, where it mends too; on ' + cases.length + ' cases (no topology, the step, a node, a failure domain, a zone and a placement located, a zone and a placement a restore brings back naming what is not there, a proposal kept) it changes nothing outside its own keys, its trackPaths and the change journal (rc44-s0-readings.mjs assertTrackerStaysInPaths)');
@@ -1169,8 +1172,9 @@ await block('S1.11 the parts of the package', async () => {
   e.records(); e.track(); assert.deepEqual([emitted, tracked], [['a', 'b'], ['a', 'b']], 'the emitters and the trackers each run, in the parts\' order');
   // (ruling O2; was, by ruling M1: "the trackers' answers are joined in the parts' order", j.track() deep-equal to the parts' [was, is] pairs) the
   // parts' trackPaths are joined in their order, each path once, and what a part's tracker answers is ignored: the assembly answers nothing
-  { const calls = [], j = P.assembleParts('p-test', [{track: () => { calls.push(1); return [[{id: 'z1'}, {id: 'z1', n: 1}]]; }, trackPaths: ['runtime.zones']}, {track: () => { calls.push(2); }}, {track: () => { calls.push(3); return 'an answer'; }, trackPaths: ['runtime.placements', 'runtime.zones']}]);
-    assert.deepEqual(j.trackPaths, ['runtime.zones', 'runtime.placements'], 'the parts\' trackPaths are joined in their order, each path once'); assert.equal(j.track(), undefined, 'what a part\'s tracker answers is ignored: the assembly answers nothing'); assert.deepEqual(calls, [1, 2, 3], 'and every part\'s tracker runs, in the parts\' order'); }
+  // (ruling T1; was: the lists ['runtime.zones'] and ['runtime.placements', 'runtime.zones'], joined to ['runtime.zones', 'runtime.placements']) each path with its fields
+  { const calls = [], j = P.assembleParts('p-test', [{track: () => { calls.push(1); return [[{id: 'z1'}, {id: 'z1', n: 1}]]; }, trackPaths: {'runtime.zones': ['nodeId']}}, {track: () => { calls.push(2); }}, {track: () => { calls.push(3); return 'an answer'; }, trackPaths: {'runtime.placements': ['nodeId'], 'runtime.zones': ['domainIds', 'nodeId']}}]);
+    assert.deepEqual(j.trackPaths, {'runtime.zones': ['nodeId', 'domainIds'], 'runtime.placements': ['nodeId']}, 'the parts\' trackPaths are joined in their order, each path once with each field once'); assert.deepEqual(Object.keys(j.trackPaths), ['runtime.zones', 'runtime.placements'], 'in the parts\' order'); assert.equal(j.track(), undefined, 'what a part\'s tracker answers is ignored: the assembly answers nothing'); assert.deepEqual(calls, [1, 2, 3], 'and every part\'s tracker runs, in the parts\' order'); }
   assert.deepEqual([e.checks[10]({}).map(f => f.id), e.checks[6]({}).map(f => f.id), Object.keys(e.checks).sort()], [['a:1', 'b:1'], ['b:2'], ['10', '6']], 'a chapter\'s findings are those of every part');
   assert.deepEqual(Object.keys(P.assembleParts('p-test', [{}, {}])), ['id'], 'a part that states nothing adds no row');
   assert.throws(() => P.assembleParts('p-test', [a, {commands: {'x.one': {apply: () => 3}}}]), /p-test: two parts state commands “x\.one”/, 'a row is one part\'s');
@@ -1194,7 +1198,8 @@ await block('S1.11 the parts of the package', async () => {
   // (ruling M6; was: the keys without quietProposals) and that its proposals say nothing to the design, on its two own collections
   // (ruling O2; was: the keys without trackPaths) and the built-in collections its tracker's mend changes
   assert.deepEqual(Object.keys(mine()).sort(), ['canRestore', 'checks', 'commands', 'design', 'designKeys', 'hops', 'id', 'layers', 'lifecycle', 'objectTypes', 'provenance', 'quietProposals', 'records', 'track', 'trackPaths'], 'slice 1 states one check, no upgrade step and no section');
-  assert.deepEqual(mine().quietProposals, {'technology.domains': true, 'runtime.nodes': true}); assert.deepEqual(mine().trackPaths, ['runtime.zones', 'runtime.placements']);
+  // (ruling T1; was: trackPaths ['runtime.zones', 'runtime.placements']) the fields the mend changes in each
+  assert.deepEqual(mine().quietProposals, {'technology.domains': true, 'runtime.nodes': true}); assert.deepEqual(mine().trackPaths, {'runtime.zones': ['nodeId', 'domainIds'], 'runtime.placements': ['nodeId']});
   assert.deepEqual(Object.keys(mine().checks), ['10'], 'the check is Chapter 10\'s');
   pass('S1.11: the package is one registration assembled from five parts, of which slice 1 fills one: tables joined, lists in order, emitters, trackers and a chapter\'s findings of every part; a row two parts state and a part the assembly does not carry are refused');
 });

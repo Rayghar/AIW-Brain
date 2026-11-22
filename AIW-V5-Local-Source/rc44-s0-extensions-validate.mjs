@@ -1574,40 +1574,58 @@ await block('L3 restore rule', () => {
 
 // ---------------------------------------------------------------- O2. the boundary, not the package, says what a tracker changed
 // (the lead's ruling O2 of 2026-11-21; new problem 2 of the second verifier of wp9a slice 1; it amends M1 and completes
-// H2) A package whose tracker mends records of a built-in collection states those collections as trackPaths
-// ('chapter.collection', beside track; checked at start: it needs track and names no collection of the package's own).
-// Before each call of a tracker the boundary copies the records of those paths, and after it stamps as the commit's
-// (provenance.js stampTracked, with the boundary's own copy as `was`) each record whose content the call changed; a
-// record the call adds to such a path is no one's; what a tracker answers is ignored. A tracker changes no other
-// built-in collection: rc44-s0-readings.mjs assertTrackerStaysInPaths(extension, cases) holds it on a package's cases.
-// The synthetic package below mends a Chapter 3 decision when its own command says how (this block registers it, last
-// of the suite, so no earlier block reads it).
+// H2) A package whose tracker mends records of a built-in collection states those collections as trackPaths (beside
+// track; checked at start: it needs track and names no collection of the package's own). Before each call of a tracker
+// the boundary copies the records of those paths, and after it stamps as the commit's (provenance.js stampTracked, with
+// the boundary's own copy as `was`) each record whose content the call changed; what a tracker answers is ignored. A
+// tracker changes no other built-in collection: rc44-s0-readings.mjs assertTrackerStaysInPaths(extension, cases) holds
+// it on a package's cases.
+// (the lead's ruling T1 of 2026-11-22: an allow-list, not a deny-list) trackPaths is {'chapter.collection': [field, …]}:
+// the content fields the package's mend may change in each collection. The boundary puts back every field it does not
+// list from its copy, and a revision moves only forward, by one, and only where a listed field changed; a collection
+// whose records a chapter accepts, approves or marks reviewed is refused at start, and so is a listed field that is a
+// record's identity, revision or history or says whether and how it stands.
+// The synthetic package below mends a Chapter 4 responsibility's purpose and boundary and a Chapter 6 need's description
+// when its own command says how (this block registers it, last of the suite, so no earlier block reads it). (Ruling T1;
+// was: it mended a Chapter 3 decision and a Chapter 5 contract, trackPaths ['decisions.records', 'interfaces.contracts'],
+// collections a chapter accepts or marks reviewed, which the start check now refuses.)
+const TRACK_FIELDS = {'logical.responsibilities': ['purpose', 'boundary'], 'technology.needs': ['description']};
 const TRACKING = {
   id: 'zt-tracking',
   commands: {'tracking.mode': {apply(p, command, at) { const raw = command.payload || {}; p.trackingProbe = {mode: String(raw.mode || ''), target: String(raw.target || ''), at};
-    // (ruling R2; set-up only, by the package's own command, not its tracker) a decision made AIW's proposal; a contract made one by the chapter's reading
-    if (raw.mode === 'propose') p.decisions.records.find(r => r.id === raw.target).state = 'proposed';
-    if (raw.mode === 'seed') { const c = p.interfaces.contracts.find(r => r.id === raw.target); c.origin = 'inherited'; c.revision = 1; delete c.state; }
+    // (ruling R2; set-up only, by the package's own command, not its tracker) a responsibility made AIW's proposal; a need made one by the chapter's reading
+    if (raw.mode === 'propose') p.logical.responsibilities.find(r => r.id === raw.target).state = 'proposed';
+    if (raw.mode === 'seed') { const n = p.technology.needs.find(r => r.id === raw.target); Object.assign(n, {origin: 'suggestion', confirmed: false}); delete n.state; delete n.keptAt; }
     return {document: p}; }}},
   track(prior, next, command, at) {
     const t = next.trackingProbe; if (!t || command.type !== 'tracking.mode') return;
-    const records = next.decisions.records, target = records.find(r => r.id === t.target), was = structuredClone(target);
+    const records = next.logical.responsibilities, target = records.find(r => r.id === t.target), was = structuredClone(target);
     // it mends what it mends and answers nothing, as a tracker does
-    if (t.mode === 'mend') { target.rationale += ' (mended by the tracker)'; return; }
+    if (t.mode === 'mend') { target.purpose += ' (mended by the tracker)'; return; }
     // it changes nothing, and answers a record it did not change as if it had (the answer of ruling M1)
-    if (t.mode === 'fabricate') return [[{...was, topic: 'What it never said'}, target]];
+    if (t.mode === 'fabricate') return [[{...was, title: 'What it never said'}, target]];
     // it adds a record to the path, with a stamp of its own, and answers it as changed
-    if (t.mode === 'add') { const added = {...structuredClone(target), id: 'ADR-990', topic: 'Added by the tracker', provenance: {author: {kind: 'person', by: C, at}}}; records.push(added); return [[{...was, id: 'ADR-990'}, added]]; }
+    if (t.mode === 'add') { const added = {...structuredClone(target), id: 'lr-990', ref: 'LR-990', title: 'Added by the tracker', provenance: {author: {kind: 'person', by: C, at}}}; records.push(added); return [[{...was, id: 'lr-990'}, added]]; }
     // it writes a stamp of its own on a record whose content it leaves as it was
     if (t.mode === 'stamp') { target.provenance = {...target.provenance, author: {kind: 'person', by: C, at}}; return; }
     // it confirms a record: a tracker's call is no person's confirmation, whoever sent the commit
     if (t.mode === 'confirm') { target.confirmed = true; return; }
     // (ruling R2: a tracker mends content; it decides nothing and makes nothing) it mends a record and moves every lifecycle and review field of it
-    if (t.mode === 'decide') { Object.assign(target, {rationale: target.rationale + ' (decided by the tracker)', state: 'proposed', origin: 'suggestion', keptAt: at, confirmed: true, targetConfirmed: true, review: {actor: C, account: 'person', at, note: 'Kept by the tracker.'}, reviews: [{by: C, at, outcome: 'kept'}], provenance: {...target.provenance, reviewed: {by: C, at, how: 'confirmed'}, draft: {by: 'sol', job: 'tracker'}, source: 'Written by the tracker'}}); return; }
+    if (t.mode === 'decide') { Object.assign(target, {purpose: target.purpose + ' (decided by the tracker)', state: 'proposed', origin: 'suggestion', keptAt: at, confirmed: true, targetConfirmed: true, review: {actor: C, account: 'person', at, note: 'Kept by the tracker.'}, reviews: [{by: C, at, outcome: 'kept'}], provenance: {...target.provenance, reviewed: {by: C, at, how: 'confirmed'}, draft: {by: 'sol', job: 'tracker'}, source: 'Written by the tracker'}}); return; }
+    // (ruling T1) it mends a record and on the way accepts it, records governance, a recording and approvals, an applied impact and resolved
+    // assumptions, writes a snapshot and its history, and moves its revision back
+    if (t.mode === 'accept') { Object.assign(target, {purpose: target.purpose + ' (accepted by the tracker)', status: 'accepted', governance: {status: 'approved', by: C, at, reference: 'Forged by the tracker'}, recorded: {by: B, at}, approval: {by: C, at, outcome: 'approved'}, approvals: [{by: C, at}], appliedImpact: {by: C, at}, assumptionsResolved: true, sourceSnapshot: 'fp1:forged-by-the-tracker', history: [...list(target.history), {at, revision: target.revision, purpose: 'Forged by the tracker'}], revision: target.revision - 1}); return; }
+    // (ruling T1) it changes a field it does not list
+    if (t.mode === 'title') { target.title += ' (renamed by the tracker)'; return; }
+    // (ruling T1) with its mend it moves the revision forward by one, by two, or back; and it moves the revision with no mend
+    if (t.mode === 'forward') { target.boundary += ' (mended by the tracker)'; target.revision += 1; return; }
+    if (t.mode === 'leap') { target.boundary += ' (mended by the tracker)'; target.revision += 2; return; }
+    if (t.mode === 'back') { target.boundary += ' (mended by the tracker)'; target.revision -= 1; return; }
+    if (t.mode === 'bump') { target.revision += 1; return; }
     // it mends AIW's proposal and keeps it on the way
-    if (t.mode === 'keep') { target.rationale += ' (mended while proposed)'; delete target.state; return; }
-    // it makes a contract that is AIW's proposal by the chapter's reading (inherited, at its first revision) a person's by moving its revision
-    if (t.mode === 'unseed') { const c = next.interfaces.contracts.find(r => r.id === t.target); c.purpose += ' (mended by the tracker)'; c.revision += 1; return; }
+    if (t.mode === 'keep') { target.purpose += ' (mended while proposed)'; delete target.state; return; }
+    // it makes a need that is AIW's proposal by the chapter's reading (a suggestion in the catalogue's words) a person's by mending its description
+    if (t.mode === 'unseed') { const n = next.technology.needs.find(r => r.id === t.target); n.description += ' (mended by the tracker)'; return; }
     // it removes a record of a path it states
     if (t.mode === 'remove') { records.splice(records.indexOf(target), 1); return; }
     // what assertTrackerStaysInPaths refuses: a built-in collection it does not state, the journal rewritten, prior changed
@@ -1615,72 +1633,106 @@ const TRACKING = {
     if (t.mode === 'rewrite') next.changes.events[0].title = 'Rewritten by the tracker';
     if (t.mode === 'counter') next.changes.counter += 1;
     if (t.mode === 'prior') prior.decisions.records[0].rationale += ' (prior changed)';
-    if (t.mode === 'journal') { next.changes.events.push({id: 'CHG-' + String(++next.changes.counter).padStart(3, '0'), source: {chapter: 3, id: target.id, kind: 'tracking'}, title: 'Read again', at, fields: [], items: []}); target.rationale += ' (mended and journalled)'; }
+    if (t.mode === 'journal') { next.changes.events.push({id: 'CHG-' + String(++next.changes.counter).padStart(3, '0'), source: {chapter: 4, id: target.id, kind: 'tracking'}, title: 'Read again', at, fields: [], items: []}); target.purpose += ' (mended and journalled)'; }
   },
-  trackPaths: ['decisions.records', 'interfaces.contracts'],
+  trackPaths: TRACK_FIELDS,
   designKeys: ['trackingProbe']
 };
 await block('O2 tracked paths', async () => {
   need();
-  // the start check: trackPaths needs track, is a list of 'chapter.collection' paths and names no collection of the package's own
-  const f = () => {}, words = (e, re, why) => assert.ok(boundary.extensionIssues(e).some(i => re.test(i)), why + ': ' + boundary.extensionIssues(e).join(' | '));
-  assert.deepEqual(boundary.extensionIssues({id: 'xy', track: f, trackPaths: ['decisions.records', 'runtime.zones']}), [], 'a tracker that states the built-in collections it mends');
-  words({id: 'xy', trackPaths: ['decisions.records']}, /xy: trackPaths names the built-in collections the package's tracker mends: it states track\./, 'not without a tracker');
-  for (const bad of ['decisions.records', [], ['decisions'], ['decisions.records.x'], [3], ['Decisions.records'], ['decisions.records', null]]) words({id: 'xy', track: f, trackPaths: bad}, /xy: trackPaths is a list of 'chapter\.collection' paths, each a collection of a chapter's container\./, 'a list of chapter.collection paths: ' + JSON.stringify(bad));
-  words({id: 'xy', track: f, lifecycle: {'journals.records': 3}, trackPaths: ['journals.records']}, /xy: trackPaths “journals\.records” is the package's own collection: the boundary stamps those already; trackPaths names built-in collections only\./, 'never a lifecycle collection of its own');
-  words({id: 'xy', track: f, provenance: {records: {'journals.notes': 3}}, trackPaths: ['journals.notes']}, /trackPaths “journals\.notes” is the package's own collection/, 'nor one it states for the provenance reader');
-  words({id: 'xy', track: f, provenance: {paths: {'xy.save': ['journals.items']}}, trackPaths: ['journals.items']}, /trackPaths “journals\.items” is the package's own collection/, 'nor one its commands write');
+  // the start check: trackPaths needs track, is {'chapter.collection': [field, …]} and names no collection of the package's own (ruling T1; was: a list
+  // of 'chapter.collection' paths, ['decisions.records', 'runtime.zones'] accepted)
+  const f = () => {}, words = (e, re, why) => assert.ok(boundary.extensionIssues(e).some(i => re.test(i)), why + ': ' + boundary.extensionIssues(e).join(' | ')), MENDS = ['title'];
+  assert.deepEqual(boundary.extensionIssues({id: 'xy', track: f, trackPaths: {'logical.responsibilities': ['purpose'], 'runtime.zones': ['nodeId', 'domainIds']}}), [], 'a tracker that states the built-in collections it mends, each with the fields it mends there');
+  words({id: 'xy', trackPaths: {'logical.responsibilities': ['purpose']}}, /xy: trackPaths names the built-in collections the package's tracker mends: it states track\./, 'not without a tracker');
+  // (ruling T1; was: "trackPaths is a list of 'chapter.collection' paths, each a collection of a chapter's container", for 'decisions.records', [],
+  // ['decisions'], ['decisions.records.x'], [3], ['Decisions.records'], ['decisions.records', null]) a map of chapter.collection paths, each with its fields
+  for (const bad of ['logical.responsibilities', [], ['logical.responsibilities'], null, 3, {}, {logical: ['purpose']}, {'logical.responsibilities.x': ['purpose']}, {'Logical.responsibilities': ['purpose']}, {'logical.responsibilities': ['purpose'], 'runtime.zones.x': ['nodeId']}]) words({id: 'xy', track: f, trackPaths: bad}, /xy: trackPaths is \{'chapter\.collection': \[field, …\]\}: the built-in collections the tracker mends, each a collection of a chapter's container, with the content fields it mends there\./, 'a map of chapter.collection paths: ' + JSON.stringify(bad));
+  for (const bad of [[], 'purpose', [3], ['purpose', null], ['purpose.text'], ['Purpose'], [''], {purpose: true}]) words({id: 'xy', track: f, trackPaths: {'logical.responsibilities': bad}}, /xy: trackPaths “logical\.responsibilities” lists the content fields the tracker mends there: one or more field names\./, 'each path lists its fields: ' + JSON.stringify(bad));
+  words({id: 'xy', track: f, lifecycle: {'journals.records': 3}, trackPaths: {'journals.records': MENDS}}, /xy: trackPaths “journals\.records” is the package's own collection: the boundary stamps those already; trackPaths names built-in collections only\./, 'never a lifecycle collection of its own');
+  words({id: 'xy', track: f, provenance: {records: {'journals.notes': 3}}, trackPaths: {'journals.notes': MENDS}}, /trackPaths “journals\.notes” is the package's own collection/, 'nor one it states for the provenance reader');
+  words({id: 'xy', track: f, provenance: {paths: {'xy.save': ['journals.items']}}, trackPaths: {'journals.items': MENDS}}, /trackPaths “journals\.items” is the package's own collection/, 'nor one its commands write');
   // (ruling R1) a built-in record collection only: one the lifecycle family keeps and the provenance reader reads (COLLECTIONS and RECORD_PATHS),
   // never the review's (the narrative and every finalReview.* list), the change journal's, the workbench's or the members', never a collection a
-  // registered package states as its own, and each path once
+  // registered package states as its own; (ruling T1; was, by R1: each path once, refused when named twice, which a map cannot) each field once
   { const misses = [], esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), refused = (paths, re, why) => { const issues = boundary.extensionIssues({id: 'xy', track: f, trackPaths: paths}); if (!issues.some(i => re.test(i))) misses.push(why + ' ' + JSON.stringify(paths) + ': ' + (issues.join(' | ') || 'accepted')); };
-    for (const path of ['finalReview.narrative', 'finalReview.judgements', 'finalReview.dispositions', 'finalReview.actions']) refused([path], new RegExp('^xy: trackPaths “' + esc(path) + '” is the review\'s: a tracker mends a chapter\'s records, never the review, the change journal, the workbench or the members\\.$'), 'the review\'s');
-    for (const [path, whose] of [['changes.events', 'the change journal\'s'], ['workbench.history', 'the workbench\'s'], ['members.roles', 'the members\'']]) refused([path], new RegExp('^xy: trackPaths “' + esc(path) + '” is ' + esc(whose) + ': a tracker mends a chapter\'s records'), whose);
+    for (const path of ['finalReview.narrative', 'finalReview.judgements', 'finalReview.dispositions', 'finalReview.actions']) refused({[path]: MENDS}, new RegExp('^xy: trackPaths “' + esc(path) + '” is the review\'s: a tracker mends a chapter\'s records, never the review, the change journal, the workbench or the members\\.$'), 'the review\'s');
+    for (const [path, whose] of [['changes.events', 'the change journal\'s'], ['workbench.history', 'the workbench\'s'], ['members.roles', 'the members\'']]) refused({[path]: MENDS}, new RegExp('^xy: trackPaths “' + esc(path) + '” is ' + esc(whose) + ': a tracker mends a chapter\'s records'), whose);
     // another registered package's own collections: its lifecycle rows and the rows it states for the provenance reader alone (the build's packages, read from the registry)
     const held = boundary.packageCollections(), of = id => X.EXTENSIONS.find(x => x.id === id), theirs = held.find(([path, , id]) => Object.hasOwn(of(id).lifecycle || {}, path)), reader = held.find(([path, , id]) => !Object.hasOwn(of(id).lifecycle || {}, path));
     assert.ok(theirs && reader, 'the registry holds a package with a lifecycle collection and one with a collection for the provenance reader alone: ' + JSON.stringify(held));
-    for (const [path, , id] of [theirs, reader]) refused([path], new RegExp('^xy: trackPaths “' + esc(path) + '” is ' + esc(id) + '\'s collection: a tracker mends built-in collections only, never another package\'s\\.$'), 'another package\'s');
-    refused(['runtime.zones', 'decisions.records', 'runtime.zones'], /^xy: trackPaths names “runtime\.zones” twice\.$/, 'a path twice');
-    for (const path of ['runtime.things', 'security.risks', 'runtime.evidence', 'logical.assets', 'knowledge.claims']) refused([path], new RegExp('^xy: trackPaths “' + esc(path) + '” is no collection of records that the lifecycle family keeps and the provenance reader reads \\(record-lifecycle\\.js COLLECTIONS, provenance\\.js RECORD_PATHS\\): a tracker mends built-in records only\\.$'), 'no built-in record collection');
+    for (const [path, , id] of [theirs, reader]) refused({[path]: MENDS}, new RegExp('^xy: trackPaths “' + esc(path) + '” is ' + esc(id) + '\'s collection: a tracker mends built-in collections only, never another package\'s\\.$'), 'another package\'s');
+    refused({'logical.responsibilities': ['purpose', 'boundary', 'purpose']}, /^xy: trackPaths “logical\.responsibilities” lists “purpose” twice\.$/, 'a field twice');
+    for (const path of ['runtime.things', 'security.risks', 'runtime.evidence', 'logical.assets', 'knowledge.claims']) refused({[path]: MENDS}, new RegExp('^xy: trackPaths “' + esc(path) + '” is no collection of records that the lifecycle family keeps and the provenance reader reads \\(record-lifecycle\\.js COLLECTIONS, provenance\\.js RECORD_PATHS\\): a tracker mends built-in records only\\.$'), 'no built-in record collection');
+    // (ruling T1, belt and braces) never a collection whose records a chapter accepts, approves or marks reviewed: the lead's five (the decisions and their
+    // conflicts, the quality conflicts, the technology realisations, the logical mappings) and the others the chapters hold (the module structure a person
+    // accepts, the components and the capabilities a person marks reviewed, the contracts and the data a person records a review of)
+    const ACCEPTED = ['requirementGroups.records', 'quality.conflicts', 'decisions.records', 'decisions.conflicts', 'logical.mappings', 'realisation.components', 'technology.capabilities', 'technologyRealisation.records', 'interfaces.contracts', 'interfaces.data'];
+    const accepted = path => refused({[path]: MENDS}, new RegExp('^xy: trackPaths “' + esc(path) + '” holds records a chapter accepts, approves or marks reviewed: a tracker mends none of them\\.$'), 'a collection a chapter accepts, approves or marks reviewed');
+    for (const path of ACCEPTED) accepted(path);
+    // and the walk: every built-in record collection whose records, in any template, carry an acceptance, an approval or a recorded review (a field so
+    // named, or a status the chapters read as one) is refused so, whatever list it is on
+    { const KEYS = new Set(['governance', 'approval', 'approvals', 'recorded', 'review', 'reviews', 'acceptedAt', 'acceptedBy']), STATUSES = new Set(['accepted', 'approved', 'resolved', 'reviewed', 'recorded', 'superseded']), found = new Set();
+      for (const t of ['blank', 'bank-payment', ...REFERENCE_PROJECTS.map(r => r.id)]) { const p = withFinalReview(createProject({name: t, template: t}, t, AT));
+        for (const [path] of COLLECTIONS) for (const r of list(path.split('.').reduce((v, k) => v?.[k], p))) if (r && typeof r === 'object' && Object.keys(r).some(k => KEYS.has(k) || k === 'status' && STATUSES.has(r[k]) || k === 'state' && r[k] === 'accepted')) found.add(path); }
+      assert.ok(['decisions.records', 'technologyRealisation.records', 'interfaces.contracts', 'interfaces.data'].every(x => found.has(x)), 'the walk finds the collections whose records carry an acceptance, an approval or a recorded review: ' + [...found].join(', '));
+      for (const path of found) accepted(path); }
+    // (ruling T1) a field the tracker lists is content: never the record's identity, revision or history, never what says whether and how it stands
+    // (TRACKED_STANDING), never what the chapters read as an acceptance, an approval, a review, a confirmation or a snapshot
+    for (const field of ['id', 'ref', 'code', 'alias', 'revision', 'history', 'state', 'origin', 'keptAt', 'confirmed', 'targetConfirmed', 'review', 'reviews', 'provenance', 'status', 'governance', 'approval', 'approvals', 'recorded', 'appliedImpact', 'assumptionsResolved', 'acceptedAt', 'acceptedBy', 'timeoutConfirmed', 'targetsConfirmed', 'estimatesConfirmed', 'retentionConfirmed', 'sourceSnapshot', 'logicalSnapshot', 'driverSnapshot', 'lastReview', 'reviewedAt', 'reviewer', 'approvedBy', 'governanceReference', 'selectedOptionId', 'selectedAlternativeId', 'stamp', 'sourceDriverIds', 'sourceDecisionIds', 'priorHistory'])
+      refused({'logical.responsibilities': ['purpose', field]}, new RegExp('^xy: trackPaths “logical\\.responsibilities” lists “' + esc(field) + '”, which a tracker never changes: a record\'s identity, revision and history, and whether and how it stands \\(its state, an acceptance, an approval, a review, a confirmation, a snapshot, its provenance\\), are the chapter\'s and the boundary\'s\\.$'), 'a field a tracker never changes');
+    for (const field of ['constructor', 'toString', 'hasOwnProperty', 'valueOf']) refused({'logical.responsibilities': [field]}, new RegExp('^xy: trackPaths “logical\\.responsibilities” lists “' + field + '”, which names what every object carries: it is no field of a record\\.$'), 'a field every object carries');
     assert.deepEqual(misses, [], 'the start check refuses each: ' + misses.join(' | '));
-    // and accepts every built-in record collection of a chapter's container, together
-    const builtIn = COLLECTIONS.map(([path]) => path).filter(path => path.includes('.') && RECORD_PATHS.some(([x]) => x === path) && !X.EXTENSIONS.some(x => [...Object.keys(x.lifecycle || {}), ...Object.keys(x.provenance?.records || {})].includes(path)));
-    assert.ok(builtIn.length >= 30 && builtIn.includes('runtime.zones') && builtIn.includes('processModel.claims') && !builtIn.includes('logical.assets'), 'the built-in record collections: ' + builtIn.join(', '));
-    assert.deepEqual(boundary.extensionIssues({id: 'xy', track: f, trackPaths: builtIn}), [], 'every built-in record collection may be mended'); }
+    // and accepts every other built-in record collection of a chapter's container, together, each with a content field
+    const builtIn = COLLECTIONS.map(([path]) => path).filter(path => path.includes('.') && RECORD_PATHS.some(([x]) => x === path) && !ACCEPTED.includes(path) && !X.EXTENSIONS.some(x => [...Object.keys(x.lifecycle || {}), ...Object.keys(x.provenance?.records || {})].includes(path)));
+    assert.ok(builtIn.length >= 20 && ['runtime.zones', 'runtime.placements', 'logical.responsibilities', 'technology.needs', 'processModel.claims'].every(x => builtIn.includes(x)) && !builtIn.includes('logical.assets'), 'the built-in record collections: ' + builtIn.join(', '));
+    assert.deepEqual(boundary.extensionIssues({id: 'xy', track: f, trackPaths: Object.fromEntries(builtIn.map(path => [path, MENDS]))}), [], 'every other built-in record collection may be mended'); }
   assert.deepEqual(boundary.extensionIssues(TRACKING), [], 'the synthetic package conforms');
   X.registerExtension(TRACKING);
   // assertTrackerStaysInPaths, on documents the handler of the package's own command leaves
   const {assertTrackerStaysInPaths} = R; assert.equal(typeof assertTrackerStaysInPaths, 'function', 'rc44-s0-readings.mjs states assertTrackerStaysInPaths(extension, cases)');
-  { const base = reference('bank-payment'), id = base.decisions.records[0].id; base.changes.events.push({id: 'CHG-001', title: 'An earlier change', at: AT, fields: [], items: []}); base.changes.counter = 1;
+  { const base = reference('bank-payment'), first = base.logical.responsibilities[0], id = first.id, ref = first.ref; base.changes.events.push({id: 'CHG-001', title: 'An earlier change', at: AT, fields: [], items: []}); base.changes.counter = 1;
     const kase = mode => { const command = {type: 'tracking.mode', payload: {mode, target: id}}; return {prior: base, next: withFinalReview(TRACKING.commands['tracking.mode'].apply(structuredClone(base), command, AT).document), command, at: AT}; };
-    // (ruling R2: the package now also states interfaces.contracts; was: changed {'decisions.records': 2}) what the tracker changed in its paths and its journal
-    const read = assertTrackerStaysInPaths(TRACKING, [kase('mend'), kase('journal'), kase('fabricate'), kase('')]); assert.deepEqual(read, {cases: 4, changed: {'decisions.records': 2, 'interfaces.contracts': 0}, journalled: 1}, 'what the tracker changed in its paths and its journal: ' + JSON.stringify(read));
+    // (ruling T1; was: changed {'decisions.records': 2, 'interfaces.contracts': 0}, the synthetic package's paths then) what the tracker changed in its paths and its journal
+    const read = assertTrackerStaysInPaths(TRACKING, [kase('mend'), kase('journal'), kase('fabricate'), kase('')]); assert.deepEqual(read, {cases: 4, changed: {'logical.responsibilities': 2, 'technology.needs': 0}, journalled: 1}, 'what the tracker changed in its paths and its journal: ' + JSON.stringify(read));
+    // (ruling T1) a mend that moves the revision forward by one is inside its paths
+    assert.deepEqual(assertTrackerStaysInPaths(TRACKING, [kase('forward')]).changed, {'logical.responsibilities': 1, 'technology.needs': 0}, 'a mend with its revision forward by one');
     for (const [mode, re] of [['outside', /zt-tracking's tracker changed “quality\.drivers” outside its own keys, its trackPaths and the change journal \(case 1, tracking\.mode\)/], ['rewrite', /zt-tracking's tracker changed the change journal's earlier events \(case 1, tracking\.mode\): a tracker only adds to the journal/], ['counter', /zt-tracking's tracker moved the change journal's counter by 1 for 0 events it added \(case 1, tracking\.mode\)/], ['prior', /zt-tracking's tracker changed the document as the request found it \(prior, case 1, tracking\.mode\)/]]) assert.throws(() => assertTrackerStaysInPaths(TRACKING, [kase(mode)]), re, mode);
     // (ruling R2; was: "a record added to a path it states is inside its paths", changed['decisions.records'] equal to 1) inside its paths a tracker
-    // adds no record and removes none, and none of the lifecycle and review fields of a record moves: the fields the boundary restores
+    // adds no record and removes none; (ruling T1; was: none of TRACKED_STANDING moves, in the words "a tracker mends content; whether and how a record
+    // stands, its confirmations, reviews and provenance are the lifecycle family's and the boundary's", naming the fields in the record's order) a
+    // tracker changes only the fields it lists for the path, named in their alphabetical order, and moves a revision only forward by one with a mend
     assert.deepEqual(R.TRACKED_STANDING, boundary.TRACKED_STANDING, 'the helper holds the fields the boundary restores (rc44-s0-readings.mjs TRACKED_STANDING)');
     assert.deepEqual(boundary.TRACKED_STANDING, ['state', 'origin', 'keptAt', 'confirmed', 'targetConfirmed', 'review', 'reviews', 'provenance'], 'the lifecycle and review fields, with the fields the lifecycle family reads as standing and the provenance, which is the server\'s');
-    const PATHS_ONLY = 'a tracker mends the records of its trackPaths; it makes none and removes none\\.$', FIELDS_ONLY = 'a tracker mends content; whether and how a record stands, its confirmations, reviews and provenance are the lifecycle family\'s and the boundary\'s\\.$';
-    for (const [mode, re] of [['add', new RegExp('^Error: zt-tracking\'s tracker added ADR-990 to “decisions\\.records” \\(case 1, tracking\\.mode\\): ' + PATHS_ONLY)], ['remove', new RegExp('^Error: zt-tracking\'s tracker removed ' + id + ' from “decisions\\.records” \\(case 1, tracking\\.mode\\): ' + PATHS_ONLY)],
-      ['confirm', new RegExp('^Error: zt-tracking\'s tracker changed “confirmed” of ' + id + ' in “decisions\\.records” \\(case 1, tracking\\.mode\\): ' + FIELDS_ONLY)], ['decide', new RegExp('^Error: zt-tracking\'s tracker changed “state”, “origin”, “keptAt”, “confirmed”, “targetConfirmed”, “review”, “reviews”, “provenance” of ' + id + ' in “decisions\\.records” \\(case 1, tracking\\.mode\\): ' + FIELDS_ONLY)]])
+    const PATHS_ONLY = 'a tracker mends the records of its trackPaths; it makes none and removes none\\.$', FIELDS_ONLY = 'a tracker changes only the content fields its trackPaths lists for the path; every other field of a record \\(its identity and history, whether and how it stands, an acceptance, an approval, a review, a confirmation, a snapshot\\) is the chapter\'s and the boundary\'s\\.$';
+    const REVISION = (from, to) => new RegExp('^Error: zt-tracking\'s tracker moved the revision of ' + ref + ' in “logical\\.responsibilities” from ' + from + ' to ' + to + ' \\(case 1, tracking\\.mode\\): a mend moves a revision forward by one, and only when it changes a field its trackPaths lists\\.$');
+    const FIELDS = names => new RegExp('^Error: zt-tracking\'s tracker changed ' + names.map(n => '“' + n + '”').join(', ') + ' of ' + ref + ' in “logical\\.responsibilities” \\(case 1, tracking\\.mode\\): ' + FIELDS_ONLY);
+    for (const [mode, re] of [['add', new RegExp('^Error: zt-tracking\'s tracker added LR-990 to “logical\\.responsibilities” \\(case 1, tracking\\.mode\\): ' + PATHS_ONLY)], ['remove', new RegExp('^Error: zt-tracking\'s tracker removed ' + ref + ' from “logical\\.responsibilities” \\(case 1, tracking\\.mode\\): ' + PATHS_ONLY)],
+      ['confirm', FIELDS(['confirmed'])], ['decide', FIELDS(['confirmed', 'keptAt', 'origin', 'provenance', 'review', 'reviews', 'state', 'targetConfirmed'])],
+      ['accept', FIELDS(['appliedImpact', 'approval', 'approvals', 'assumptionsResolved', 'governance', 'history', 'recorded', 'sourceSnapshot', 'status'])], ['title', FIELDS(['title'])],
+      ['back', REVISION(first.revision, first.revision - 1)], ['leap', REVISION(first.revision, first.revision + 2)], ['bump', REVISION(first.revision, first.revision + 1)]])
       assert.throws(() => assertTrackerStaysInPaths(TRACKING, [kase(mode)]), re, mode);
+    // (ruling T1) the helper reads trackPaths as the start check does: a map of paths, each with its fields, none of them a standing field
+    assert.throws(() => assertTrackerStaysInPaths({...TRACKING, trackPaths: ['logical.responsibilities']}, [kase('mend')]), /^Error: assertTrackerStaysInPaths: zt-tracking states trackPaths as \{'chapter\.collection': \[field, …\]\}\.$/, 'the list of ruling O2');
+    assert.throws(() => assertTrackerStaysInPaths({...TRACKING, trackPaths: {'logical.responsibilities': ['purpose', 'confirmed']}}, [kase('mend')]), /^Error: assertTrackerStaysInPaths: zt-tracking lists “confirmed” for “logical\.responsibilities”, which a tracker never changes\.$/, 'a standing field');
+    assert.throws(() => assertTrackerStaysInPaths({...TRACKING, trackPaths: {'logical.responsibilities': ['purpose', 'revision']}}, [kase('mend')]), /lists “revision” for “logical\.responsibilities”, which a tracker never changes/, 'the revision');
     assert.throws(() => assertTrackerStaysInPaths({id: 'xy'}, [kase('mend')]), /xy states no tracker/); assert.throws(() => assertTrackerStaysInPaths(TRACKING, []), /no case/); }
-  // through the server: who sent the commit stamps what the tracker changed; an answer is ignored; an added record is no one's
-  const h = await harness(), d = () => h.state.document, ok = (r, why) => assert.equal(r.status, 200, why + ': ' + JSON.stringify(r.body).slice(0, 300)), dec = id => d().decisions.records.find(r => r.id === id), stamp = id => dec(id).provenance?.author;
+  // through the server: who sent the commit stamps what the tracker changed; an answer is ignored; what it may not change is put back or refused
+  const h = await harness(), d = () => h.state.document, ok = (r, why) => assert.equal(r.status, 200, why + ': ' + JSON.stringify(r.body).slice(0, 300)), res = id => d().logical.responsibilities.find(r => r.id === id), stamp = id => res(id).provenance?.author;
   try {
-    const [one, two, three] = d().decisions.records.map(r => r.id);
-    // B saves both decisions first, so each is a person's other than the one who commits next
-    for (const id of [one, two]) ok(await h.send('decision.save', {...dec(id), rationale: dec(id).rationale + ' (B\'s wording)'}, B), 'B saves ' + id);
-    assert.deepEqual([stamp(one)?.kind, stamp(one)?.by, stamp(two)?.by], ['person', B, B], 'both are B\'s');
+    const [one, two, three] = d().logical.responsibilities.map(r => r.id);
+    // B saves the three responsibilities first, so each is a person's other than the one who commits next
+    for (const id of [one, two, three]) ok(await h.send('logical.responsibility', {...res(id), purpose: res(id).purpose + ' (B\'s wording)'}, B), 'B saves ' + id);
+    assert.deepEqual([stamp(one)?.kind, stamp(one)?.by, stamp(two)?.by, stamp(three)?.by], ['person', B, B, B], 'the three are B\'s');
     const misses = [], check = (why, test) => { try { test(); } catch (e) { misses.push(why + ': ' + e.message.split('\n')[0]); } };
     // a person's commit: the record the tracker mended, answering nothing, is stamped as A's commit
     ok(await h.send('tracking.mode', {mode: 'mend', target: one}), 'A\'s commit');
-    check('a person\'s commit', () => { assert.ok(/\(mended by the tracker\)$/.test(dec(one).rationale), 'the tracker mended it'); assert.deepEqual([stamp(one)?.kind, stamp(one)?.by, stamp(one)?.at, authorship(dec(one)).kind], ['person', A, d().trackingProbe.at, 'person'], 'the record the tracker mended is stamped as the commit\'s, A\'s'); });
+    check('a person\'s commit', () => { assert.ok(/\(mended by the tracker\)$/.test(res(one).purpose), 'the tracker mended it'); assert.deepEqual([stamp(one)?.kind, stamp(one)?.by, stamp(one)?.at, authorship(res(one)).kind], ['person', A, d().trackingProbe.at, 'person'], 'the record the tracker mended is stamped as the commit\'s, A\'s'); });
     // an agent account's commit: stamped as the draft it is
     ok(await h.send('tracking.mode', {mode: 'mend', target: one}, AGENT), 'the agent account\'s commit');
-    check('an agent account\'s commit', () => assert.deepEqual([stamp(one)?.kind, stamp(one)?.by, stamp(one)?.at, authorship(dec(one)).kind], ['sol-draft', AGENT, d().trackingProbe.at, 'sol-draft'], 'the record the tracker mended is stamped as the commit\'s, the agent account\'s draft'));
+    check('an agent account\'s commit', () => assert.deepEqual([stamp(one)?.kind, stamp(one)?.by, stamp(one)?.at, authorship(res(one)).kind], ['sol-draft', AGENT, d().trackingProbe.at, 'sol-draft'], 'the record the tracker mended is stamped as the commit\'s, the agent account\'s draft'));
     // a fabricated answer that names a record the call did not change stamps nothing
-    { const was = JSON.stringify(dec(two)); ok(await h.send('tracking.mode', {mode: 'fabricate', target: two}), 'a fabricated answer'); check('a fabricated answer', () => assert.equal(JSON.stringify(dec(two)), was, 'the record the answer names is as it was, B\'s')); }
+    { const was = JSON.stringify(res(two)); ok(await h.send('tracking.mode', {mode: 'fabricate', target: two}), 'a fabricated answer'); check('a fabricated answer', () => assert.equal(JSON.stringify(res(two)), was, 'the record the answer names is as it was, B\'s')); }
     // (ruling R2; was: the record a tracker adds to a path it states is stamped as no one's) a tracker call that adds a record to a path it states is
     // refused, in a person's commit and in an agent account's: the commit is not stored, and the answer names the package (a mend changes records; it
     // does not make them); so is one that removes a record (it does not unmake them either)
@@ -1688,33 +1740,54 @@ await block('O2 tracked paths', async () => {
     const read = (doc, path) => JSON.stringify(path.split('.').reduce((v, k) => v?.[k], doc));
     const refusedCall = async (why, payload, as, what, paths) => { const before = structuredClone(await h.read()), r = await h.send('tracking.mode', payload, as), after = await h.read();
       check(why, () => { assert.equal(r.status, 500, 'refused: ' + JSON.stringify(r.body).slice(0, 300)); assert.equal(r.body.code, 'fault'); assert.match(r.error, REFUSED(what)); assert.equal(after.revision, before.revision, 'the commit is not stored'); for (const path of paths) assert.equal(read(after.document, path), read(before.document, path), path + ' is as it was'); }); };
-    for (const as of [A, AGENT]) await refusedCall('an added record (' + as + ')', {mode: 'add', target: two}, as, 'added ADR-990 to decisions\\.records', ['decisions.records', 'trackingProbe']);
-    await refusedCall('a removed record', {mode: 'remove', target: one}, A, 'removed ' + one + ' from decisions\\.records', ['decisions.records', 'trackingProbe']);
+    for (const as of [A, AGENT]) await refusedCall('an added record (' + as + ')', {mode: 'add', target: two}, as, 'added LR-990 to logical\\.responsibilities', ['logical.responsibilities', 'trackingProbe']);
+    await refusedCall('a removed record', {mode: 'remove', target: one}, A, 'removed ' + res(one).ref + ' from logical\\.responsibilities', ['logical.responsibilities', 'trackingProbe']);
     // a stamp a tracker writes on a record whose content it leaves is not kept: the stamp is the boundary's
     { const was = JSON.stringify(stamp(two)); ok(await h.send('tracking.mode', {mode: 'stamp', target: two}), 'a stamp of its own'); check('a stamp of the tracker\'s own', () => assert.equal(JSON.stringify(stamp(two)), was, 'B\'s stamp stands')); }
     // (ruling R2; was: "a confirmation the tracker sets is no person's review": confirmed stays true and the provenance is as it was) a confirmation the
     // tracker sets is restored from the boundary's copy, in a person's commit and in an agent account's: the record is as it was, byte for byte, B's
-    for (const as of [A, AGENT]) { const was = JSON.stringify(dec(two)); ok(await h.send('tracking.mode', {mode: 'confirm', target: two}, as), 'a confirmation of its own (' + as + ')'); check('a confirmation the tracker sets (' + as + ')', () => assert.equal(JSON.stringify(dec(two)), was, 'the confirmation is restored and nothing is stamped: ' + JSON.stringify(dec(two)).slice(0, 300))); }
+    for (const as of [A, AGENT]) { const was = JSON.stringify(res(two)); ok(await h.send('tracking.mode', {mode: 'confirm', target: two}, as), 'a confirmation of its own (' + as + ')'); check('a confirmation the tracker sets (' + as + ')', () => assert.equal(JSON.stringify(res(two)), was, 'the confirmation is restored and nothing is stamped: ' + JSON.stringify(res(two)).slice(0, 300))); }
     // (ruling R2) a tracker call that mends a record and moves its lifecycle and review fields: the boundary restores each of them from its copy and stamps
     // the content change as the commit's, a person's and an agent account's; nothing of the tracker's provenance stands
-    ok(await h.send('decision.save', {...dec(three), rationale: dec(three).rationale + ' (B\'s wording)'}, B), 'B saves ' + three);
-    for (const [as, kind] of [[A, 'person'], [AGENT, 'sol-draft']]) { const was = structuredClone(dec(three)); ok(await h.send('tracking.mode', {mode: 'decide', target: three}, as), 'a decision the tracker makes (' + as + ')');
-      check('the lifecycle and review fields restored (' + as + ')', () => { const now = dec(three); assert.ok(now.rationale.endsWith(' (decided by the tracker)'), 'the tracker mended it');
+    for (const [as, kind] of [[A, 'person'], [AGENT, 'sol-draft']]) { const was = structuredClone(res(three)); ok(await h.send('tracking.mode', {mode: 'decide', target: three}, as), 'a decision the tracker makes (' + as + ')');
+      check('the lifecycle and review fields restored (' + as + ')', () => { const now = res(three); assert.ok(now.purpose.endsWith(' (decided by the tracker)'), 'the tracker mended it');
         for (const k of ['state', 'origin', 'keptAt', 'confirmed', 'targetConfirmed', 'review', 'reviews']) assert.deepEqual(now[k], was[k], '“' + k + '” is as the record had it: ' + JSON.stringify(now[k]));
         const {author, ...rest} = now.provenance || {}, {author: earlier, ...wasRest} = was.provenance || {};
         assert.deepEqual([author?.kind, author?.by, author?.at, rest], [kind, as, d().trackingProbe.at, wasRest], 'its provenance is the boundary\'s: the content change stamped as the commit\'s, nothing of the tracker\'s (' + JSON.stringify(now.provenance) + ', was ' + JSON.stringify(earlier) + ')');
         assert.equal(authorship(now).kind, kind, 'and read as the commit\'s'); }); }
+    // (ruling T1) a tracker call that mends a record and on the way accepts it, records governance, a recording and approvals, an applied impact and
+    // resolved assumptions, writes a snapshot and its history and moves its revision back: every field it does not list is put back from the boundary's
+    // copy, in the record's order, the revision as it was, and only the mend stands, stamped as the commit's, a person's and an agent account's
+    for (const [as, kind] of [[A, 'person'], [AGENT, 'sol-draft']]) { const was = structuredClone(res(two)); ok(await h.send('tracking.mode', {mode: 'accept', target: two}, as), 'a decision the tracker would take (' + as + ')');
+      check('an acceptance, governance, a recording, an approval, a snapshot, a history and a revision moved back, put back (' + as + ')', () => { const now = res(two), {purpose, provenance, ...rest} = now, {purpose: earlier, provenance: wasProvenance, ...wasRest} = was;
+        assert.equal(purpose, earlier + ' (accepted by the tracker)', 'the mend stands');
+        assert.equal(JSON.stringify(rest), JSON.stringify(wasRest), 'every field the tracker does not list is as the record had it: ' + JSON.stringify(rest).slice(0, 400));
+        assert.deepEqual(['status', 'governance', 'recorded', 'approval', 'approvals', 'appliedImpact', 'assumptionsResolved'].filter(k => Object.hasOwn(now, k)), [], 'nothing of the acceptance or the approval is written');
+        assert.deepEqual([now.revision, now.sourceSnapshot, now.history], [was.revision, was.sourceSnapshot, was.history], 'the revision, the snapshot and the history as they were');
+        const {author, ...pv} = provenance || {}, {author: before, ...wasPv} = wasProvenance || {};
+        assert.deepEqual([author?.kind, author?.by, author?.at, pv], [kind, as, d().trackingProbe.at, wasPv], 'the content change stamped as the commit\'s (was ' + JSON.stringify(before) + ')');
+        assert.equal(authorship(now).kind, kind, 'and read as the commit\'s'); }); }
+    // (ruling T1) a revision moves forward by one with a mend of a field the tracker lists, and in no other way: moved by two with its mend it is put back;
+    // moved with no mend, or with a field the tracker does not list, the record is as it was, byte for byte
+    { const was = structuredClone(res(one)); ok(await h.send('tracking.mode', {mode: 'forward', target: one}), 'a revision forward by one');
+      check('a revision forward by one with its mend', () => assert.deepEqual([res(one).revision, res(one).boundary, stamp(one)?.by], [was.revision + 1, was.boundary + ' (mended by the tracker)', A])); }
+    { const was = structuredClone(res(one)); ok(await h.send('tracking.mode', {mode: 'leap', target: one}), 'a revision forward by two');
+      check('a revision moved by two with its mend', () => assert.deepEqual([res(one).revision, res(one).boundary], [was.revision, was.boundary + ' (mended by the tracker)'], 'the mend stands and the revision is as it was')); }
+    for (const [mode, why] of [['bump', 'a revision moved with no mend'], ['title', 'a field the tracker does not list']]) { const was = JSON.stringify(res(one)); ok(await h.send('tracking.mode', {mode, target: one}, AGENT), why);
+      check(why, () => assert.equal(JSON.stringify(res(one)), was, 'the record is as it was, and nothing is stamped: ' + JSON.stringify(res(one)).slice(0, 300))); }
     // a tracker that keeps AIW's proposal while it mends it keeps nothing: the record stays a proposal, its content change stamped as the commit's
-    ok(await h.send('tracking.mode', {mode: 'propose', target: three}, B), 'the package\'s own command makes ' + three + ' a proposal'); assert.equal(dec(three).state, 'proposed');
+    ok(await h.send('tracking.mode', {mode: 'propose', target: three}, B), 'the package\'s own command makes ' + three + ' a proposal'); assert.equal(res(three).state, 'proposed');
     ok(await h.send('tracking.mode', {mode: 'keep', target: three}), 'a keep the tracker makes');
-    check('a proposal the tracker keeps', () => { assert.ok(dec(three).rationale.endsWith(' (mended while proposed)'), 'the tracker mended it'); assert.equal(dec(three).state, 'proposed', 'it is AIW\'s proposal still'); assert.deepEqual([stamp(three)?.kind, stamp(three)?.by, dec(three).provenance?.reviewed], ['person', A, undefined], 'stamped as A\'s commit, kept by no one'); });
-    // where the chapter's reading of AIW's proposal rests on a field that is content or bookkeeping (an inherited contract at its first revision), what
-    // cannot be restored without undoing the mend is refused instead: the tracker would decide that the proposal is a person's record
-    const contract = d().interfaces.contracts[0]; ok(await h.send('tracking.mode', {mode: 'seed', target: contract.id}, B), 'the package\'s own command makes ' + contract.id + ' AIW\'s proposal by the chapter\'s reading');
-    await refusedCall('a proposal the tracker unmakes by its revision', {mode: 'unseed', target: contract.id}, A, 'would change whether ' + contract.ref + ' in interfaces\\.contracts is AIW\'s proposal', ['interfaces.contracts', 'trackingProbe']);
+    check('a proposal the tracker keeps', () => { assert.ok(res(three).purpose.endsWith(' (mended while proposed)'), 'the tracker mended it'); assert.equal(res(three).state, 'proposed', 'it is AIW\'s proposal still'); assert.deepEqual([stamp(three)?.kind, stamp(three)?.by, res(three).provenance?.reviewed], ['person', A, undefined], 'stamped as A\'s commit, kept by no one'); });
+    // where the chapter's reading of AIW's proposal rests on a field that is content (a need in the catalogue's words that AIW suggested), what cannot be
+    // restored without undoing the mend is refused instead: the tracker would decide that the proposal is a person's record (was, before ruling T1: an
+    // inherited contract at its first revision, in interfaces.contracts, which the start check now refuses)
+    const need = d().technology.needs[0]; ok(await h.send('tracking.mode', {mode: 'seed', target: need.id}, B), 'the package\'s own command makes ' + need.id + ' AIW\'s proposal by the chapter\'s reading');
+    assert.ok(canonical.LIFECYCLE_RULES['technology.needs'].seed(d(), d().technology.needs[0]), need.id + ' is AIW\'s proposal by the chapter\'s reading');
+    await refusedCall('a proposal the tracker unmakes by its description', {mode: 'unseed', target: need.id}, A, 'would change whether ' + need.id + ' in technology\\.needs is AIW\'s proposal', ['technology.needs', 'trackingProbe']);
     assert.deepEqual(misses, [], 'the boundary, not the package, says what a tracker changed: ' + misses.join(' | '));
   } finally { h.close(); }
-  pass('O2, R1, R2: trackPaths is checked at start (it needs track, is a list of chapter.collection paths, each a built-in record collection the lifecycle family keeps and the provenance reader reads, never the review\'s, the change journal\'s, the workbench\'s or the members\', never a collection a registered package states, each once); through the server the record a tracker mends in a path it states, answering nothing, is stamped as the commit\'s, a person\'s and an agent account\'s; a fabricated answer stamps nothing; a stamp the tracker writes itself is not kept; a confirmation it sets, and every lifecycle and review field it moves while it mends, is restored from the boundary\'s copy, a person\'s commit and an agent account\'s alike, and a proposal stays one; a call that adds or removes a record, or that moves the chapter\'s reading of a proposal through content or bookkeeping, is refused, nothing is stored and the answer names the package; assertTrackerStaysInPaths refuses a tracker that changes a built-in collection it does not state, rewrites the journal, moves its counter without an event or changes prior, and inside its paths one that adds or removes a record or moves a lifecycle or review field');
+  pass('O2, R1, R2, T1: trackPaths is checked at start (it needs track, is {chapter.collection: [field, …]}, each path a built-in record collection the lifecycle family keeps and the provenance reader reads, never the review\'s, the change journal\'s, the workbench\'s or the members\', never a collection a registered package states, never one whose records a chapter accepts, approves or marks reviewed, each with one or more content fields, each once, never a record\'s identity, revision or history or a field that says whether and how it stands); through the server the record a tracker mends in a path it states, answering nothing, is stamped as the commit\'s, a person\'s and an agent account\'s; a fabricated answer stamps nothing; a stamp the tracker writes itself is not kept; a confirmation it sets, every lifecycle and review field, an acceptance, governance, a recording, an approval, a snapshot and a history it writes while it mends, and every field it does not list, is put back from the boundary\'s copy, a person\'s commit and an agent account\'s alike, and a proposal stays one; a revision moves only forward by one with a mend of a field it lists; a call that adds or removes a record, or that moves the chapter\'s reading of a proposal through content, is refused, nothing is stored and the answer names the package; assertTrackerStaysInPaths refuses a tracker that changes a built-in collection it does not state, rewrites the journal, moves its counter without an event or changes prior, and inside its paths one that adds or removes a record, changes a field it does not list or moves a revision otherwise');
 });
 
 assert.deepEqual(failed, [], 'every rc44 S0 block passes');
