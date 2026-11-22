@@ -1234,7 +1234,7 @@ const VERIFY = id => ({id, status: 'Verified', progress: 'Observed check recorde
 // Z1. One source of who wrote a merged record: the preparer is the domain's actor in a merge, as in a direct write.
 await block('Z1 one source of who wrote a merged record', async () => {
   need();
-  const k = await mergeKit(), {d, ok, send, rec, stage, merge, stamps, words, action} = k, same = (x, y, from, to) => assert.equal(x, y.split(from).join(to), 'refused in the words a direct writer is refused in: ' + x);
+  const k = await mergeKit(), {ok, send, rec, stage, merge, stamps, words} = k, same = (x, y, from, to) => assert.equal(x, y.split(from).join(to), 'refused in the words a direct writer is refused in: ' + x);
   try {
     // a package's record: whoever prepared it is its writer to the domain (actor, history), as a direct write names them
     ok(await send('synthetic.save', {title: 'Written directly by A'}, A)); const direct = k.h.last();
@@ -1454,7 +1454,7 @@ await block('Z5 one merge path', async () => {
 const VOUCH_REQ = {id: 'zn-vouch-requirement', commands: {'vouchreq.accept': {apply(p, c, at, actor) { const r = p.artefacts.find(x => x.id === c.payload?.id); if (!r) throw Error('Choose a requirement.'); r.review = {actor, at}; return {document: p, selected: r.id}; }, second: (p, c) => { const r = (p.artefacts || []).find(x => x.id === c.payload?.id); return r ? {id: r.id, actor: r.provenance?.author?.by ?? null, history: []} : null; }}}, provenance: {paths: {vouchreq: ['artefacts']}}};
 await block('Z6 a merge carries no commands; the merger of a keep or a confirmation', async () => {
   need(); for (const e of [VOUCH, VOUCH_REQ]) if (!X.EXTENSIONS.some(x => x.id === e.id)) { assert.deepEqual(boundary.extensionIssues(e), []); X.registerExtension(e); }
-  const k = await mergeKit(), {d, ok, send, stage, merge, stamps, rewrite} = k, decision = id => d().decisions.records.find(x => x.id === id), req = id => d().artefacts.find(x => x.id === id);
+  const k = await mergeKit(), {d, ok, send, stage, merge, stamps, rewrite} = k, req = id => d().artefacts.find(x => x.id === id);
   const words = (id, by, how, merger) => new RegExp('^A second person.s step needs two persons: ' + id + ' reads as ' + by + ' ' + how + ' it in an alternative and ' + merger + ' merged it\\. A signed-in person who neither ' + how + ' nor merged ' + id + ' takes this step\\.$');
   try {
     // (should-fix 1) a merge request that carries commands of its own is refused, and nothing is written or named
