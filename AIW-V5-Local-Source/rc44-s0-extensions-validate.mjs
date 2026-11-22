@@ -1689,7 +1689,9 @@ await block('O2 tracked paths', async () => {
     assert.deepEqual(misses, [], 'the start check refuses each: ' + misses.join(' | '));
     // and accepts every other built-in record collection of a chapter's container, together, each with a content field
     const builtIn = COLLECTIONS.map(([path]) => path).filter(path => path.includes('.') && RECORD_PATHS.some(([x]) => x === path) && !ACCEPTED.includes(path) && !X.EXTENSIONS.some(x => [...Object.keys(x.lifecycle || {}), ...Object.keys(x.provenance?.records || {})].includes(path)));
-    assert.ok(builtIn.length >= 20 && ['runtime.zones', 'runtime.placements', 'logical.responsibilities', 'technology.needs', 'processModel.claims'].every(x => builtIn.includes(x)) && !builtIn.includes('logical.assets'), 'the built-in record collections: ' + builtIn.join(', '));
+    // (ruling T1; was: builtIn.length >= 30, every built-in record collection accepted) at least 30 built-in record collections, as before: the ten a
+    // chapter accepts, approves or marks reviewed are each refused above, and the rest (at least 20) are accepted
+    assert.ok(builtIn.length >= 20 && builtIn.length + ACCEPTED.length >= 30 && ['runtime.zones', 'runtime.placements', 'logical.responsibilities', 'technology.needs', 'processModel.claims'].every(x => builtIn.includes(x)) && !builtIn.includes('logical.assets'), 'the built-in record collections: ' + builtIn.join(', '));
     assert.deepEqual(boundary.extensionIssues({id: 'xy', track: f, trackPaths: Object.fromEntries(builtIn.map(path => [path, MENDS]))}), [], 'every other built-in record collection may be mended'); }
   assert.deepEqual(boundary.extensionIssues(TRACKING), [], 'the synthetic package conforms');
   X.registerExtension(TRACKING);
