@@ -79,15 +79,16 @@ at, account}?, actor, at, account}`. `alternative.candidate`: `{kind, ref, facts
 Design e.1 row 9 retires the released concern comparison (`architecture-design.js:93-124`) in S5 in favour of
 `selection.*` with kind `option`. What the code allows:
 
-| Earlier step or reader | What happened in S5 | Retired in |
+| Earlier step or reader | What happened in S5 (after the fix-up, ruling Q8) | Retired in |
 |---|---|---|
-| The comparison's own writer (`previewReleasedConcern`'s decision and alternatives) | **re-pointed**: one builder, `concernComparison`, which the guided comparison and `selection.*` both write through; parity held against the goldens of `5cae40a` for both options, through both paths | done |
-| `architecture.start/answers/prepare` on a `knowledge:` topic, its preview and `alternative.apply` of it (the guided front-end) | **left standing**, writing through the one builder: S1's own fixture (`governedConcernApplied`, J4), `architecture-intelligence.js`'s "Compare the released approaches" action (`architecture-intelligence-validate.mjs` l.112) and the comparison tools' task UI read it | S3, with the other guided tasks and their surface |
-| The applied guided comparison as an adoption of kind `concern` (S1's upgrade) | unchanged | S3/S6 with the task readers |
+| The comparison's own writer (`previewReleasedConcern`'s decision and alternatives) | **retired**: `previewReleasedConcern` deleted; the one builder, `concernComparison`, moved to `adoption-selection.js` and written by `selection.*` only; parity held against the goldens of `5cae40a` (`BASE.guided`) | S5 |
+| `architecture.start` on a `knowledge:` topic, `architecture.answers`, `.prepare` and `.refresh` of such a task, the preview and so `alternative.apply` of an alternative it prepared (the guided front-end) | **retired**: refused in words ("…the guided comparison of a released concern is retired."); a task an older project holds is read as before and can be set aside (`architecture.dismiss`) | S5 |
+| The comparison tools' concern picker, `openConcern('knowledge:…')` (architecture-intelligence's "Compare the released approaches" action, the knowledge workspace) | **re-pointed**: the picker offers no released concern; `openConcern` opens a selection of the concern's options (`window.aiwSelection`) | S5 |
+| S1's fixture `governedConcernApplied`, `architecture-intelligence-validate.mjs` l.112-118 | **re-pointed** with the lead's leave (item 7) | S5 |
+| `design-concern-validate.mjs` (its two blocks run the guided path) | **not re-pointed**: no leave; it now fails at l.24 (was l.119 at the base); for the lead | the lead to rule |
+| The applied guided comparison as an adoption of kind `concern` (S1's upgrade) and its readers | unchanged: an older project's applied task is still read | S3/S6 with the task readers |
 
-So a released concern can be compared two ways until S3: both write one decision shape through one builder; a
-selection's decision also carries its basis (constraints, candidates, eligibility), the guided one does not (it is
-weighed as before). That is the earlier path standing, not a second writer.
+Since the fix-up a released concern is compared one way only, as a selection of its options.
 
 ## Deviations from the design, the task text and the contract
 
@@ -193,10 +194,11 @@ from, then the change; a WIP commit after each item.
 
 ### Progress
 
-- **Done:** items 1 to 8 (Q7, Q1, Q2, Q3, Q4, Q5 and Q6, Q8, Q9). S1's `size` block is red until item 9 (its allowance
-  check). `design-concern-validate.mjs` now fails at l.24 instead of l.119 (item 7).
-- **In progress:** item 9 (notes, size, suites, final commit).
-- **Next:** the lead's review.
+- **Done:** items 1 to 9. Every S5 block is green (24 blocks). Red, for the lead: S1's `size` block (its check needs
+  the saving of the retirement booked in the lead's file, see item 9) and `design-concern-validate.mjs` (fails at l.24,
+  was l.119 at the base: item 7).
+- **In progress:** nothing.
+- **Next:** the lead's review; the open points at the end of this section.
 
 ### Items
 
@@ -394,3 +396,98 @@ from, then the change; a WIP commit after each item.
    - (10), should-fix 10: the case "an option with a failing excludes predicate is now ineligible" is kept in
      `S5 parity row 9`, marked for wp1's selection form (and wp9b's gates), holding today's reading: unknown, chosen only
      as unproven.
+9. **Notes, size, suites — done.** Measured with `node build.mjs` (dist/client-size-report.json):
+
+   | | `5cae40a` (start) | 082e06b (the slice) | this fix-up |
+   |---|---|---|---|
+   | Chapters route (`routes.chapters.code`) | 3,230,605 B | 3,230,758 B (+153) | **3,228,300 B (−2,305)** |
+   | Projects route | 507,338 B | 507,390 B | 507,960 B (+622) |
+   | Script files | 148 | 148 | 148 |
+   | Buckets (under 10 KB / 10–50 / over 50) | 53 / 50 / 45 | 53 / 50 / 45 | 53 / 50 / 45 |
+   | Stylesheet | 901,873 B | 901,873 B | 901,873 B |
+   | Opens with records (host `architecture-task-ui.js`) | — | 3,352,670 B | 3,359,476 B (131,176 B in 2 scripts beside the route) |
+
+   Along the way: Q1 +127 B, then the sentence shortened; Q2 and Q4 +~430 B on `decisions-domain.js`; Q8 −3,014 B on
+   `architecture-design.js` (the guided path's code left the route). wp2's own bytes: S1 325 B; S5 books **0 B**
+   (`audit/rc44/evidence/wp2-s5-size.json`: `ownBytes` 0, `routeDelta` −2,305): a package books no negative figure
+   (ruling O1), so the saving is the lead's to book at the merge (lead-bookings-size.json). The size case (`S5 size`)
+   holds the 800 B of Q10 for wp2 and 475 B for S5, `ownBytes` an integer of at least 0 equal to the growth when the
+   route grows, the delta beside it, and M4's identity (wp2's bytes on this build are S1's and S5's route delta: −1,980
+   B). **S1's `size` block** (`record.mjs` l.880, a 5cae40a suite: `mine > 0 && mine <= 600`) now reads −1,980 B and
+   fails `mine > 0`: it cannot pass until the saving is booked in the lead's file; I did not loosen it (and left its 600
+   B, the stricter bound, for the lead to move to 800 with Q10). Cap unchanged; no gate raised.
+   `node check-syntax.mjs`: 940 modules pass. `node scripts/lint.mjs --summary`: 162 problems, the baseline's 162, 0 new.
+
+### Fix-up, line by line
+
+Must-fix (review):
+1. readDecision null for a selection, callers broken, 'breaks' off — done (item 2, Q1): `S5 Q1 readers`; 'breaks' from a fail row in `S5 Q4 second person`.
+2. Chapter 3's commands go round the selection — done (item 3, Q2): `S5 Q2 one truth`.
+3. Person-stated predicates nobody can see — done (item 4, Q3: removed): `S5 Sol`, `S5 eligibility`.
+4. The second-person step does not cover the judgement — done (item 5, Q4): `S5 Q4 second person`.
+5. Approval after assumptionsResolved while unproven — done (item 5, Q4): `S5 Q4 second person`.
+6. instantiate updates an existing component — done (item 6, Q5): `S5 Q5 instantiate creates`.
+7. Imported or hand-written steps and facts trusted — done (item 6, Q6): `S5 Q6 elsewhere`. A judgement written by hand into a live document is not told from one a command wrote; documents are written only through the commands, and the one way a document arrives from elsewhere (a recovery import) moves the steps aside.
+8. The suite red at its head (clock) — done (item 1, Q7): `S5 fixtures`.
+9. Row 9 re-pointed, not retired — done (item 7, Q8): `S5 parity row 9`; `design-concern-validate.mjs` not re-pointed (no leave).
+
+Should-fix (review):
+1. A late hard constraint never read — done (item 8, Q9 (1)): `S5 Q9 the rest`.
+2. An agent account's selection reads prepared person — done (item 4, Q3): `S5 Sol`.
+3. Standing of library, archetype and existing candidates — done (item 6, Q6): `S5 Q6 elsewhere`.
+4. No finding when a selection's knowledge is withdrawn — done (item 7, Q8): `S5 parity row 9` (`selection-withdrawn`).
+5. judge bypasses revise — done (items 3 and 8, Q9 (5)): `S5 Q9 the rest`.
+6. adoption-ui.js's header and the window hook — done (item 8, Q9 (6)): `S5 Q9 the rest`.
+7. Choose names every unknown row unproven for the person — done (item 5, Q4): `S5 surface`.
+8. What a template copy is — done (item 8, Q9 (8)): `S5 old documents`.
+9. The SDD prints only the stored rows — done (item 8, Q9 (9)): `S5 Q9 the rest`.
+10. The excludes case — kept, marked for wp1's selection form, holding today's reading (item 8, Q9 (10)): `S5 parity row 9`.
+11. The result and the notes — corrected (items 1 and 9, Q7, Q9 (11)): this file's "State", and the fix-up's result.
+
+Design concerns (review):
+1. Two readings of one hard constraint — closed by Q2: the selection's row is the authority, written into Chapter 3, which may not change it.
+2. Is unproven a waiver — closed by Q4: a second person confirms before acceptance, approval is refused while unproven, and only a person other than the chooser closes a row.
+3. Person-stated predicates — closed by Q3: removed until wp9b's hard gates.
+4. Package steps on built-in records kept under `selection` — closed for the recovery import by Q6 (moved aside, `assertRecoveryClearsSteps`); a template copy now keeps no selection at all (Q9 (8)). The contract row S0 might state for package steps kept on built-in records is the lead's (not added).
+5. S0 tells a package's modules by who imports them — kept: `window.aiwSelection` is stated as the contract until D10 (Q9 (6)).
+6. A shared reader's contract — closed by Q1: readDecision answers for a selection and every caller has a case.
+7. A profile instantiated through realisation.component — accepted by the lead (Q5): its source names release, claim, hash and decision, and the readers find them.
+8. The chooser shows a candidate profile inside a design project — recorded as pending for the owner (Q11, below).
+9. wp2's route headroom — closed by Q10 (800 B) and by the retirement's saving (S5 books 0 B).
+
+Rulings:
+- Q1 — done (item 2). Q2 — done (item 3). Q3 — done (item 4). Q4 — done (item 5). Q5 — done (item 6). Q6 — done
+  (item 6). Q7 — done (item 1). Q8 — done but for `design-concern-validate.mjs` (item 7). Q9 (1), (5), (6), (8), (9),
+  (10) — done (item 8); (11) — done (item 9). Q10 — applied: the size case holds 800 B for wp2 (item 9); S1's own size
+  block keeps 600 B (not mine to loosen) and is red until the lead books the saving. Q11 — recorded: the chooser shows a
+  candidate profile's title, status label and source location inside a design project; plan section 6 item 4 leaves
+  candidate content in design projects to the owner, whose decision is **pending**.
+
+### What later slices must know
+
+- A selection's decision: Chapter 3's `decision.choose`, `decision.clear-choice`, a new alternative, a candidate's
+  rejection reason and its effect on a hard constraint are the selection's (`SELECTION_STEP`, decisions-domain.js);
+  any slice that writes a decision's choice or alternatives for a selection goes through `selection.*`.
+- `decision.selection` now holds `started`, `confirm` and, after a recovery import, `imported`; `alternative.candidate`
+  holds no facts (read with `selectionReading`, from the released claim). A template copy keeps no selection.
+- `selection.confirm` is a second person's step; `confirmStands(p, d)` and `confirmSubject(p, d)` are exported. The
+  package's chapter-3 checks (`selection-choice`, `selection-confirm`, `selection-withdrawn`) are errors that refuse
+  acceptance and approval.
+- The comparison of a released concern has one builder, `adoption-selection.js` `concernComparison`; the guided path
+  for a released concern is retired.
+- `window.aiwSelection({store, modal, decisionId?, responsibilityId?, concernId?, driverId?})` is a contract until D10.
+- No hard constraint is evaluated before wp9b's hard gates; wp1's selection form and wp9b's gates flip the marked
+  excludes case.
+
+### Open points for the lead
+
+1. `design-concern-validate.mjs`: leave to re-point its guided-path blocks to `selection.*` (most decision assertions
+   map; its task-reader assertions would read a task as an older project holds it), or a ruling that it retires with
+   the path. Until then it fails at l.24 instead of l.119.
+2. `architecture-intelligence-validate.mjs`'s "creating a proposed task does not invalidate its source" cannot hold
+   for a selection, which writes a Chapter 3 decision at its start; replaced by the exact statement that the decision is
+   the only source change (item 7). Accept, or rule that a Sol-drafted selection's decision is no design source.
+3. Route booking: the fix-up's −2,305 B against `5cae40a` (S5 books 0 B) is the lead's to book; S1's size block needs
+   it, and its 600 B bound moves to 800 B with Q10 at the lead's hand.
+4. The confirm and the judgements are kept on the built-in decision under `selection`; whether S0 states a contract row
+   for package steps on built-in records (design concern 4) is the lead's.
