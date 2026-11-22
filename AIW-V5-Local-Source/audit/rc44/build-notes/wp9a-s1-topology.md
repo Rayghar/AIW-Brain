@@ -18,8 +18,9 @@ here is approved, accepted, released or promoted.
 - **Done since:** the third fix-up (rulings O1 to O5), section "Third fix-up" below (branch
   `rc44/wp9a-s1-topology-fix-c6`, from `rc44/wp9a-s1-topology-fix-c5` at `5cae40a`); the suite at 25 blocks, green.
 - **Done since:** the third fix-up's verifier (merge, two hardening problems and a nit) and the lead's rulings R1 to R4.
-- **In progress:** the fourth fix-up (rulings R1 to R4), section "Fourth fix-up" below (branch
-  `rc44/wp9a-s1-topology-fix-c7`, from `rc44/wp9a-s1-topology-fix-c6` at `ce6eb90`).
+- **Done since:** the fourth fix-up (rulings R1 to R4), section "Fourth fix-up" below (branch
+  `rc44/wp9a-s1-topology-fix-c7`, from `rc44/wp9a-s1-topology-fix-c6` at `ce6eb90`); the suite at 25 blocks, green.
+- **In progress:** nothing.
 - **Next:** the lead's merge; see "What later slices inherit" and "Open questions (for the lead)".
 
 ## Fourth fix-up (after the third verifier; the lead's rulings R1 to R4)
@@ -191,7 +192,9 @@ files, buckets 53/50/45, stylesheet 901,873 B, no violation.
     violation. `audit/rc44/evidence/wp9a-s1-size.json`: the name, `packageShare` (lists 168, total 22,614) and a new
     `holder` block; every route figure as before (ownBytes 342). The O1 merge check passes (block "O1": 765 = 0 + 325
     + 342 + 98 + 0).
-- Item 5: in progress.
+- **Item 5: done.** The notes (this section, "State", "Measurements", "Suites"); the four rc44 suites, the browser
+  case, the 47 suites that import or exercise the changed files, `node check-syntax.mjs`, `node scripts/lint.mjs
+  --summary` and `node build.mjs` on the final code (see "Suites", after the fourth fix-up); the final commit.
 
 ## Third fix-up (after the second verifier; the lead's rulings O1 to O5, with K to N)
 
@@ -924,6 +927,28 @@ slice 6 brings the surface that offers Keep and Retire (ruling J7). See open que
 
 ## Measurements
 
+**After the fourth fix-up** (the final head; `node build.mjs`; S1.10 `--measure`; ruling R4). The route did not move:
+R1 and R2 are server-only (`design-extension-parts.js` is in no client bundle; the boundary and `worker.js` are the
+server's; the one edit of `provenance.js` is a comment), R3 and R4 are suite helpers and evidence.
+
+| | 9673661 | rc44/integration a4c1690 | `ce6eb90` (start) | This head | Cap |
+|---|---|---|---|---|---|
+| Chapters route (code) | 3,229,840 B | 3,230,165 B | 3,230,605 B | 3,230,605 B (+765 / **+440**) | 3,233,792 B (unchanged; 3,187 B left) |
+| Projects route (code) | 506,829 B | 507,069 B | 507,338 B | 507,338 B | 1,242,112 B (unchanged) |
+| Script files | 148 | 148 | 148 | 148 | 148 (unchanged) |
+| Files under 10 KB | 53 | 53 | 53 | 53 (buckets 53/50/45) | 61 (unchanged) |
+| Stylesheet | 901,873 B | 901,873 B | 901,873 B | 901,873 B | 902,144 B (unchanged) |
+| Opens with records (D10), entry of `deploy-view.js` | 4,062,884 B | 4,063,285 B | 4,086,349 B | 4,086,349 B (855,744 B in 12 scripts) | — |
+| The script that holds the package (deploy-view chunk): bytes / modules / lists | — | 51,789 / 49,415 / 2,374 B | 74,415 / 71,873 / 2,542 B | 74,415 / 71,873 / 2,542 B | — |
+
+The package's share of the lazy entry as R4 reads it: 22,614 B, its modules 22,446 B (`topology-domain.js` 20,903,
+`topology.js` 1,503, the four empty parts 10 each) and its own import and export lists 168 B (2,542 - 2,374); was
+22,624 B read as the entry's whole growth (lists 178 B "with the rest of the entry's closure"). Bookings on the route
+against `9673661`, unchanged: wp2 325 B, wp9a 342 B, the lead 0 B of their own; the shared pool 98 B (wp9a's file) and
+0 B (the lead's); 765 B, exactly (S0 block "O1"). **wp9a's own: 342 B of its 500 B, 158 B left.** The pool of the
+seven later packages (1,656 B after H1) has 1,558 B left. No gate changed (`client-bundle.mjs` and `build.mjs` are as
+on `94dbd4f`).
+
 **After the third fix-up** (the final head; `node build.mjs`; S1.10 `--measure`; ruling O5). The route did not move:
 O1 is a suite helper and evidence, O2 is server-only on the route side (the part's name is in
 `design-extension-parts.js`, in no client bundle; the boundary, `stampTracked` and `settle` are server-only) and its
@@ -1041,6 +1066,30 @@ Measured with scratch builds: with a second package's stub beside this one the r
 import of `topology.js` in `deploy-view.js` the route is the same 3,230,089 B (the package's modules add no export).
 
 ## Suites
+
+**After the fourth fix-up** (the final code; logs under `.aiw-local/fixup4/`, not committed). The rc44 suites on the
+final code, two at a time: `rc44-s0-extensions-validate.mjs` 28 of 28 (blocks "O2" and "O1" extended, block 8's
+bucket as a ceiling); `rc44-wp9a-deployment-validate.mjs` 25 of 25 (S1.10 with `--measure` at item 4; S1.24 green
+under the stricter helper); `rc44-wp1-knowledge` 34 of 34 (4 pending); `rc44-wp2-adoption-validate.mjs` 20 of 20 (its
+block `size` green: 325 B of 600); `rc44-wp9a-deployment-browser-validate.mjs` 1 of 1 against the client `node build.mjs`
+built on this code (port from 4100, its own `.aiw-local` database, no server left running). The suites that import a
+changed file (`design-extension-parts.js`, the boundary, `provenance.js`, `rc44-s0-readings.mjs`) or run the server
+that does (`worker.js`, changed too), green and unedited, 47 of them: `provenance`, `seeded-proposals`, `evidence`,
+`recovery-authority`, `changes`, `design-records`, `validation-confirmation`, `deploy`, `runtime`, `rc42-g5-runtime`,
+`workspace`, `fingerprint`, `action-undo`, `action-undo-api`, `model-alternatives`, `wire-merge`, `service-routes`,
+`journal-archive`, `review`, `decisions`, `technology`, `interfaces`, `security`, `quality`, `review-plan` (657 s),
+`rc42-g7-data-contracts`, `rc42-g4-trace-kernel`, `rc42-g3c-evidence-fingerprint`, `sdd-architecture`, `readiness`,
+`drafter-groups`, `model-lifecycle`, `execution-journey`, `platform`, `technology-realisation`, `rc42-g1-tech-approval`,
+`reference-projects`, `chapter-lines`, `not-stated`, `chapter-records`, `design-links`, `resilience`, `reconciliation`,
+`trace-narrative`, `projects`, `connected-design-projections`, `payment-case-journey`. Red, each as on the baseline:
+`test:command-equivalence` and `test:sol-disclosure` (among the 37 of `audit/rc42/regression-2026-11-16.json`; they
+import `provenance.js` and the server) fail with the baseline's own lines ("a working choice made: the saved document
+is the one the route saved before round 12 · $.workbench.history[1]" and "The desk no longer holds F:capacity:run-001,
+F:capacity:run-008"), and fail the same way on an archive of `94dbd4f` run here (`.aiw-local/fixup4/base-ce.log`,
+`base-sd.log`). `test:requirements` was not run (unchanged module and suite; known to flake under load). `node
+check-syntax.mjs`: 938 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, 0 new. `node
+build.mjs`: built, no size violation (chapters route 3,230,605 B, 148 script files, buckets 53/50/45). None of the
+other baseline-red suites was run, and no full regression (the lead runs it).
 
 **After the third fix-up** (the final code; logs under `.aiw-local/third-fixup/`, not committed). The rc44 suites, run
 again on the final head one after another: `rc44-wp9a-deployment-validate.mjs` 25 of 25 (S1.10 with `--measure` at
@@ -1206,3 +1255,16 @@ Earlier questions, as asked at the slice:
 9. **Ruling J3 on this base.** S0 has no row yet for what a package's record says to the fingerprint. The marker's
    step is kept out of both fingerprints as an evidence key (decision 3). A node's and a failure domain's `history`
    is read by the design fingerprint as a built-in record's is; neither carries a person's step.
+
+New after the fourth fix-up (each stated plainly under "Fourth fix-up", "Where I read a ruling otherwise"):
+
+11. **Two refusals beyond R2's words.** A tracker call that removes a record of its `trackPaths`, and one whose change
+    of content or bookkeeping moves the chapter's reading of whether a record is AIW's proposal (an inherited contract at
+    its first revision, a need whose description is the catalogue's), are refused as an added record is. Neither fires
+    for wp9a. Confirm, or rule that a removal (or such a move) should be restored or allowed instead.
+12. **The status of a refused tracker call.** It is answered 500 with code `fault`, as every tracker fault is, in its own
+    words naming the package; nothing is stored. Confirm 500 (the package's fault, not the request's) over a 4xx.
+13. **R4's share at the merge.** The share reads the deploy-view chunk's lists against `a4c1690`'s same script
+    (`ADOPTION_HOLDER`). If the merge with wp2 S5 or wp1 S2 changes what that chunk imports (an alias that moves in a
+    shared chunk shows in its import list), S1.10's lists bound (168 B) may need re-measuring at the merge; the modules
+    are unaffected.
