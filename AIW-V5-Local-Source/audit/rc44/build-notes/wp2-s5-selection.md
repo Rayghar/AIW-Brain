@@ -528,5 +528,10 @@ case first, seen to fail on the head it started from, then the change; a WIP com
   on every released criterion, and the view asks a note per option and criterion (both off the route). The suite now runs
   to its baseline red assertion (l.119 at `5cae40a`, l.199 now) and stops there for the same reason (`QD-002: ''` in the
   assessments).
-- **In progress:** item 4 (U5).
-- **Next:** U5, U2, U6, the notes.
+- **Done:** item 4 (U5): case `S5 U5 SDD basis` and `S5 SDD` re-pointed (both failed at 76eb0f9: no package section);
+  the basis is the package's section of the architecture edition through S0's sections part (`adoption-server.js`
+  `selectionBasis`, after "## Trade-off analysis", server-only), read from `selectionReading`; `sdd-architecture.js` prints
+  a pointer in the decision record and no longer reads the package's finding (its import of `decisionFindings` and
+  `constraintForce` is gone again).
+- **In progress:** item 5 (U2).
+- **Next:** U2, U6, the notes.

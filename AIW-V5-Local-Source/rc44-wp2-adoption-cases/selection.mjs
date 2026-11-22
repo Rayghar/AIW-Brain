@@ -824,7 +824,7 @@ export default async function ({block, pass, load}) {
     assert.match(basis, /Regional message relay \(profile, released KC-\d+ in KR-\d+\): rejected · at the choice and now: Customer records stay in region North: fail \(judged by architect-b\); Run only what the platform team operates: unknown\n/);
     assert.match(section, /Not chosen: It keeps messages outside region North\./); assert.match(section, /Not chosen: It states nothing about where it keeps data\./);
     assert.ok(!/score|weigh/i.test(basis), 'the basis weighs nothing');
-    pass('S5 SDD: the decision record prints the selection basis (what is selected, each hard constraint, none with a typed reading), each candidate with its kind, its pinned knowledge, its outcome and its rows, the unproven rows named, and each rejected candidate with its reason; nothing is weighed');
+    pass('S5 SDD: the decision record points to the selection basis, which the package prints in the trade-off analysis (what is selected, each hard constraint, none with a typed reading; each candidate with its kind, its pinned knowledge, its outcome and its rows at the choice and now, the chosen candidate\'s unproven rows named), and each rejected candidate with its reason; nothing is weighed');
   });
 
   // ------------------------------------------------------------ the fixtures read no clock (ruling Q7)
