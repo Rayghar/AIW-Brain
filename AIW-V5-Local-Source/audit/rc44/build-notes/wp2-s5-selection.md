@@ -193,9 +193,9 @@ from, then the change; a WIP commit after each item.
 
 ### Progress
 
-- **Done:** item 1 (Q7).
-- **In progress:** item 2 (Q1).
-- **Next:** items 3 to 9 in the order of the task (Q2, Q3, Q4, Q5 and Q6, Q8, Q9, notes and size).
+- **Done:** item 1 (Q7), item 2 (Q1).
+- **In progress:** item 3 (Q2).
+- **Next:** items 4 to 9 in the order of the task (Q3, Q4, Q5 and Q6, Q8, Q9, notes and size).
 
 ### Items
 
@@ -207,3 +207,21 @@ from, then the change; a WIP commit after each item.
    `5cae40a`'s product source (a `git archive` of `5cae40a` with this branch's `rc44-wp2-fixtures.mjs` copied in; only
    test files differ): only its `sdd` reading changed; `selectionProject` and both guided comparisons read as the golden
    already held. The baseline file says so (`concernProjectRecaptured`). `S5 old documents` is green again.
+2. **Q1, must-fix 1, design concern 6 — done.** `readDecision` no longer answers null for a selection: it answers the
+   reading with no class and no weight for any driver (`decision-reading.js` readDecisionOf: `cls` is null when the
+   decision holds `selection`), whatever priorities a what-if or a sensitivity step asks about, so nothing is weighed,
+   led, firm or sensitive; an alternative whose effect on a hard constraint is "breaks it" is still ruled out, so the
+   built-in error 'The working choice breaks a hard constraint' (decisions-domain.js) is raised for a selection.
+   `readingLines` says one thing of a selection besides the ruled-out lines: "A selection is not weighed." Callers
+   changed in the same slice: Chapter 3 draws no panel "On the drivers" for a selection (`decisions.js` readingHTML);
+   the trade-off map and the desk show each candidate as "A candidate of a selection: read against the hard
+   constraints, not weighed" (`tradeoff-model.js` readingStanding, kind `selection`); the SDD's trade-off analysis
+   leaves a selection out and prints no AIW reading for its alternatives (`sdd-architecture.js`; its basis is printed
+   with its record). Case `S5 Q1 readers` (new; failed first on "readDecision answers a reading for a selection", then
+   on the map's standing): the trade-off model, the desk probe, the what-if, design-reasoning's tuning, utility-model's
+   sensitivity, Sol's decision item and packet, the suggestions and the SDD read a selection without throwing; the
+   built-in 'breaks' error is raised for a selection whose chosen candidate breaks a hard constraint. Replaced
+   assertions (`S5 no score`, this slice's own suite): `readDecision(p, d)` is null (before and after the choice) ->
+   the reading weighs nothing (no driver with a class or a weight, no total or part, no lead, no sensitivity point, no
+   firmness), and a decision without a selection is weighed, both before and after the choice. A row a person judged
+   fail is written into Chapter 3 as "breaks it" by the selection itself (item 3), so the same error holds for it.

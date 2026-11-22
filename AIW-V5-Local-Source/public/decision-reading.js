@@ -153,20 +153,21 @@ export function constraintForce(p, r) {
 // priorities: {driverId: priority} read instead of the recorded ones (a what-if, a sensitivity step); the reading of the
 // recorded priorities is remembered per settled document. lean: the screen, the totals and the lead only (what a
 // sensitivity step or a driver's tuning compares), not dominance, firmness or the unknowns.
-// rc44 wp2 S5: a component selection (decision.selection, adoption-selection.js) is never weighed: its candidates are
-// read against the hard constraints, kept in the order they were added, and hold no score, rank or weight.
+// rc44 wp2 S5 (ruling Q1): a component selection (decision.selection, adoption-selection.js) is read without weights: no
+// driver of it has a class or a weight, so nothing is weighed, ranked, led or sensitive, whatever priorities are asked
+// about; a candidate whose effect on a hard constraint is "breaks it" (the selection writes its rows there) is ruled out.
 export function readDecision(p, d, {priorities = null, lean = false} = {}) {
-  if (!d || 'selection' in d) return null;
+  if (!d) return null;
   return priorities || lean ? readDecisionOf(p, d, priorities, lean) : remember(p, 'decision-reading', d, () => readDecisionOf(p, d, null, false));
 }
 export const decisionReadingOf = (p, id) => readDecision(p, list(p?.decisions?.records).find(d => d.id === id) || null);
 
 function readDecisionOf(p, d, priorities, lean) {
-  const drivers = [], missing = [];
+  const drivers = [], missing = [], S = 'selection' in d;
   for (const id of uniq(list(d.driverIds))) {
     const r = findIn(p, 'reading:drivers', () => list(p?.quality?.drivers), id);
     if (!r) { missing.push(id); continue; }
-    const priority = priorities && Object.hasOwn(priorities, id) ? str(priorities[id]) : driverPriority(r), cls = CLASSES.includes(priority) ? priority : null;
+    const priority = priorities && Object.hasOwn(priorities, id) ? str(priorities[id]) : driverPriority(r), cls = !S && CLASSES.includes(priority) ? priority : null;
     const kind = driverKind(r), force = kind === 'constraint' ? constraintForce(p, r) : null;
     drivers.push({id, record: r, kind, priority: cls || '', cls, weight: cls ? WEIGHT[cls] : 0, hard: !!force?.hard, force});
   }
@@ -217,6 +218,8 @@ export function readingLines(r, {alt = id => id, driver = id => id} = {}) {
   const out = [], add = (kind, text, extra = {}) => out.push({kind, text, ...extra});
   if (!r) return out;
   for (const x of r.ruledOut) add('ruled-out', `${alt(x.id)} is ruled out: it breaks ${and(x.breaks.map(driver))}, ${x.breaks.length === 1 ? 'a hard constraint' : 'hard constraints'}.`, {id: x.id});
+  // rc44 wp2 S5: a selection's reading says which candidates a hard constraint rules out, and nothing it would weigh.
+  if (r.decision?.selection) return add('lead', 'A selection is not weighed.'), out;
   for (const x of r.drivers.filter(x => x.hard && x.force.basis !== 'must' && r.rows.some(row => row.breaks.includes(x.id) || row.unshown.includes(x.id)))) add('force', `${driver(x.id)} is read as a hard constraint: ${x.force.basis === 'unlinked' ? 'it links no constraint record' : 'no priority is stated for its constraint record'}.`, {id: x.id});
   const L = r.lead, row = id => r.rows.find(x => x.id === id);
   if (r.state === 'single') add('lead', 'With one alternative there is nothing to weigh.');

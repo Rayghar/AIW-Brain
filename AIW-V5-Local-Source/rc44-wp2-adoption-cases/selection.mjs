@@ -12,6 +12,8 @@
 //                    cannot be chosen; the unknown one only when named unproven, and approval evidence is then refused;
 //   S5 no score      no result object carries a score, a rank or a weight; candidates keep the order they were added;
 //                    the decision's weighing (readDecision) is not read for a selection;
+//   S5 Q1 readers    readDecision answers a reading without weights for a selection, every caller reads it, and the
+//                    built-in 'breaks' error holds for a selection (ruling Q1);
 //   S5 candidate knowledge  a candidate profile is read by the chooser, refused by selection.candidate, and reaches no
 //                    constraint, eligibility row, finding or reading (plan ruling 6);
 //   S5 Sol           a draft by Sol proposes (a selection, a candidate marked by Sol) and states no typed reading of a
@@ -46,6 +48,14 @@ import {readDecision} from '../public/decision-reading.js';
 import {applyKnowledgeCommand, knowledgeStamp, claimReceiptCurrent} from '../public/knowledge-governance.js';
 import {architectureMarkdown} from '../public/sdd-architecture.js';
 import {instantiateTemplate} from '../project-lifecycle.js';
+import {readingLines} from '../public/decision-reading.js';
+import {tradeoffSource, readingStanding} from '../public/tradeoff-model.js';
+import {deskModel, decisionProbe} from '../public/desk-model.js';
+import {compareArchitectureScenario} from '../public/architecture-whatif.js';
+import {reasoningSource, tuneDriver} from '../public/design-reasoning.js';
+import {utilitySource, sensitivity} from '../public/utility-model.js';
+import {decisionPoints, reasoningRequest, reasoningPacket} from '../public/brain-reasoning.js';
+import {suggestEffects} from '../public/decision-suggestions.js';
 
 const list = v => (Array.isArray(v) ? v : []);
 const PACKAGE = 'p40-adoption', BASE = JSON.parse(readFileSync(new URL('../rc44-wp2-selection-baseline.json', import.meta.url), 'utf8'));
@@ -161,13 +171,60 @@ export default async function ({block, pass, load}) {
       const bad = keysOf(value).filter(k => FORBIDDEN.test(k.split('.').at(-1)));
       assert.deepEqual(bad, [], what + ' carries no score, rank or weight key');
     }
-    assert.equal(readDecision(p, d), null, 'the decision\'s weighing is not read for a selection');
-    assert.notEqual(readDecision(p, p.decisions.records.find(x => !x.selection)), undefined, 'and a decision without one reads as before');
+    // ruling Q1; was: readDecision(p, d) is null. Now the reading is answered and weighs nothing: no driver has a class or a
+    // weight, no total, part or lead, no sensitivity point and no firmness.
+    const weighs = r => !r || r.drivers.some(x => x.weight || x.cls) || r.rows.some(x => x.score || x.parts.some(q => q.weight || q.score)) || r.lead !== null || r.sensitivity.length > 0 || !!r.firmness;
+    assert.equal(weighs(readDecision(p, d)), false, 'the decision\'s reading weighs nothing for a selection');
+    assert.ok(weighs(readDecision(p, p.decisions.records.find(x => !x.selection))), 'and a decision without one is weighed as before');
     p = doc(send(p, 'selection.choose', {id, alternativeId: alt(d, 'Inbox and deduplication component').id, reason: 'Fits the payment path.', unproven: ['QD-008'], rejections: Object.fromEntries(d.alternatives.slice(1).map(a => [a.id, 'Not this one.']))}));
     const after = S.selectionReading(p, decision(p, id));
     assert.deepEqual(after.candidates.map(c => c.title), titles, 'and after the choice'); assert.deepEqual(keysOf(after).filter(k => FORBIDDEN.test(k.split('.').at(-1))), []);
-    assert.equal(readDecision(p, decision(p, id)), null);
+    assert.equal(weighs(readDecision(p, decision(p, id))), false, 'and after the choice'); // ruling Q1; was: readDecision is null
     pass('S5 no score: the reading, the selection, the candidates, the chooser\'s knowledge and every eligibility hold no score, rank or weight key; five candidates (two profiles, a library entry, an archetype, a build) keep the order they were added, before and after the choice; the decision\'s weighing reads nothing for a selection and reads as before for a decision without one');
+  });
+
+  // ------------------------------------------------------------ the decision reading's callers (ruling Q1)
+  // A selection after its choice: three candidates for the Payment API, a second person's judgement of the inbox
+  // profile on the first constraint, the inbox chosen with the second named unproven. No typed reading is stated.
+  const chosenSelection = () => {
+    let p = selectionProject(), r = send(p, 'selection.start', {kind: 'component', responsibilityIds: ['api'], owner: 'Payments architect'});
+    const id = r.selected; p = doc(r);
+    for (const [kind, ref, title] of [['profile', released(p, 'inbox'), 'Inbox and deduplication component'], ['profile', released(p, 'relay'), 'Regional message relay'], ['library', library(p), 'Ticket consumer v2']]) p = doc(send(p, 'selection.candidate', {id, candidate: {kind, ref}, title}));
+    const d = decision(p, id), inbox = alt(d, 'Inbox and deduplication component');
+    p = doc(send(p, 'selection.judge', {id, alternativeId: inbox.id, constraintId: 'QD-007', state: 'pass', evidence: 'The deployment record DEP-4 names region North.', reason: 'Its data stays in region North.'}, B));
+    p = doc(send(p, 'selection.choose', {id, alternativeId: inbox.id, reason: 'The inbox deduplicates and stays in region North.', unproven: ['QD-008'], rejections: Object.fromEntries(decision(p, id).alternatives.filter(a => a.id !== inbox.id).map(a => [a.id, 'Not this one: ' + a.title]))}));
+    return {p, id};
+  };
+  await block('S5 Q1 readers', async () => {
+    pkg(); const {p, id} = chosenSelection(), d = decision(p, id), title = x => d.alternatives.find(a => a.id === x)?.title || x;
+    // the reading: a reading, not null, and without weights
+    const r = readDecision(p, d);
+    assert.ok(r && Array.isArray(r.rows) && r.rows.length === d.alternatives.length, 'readDecision answers a reading for a selection');
+    assert.ok(r.drivers.length > 0 && r.drivers.every(x => x.weight === 0 && x.cls === null), 'no driver of a selection has a class or a weight');
+    assert.ok(r.rows.every(x => x.score === 0 && x.parts.every(q => q.weight === 0 && q.score === 0)), 'nothing is weighed');
+    assert.deepEqual([r.lead, r.firmness ?? null, r.sensitivity], [null, null, []], 'no lead, no firmness, no sensitivity point');
+    for (const pr of ['High', 'Low']) { const w = readDecision(p, d, {priorities: Object.fromEntries(d.driverIds.map(x => [x, pr]))}); assert.ok(w.drivers.every(x => x.weight === 0) && w.lead === null, 'whatever priorities are asked about (' + pr + ')'); }
+    const lines = readingLines(r, {alt: title});
+    assert.deepEqual(lines.map(l => l.kind), ['lead'], 'the reading says one thing: ' + JSON.stringify(lines)); assert.equal(lines[0].text, 'A selection is not weighed.');
+    // each caller reads the selection without throwing
+    const T = tradeoffSource(p), t = T.D.get(id); assert.ok(t && t.reading && t.lead === null, 'the trade-off model');
+    assert.deepEqual(d.alternatives.map(a => readingStanding(t.reading, a.id).kind), d.alternatives.map(() => 'selection'), 'whose map and desk show each candidate as one of a selection, not tied or ranked'); assert.match(readFileSync(new URL('../public/decisions.js', import.meta.url), 'utf8'), /if\(!r\|\|r\.rows\.length<2\|\|d\.selection\)return '';/, 'Chapter 3 draws no panel on the drivers for a selection');
+    const probe = decisionProbe(deskModel(p), id); assert.ok(probe && probe.reading && !probe.alts.some(a => a.leads), 'the desk probe'); assert.equal(probe.lean, d.selectedAlternativeId, 'it follows the working choice');
+    const driver = d.driverIds.find(x => !['QD-007', 'QD-008'].includes(x)) || d.driverIds[0], dp = p.quality.drivers.find(x => x.id === driver).priority === 'Low' ? 'High' : 'Low';
+    const w = compareArchitectureScenario(p, {drivers: [{id: driver, priority: dp}]}).decisions.find(x => x.id === id); assert.ok(w, 'the what-if reads the decision'); assert.deepEqual([w.beforeLead, w.afterLead, w.changedLean], [null, null, false], 'and finds nothing that leads, before or after');
+    const tuned = tuneDriver(reasoningSource(p), driver, {priority: dp}); assert.ok(tuned, 'design-reasoning tunes a driver the selection names');
+    assert.deepEqual(sensitivity(utilitySource(p), driver).filter(s => s.decision.id === id), [], 'utility-model: no sensitivity point in a selection');
+    const sol = decisionPoints(p, reasoningRequest({task: 'decisions', ids: ['D:' + id]})); assert.deepEqual([sol.missing, sol.items.length], [[], 1], 'Sol\'s decision item reads the decision');
+    assert.doesNotThrow(() => reasoningPacket(p, {task: 'decisions', ids: ['D:' + id], scope: 'test'}), 'and the packet is built ("The desk no longer holds" no more)');
+    assert.doesNotThrow(() => suggestEffects(p, d), 'the suggestions');
+    assert.doesNotThrow(() => architectureMarkdown(withFinalReview(p)), 'the SDD');
+    // the built-in error "The working choice breaks a hard constraint" holds for a selection
+    const q = structuredClone(p), c = q.decisions.records.find(x => x.id === id), chosen = c.alternatives.find(a => a.id === c.selectedAlternativeId);
+    chosen.assessments['QD-007'] = {effect: 'violates', reason: 'Keeps a copy outside region North.', evidence: 'Architect review RV-2.'};
+    const breaks = decisionFindings(withFinalReview(q, {upgrade: false})).filter(f => f.decisionId === id && f.code === 'breaks');
+    assert.deepEqual(breaks.map(f => [f.title, f.level, f.alternativeId, f.driverIds]), [['The working choice breaks a hard constraint', 'error', chosen.id, ['QD-007']]], 'a selection whose chosen candidate breaks a hard constraint raises the built-in error');
+    assert.deepEqual(decisionFindings(p).filter(f => f.decisionId === id && f.code === 'breaks'), [], 'and not when it does not');
+    pass('S5 Q1 readers: readDecision answers a selection with a reading without weights (no class, weight, total, lead, firmness or sensitivity point, whatever priorities are asked about; its one line says it is not weighed); the trade-off model, the desk probe, the what-if, design-reasoning, utility-model, Sol\'s decision item and packet, the suggestions and the SDD read it without throwing; a chosen candidate that breaks a hard constraint raises the built-in error "The working choice breaks a hard constraint"');
   });
 
   // ------------------------------------------------------------ candidate knowledge is inert

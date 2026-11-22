@@ -680,7 +680,7 @@ function leanSentence(B, d, r, pick) {
 // stated, is printed instead of this.
 function alternativeReading(B, r, a) {
   const row = r?.rows.find(x => x.id === a.id), code = id => codeOf(B.p, id);
-  if (!row) return '';
+  if (!row || r.decision?.selection) return '';
   if (row.out) return 'ruled out, it breaks ' + andList(row.breaks.map(code));
   const unshown = row.unshown.length ? '; whether it meets ' + andList(row.unshown.map(code)) + ' is not stated' : '';
   if (row.dominated?.robust) return 'dominated by ' + row.dominated.by + unshown;
@@ -799,7 +799,8 @@ const EFFECT_MARKS = {supports: '+', tension: '−', neutral: '0', violates: 'br
 const DRAFT_MARKS = [[solAssessed, 'Sol’s assessment', 'Sol’s assessments'], [rulesAssessed, 'drafted by AIW’s rules from the SA Playbook', 'drafted by AIW’s rules from the SA Playbook']];
 const READ_ALONE = ['lead', 'firmness', 'left-out', 'missing'];
 function tradeoffs(B) {
-  const {p} = B, read = decisionOrder(p, list(p.decisions?.records)).filter(d => list(d.alternatives).length > 1).map(d => ({d, r: readingOf(p, d)})).filter(x => x.r?.drivers.length);
+  // rc44 wp2 S5 (ruling Q1): a selection is not weighed; its basis is printed with its decision record instead.
+  const {p} = B, read = decisionOrder(p, list(p.decisions?.records)).filter(d => list(d.alternatives).length > 1 && !d.selection).map(d => ({d, r: readingOf(p, d)})).filter(x => x.r?.drivers.length);
   const shown = read.filter(x => SPOKEN.includes(x.r.state)), unweighed = read.filter(x => x.r.state === 'unweighed'), unjudged = read.filter(x => x.r.state === 'unjudged');
   const waiting = (unweighed.length ? plural(unweighed.length, 'decision') + ' ' + (unweighed.length === 1 ? 'weighs' : 'weigh') + ' nothing yet: no driver ' + (unweighed.length === 1 ? 'it names' : 'they name') + ' has a stated priority (' + refList(unweighed.map(x => x.d.id)) + '; the priorities are set in Chapter 2 · Work).\n\n' : '')
     + (unjudged.length ? plural(unjudged.length, 'decision') + ' compare' + (unjudged.length === 1 ? 's' : '') + ' alternatives whose effect on a weighed driver is not stated yet: ' + refList(unjudged.map(x => x.d.id)) + ' (Chapter 3 · Model · Trade-offs).\n\n' : '');
