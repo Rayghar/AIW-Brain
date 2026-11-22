@@ -138,8 +138,14 @@ function applySeeding(p,raw,at,actor){if(!['off','on'].includes(raw.state))throw
 // change is applied by a person who reviewed its changes (reviewed:true); a governed batch drafted by Sol (author kind
 // sol-draft, D-06) is applied as what it is, unreviewed (reviewed:false), and never has to claim a review nobody made.
 // Its history entry keeps who sent it, of what kind, whether a person reviewed it, and why.
-// merged(result, command, index): the server's stamping of what each command of a merge wrote (rc44, the lead's ruling
-// Y3: provenance.js mergeStamper), called after each; the browser's previews pass none.
+// rc44 (the lead's ruling Y3 of 2026-11-22): an alternative keeps who prepared each command it holds, authors[i]
+// {kind, by, account, at, session?} beside commands[i], from the commit's author as the server classified it; a revision
+// names its reviser for a command it changes or adds and keeps the preparer of one it carries as it was (the same command,
+// by digest), and its history entry keeps the list it replaced. An alternative saved before this build has no list, and a
+// command carried from one names nobody (null). merged(result, command, index): the server's stamping of what each command
+// of a merge wrote (provenance.js mergeStamper), called after each. Without an author (a caller that is not the server)
+// none of it is written.
+const preparedBy=(author,at)=>({kind:author.kind,by:author.id||null,account:author.account,at,...(author.session?{session:author.session}:{})});
 export function applyWorkbenchCommand(input,command,at,actor,{diagramNodes=null,baselineSource=null,author=null,release=null,merged=null}={}){
  if(command.type==='workspace.diagram-arrangement')return applyDiagramArrangement(structuredClone(input),command.payload||{},at,actor,diagramNodes);
  if(command.type==='workspace.seeding')return applySeeding(documentCopy(input),command.payload||{},at,actor);
@@ -150,7 +156,7 @@ export function applyWorkbenchCommand(input,command,at,actor,{diagramNodes=null,
   const applying=command.type==='workspace.apply',q=applying?previewWorkingChange(p,raw.commands,at===undefined?new Date().toISOString():at,actor):previewScenarioAlternative(p,raw.commands,raw.scenario);if(raw.stamp!==q.stamp)throw Error('The design changed. Refresh the change preview.');
   if(command.type==='workspace.alternative'){
    if(!text(raw.title,180)||!text(raw.reason)||m.alternatives.length>=60)throw Error('Name the alternative and its rationale (maximum 60).');
-   m.alternatives.push({id:'WA-'+crypto.randomUUID(),revision:1,title:text(raw.title,180),reason:text(raw.reason),commands:structuredClone(raw.commands),targets:raw.commands.map(c=>structuredClone(targetSnapshot(p,c))),basis:q.basis,scenario:q.scenario,status:'draft',at,actor});
+   m.alternatives.push({id:'WA-'+crypto.randomUUID(),revision:1,title:text(raw.title,180),reason:text(raw.reason),commands:structuredClone(raw.commands),targets:raw.commands.map(c=>structuredClone(targetSnapshot(p,c))),basis:q.basis,scenario:q.scenario,status:'draft',at,actor,...(author?{authors:raw.commands.map(()=>preparedBy(author,at))}:{})});
   }else{
    const draft=author?.kind==='sol-draft';
    if(draft&&raw.reviewed===true)throw Error('A draft by Sol is applied unreviewed (reviewed:false); a person reviews its records through the review plan.');
@@ -164,7 +170,8 @@ export function applyWorkbenchCommand(input,command,at,actor,{diagramNodes=null,
   const r=rebaseWorkingAlternative(p,a);if(a.basis!==workingBasis(p)&&raw.basisStamp!==r.stamp)throw Error('The working design changed. Review the rebased alternative before revising it.');
   for(const f of r.conflicts){const choice=raw.resolutions?.[f.index+':'+f.field],old=a.commands[f.index],next=raw.commands?.find(c=>c.type===old.type&&c.payload?.id===old.payload?.id&&c.payload?.alternativeId===old.payload?.alternativeId&&c.payload?.option?.id===old.payload?.option?.id);if(!next&&choice==='remove')continue;if(!['current','proposed'].includes(choice)||f.field==='record'||(choice==='current'&&digest(readPath(next?.payload,f.field)??null)!==digest(f.current??null)))throw Error('Resolve every overlapping field explicitly before saving this revision.');}
   const q=previewScenarioAlternative(p,raw.commands,raw.scenario===undefined?a.scenario:raw.scenario);if(q.stamp!==raw.stamp||raw.reviewed!==true||!text(raw.title,180)||!text(raw.reason))throw Error('Review this revised alternative and explain the change.');
-  a.history??=[];a.history.push({revision:a.revision,title:a.title,reason:a.reason,commands:a.commands,targets:a.targets,basis:a.basis,scenario:a.scenario||null,at:a.at,actor:a.actor});a.commands=structuredClone(raw.commands);a.targets=raw.commands.map(c=>structuredClone(targetSnapshot(p,c)));a.basis=q.basis;a.scenario=q.scenario;a.title=text(raw.title,180);a.reason=text(raw.reason);a.revision++;a.at=at;a.actor=actor;
+  const old=(a.commands||[]).map((c,i)=>[digest(c),a.authors?.[i]||null]),authors=author&&raw.commands.map(c=>{const i=old.findIndex(([x])=>x===digest(c));return i<0?preparedBy(author,at):old.splice(i,1)[0][1];});
+  a.history??=[];a.history.push({revision:a.revision,title:a.title,reason:a.reason,commands:a.commands,targets:a.targets,basis:a.basis,scenario:a.scenario||null,at:a.at,actor:a.actor,...(a.authors?{authors:a.authors}:{})});if(authors)a.authors=authors;else delete a.authors;a.commands=structuredClone(raw.commands);a.targets=raw.commands.map(c=>structuredClone(targetSnapshot(p,c)));a.basis=q.basis;a.scenario=q.scenario;a.title=text(raw.title,180);a.reason=text(raw.reason);a.revision++;a.at=at;a.actor=actor;
  }else if(command.type==='workspace.merge'){
   const a=m.alternatives.find(a=>a.id===raw.id);if(!a||a.status!=='draft')throw Error('Choose a draft alternative.');const r=rebaseWorkingAlternative(p,a);if(raw.stamp!==r.stamp)throw Error('The alternative or current design changed. Compare again.');
   for(const f of r.conflicts){const choice=raw.resolutions?.[f.index+':'+f.field];if(!['current','proposed'].includes(choice)||f.field==='record')throw Error('Resolve every changed field explicitly. Removed records require a new alternative.');if(choice==='current')setChangeField(r.commands[f.index].payload,f.field,f.current);}

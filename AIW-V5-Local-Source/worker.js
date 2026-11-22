@@ -49,7 +49,7 @@ import {storageUpgradeNeeded,storeStorageUpgrade} from './storage-upgrade.js';
 // Who or what wrote each commit and record (round 12, D-06): the commit's author, what a draft or an agent may not do,
 // and the records the commit wrote, stamped as its (authorship.js, public/provenance.js).
 import {commitAuthor,accountKind,refuseUnreviewable,activityTitle,versionBrief} from './authorship.js';
-import {stampAuthorship,innerCommands,attachProvenanceBlocks,notePreparers,mergeStamper} from './public/provenance.js';
+import {stampAuthorship,innerCommands,attachProvenanceBlocks,mergeStamper} from './public/provenance.js';
 import {cachedBuild,exportKey} from './export-cache.js';
 import {documentCopy,handOver,memoPass} from './public/document-memo.js';
 // The server's fast paths (journal sharing in documentCopy, the runtime's SHA-256) and sameJSON (round 12).
@@ -683,8 +683,8 @@ async function route(request,env,ctx){
       const merged=type==='workspace.merge'?mergeStamper(prior,input.command,author,at,{fourEyes:prior.workspace?.governance?.fourEyes===true,collections:stampedCollections(),also:(before,next,by)=>stampExtensions(before,next,by,at)}):null;
       try{if(type==='knowledge.link'&&!journeyIndex(prior).nodes.has(input.command.payload?.objectId))throw Error('Choose an existing object in this project.');const own=documentCopy(prior),packaged=extensionHandler(type);validateExtensions(prior,input.command,{at,actor,author});result=packaged?packaged(own,input.command,at,actor,{author,revision:input.revision}):type==='knowledge.fetch'?await acquireRepositorySource(own,input.command.payload||{},env,actor,at):type.startsWith('knowledge.')?applyConceptCommand(own,input.command,at,actor,{author}):type==='intelligence.adopt'?await adoptSavedIntelligence(env,owner,projectId,own,input.command.payload||{},at,actor):type==='workspace.view'?applyWorkbenchCommand(own,input.command,at,actor,{baselineSource:id=>frozenSources.get(id)||null}):commandHandler(type)(own,input.command,at,actor,{author,revision:input.revision,...(merged?{merged}:{})});result.document=withFinalReview(result.document===prior?result.document:handOver(result.document));carryProvenance(prior,result.document,at);recordSuggestions(result.document,carriers,{actor,at,selected:result.selected??null,prior});
         // An event a design package's staged handler added inside a reviewed batch or a merge states no author fields (rc44;
-        // rulings H3 and Y3): the commit's stamp below is the only one. An alternative keeps who prepared each command (Y3).
-        unstatedStaged(prior,result.document,input.command);notePreparers(prior,result.document,input.command,author,at);
+        // rulings H3 and Y3): the commit's stamp below is the only one.
+        unstatedStaged(prior,result.document,input.command);
         // A design package whose command this commit applied (its own, one a batch carries, one a merge applies) is
         // named in the document it wrote (rc44, slice S0; ruling D2: workspace.packages).
         if(result.document!==prior)markPackages(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command);

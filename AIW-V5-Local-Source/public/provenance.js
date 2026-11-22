@@ -461,24 +461,7 @@ export function stampTracked(was,now,author,at){
  if(author)settle(was,now,author,at,false,false,true);return now;
 }
 // ---------------------------------------------------------------- who wrote what a merge writes (rc44; the lead's ruling Y3 of 2026-11-22)
-// notePreparers(prior, next, command, author, at): an alternative keeps who prepared each command it holds, as the
-// server classified the commit that saved it (authorship.js commitAuthor): authors[i] {kind, by, account, at, session?}
-// beside commands[i] (workbench-domain.js workspace.alternative). A revision names its reviser for a command it changes
-// or adds and keeps the preparer of one it carries as it was (the same command, keys in any order); the list it replaces
-// is kept with the commands in the revision's history entry. The list is written only from this build on: an alternative
-// saved before it has none, and a command carried from such a one names nobody (null). Server only: worker.js.
-const canon=v=>Array.isArray(v)?'['+v.map(canon).join(',')+']':plain(v)?'{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+canon(v[k])).join(',')+'}':JSON.stringify(v??null);
-const preparer=(author,at)=>({kind:author.kind,by:author.id||null,account:author.account,at,...(author.session?{session:author.session}:{})});
-export function notePreparers(prior,next,command,author,at){
- const raw=command?.payload,type=command?.type;if(!author||!plain(raw)||type!=='workspace.alternative'&&type!=='workspace.revise-alternative')return next;
- const had=new Map(list(prior?.workbench?.alternatives).filter(plain).map(a=>[a.id,a])),mine=list(next?.workbench?.alternatives).filter(plain);
- if(type==='workspace.alternative'){for(const a of mine)if(!had.has(a.id))a.authors=list(a.commands).map(()=>preparer(author,at));return next;}
- const a=mine.find(x=>x.id===raw.id),was=had.get(raw.id);if(!a||!was||a.revision===was.revision)return next;
- const old=list(was.commands).map((c,i)=>[canon(c),plain(list(was.authors)[i])?was.authors[i]:null]);
- a.authors=list(a.commands).map(c=>{const k=canon(c),i=old.findIndex(([x])=>x===k);return i<0?preparer(author,at):old.splice(i,1)[0][1];});
- const h=list(a.history).at(-1);if(plain(h)&&Array.isArray(was.authors))h.authors=was.authors;
- return next;
-}
+// (An alternative keeps who prepared each command it holds, authors[i] beside commands[i]: workbench-domain.js.)
 // mergeStamper(prior, command, merger, at, {fourEyes, collections, also}): what stamps the records workspace.merge
 // writes, command by command (workbench-domain.js calls it with each command's result: the option `merged`), or null.
 // A record a command of the merge made or changed is stamped as written by whoever prepared that command in the
