@@ -514,6 +514,53 @@ export default async function ({block, pass, load}) {
     pass('S5 U3 concern: a candidate concern offers no comparison (selection.start refuses it for a person, a draft by Sol and an agent account; selection.candidate refuses an option of it on a document whose selection names it); a released option is compared only once it is assessed on every released criterion, whoever adds it (no notes, an empty note, a missing or blank criterion), and nothing is written until it is');
   });
 
+  // ------------------------------------------------------------ the view keeps the U3 gate (ruling V1)
+  await block('S5 V1 view', async () => {
+    pkg(); const U = await load(new URL('../public/adoption-ui.js', import.meta.url).href), {Window} = await import('happy-dom');
+    const w = new Window({url: 'http://fixture.local/'});
+    // the dialog helper a caller hands the view (architecture-task-ui.js, component-library-ui.js), and a store that sends each step as the
+    // server applies it; the view is drawn again from what the store answers
+    const open = (p, opts) => { const sent = [], errors = [], store = {value: {document: p}, async command({type, payload}) { sent.push([type, payload]); const r = send(store.value.document, type, payload); store.value = {document: doc(r)}; return r; }};
+      const modal = (title, html) => { const d = w.document.createElement('div'); d.innerHTML = '<div class="intake-body">' + html + '</div>'; w.document.body.appendChild(d); d.error = e => errors.push(e.message); return d; };
+      return {store, sent, errors, d: U.openSelection({store, modal, ...opts})}; };
+    const settle = async () => { for (let i = 0; i < 40; i++) await new Promise(r => setTimeout(r, 0)); };
+    const click = async (v, sel) => { const b = v.d.querySelector(sel); assert.ok(b, 'the view offers ' + sel); b.click(); await settle(); };
+    const note = (v, optionId, criterionId, text) => { const f = v.d.querySelector('[data-sel-note="' + optionId + '|' + criterionId + '"]'); assert.ok(f, 'the view asks a note on ' + optionId + ' · ' + criterionId); f.value = text; };
+    const start = (v, notes) => { v.d.querySelector('[data-sel-requirement]').value = 'REQ-001'; v.d.querySelector('[data-sel-driver]').value = 'QD-001'; v.d.querySelector('[data-sel-owner]').value = CONCERN_ANSWERS.owner; v.d.querySelector('[data-sel-why]').value = CONCERN_ANSWERS.reason;
+      for (const [o, ks] of Object.entries(notes)) for (const [k, t] of Object.entries(ks)) note(v, o, k, t); };
+    const p = concernProject(), before = JSON.stringify(p);
+    // a blank note writes nothing: the view checks every note before it sends selection.start, and refuses in words naming the option and the criterion
+    for (const [why, notes, words] of [
+      ['no note at all', {}, /^Assess every released approach before it is compared: One application · Recovery, Operations; Separate service · Recovery, Operations\.$/],
+      ['one blank note', {...CONCERN_NOTES, separate: {...CONCERN_NOTES.separate, operations: '   '}}, /^Assess every released approach before it is compared: Separate service · Operations\.$/],
+      ['the first option\'s note missing', {local: {operations: CONCERN_NOTES.local.operations}, separate: CONCERN_NOTES.separate}, /^Assess every released approach before it is compared: One application · Recovery\.$/]]) {
+      const v = open(p, {concernId: 'schedule-ownership', driverId: 'QD-001'}); start(v, notes); await click(v, '[data-sel-action="start-option"]');
+      assert.deepEqual(v.sent.map(([t]) => t), [], 'nothing is sent (' + why + ')'); assert.equal(v.errors.length, 1, 'the view says why (' + why + ')'); assert.match(v.errors[0], words, why);
+      assert.equal(JSON.stringify(v.store.value.document), before, 'and nothing is written (' + why + ')'); assert.ok(!v.store.value.document.decisions.records.some(d => d.selection), 'no empty selection decision is left (' + why + ')'); }
+    // assessed on every criterion, the view starts the selection and adds each released option, in the concern's order
+    { const v = open(p, {concernId: 'schedule-ownership', driverId: 'QD-001'}); start(v, CONCERN_NOTES); await click(v, '[data-sel-action="start-option"]');
+      assert.deepEqual(v.errors, []); assert.deepEqual(v.sent.map(([t, x]) => t + (x.candidate ? ':' + x.candidate.ref.optionId : '')), ['selection.start', 'selection.candidate:local', 'selection.candidate:separate'], 'the start, then each option');
+      const d = v.store.value.document.decisions.records.find(x => x.selection); assert.deepEqual(d.alternatives.map(a => a.candidate.ref.optionId), ['local', 'separate']);
+      assert.ok(!v.d.querySelector('[data-sel-action="add-option"]'), 'with every option compared, the view offers none'); }
+    // a partly started selection is completed from the view: each released option not yet compared is offered with its note fields
+    { const r = send(p, 'selection.start', {kind: 'option', concernId: 'schedule-ownership', requirementId: 'REQ-001', driverId: 'QD-001', owner: CONCERN_ANSWERS.owner, reason: CONCERN_ANSWERS.reason}), id = r.selected;
+      let q = doc(r); q = doc(send(q, 'selection.candidate', {id, candidate: {kind: 'option', ref: {optionId: 'local'}}, notes: CONCERN_NOTES.local}));
+      const html = U.selectionView(q, {decisionId: id});
+      assert.match(html, /data-sel-action="add-option" data-option="separate"/, 'the option not yet compared is offered'); assert.ok(!/data-sel-action="add-option" data-option="local"/.test(html), 'the compared one is not');
+      assert.ok(html.includes('data-sel-note="separate|recovery"') && html.includes('data-sel-note="separate|operations"') && !html.includes('data-sel-note="local|'), 'with a note field on each released criterion for the option offered only');
+      const v = open(q, {decisionId: id}), was = JSON.stringify(q);
+      note(v, 'separate', 'recovery', CONCERN_NOTES.separate.recovery); await click(v, '[data-sel-action="add-option"][data-option="separate"]');
+      assert.deepEqual(v.sent, [], 'a blank note on the offered option sends nothing'); assert.match(v.errors[0] || '', /^Assess every released approach before it is compared: Separate service · Operations\.$/); assert.equal(JSON.stringify(v.store.value.document), was, 'and writes nothing');
+      note(v, 'separate', 'recovery', CONCERN_NOTES.separate.recovery); note(v, 'separate', 'operations', CONCERN_NOTES.separate.operations); await click(v, '[data-sel-action="add-option"][data-option="separate"]');
+      assert.deepEqual(v.sent.map(([t, x]) => [t, x.id, x.candidate.ref.optionId, x.notes]), [['selection.candidate', id, 'separate', CONCERN_NOTES.separate]], 'assessed, the option is added with its notes');
+      const d = decision(v.store.value.document, id); assert.deepEqual(d.alternatives.map(a => [a.candidate.ref.optionId, a.summary]), [['local', 'Recovery: Restore one process and reconcile reservations. Operations: Facilities runs the rebuild.'], ['separate', 'Recovery: Coordinate partial failure across services. Operations: A platform team runs the rebuild.']], 'the selection is complete, as a start from the view makes it');
+      assert.ok(!v.d.querySelector('[data-sel-action="add-option"]'), 'and the view offers no option any more');
+      // once a candidate is chosen, no option is offered (a further candidate is compared in a selection of its own)
+      const c = decision(v.store.value.document, id), local = c.alternatives[0]; const chosen = doc(send(v.store.value.document, 'selection.choose', {id, alternativeId: local.id, reason: 'Fits.', unproven: [], rejections: {[c.alternatives[1].id]: 'Not this one.'}}));
+      assert.ok(!/data-sel-action="add-option"/.test(U.selectionView(chosen, {decisionId: id})), 'a chosen selection offers no option'); }
+    pass('S5 V1 view: the view checks every note before it sends selection.start and refuses in words naming the option and the criterion, so a blank note writes nothing and leaves no empty selection decision; an option selection offers each released option not yet compared, with a note field on each released criterion, so a partly started selection is completed from the view (a blank note there sends nothing too); none is offered once every option is compared or a candidate is chosen');
+  });
+
   // ------------------------------------------------------------ instantiate creates, never updates (ruling Q5)
   await block('S5 Q5 instantiate creates', async () => {
     pkg(); let {p, id} = threeCandidates(); const d0 = decision(p, id), inbox = alt(d0, 'Inbox and deduplication component');
