@@ -67,5 +67,71 @@
    "files": 2
   },
   "note": "A document that holds crosswalk rows or concept pins loads the knowledge workspace's entry (2 scripts) before it is drawn: 2,275 B more than at c709ae3 (knowledge-pins.js 1,976 B, knowledge-package.js 69 -> 365 B)."
+ },
+ "bookingsAtStart": {
+  "commit": "c709ae3",
+  "others": {
+   "audit/rc44/evidence/lead-bookings-size.json": 0,
+   "audit/rc44/evidence/wp1-s2-size.json": 118,
+   "audit/rc44/evidence/wp2-s1-size.json": 325,
+   "audit/rc44/evidence/wp9a-s1-size.json": 342
+  },
+  "pool": {
+   "audit/rc44/evidence/lead-bookings-size.json:trackPathsPartNameO2": 0,
+   "audit/rc44/evidence/wp9a-s1-size.json:baselineDefectFmtL10": 34,
+   "audit/rc44/evidence/wp9a-s1-size.json:designRowChapterKeysL5": 64
+  },
+  "note": "The size files of the tree at c709ae3 and what each booked there (as ruling X4 rules for S2.12): 3,229,840 + 0 + 118 + 325 + 342 + 0 + 34 + 64 = 3,230,723 B, the start commit's chapters route (base.chapters). S3.10 reads these, so a booking filed after the start does not break it."
+ },
+ "atMerge": {
+  "merged": "rc44/integration (e96abef: component selection, wp2 S5, closed) merged into this slice's fix-up (item 0), the head of the fix-up",
+  "measuredWith": "client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code, scripts, buckets), on the head's tree",
+  "chapters": 3228648,
+  "projects": 508269,
+  "scripts": 148,
+  "under10k": 52,
+  "css": 901873,
+  "lessIntegrated": -1192,
+  "ownBytes": 108,
+  "otherPackages": {
+   "lead-bookings-size.json": 0,
+   "wp1-s2-size.json": 118,
+   "wp2-s1-size.json": 325,
+   "wp2-s5-size.json": 864,
+   "wp9a-s1-size.json": 342
+  },
+  "sharedPool": {
+   "total": -2949,
+   "items": {
+    "trackPathsPartNameO2": 0,
+    "guidedConcernRetirementQ8": -3047,
+    "baselineDefectFmtL10": 34,
+    "designRowChapterKeysL5": 64
+   }
+  },
+  "check": "-1192 = 0 + 118 + 325 + 864 + 342 + 108 + 0 - 3047 + 34 + 64 (rc44-s0-readings.mjs assertBookingsAddUp, S0's block 'O1 the bookings add up', on this build)",
+  "wp1": {
+   "s1": 65,
+   "s2": 118,
+   "s3": 108,
+   "left": 369
+  },
+  "headroomAfter": 5144,
+  "fixUp": "The fix-up moved no byte of the chapters route: the merged tree before it (138382f) and its head each measure 3,228,648 B. Every module it changed is the server's or the knowledge workspace's lazy entry's.",
+  "opens with records": {
+   "host": "public/knowledge-workspace-ui.js",
+   "route": 3228648,
+   "added": 147292,
+   "total": 3375940,
+   "files": 2,
+   "beforeTheFixUp": {
+    "route": 3228648,
+    "added": 147750,
+    "total": 3376398,
+    "files": 2,
+    "commit": "138382f"
+   },
+   "note": "458 B less than the merged tree before the fix-up: knowledge-pins.js 1,976 -> 769 B (the list-11 finding is no longer registered in the browser, ruling X5 a), knowledge-package.js 365 -> 448 B (packageStep, X4 e), knowledge-workspace-ui.js 48,645 -> 49,311 B (the history panel reads the package's steps from the activity, X4 e)."
+  }
  }
 }

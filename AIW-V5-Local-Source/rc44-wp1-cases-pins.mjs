@@ -384,8 +384,18 @@ add('S3.10 (size, rulings A4, M4, O1): the client build passes every gate with t
   assert.equal(size.allowance.chapters, 477); assert.equal(size.base.commit, 'c709ae3'); assert.equal(size.base.chapters, 3230723);
   const booked = R.routeBookings(EVIDENCE);
   assert.equal(booked.others['audit/rc44/evidence/wp1-s2-size.json'], 118, 'the other packages\' evidence is read');
-  assert.equal(3229840 + booked.othersTotal + booked.poolTotal, size.base.chapters, 'the start commit is the integrated base and what the other packages and the pool booked');
-  assert.equal(size.slice.chapters - 3229840 - booked.othersTotal - booked.poolTotal, size.ownBytes, 'the route at the slice\'s head, less the base and the others, is what S3 books');
+  // (the fix-up, as ruling X4 rules for S2.12; old -> new. Was: the two equalities read every size file's bookings, so a
+  // booking filed after the slice's start (wp2 S5's, merged in item 0) broke them. Now they read the bookings recorded
+  // at the start commit c709ae3 in the slice's own evidence (bookingsAtStart), and each booking so recorded is asserted
+  // to be on the books still with its bytes; the head's build is checked against every booking below, and its record is
+  // atMerge.)
+  const start = size.bookingsAtStart, sum = o => Object.values(o).reduce((n, x) => n + x, 0);
+  assert.equal(start?.commit, size.base.commit, 'the bookings recorded at the start commit');
+  for (const [f, n] of Object.entries(start.others)) assert.equal(booked.others[f], n, f + ' books what it booked at the slice\'s start');
+  for (const [k, n] of Object.entries(start.pool)) assert.equal(booked.pool[k], n, k + ' is in the shared pool as at the slice\'s start');
+  assert.equal(3229840 + sum(start.others) + sum(start.pool), size.base.chapters, 'the start commit is the integrated base and what the other packages and the pool booked');
+  assert.equal(size.slice.chapters - 3229840 - sum(start.others) - sum(start.pool), size.ownBytes, 'the route at the slice\'s head, less the base and the others, is what S3 books');
+  { const m = size.atMerge; assert.ok(m && m.chapters - 3229840 - booked.othersTotal - booked.poolTotal === size.ownBytes, 'at the head (atMerge), the route less the base and every booking is what S3 books'); assert.ok(m.chapters <= BUDGET.routes.chapters && m.scripts === 148); }
   assert.ok(size.slice.chapters <= BUDGET.routes.chapters); assert.deepEqual([size.slice.scripts, size.slice.css], [148, size.base.css]);
   R.assertUnder10kCeiling(size.slice, size.base, BUDGET.tiny);
   { const w = size['opens with records']; assert.ok(w && w.host === 'public/knowledge-workspace-ui.js' && w.total === w.route + w.added && w.route === size.slice.chapters && w.files >= 1, 'opens with records'); }
@@ -397,7 +407,9 @@ add('S3.10 (size, rulings A4, M4, O1): the client build passes every gate with t
     for (const [f, o] of Object.entries(meta.outputs)) for (const server of ['public/knowledge-concepts.js', 'public/knowledge-concept-commands.js']) assert(!o.inputs?.[server], f + ' holds ' + server + ', which only the server reads');
     assert.equal(measured.scripts, 148); R.assertUnder10kCeiling(measured, size.base, BUDGET.tiny); assert.equal(measured.css, size.base.css);
     const opens = R.opensWithRecords(meta, 'public/knowledge-workspace-ui.js', Object.keys(BUDGET.data)); assert.equal(opens.route, measured.chapters);
-    if (process.argv.includes('--measure') || process.env.AIW_RC44_WP1_MEASURE === '1') { assert.deepEqual({chapters: measured.chapters, scripts: measured.scripts, under10k: measured.under10k}, {chapters: size.slice.chapters, scripts: size.slice.scripts, under10k: size.slice.under10k}, 'at the slice\'s commit the build measures what the evidence says'); assert.deepEqual(opens, {route: size['opens with records'].route, added: size['opens with records'].added, total: size['opens with records'].total, files: size['opens with records'].files}); }
+    // (the fix-up, old -> new: the measure mode compared the build with the slice's own tree before the merge, size.slice
+    // and its 'opens with records'; at the head it compares the build with the record made at the head, atMerge.)
+    if (process.argv.includes('--measure') || process.env.AIW_RC44_WP1_MEASURE === '1') { const m = size.atMerge; assert.deepEqual({chapters: measured.chapters, scripts: measured.scripts, under10k: measured.under10k}, {chapters: m.chapters, scripts: m.scripts, under10k: m.under10k}, 'at the head the build measures what the evidence says'); assert.deepEqual(opens, {route: m['opens with records'].route, added: m['opens with records'].added, total: m['opens with records'].total, files: m['opens with records'].files}); }
   }
 });
 
