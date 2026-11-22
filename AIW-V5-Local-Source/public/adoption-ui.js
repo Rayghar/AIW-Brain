@@ -1,6 +1,11 @@
-// The surfaces of the adoption package (rc44, wp2; audit/rc44/design/wp2-adoption.md §d.3), held in the lazy entry of
-// the comparison tools (architecture-task-ui.js imports this module; ruling D7.6). Slice S3 adds the adoption
-// workspace; this file holds, for now, only the selection's part (slice S5), its own exported functions.
+// The surfaces of the adoption package (rc44, wp2; audit/rc44/design/wp2-adoption.md §d.3).
+// adoption-package.js imports this module (ruling Q9 (6); the comparison tools' entry, architecture-task-ui.js, imports the package, so this module is held
+// in that lazy entry, ruling D7.6, and the server loads it with the package). Slice S3 adds the adoption workspace; this
+// file holds, for now, only the selection's part (slice S5), its own exported functions.
+// window.aiwSelection is a contract later slices inherit until the lead's decision on where package readers load (ruling
+// D10, at the close of wave 2): openSelection({store, modal, decisionId?, responsibilityId?, concernId?, driverId?}), set
+// when this module loads in the browser; a workbench module reaches the selection only through it (component-library-ui.js,
+// architecture-task-ui.js openConcern), because no workbench module imports a module of the package.
 //
 // ---------------------------------------------------------------- component selection (slice S5)
 // Starts from the responsibility, shows the hard constraints that reach it, the candidates in the order they were added

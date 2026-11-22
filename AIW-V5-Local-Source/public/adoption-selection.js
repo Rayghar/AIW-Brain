@@ -88,11 +88,16 @@ export function selectableProfiles(p){
 }
 
 // ---------------------------------------------------------------- the constraints and the eligibility of a candidate
-// The hard constraints of a selection: the constraint drivers the decision names whose force is hard, in the
-// decision's order. Read from the drivers as they stand; none carries a typed reading (ruling Q3).
+// The hard constraints of a selection: the constraint drivers whose force is hard that the decision names, in its order,
+// then those that reach what is selected now and the decision does not name yet (ruling Q9 (1): a hard constraint that
+// reaches the responsibility, or the compared requirement, after the start is read at the choice and at instantiation:
+// its row reads unknown until a person judges it, and a confirm or a choice that did not see it no longer covers the
+// selection). Read from the drivers as they stand; none carries a typed reading (ruling Q3).
 export function selectionConstraints(p,d){
  const s=d?.selection;if(!plain(s))return [];
- return list(d.driverIds).map(id=>list(p?.quality?.drivers).find(x=>x.id===id)).filter(x=>x&&driverKind(x)==='constraint'&&constraintForce(p,x).hard).map(x=>({id:x.id,source:'driver',driverId:x.id,label:x.title,hard:true}));
+ const drivers=list(p?.quality?.drivers),scopes=s.kind==='component'?driverScopeIndex(p):null,reaches=x=>s.kind==='component'?list(driverScope(p,x,scopes)?.responsibilityIds).some(id=>list(s.responsibilityIds).includes(id)):list(x.requirementIds).includes(s.requirementId);
+ const named=list(d.driverIds).map(id=>drivers.find(x=>x.id===id)).filter(Boolean);
+ return [...named,...drivers.filter(x=>!named.includes(x)&&reaches(x))].filter(x=>driverKind(x)==='constraint'&&constraintForce(p,x).hard).map(x=>({id:x.id,source:'driver',driverId:x.id,label:x.title,hard:true}));
 }
 // Whether what a candidate rests on still stands in this project, read on each read (ruling Q6): the released claim
 // of a profile and of a concern's option; the library entry (still in the project's library, not deprecated, at the

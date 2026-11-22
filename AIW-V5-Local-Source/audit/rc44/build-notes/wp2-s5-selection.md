@@ -193,10 +193,10 @@ from, then the change; a WIP commit after each item.
 
 ### Progress
 
-- **Done:** items 1 to 7 (Q7, Q1, Q2, Q3, Q4, Q5 and Q6, Q8). Every S5 block is green; S1's `size` block is red until
-  item 9 (its allowance check). `design-concern-validate.mjs` now fails at l.24 instead of l.119 (see item 7).
-- **In progress:** item 8 (Q9).
-- **Next:** item 9 (notes, size, suites, final commit).
+- **Done:** items 1 to 8 (Q7, Q1, Q2, Q3, Q4, Q5 and Q6, Q8, Q9). S1's `size` block is red until item 9 (its allowance
+  check). `design-concern-validate.mjs` now fails at l.24 instead of l.119 (item 7).
+- **In progress:** item 9 (notes, size, suites, final commit).
+- **Next:** the lead's review.
 
 ### Items
 
@@ -370,3 +370,27 @@ from, then the change; a WIP commit after each item.
      holds it), or a decision that it retires with the path.
    Route: the retirement takes the guided path's code off the chapters route (`architecture-design.js` 11,622 -> 8,608
    B in the route's output), which more than pays for Q1, Q2 and Q4 (see item 9).
+8. **Q9 — done for (1), (5), (6), (8), (9), (10); (11) in item 9.** Case `S5 Q9 the rest` (new; failed first on "the
+   late hard constraint is one of the selection's").
+   - (1), should-fix 1: `selectionConstraints` reads the hard constraints the decision names and, after them, those that
+     reach what is selected now (a component selection's responsibilities through driver-scope.js; an option
+     selection's requirement), so a constraint that arrives after the start is read at the choice (the choice writes it
+     into the decision's drivers and its rows into Chapter 3) and at instantiation (its unknown row was not named
+     unproven: "changed since it was chosen"); the confirm no longer covers the selection, so acceptance and
+     instantiation are refused until a person judges the row and a second person confirms again.
+   - (5), should-fix 5: `selection.judge` writes through the chapter's own handler (the rows written into Chapter 3 by an
+     inner `decision.alternative`), so the decision is revised and its history keeps it; the bare version bump is gone.
+   - (6), should-fix 6, design concern 5: `adoption-ui.js`'s header says that `adoption-package.js` imports it and states
+     `window.aiwSelection` as a contract later slices inherit until the lead's decision D10 (its arguments now include
+     `concernId` and `driverId`).
+   - (8), should-fix 8: a project copied from a template keeps a selection's decision with its alternatives as plain
+     alternatives: no `selection` key, no candidate block (no facts are stored since item 6), nothing chosen; a plain
+     Chapter 3 decision, weighed as one (`project-lifecycle.js`, the edit Q9 rules). Replaced (`S5 old documents`): the
+     copy's `selection` is null and its reading weighs nothing -> no `selection` key, no candidate block, nothing chosen,
+     weighed as a plain decision, and no selection finding there.
+   - (9), should-fix 9: the SDD prints, beside the rows stored at the choice, the reading as it is now, with why a
+     candidate no longer stands ("at the choice: … · now: …"), so a withdrawn profile does not keep printing pass
+     (`sdd-architecture.js`, server-only, imports `candidateEligibility`).
+   - (10), should-fix 10: the case "an option with a failing excludes predicate is now ineligible" is kept in
+     `S5 parity row 9`, marked for wp1's selection form (and wp9b's gates), holding today's reading: unknown, chosen only
+     as unproven.

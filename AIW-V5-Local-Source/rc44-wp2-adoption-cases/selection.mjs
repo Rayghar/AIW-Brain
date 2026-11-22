@@ -21,6 +21,8 @@
 //   S5 Q5 instantiate creates  a payload with an id is refused; the component's source names its release, claim, hash and
 //                    decision, and every reader finds them (ruling Q5);
 //   S5 Q6 elsewhere  a recovery import moves the selection's steps aside; facts and standing read on each read (Q6);
+//   S5 Q9 the rest   a late hard constraint, the judgement through the chapter, the view's contract, the SDD's current
+//                    reading (ruling Q9; the template copy (8) in S5 old documents, the excludes case (10) in S5 parity);
 //   S5 candidate knowledge  a candidate profile is read by the chooser, refused by selection.candidate, and reaches no
 //                    constraint, eligibility row, finding or reading (plan ruling 6);
 //   S5 Sol           a draft by Sol proposes (a selection, a candidate marked by Sol) and states no typed reading of a
@@ -460,6 +462,31 @@ export default async function ({block, pass, load}) {
     pass('S5 Q6 elsewhere: a recovery import moves each selection\'s judgements, confirm and choice aside (assertRecoveryClearsSteps), so a judged row reads unknown and Chapter 3\'s choice is no selection\'s until a person chooses again; a profile\'s facts are read from its released claim on each read, never from the stored copy, and a library entry states none; a library entry removed, an archetype this build does not know and an existing component no longer in the model (the lifecycle refuses to retire one a selection compares) no longer stand, say why, and are not chosen');
   });
 
+  // ------------------------------------------------------------ the other should-fix items (ruling Q9)
+  await block('S5 Q9 the rest', async () => {
+    pkg(); const Q = (await import('../public/quality-domain.js')).applyQualityCommand;
+    let {p, id} = threeCandidates(); const d0 = decision(p, id), inbox = alt(d0, 'Inbox and deduplication component');
+    // (5) a judgement is written through the chapter's own handler: the decision is revised
+    const before = d0.revision; p = doc(send(p, 'selection.judge', {id, alternativeId: inbox.id, constraintId: 'QD-008', state: 'pass', evidence: 'Ticket OPS-12.', reason: 'Operated on the platform.'}, B));
+    assert.ok(decision(p, id).revision > before, 'selection.judge revises the decision through Chapter 3\'s handler');
+    p = doc(send(p, 'selection.choose', {id, alternativeId: inbox.id, reason: 'Fits.', rejections: Object.fromEntries(d0.alternatives.filter(a => a.id !== inbox.id).map(a => [a.id, 'Not this one.']))}));
+    p = acceptDecision(p, id);
+    // (1) a hard constraint that reaches the responsibility after the start is read: the confirm lapses and nothing is instantiated
+    p = withFinalReview(Q(p, {type: 'quality.driver', payload: {kind: 'constraint', title: 'Encrypt payment data at rest', description: 'Every store of the payment path encrypts at rest.', impact: 'Rules out a store without encryption.', priority: 'High', requirementIds: ['REQ-001']}}, AT).document, {upgrade: false});
+    const late = p.quality.drivers.at(-1).id;
+    assert.ok(S.selectionConstraints(p, decision(p, id)).some(k => k.id === late), 'the late hard constraint is one of the selection\'s');
+    assert.ok(decisionFindings(p).some(f => f.decisionId === id && f.code === 'selection-confirm' && f.level === 'error'), 'the confirm no longer covers what the selection says');
+    assert.throws(() => send(p, 'selection.instantiate', {id, reviewed: true, component: {title: 'Inbox', kind: 'service', purpose: 'Deduplicate.', boundary: 'Its store.', owner: 'Payments platform'}}), /changed since it was chosen|confirmed by a second person/, 'and the chosen candidate is not instantiated');
+    // (6) the view's module says the package imports it, and the hook is a contract
+    const ui = readFileSync(new URL('../public/adoption-ui.js', import.meta.url), 'utf8');
+    assert.match(ui, /adoption-package\.js imports this module/); assert.match(ui, /window\.aiwSelection is a contract/);
+    // (9) the SDD prints the current reading beside the rows stored at the choice
+    const off = withFinalReview(applyKnowledgeCommand(p, {type: 'knowledge.deactivate', payload: {reviewed: true, reviewer: 'Second reviewer', reason: 'Withdraw project activation.', id: p.knowledge.releases.at(-1).id, stamp: knowledgeStamp(p)}}, AT, 'author').document, {upgrade: false});
+    const md = architectureMarkdown(withFinalReview(off)).markdown;
+    assert.match(md, /Inbox and deduplication component \(profile[^)]*\): chosen · at the choice: Customer records stay in region North: pass \(judged by architect-b\)[^·]*· now: Customer records stay in region North: unknown[^\n]*no longer current/, 'a withdrawn profile does not keep printing pass');
+    pass('S5 Q9 the rest: a judgement revises the decision through Chapter 3\'s handler (5); a hard constraint that reaches the responsibility after the start is the selection\'s, the confirm no longer covers the selection and the chosen candidate is not instantiated (1); the view\'s module states who imports it and the hook it sets as a contract (6); the SDD prints the current reading beside the rows stored at the choice, so a withdrawn profile does not keep printing pass (9)');
+  });
+
   // ------------------------------------------------------------ candidate knowledge is inert
   await block('S5 candidate knowledge', async () => {
     pkg(); let {p, id} = threeCandidates();
@@ -631,7 +658,10 @@ export default async function ({block, pass, load}) {
       assert.deepEqual(x.alternatives.map(a => [a.candidate.kind, a.candidate.ref.optionId, a.candidate.outcome]), [['option', 'local', o === 'local' ? 'chosen' : 'rejected'], ['option', 'separate', o === 'separate' ? 'chosen' : 'rejected']]);
     }
     // an option meets the hard constraints too: with a constraint driver on the requirement its row reads unknown (a
-    // released concern states no typed fact of an option), so it is chosen only when named unproven
+    // released concern states no typed fact of an option), so it is chosen only when named unproven.
+    // MARKED FOR wp1's selection form (ruling Q9 (10); design S5: "an option with a failing excludes predicate is now
+    // ineligible"): this holds today's reading, unknown, not ineligible; when wp1 gives options typed content and wp9b
+    // typed gates, this case flips to ineligible.
     { let p = withFinalReview(applyKnowledgeCommand(concernProject(), {type: 'knowledge.source', payload: {title: 'x', body: 'x\ny\n', path: 'x.txt', revision: '1', license: 'Synthetic'}}, AT, 'author').document, {upgrade: false});
       p = withFinalReview((await import('../public/quality-domain.js')).applyQualityCommand(p, {type: 'quality.driver', payload: {kind: 'constraint', title: 'Stay on the shared platform', description: 'One platform.', impact: 'No second platform.', priority: 'High', requirementIds: ['REQ-001']}}, AT).document, {upgrade: false});
       const r = send(p, 'selection.start', {kind: 'option', concernId: 'schedule-ownership', requirementId: 'REQ-001', driverId: 'QD-001', owner: CONCERN_ANSWERS.owner, reason: CONCERN_ANSWERS.reason}), id = r.selected; p = doc(r);
@@ -709,10 +739,15 @@ export default async function ({block, pass, load}) {
     assert.ok(R.assertBuiltInChainsUnchanged(withFinalReview(without, {upgrade: false}), p) > 0);
     assert.ok(R.assertFindingIdsUnique(p) >= 0);
     R.assertTemplateCopyClearsSteps(p, q => q.decisions.records.filter(d => d.selection));
-    { const copy = instantiateTemplate(withFinalReview({...p, workspace: {...p.workspace, reusableTemplate: true}}), 'copy', 'A copy', AT), d = decision(copy, id);
-      assert.equal(d.selection, null, 'a project copied from a template carries no selection step: the choice, the judgements and the typed readings are a person\'s in the template');
-      // (ruling Q1; was: readDecision(copy, d) is null. Now the reading is answered and weighs nothing.)
-      assert.ok(readDecision(copy, d).drivers.every(x => !x.weight && !x.cls) && readDecision(copy, d).lead === null, 'and its alternatives are still not weighed'); assert.deepEqual(S.selectionReading(copy, d), null); }
+    // (ruling Q9 (8); was: the copy keeps the decision with selection null, its alternatives with their candidate blocks,
+    // neither a selection nor weighed. Now the copy keeps the decision's alternatives as plain alternatives: no selection
+    // key, no candidate block or facts, nothing chosen; a plain Chapter 3 decision, weighed as one.)
+    { const copy = instantiateTemplate(withFinalReview({...p, workspace: {...p.workspace, reusableTemplate: true}}), 'copy', 'A copy', AT), d = decision(copy, id), was = decision(p, id);
+      assert.equal('selection' in d, false, 'a project copied from a template carries no selection: the choice, the judgements and the confirm are persons\' steps in the template');
+      assert.deepEqual(d.alternatives.map(a => a.title), was.alternatives.map(a => a.title), 'its alternatives are kept'); assert.ok(d.alternatives.every(a => !('candidate' in a)), 'as plain alternatives, with no candidate block or facts');
+      assert.deepEqual([d.selectedAlternativeId, d.status], [null, 'draft'], 'nothing is chosen');
+      assert.ok(readDecision(copy, d).drivers.some(x => x.cls), 'and it is weighed as a plain decision'); assert.deepEqual(S.selectionReading(copy, d), null);
+      assert.deepEqual(decisionFindings(copy).filter(f => f.decisionId === id && /^selection-/.test(f.code)), [], 'the selection raises nothing there'); }
     { const a = D.adoptionRecords(p).find(x => x.kind === 'profile'), q = structuredClone(p); D.adoptionRecords(q).find(x => x.id === a.id).review = {actor: C, at: AT, account: 'person', revision: a.revision, seq: 9, note: '', deviationIds: []}; R.assertTemplateCopyClearsSteps(q, x => D.adoptionRecords(x)); }
     assert.ok(R.assertStepsMoveNoStamp(p, x => D.adoptionRecords(x)) > 0, 'no person\'s step on the profile adoption moves a design stamp');
     pass('S5 old documents: the three references, the document with a review list and the two fixtures without a selection read byte for byte as at ' + BASE.capturedFrom + ' (graph, model, trails, findings, stamps, readiness, provenance, registers, SDD, ARS) and gain no key; with a selection chosen and instantiated the profile adoption moves no built-in layer or chain, finding ids are unique, the selection\'s steps and the adoption\'s acceptance are cleared in a template copy, and no step moves a design stamp');
@@ -754,19 +789,23 @@ export default async function ({block, pass, load}) {
     assert.deepEqual(inClient, ['public/adoption-domain.js', 'public/adoption-package.js', 'public/adoption-selection.js', 'public/adoption-ui.js'], 'the client holds the readers, the steps, the selection and its view, and no upgrade (ruling J12)');
     const libOut = Object.keys(meta.outputs).find(f => meta.outputs[f].entryPoint === 'public/component-library-ui.js'); assert.ok(!Object.keys(meta.outputs[libOut].inputs).some(i => /adoption-/.test(i)), 'the library chooser\'s entry holds no adoption module');
     const START = 3230605, INTEGRATED = 3229840, measured = {chapters: report.routes.chapters.code, projects: report.routes.projects.code, scripts: report.scripts, under10k: report.buckets.under10k, css: report.css};
-    if (process.argv.includes('--measure')) { mkdirSync('audit/rc44/evidence', {recursive: true}); writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v3', name: 'wp2 S5 component selection as a recorded decision', measuredWith: 'client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code, scripts, buckets)', allowance: {chapters: 600, of: 'all of wp2 (ruling A4): S1 books 325 B (ruling N1), so S5 may add at most 275 B', scripts: 148}, caps: {chapters: BUDGET.routes.chapters, scripts: BUDGET.scripts}, bases: {start: {commit: '5cae40a (wp9a slice 1 after its second fix-up, on rc44/integration a4c1690)', chapters: START, projects: 507338, scripts: 148, under10k: 53, css: 901873}, integrated: {commit: '9673661', chapters: INTEGRATED}}, slice: measured, ownBytes: measured.chapters - START, projectsDelta: measured.projects - 507338, headroomAfter: BUDGET.routes.chapters - measured.chapters,
+    if (process.argv.includes('--measure')) { mkdirSync('audit/rc44/evidence', {recursive: true}); writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v3', name: 'wp2 S5 component selection as a recorded decision', measuredWith: 'client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code, scripts, buckets)', allowance: {chapters: 800, of: 'all of wp2 (ruling Q10, was 600 B by ruling A4): S1 books 325 B (ruling N1), so S5 may add at most 475 B', scripts: 148}, caps: {chapters: BUDGET.routes.chapters, scripts: BUDGET.scripts}, bases: {start: {commit: '5cae40a (wp9a slice 1 after its second fix-up, on rc44/integration a4c1690)', chapters: START, projects: 507338, scripts: 148, under10k: 53, css: 901873}, integrated: {commit: '9673661', chapters: INTEGRATED}}, slice: measured, ownBytes: Math.max(0, measured.chapters - START), routeDelta: measured.chapters - START, routeDeltaNote: 'The chapters route against the start: negative once the fix-up retired the guided comparison of a released concern (ruling Q8), whose code left the route. A package books no negative figure (ruling O1): S5 books 0, and the saving is the lead\'s to book at the merge (lead-bookings-size.json).', projectsDelta: measured.projects - 507338, headroomAfter: BUDGET.routes.chapters - measured.chapters,
       'opens with records': {gate: 'The chapters-route gate measures opening a document that holds no package records (ruling D10).', host: HOST, ...opens, holds: 'the adoption record\'s readers, steps and tracker (adoption-domain.js), the registration (adoption-package.js), the selection (adoption-selection.js) and its view (adoption-ui.js); not the upgrade (ruling J12)'}}, null, 1) + '\n'); }
     assert.ok(existsSync(EVIDENCE), 'the slice\'s measurement is kept (node rc44-wp2-adoption-validate.mjs --measure)');
     const size = JSON.parse(readFileSync(EVIDENCE, 'utf8')), s1 = JSON.parse(readFileSync(S1_EVIDENCE, 'utf8')), s1Own = s1.ownBytes ?? s1.delta;
-    assert.ok(Number.isInteger(size.ownBytes) && size.ownBytes >= 0 && size.ownBytes <= 275, 'S5\'s own route bytes are an integer within what wp2 has left: ' + size.ownBytes);
-    assert.equal(size.ownBytes, size.slice.chapters - size.bases.start.chapters); assert.equal(size.slice.scripts, 148); assert.equal(size.slice.css, 901873, 'no stylesheet rule'); assert.equal(size['opens with records'].route, size.slice.chapters);
+    // (the fix-up, rulings O1 and Q10; was: ownBytes within 275 B and equal to the route's growth over the start. Now
+    // ownBytes is an integer of at least 0 within the 475 B wp2 has left of 800 B, equal to the growth when the route
+    // grew and 0 when it shrank, and the measured delta is kept beside it, exactly.)
+    assert.ok(Number.isInteger(size.ownBytes) && size.ownBytes >= 0 && size.ownBytes <= 475, 'S5\'s own route bytes are an integer within what wp2 has left: ' + size.ownBytes);
+    assert.equal(size.routeDelta, size.slice.chapters - size.bases.start.chapters); assert.equal(size.ownBytes, Math.max(0, size.routeDelta)); assert.equal(size.slice.scripts, 148); assert.equal(size.slice.css, 901873, 'no stylesheet rule'); assert.equal(size['opens with records'].route, size.slice.chapters);
     if (process.argv.includes('--measure')) assert.deepEqual(measured, size.slice);
     // ruling M4: this build's growth over the integrated base, less every other package's own bytes and the shared pool's, is wp2's (S1's and S5's own)
     const booked = R.routeBookings(EVIDENCE), notWp2 = Object.entries(booked.others).filter(([f]) => !/\/wp2-/.test(f)).reduce((n, [, b]) => n + b, 0), wp2 = measured.chapters - INTEGRATED - notWp2 - booked.poolTotal;
+    assert.ok(wp2 <= 800, 'wp2\'s bytes on this build are within its 800 B (ruling Q10): ' + wp2);
     assert.equal(wp2, s1Own + (measured.chapters - START), 'wp2\'s bytes on this build are S1\'s own and S5\'s: ' + wp2 + ' (the route grew ' + (measured.chapters - INTEGRATED) + ' B over the integrated base; other packages\' own ' + notWp2 + ' B; the shared pool ' + booked.poolTotal + ' B)');
-    assert.ok(s1Own + size.ownBytes <= 600, 'S1\'s own bytes and S5\'s stay within wp2\'s 600 B: ' + s1Own + ' + ' + size.ownBytes);
+    assert.ok(s1Own + size.ownBytes <= 800, 'S1\'s own bytes and S5\'s stay within wp2\'s 800 B (ruling Q10; was 600 B): ' + s1Own + ' + ' + size.ownBytes);
     assert.ok(measured.chapters <= BUDGET.routes.chapters);
-    pass('S5 size: every gate passes with the caps unchanged; 148 script files; the selection and its view are held in the lazy entry of ' + HOST + ' with the package, and the library chooser\'s entry holds none of it; S5 books ' + size.ownBytes + ' B of its own on the chapters route (' + START + ' → ' + size.slice.chapters + '), wp2 ' + wp2 + ' B of 600 (S1 ' + s1Own + ' + S5 ' + size.ownBytes + ', ruling M4); opens with records: ' + size['opens with records'].total + ' B (' + size['opens with records'].added + ' B in ' + size['opens with records'].files + ' scripts beside the route)');
+    pass('S5 size: every gate passes with the caps unchanged; 148 script files; the selection and its view are held in the lazy entry of ' + HOST + ' with the package, and the library chooser\'s entry holds none of it; S5 books ' + size.ownBytes + ' B of its own on the chapters route (' + START + ' → ' + size.slice.chapters + ', ' + size.routeDelta + ' B), wp2 ' + wp2 + ' B of 800 (S1 ' + s1Own + ' + S5 ' + size.ownBytes + ' booked, the route ' + size.routeDelta + ' B against the start, rulings M4, O1, Q10); opens with records: ' + size['opens with records'].total + ' B (' + size['opens with records'].added + ' B in ' + size['opens with records'].files + ' scripts beside the route)');
   });
   if (h) h.close();
 }
