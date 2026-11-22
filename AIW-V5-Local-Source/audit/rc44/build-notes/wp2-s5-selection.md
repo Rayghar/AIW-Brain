@@ -21,6 +21,9 @@ is S1's second-person step.
   "Fix-up" at the end of this file for each item, its case and what is left.
 - **Second fix-up:** branch `rc44/wp2-s5-selection-fix-c2`, from 7f1b897; the rulings of section U (2026-11-22,
   after the fix-up's verifier); see the section "Second fix-up" at the end of this file.
+- **Third fix-up:** branch `rc44/wp2-s5-selection-fix-c3`, from abfdb56, with `rc44/integration` (c709ae3) merged
+  first; the rulings of section V (2026-11-22, after the second verifier); see the section "Third fix-up" at the end
+  of this file.
 
 ## What was built
 
@@ -751,3 +754,27 @@ in the first fix-up and 83 B more by U1 (`decisions-domain.js` is on it): 705 B 
    −3,047 B) and run O1's merge check on the merged tree.
 4. wp2 has 11 B of route headroom.
 5. The owner's decision on candidate profile content in design projects (Q11) is still pending.
+
+## Third fix-up (rulings V1 to V5 of 2026-11-22; verifier /home/user/hb-review/rc44-build/wp2-s5-selection.verify2.json)
+
+Branch `rc44/wp2-s5-selection-fix-c3` from `abfdb56` (the second fix-up's head). Items in the order the lead gave them:
+0, merge `rc44/integration` (c709ae3); 1, V3; 2, V1; 3, V2; 4, V4; 5, V5 and the final checks. Each case first, seen to
+fail on the head it started from, then the change; a WIP commit after each item.
+
+### Progress
+
+- **Done:** item 0, the merge of `rc44/integration` (c709ae3: the typed deployment topology, wp9a slice 1, closed; the
+  crosswalk, wp1 S2, closed). One conflict, `audit/rc44/evidence/lead-bookings-size.json` (add/add), resolved by joining
+  both items as V3 says (`trackPathsPartNameO2` 0 B from wp9a's branch, `guidedConcernRetirementQ8` −3,047 B from this
+  slice), each with its measurement kept; no other conflict. `node build.mjs` on the merge: chapters route 3,228,540 B
+  (3,228,422 B at abfdb56), projects 508,161 B, 148 scripts, buckets 52 / 51 / 45, stylesheet 901,873 B, no violation.
+  The route less the integrated base, −1,300 B, is what the size files book: 0 + 118 + 325 + 864 + 342 + 0 − 3,047 + 34
+  + 64. The four rc44 suites on the merge: `rc44-wp2-adoption` 44 blocks green; `rc44-wp9a-deployment` 25 checks green
+  (S1.10 included; its share of the lazy entry is as pinned: modules as pinned, lists 168 B, total 22,674 B: the bound
+  did not move); `rc44-s0-extensions` red in block `O1 the bookings add up` only, its stale-figure case (`the chapters
+  route grew \d+ B` does not match a growth of −1,300 B; item 1); `rc44-wp1-knowledge` 56 passed, 3 pending, **1 red**:
+  S2.12 ("the start commit is the integrated base and what the other packages and the pool booked": it adds every size
+  file's bookings, this slice's 864 B and the lead's −3,047 B included, to the integrated base and expects wp1 S2's start
+  commit, 3,230,605 B; on the merge that sum is 3,228,422 B). S2.12 is wp1's own case and V names no edit of it: not
+  mine to change (see "Open points for the lead" of this section).
+- **In progress:** item 1 (V3).

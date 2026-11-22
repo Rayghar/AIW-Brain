@@ -1,0 +1,172 @@
+{
+ "schema": "aiw.crosswalk-seed/1",
+ "seedId": "AIW-CROSSWALK-SEED-1",
+ "status": "candidate",
+ "authority": "Candidate only. Proposed crosswalk rows built from the product's own SA Playbook and catalogue; no row is reviewed, and none names an identity until a second person verifies it and a release holds its concept.",
+ "influence": {
+  "scoring": false,
+  "constraints": false,
+  "eligibility": false,
+  "conformance": false,
+  "identity": false,
+  "drafter": false,
+  "brain": false
+ },
+ "productionAccepted": false,
+ "playbook": {
+  "id": "AIW-PLAYBOOK-3",
+  "files": [
+   {
+    "file": "SA Playbook_v2.xlsx",
+    "sha256": "d3ee19a22e664b365a0e3d618bf60ebb195788b5578a425d25c8672e7c53e4a6"
+   },
+   {
+    "file": "Architecture Tactics_.docx",
+    "sha256": "7c41e88176821bb9f9634b293e62e35364115afab5a8336aeafc86df36436641"
+   },
+   {
+    "file": "Table Analysis_Architectural Patterns and Quality Properties.docx",
+    "sha256": "eb0fe19481c4055f95d9fa60bb59c4bf456ad709ff149b665e5042648cf3f093"
+   }
+  ]
+ },
+ "catalogueRelease": "AKR-0.10.73.5",
+ "catalogueSha256": "bdfb8975f8e1fad42ef30133c56413dfe3c9b385b49e7101b82555927ea919d6",
+ "rows": [
+  {
+   "scheme": "playbook",
+   "aliasId": "P-CHECK-POINTED-SYSTEM",
+   "conceptId": "PAT-BACKUP-AND-RESTORE",
+   "label": "Check-pointed System (SA Playbook) · Backup and Restore (AKR-0.10.73.5)",
+   "relation": "same",
+   "status": "proposed",
+   "targetContent": "marked",
+   "basis": "Exact name match: the SA Playbook entry names the catalogue record \"Backup and Restore\". For the reviewer: a name is not a mechanism; check both."
+  },
+  {
+   "scheme": "playbook",
+   "aliasId": "P-STANDBY",
+   "conceptId": "PAT-ACTIVE-PASSIVE",
+   "label": "Standby (SA Playbook) · Active-Passive (AKR-0.10.73.5)",
+   "relation": "same",
+   "status": "proposed",
+   "targetContent": "marked",
+   "basis": "Exact name match: the SA Playbook entry names the catalogue record \"Active-Passive\". For the reviewer: a name is not a mechanism; check both."
+  },
+  {
+   "scheme": "playbook",
+   "aliasId": "P-SECURE-COMMUNICATION",
+   "conceptId": "PAT-DATA-ENCRYPTION-IN-TRANSIT",
+   "label": "Secure Communication (SA Playbook) · Data Encryption in Transit (AKR-0.10.73.5)",
+   "relation": "same",
+   "status": "proposed",
+   "targetContent": "template",
+   "basis": "Exact name match: the SA Playbook entry names the catalogue record \"Data Encryption in Transit\". For the reviewer: a name is not a mechanism; check both."
+  },
+  {
+   "scheme": "playbook",
+   "aliasId": "P-CANARY-DEPLOYMENT",
+   "conceptId": "PAT-CANARY-RELEASE",
+   "label": "Canary Deployment (SA Playbook) · Canary Release (AKR-0.10.73.5)",
+   "relation": "same",
+   "status": "proposed",
+   "targetContent": "template",
+   "basis": "Exact name match: the SA Playbook entry names the catalogue record \"Canary Release\". For the reviewer: a name is not a mechanism; check both."
+  },
+  {
+   "scheme": "playbook",
+   "aliasId": "P-FACADE",
+   "conceptId": "PAT-FACADE",
+   "label": "Facade (SA Playbook) · Facade (AKR-0.10.73.5)",
+   "relation": "same",
+   "status": "proposed",
+   "targetContent": "template",
+   "basis": "Exact name match: the SA Playbook entry names the catalogue record \"Facade\". For the reviewer: a name is not a mechanism; check both."
+  },
+  {
+   "scheme": "playbook",
+   "aliasId": "P-ADAPTER",
+   "conceptId": "PAT-ADAPTER",
+   "label": "Adapter (SA Playbook) · Adapter (AKR-0.10.73.5)",
+   "relation": "same",
+   "status": "proposed",
+   "targetContent": "template",
+   "basis": "Exact name match: the SA Playbook entry names the catalogue record \"Adapter\". For the reviewer: a name is not a mechanism; check both."
+  },
+  {
+   "scheme": "playbook",
+   "aliasId": "P-STRANGLER",
+   "conceptId": "PAT-STRANGLER-FIG",
+   "label": "Strangler (SA Playbook) · Strangler Fig (AKR-0.10.73.5)",
+   "relation": "same",
+   "status": "proposed",
+   "targetContent": "template",
+   "basis": "Exact name match: the SA Playbook entry names the catalogue record \"Strangler Fig\". For the reviewer: a name is not a mechanism; check both."
+  },
+  {
+   "scheme": "playbook",
+   "aliasId": "P-OBSERVER",
+   "conceptId": "PAT-PUBLISH-SUBSCRIBE",
+   "label": "Observer (SA Playbook) · Publish-Subscribe (AKR-0.10.73.5)",
+   "relation": "same",
+   "status": "proposed",
+   "targetContent": "template",
+   "basis": "Exact name match: the SA Playbook entry names the catalogue record \"Publish-Subscribe\". For the reviewer: a name is not a mechanism; check both."
+  },
+  {
+   "scheme": "playbook",
+   "aliasId": "P-STRATEGY",
+   "conceptId": "PAT-STRATEGY-PATTERN",
+   "label": "Strategy (SA Playbook) · Strategy Pattern (AKR-0.10.73.5)",
+   "relation": "same",
+   "status": "proposed",
+   "targetContent": "template",
+   "basis": "Exact name match: the SA Playbook entry names the catalogue record \"Strategy Pattern\". For the reviewer: a name is not a mechanism; check both."
+  },
+  {
+   "scheme": "playbook",
+   "aliasId": "P-THROTTLING",
+   "conceptId": "PAT-THROTTLING",
+   "label": "Throttling (SA Playbook) · Throttling (AKR-0.10.73.5)",
+   "relation": "same",
+   "status": "proposed",
+   "targetContent": "template",
+   "basis": "Exact name match: the SA Playbook entry names the catalogue record \"Throttling\". For the reviewer: a name is not a mechanism; check both."
+  },
+  {
+   "scheme": "playbook",
+   "aliasId": "AP-TIGHT-COUPLING",
+   "conceptId": "ANTI-DISTRIBUTED-MONOLITH",
+   "label": "Tight Coupling (SA Playbook) · Distributed Monolith (AKR-0.10.73.5)",
+   "relation": "same",
+   "status": "proposed",
+   "targetContent": "template",
+   "basis": "Exact name match: the SA Playbook entry names the catalogue record \"Distributed Monolith\". For the reviewer: a name is not a mechanism; check both."
+  },
+  {
+   "scheme": "playbook",
+   "aliasId": "AP-GOD-SERVICE",
+   "conceptId": "ANTI-GOD-SERVICE",
+   "label": "God Services (SA Playbook) · God Service (AKR-0.10.73.5)",
+   "relation": "same",
+   "status": "proposed",
+   "targetContent": "template",
+   "basis": "Exact name match: the SA Playbook entry names the catalogue record \"God Service\". For the reviewer: a name is not a mechanism; check both."
+  },
+  {
+   "scheme": "playbook",
+   "aliasId": "AP-DUPLICATED-CODE",
+   "conceptId": "ANTI-COPY-PASTE-ARCHITECTURE",
+   "label": "Duplicated Code (SA Playbook) · Copy-Paste Architecture (AKR-0.10.73.5)",
+   "relation": "same",
+   "status": "proposed",
+   "targetContent": "template",
+   "basis": "Exact name match: the SA Playbook entry names the catalogue record \"Copy-Paste Architecture\". For the reviewer: a name is not a mechanism; check both."
+  }
+ ],
+ "counts": {
+  "rows": 13,
+  "patterns": 10,
+  "antiPatterns": 3
+ }
+}

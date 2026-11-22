@@ -1,11 +1,11 @@
 {
  "schema": "aiw.rc44.slice-size.v3",
- "name": "the lead's bookings: what merging packages adds or saves together on the chapters route, and what a retirement saves (rulings K6, N1, O1, U2)",
+ "name": "the lead's bookings: what merging packages adds or saves together on the chapters route, S0's rows that a package's slice needed, and what a retirement saves (rulings K6, N1, O1, O2, U2, V3)",
  "measuredWith": "client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)",
- "whatWasMeasured": "Nothing of its own: this file books no package's bytes (ownBytes 0). Each item of sharedPoolBytes is a measured change of the chapters route that is no package's own, recorded under items with the builds it was measured on. Only this file may book a negative item (ruling O1). Created on rc44/wp2-s5-selection-fix-c2 (the second fix-up of wp2 slice 5) for the item of ruling U2, as ruling O1 describes the file; the lead reconciles it with the file of the same name on wp9a's branch (which books trackPathsPartNameO2, 0 B) at the merge.",
+ "whatWasMeasured": "Nothing of its own: this file books no package's bytes (ownBytes 0). Each item of sharedPoolBytes is a measured change of the chapters route that is no package's own, recorded under items with the builds it was measured on. Only this file may book a negative item (ruling O1), for what merging packages saves together (ruling N1: stub bytes are not additive) and for what a retirement saves (ruling U2). The lead's merge check (rc44-s0-readings.mjs assertBookingsAddUp, S0's suite block 'O1 the bookings add up') holds that on a build the chapters route less the integrated base is every size file's own bytes plus the shared pool's, exactly. Joined at the merge of rc44/integration (c709ae3) into the third fix-up of wp2 slice 5 (ruling V3): the item of wp9a's branch (trackPathsPartNameO2, 0 B) and the item of wp2 slice 5's second fix-up (guidedConcernRetirementQ8, -3,047 B), each kept as it was measured.",
  "allowance": {
   "chapters": 0,
-  "of": "the lead's own file books no bytes of its own; its items are the shared pool's. Of the saving booked below, 400 B are wp2's allowance (ruling U2: wp2 1,200 B = 600 B by A4 + 200 B by Q10 + 400 B of the saving), and the rest, 2,647 B, joins the shared pool (ruling U2)",
+  "of": "the lead's own file books no bytes of its own; its items are the shared pool's (rulings F1 and H1: 1,656 B for the seven later packages, of which wp9a's evidence books 98 B). Of the retirement's saving booked below, 400 B are wp2's allowance (ruling U2: wp2 1,200 B = 600 B by A4 + 200 B by Q10 + 400 B of the saving), and the rest, 2,647 B, joins the shared pool (ruling U2)",
   "scripts": 148
  },
  "caps": {
@@ -23,9 +23,16 @@
  },
  "ownBytes": 0,
  "sharedPoolBytes": {
+  "trackPathsPartNameO2": 0,
   "guidedConcernRetirementQ8": -3047
  },
  "items": {
+  "trackPathsPartNameO2": {
+   "bytes": 0,
+   "ruling": "O2 (wp9a slice 1, third fix-up): S0's row trackPaths, the part's name in design-extension-parts.js with its start check",
+   "measuredOn": "the third fix-up of wp9a slice 1 after its item 2, against its start 5cae40a, each with node build.mjs (dist/client-size-report.json routes.chapters.code): 3,230,605 B before and after",
+   "why": "design-extension-parts.js is in no client bundle (S0's block 8 asserts it), and the boundary's copy of the trackPaths, stampTracked and settle are server-only: the route did not move. Booked at 0 so that the row is on the books."
+  },
   "guidedConcernRetirementQ8": {
    "bytes": -3047,
    "ruling": "U2 (wp2 slice 5, second fix-up): the saving of Q8's retirement of row 9, the guided comparison of a released concern (its start, answers, preparation, re-reading and preview, the comparison's builder on the route, the comparison tools' released-concern picker)",
@@ -34,14 +41,15 @@
   }
  },
  "slice": {
-  "chapters": 3228422,
-  "measuredOn": "wp2 slice 5 after its second fix-up (9df762c and later: no route module changed after it)"
+  "chapters": 3228540,
+  "measuredOn": "the merge of rc44/integration (c709ae3) into wp2 slice 5's third fix-up (rc44/wp2-s5-selection-fix-c3), with node build.mjs (dist/client-size-report.json routes.chapters.code)"
  },
  "addsUp": {
-  "route": 3228422,
-  "lessIntegrated": -1418,
+  "route": 3228540,
+  "lessIntegrated": -1300,
   "ownBytes": {
    "lead-bookings-size.json": 0,
+   "wp1-s2-size.json": 118,
    "wp2-s1-size.json": 325,
    "wp2-s5-size.json": 864,
    "wp9a-s1-size.json": 342
@@ -50,7 +58,7 @@
    "lead-bookings-size.json": -3047,
    "wp9a-s1-size.json": 98
   },
-  "check": "-1,418 = 0 + 325 + 864 + 342 - 3,047 + 98 (held by rc44-wp2-adoption-cases/selection.mjs 'S5 size' on this branch; the lead's merge check, rc44-s0-readings.mjs assertBookingsAddUp in S0's block 'O1 the bookings add up', is on wp9a's branch)"
+  "check": "-1300 = 0 + 118 + 325 + 864 + 342 + 0 - 3047 + 34 + 64 (rc44-s0-readings.mjs assertBookingsAddUp, S0's block 'O1 the bookings add up', on the merged build)"
  },
  "productionAccepted": false
 }

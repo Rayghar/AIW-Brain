@@ -1,6 +1,6 @@
 {
  "schema": "aiw.rc44.slice-size.v3",
- "name": "wp9a slice 1 after its second fix-up: typed failure domains, nodes and registration (p30-deployment)",
+ "name": "wp9a slice 1 after its fifth fix-up: typed failure domains, nodes and registration (p30-deployment)",
  "measuredWith": "client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code, scripts, buckets)",
  "whatWasMeasured": "The chapters route of this build, against two bases each built with node build.mjs from an archive of its commit: the integrated base the slice started from, and the adoption record the branch merged. The itemised bytes are read from the metafiles of this build and of the adoption record's, route output by route output (a module's bytes in its output, and the import and export lists of each output).",
  "allowance": {
@@ -67,8 +67,8 @@
   "gate": "The chapters-route gate is unchanged and measures opening a document that holds no package records (ruling D10 of 2026-11-18).",
   "host": "public/deploy-view.js",
   "route": 3230605,
-  "added": 855689,
-  "total": 4086294,
+  "added": 855804,
+  "total": 4086409,
   "files": 12,
   "beforeThePackage": {
    "route": 3229840,
@@ -85,14 +85,27 @@
   "packageShare": {
    "modules": {
     "public/topology-blueprints.js": 10,
-    "public/topology-domain.js": 20903,
+    "public/topology-domain.js": 20937,
     "public/topology-failures.js": 10,
     "public/topology-fallback.js": 10,
     "public/topology-gates.js": 10,
-    "public/topology.js": 1448
+    "public/topology.js": 1529
    },
-   "lists": 178,
-   "total": 22569
+   "lists": 168,
+   "total": 22674
+  },
+  "holder": {
+   "atTheAdoptionRecord": {
+    "bytes": 51789,
+    "modules": 49415,
+    "lists": 2374
+   },
+   "slice": {
+    "bytes": 74475,
+    "modules": 71933,
+    "lists": 2542
+   },
+   "what": "The script that holds the package (the deploy-view chunk): its bytes, the bytes of its modules, and the rest, its import and export lists. The package's share (ruling R4) is its own modules, each pinned, and the growth of these lists against the adoption record, not the entry's whole growth."
   },
   "note": "A document that holds the marker runtime.topology also loads the lazy entry of the Chapter 10 Model view, which holds the package, before it is first drawn: the route and the static closure of that entry, each script counted once."
  }

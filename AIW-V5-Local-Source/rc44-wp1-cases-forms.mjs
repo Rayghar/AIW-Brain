@@ -109,7 +109,7 @@ const BASELINE = {bank: {findings: 'e188b2ccd284a1ab6d7be71b78f989075419b7dfcdcb
 // reasoning packet of a decision (26) and the chapter stamps (27).
 const PROMPT = 'Explain the transactional outbox and when a relay may repeat a notice.';
 const plainJSON = v => JSON.parse(JSON.stringify(v, (_k, x) => x instanceof Map || x instanceof Set ? [...x] : x));
-function designReadings(p) {
+export function designReadings(p) {
   const requirement = p.artefacts.find(a => a.type === 'requirement').id, packet = mode => intelligencePacket(p, {chapter: 1, objectId: requirement, mode, prompt: PROMPT}), context = brainContext(p, {id: requirement, chapter: 1});
   return plainJSON({
     findings: rv.inheritedFindings(p).map(({stamp: _stamp, ...f}) => f), summaries: rv.chapterSummaries(p), blockers: rv.reviewBlockerCount(p), readiness: sddReadiness(p), coverage: rv.traceCoverage(p), capacity: rv.reviewCapacity(p),
@@ -124,7 +124,7 @@ function designReadings(p) {
 // The knowledge workspace's own lists: what a person who curates knowledge is shown there. They are expected to move.
 const workspaceReadings = p => plainJSON({graph: knowledgeGraph(p), coverage: knowledgeConceptCoverage(p, 'SYN-P001'), history: K.knowledgeMarkdown(p)});
 // Every path at which two readings differ (a list that changed length is one path).
-function moved(a, b, path = '', out = []) {
+export function moved(a, b, path = '', out = []) {
   if (JSON.stringify(a) === JSON.stringify(b)) return out;
   if (a && b && typeof a === 'object' && typeof b === 'object' && Array.isArray(a) === Array.isArray(b) && (!Array.isArray(a) || a.length === b.length)) for (const k of new Set([...Object.keys(a), ...Object.keys(b)])) moved(a[k], b[k], path + '.' + k, out);
   else out.push(path.slice(1));
@@ -132,7 +132,7 @@ function moved(a, b, path = '', out = []) {
 }
 // A design document that holds a library's knowledge anyway, as a recovery or an older library might leave it: written
 // into the document, the library mark not carried over.
-const graft = (design, library) => { const q = clone(design), {library: _mark, ...knowledge} = clone(library.knowledge); q.knowledge = knowledge; return q; };
+export const graft = (design, library) => { const q = clone(design), {library: _mark, ...knowledge} = clone(library.knowledge); q.knowledge = knowledge; return q; };
 
 export const cases = [];
 const add = (name, run) => cases.push({name, run});
@@ -1039,10 +1039,12 @@ add('S1.23 (should-fix 8): a run of this suite that executed no case fails, and 
   const {spawnSync} = await import('node:child_process'), {mkdirSync, writeFileSync} = await import('node:fs');
   const run = args => { const r = spawnSync(process.execPath, ['rc44-wp1-knowledge-validate.mjs', ...args], {encoding: 'utf8', env: {...process.env, AIW_RC44_WP1_ALL: ''}}); return {status: r.status, out: r.stdout + r.stderr}; };
   const nothing = run(['--only', 'NO-CASE-HAS-THIS-NAME']); assert.equal(nothing.status, 1, 'a filter that matches nothing is not a pass'); assert.match(nothing.out, /No case was executed/); assert(!/PASS rc44 wp1 knowledge/.test(nothing.out));
-  // A pending case alone is not an executed case.
-  const pending = run(['--only', 'S2: not yet implemented']); assert.equal(pending.status, 1); assert.match(pending.out, /PENDING S2/); assert.match(pending.out, /No case was executed/);
   // A case file that exports no case fails the run, whatever the other files do.
   const dir = '.aiw-local/scratch/wp1-suite'; mkdirSync(dir, {recursive: true});
+  // A pending case alone is not an executed case. (rc44 wp1 S2 replaced its own pending case with its cases, so the probe
+  // is a pending case of its own here: was the S2 placeholder, '--only S2: not yet implemented' and /PENDING S2/.)
+  writeFileSync(dir + '/pending-case.mjs', 'export const cases = [{name: \'T2: a synthetic pending case\', pending: true, run() { throw Error(\'not yet implemented\'); }}];\n');
+  const pending = run(['--files', './' + dir + '/pending-case.mjs']); assert.equal(pending.status, 1); assert.match(pending.out, /PENDING T2: a synthetic pending case/); assert.match(pending.out, /No case was executed/);
   writeFileSync(dir + '/empty-cases.mjs', 'export const cases = [];\n'); writeFileSync(dir + '/no-export.mjs', 'export const other = 1;\n'); writeFileSync(dir + '/one-case.mjs', 'export const cases = [{name: \'T1: a synthetic case\', run() {}}];\n');
   for (const file of ['empty-cases.mjs', 'no-export.mjs']) { const r = run(['--files', './' + dir + '/one-case.mjs,./' + dir + '/' + file]); assert.equal(r.status, 1, file); assert.match(r.out, /exports no case/); assert.match(r.out, /PASS T1: a synthetic case/); }
   const one = run(['--files', './' + dir + '/one-case.mjs']); assert.equal(one.status, 0, one.out); assert.match(one.out, /PASS rc44 wp1 knowledge: 1 cases/);
@@ -1448,7 +1450,10 @@ function walkRequests(X) {
     'knowledge.concept-review': [['rejected', () => ({...CONCEPT_REVIEW, id: X.conceptRecordId, decision: 'rejected'}), BOTH], ['disputed', () => ({...CONCEPT_REVIEW, id: X.conceptRecordId, decision: 'disputed'}), BOTH], ['verified again', () => ({...CONCEPT_REVIEW, id: X.conceptRecordId})]],
     'knowledge.concept-retire': [['retired', () => retire, BOTH]],
     'knowledge.concept-restore': [['restored', () => retire]],
-    'knowledge.fetch': noCommand, 'knowledge.organization-pin': noCommand, 'knowledge.repository-sync': noCommand, 'knowledge.repository-transfer': noCommand
+    'knowledge.fetch': noCommand, 'knowledge.organization-pin': noCommand, 'knowledge.repository-sync': noCommand, 'knowledge.repository-transfer': noCommand,
+    // (rc44 wp1 S2) The crosswalk's types are the design package p10-knowledge's, taken by its boundary and no command of the
+    // entry: rc44-wp1-cases-crosswalk.mjs walks them through POST /api/commands (S2.9).
+    'knowledge.crosswalk': noCommand, 'knowledge.crosswalk-confirm': noCommand, 'knowledge.crosswalk-review': noCommand, 'knowledge.crosswalk-retire': noCommand
   };
 }
 add('S1.29 (ruling E1): no request that is not a person\'s lowers the standing of a reviewed or released concept. The walk: every knowledge.* command type the product names, sent by an agent account, a draft by Sol, an import, a request that states no author and one whose author names no account (and by the reviewer\'s and the releaser\'s own accounts as an import and a draft), against a reviewed concept and against a released, active one, leaves the concept\'s state, its hash, each form\'s status, its releases and what a pin hands over as they were; a person\'s same request keeps today\'s effect; a type added later joins the walk or this case fails', async () => {
@@ -1479,6 +1484,8 @@ add('S1.29 (ruling E1): no request that is not a person\'s lowers the standing o
     }
     // The four types of the repository and organisation routes are no command of the entry, whoever sends them.
     for (const type of ['knowledge.fetch', 'knowledge.organization-pin', 'knowledge.repository-sync', 'knowledge.repository-transfer']) assert.throws(() => send(doc, type, W[type][0][1](doc), 'architect'), /Choose a supported knowledge action/, type);
+    // (rc44 wp1 S2) So are the crosswalk's types, the design package's: the entry refuses them as no type of its own, whoever sends them.
+    for (const type of ['knowledge.crosswalk', 'knowledge.crosswalk-confirm', 'knowledge.crosswalk-review', 'knowledge.crosswalk-retire']) assert.throws(() => send(doc, type, W[type][0][1](doc), 'architect'), /Choose a supported knowledge action/, type);
   }
   assert(tally.accepted > 100 && tally.refused > 100 && tally.lowering >= 30, JSON.stringify(tally)); console.log('     the walk: ' + JSON.stringify(tally) + ' over ' + Object.keys(W).length + ' types and ' + KINDS.length + ' kinds of request');
   // The words of the refusals this ruling adds.

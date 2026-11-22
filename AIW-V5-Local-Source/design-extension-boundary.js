@@ -26,8 +26,10 @@
 //   large    the request may carry up to 500 KB, as the built-in prefixes that say so.
 // and what a package says of itself: track(prior, next, command, at), its one tracker (the lead's ruling D4 of
 // 2026-11-18), called after the built-in trackers for every command and for each command a batch carries
-// (trackExtensions below), which answers nothing or the records of other collections it changed itself, each [as it
-// was, as it is], for the boundary to stamp as the commit's (ruling M1); a command type states no tracker of its own.
+// (trackExtensions below), with trackPaths, the built-in collections it mends, each with the content fields it may
+// change there (ruling T1: an allow-list), whose records the boundary stamps as the commit's where a call changed them
+// (ruling O2, which retired the tracker's answer of ruling M1: a tracker answers nothing, and an answer is ignored); a
+// command type states no tracker of its own.
 // A package only adds: a type a built-in handler takes is never a package's. The built-in handlers are asked once per
 // type (builtInType): a type they refuse as unknown ("Unknown … action.") is free for a package.
 import {EXTENSIONS} from './public/design-extensions.js';
@@ -36,13 +38,13 @@ import {verifierRefusal} from './public/architecture-obligations.js';
 import {registerReviewTypes} from './authorship.js';
 import {registerUndoExtensions} from './public/action-undo-domain.js';
 import {innerCommands, listAt, reviewOf, stampChanged, stampTracked} from './public/provenance.js';
-import {isRetiredCommand} from './public/canonical-command.js';
+import {isRetiredCommand, LIFECYCLE_RULES} from './public/canonical-command.js';
 import {inheritedFindings, findingCause} from './public/review-domain.js';
 import {createProject} from './shared/projects-domain.js';
 import {withFinalReview} from './public/review-domain.js';
 import {UPGRADE_DUE} from './error-message.js';
-import {extensionIssues as partIssues, extensionConflicts, COMMAND_TYPE, notePackages, extensionUpgradeNeeded} from './public/design-extension-parts.js';
-export {upgradeExtensions, extensionUpgradeNeeded, extensionUpgradeNotes, placeSections, extensionConflicts, WORKBENCH_KEYS, WORKBENCH_PREFIXES, workbenchKey, packageCollections, PACKAGES_KEY, documentPackages, missingPackages, missingPackagesRefusal, UNREADABLE_PACKAGES} from './public/design-extension-parts.js';
+import {extensionIssues as partIssues, extensionConflicts, COMMAND_TYPE, notePackages, extensionUpgradeNeeded, trackedFields} from './public/design-extension-parts.js';
+export {TRACKED_STANDING, TRACK_REFUSED_PATHS, trackFieldRefused, upgradeExtensions, extensionUpgradeNeeded, extensionUpgradeNotes, placeSections, extensionConflicts, WORKBENCH_KEYS, WORKBENCH_PREFIXES, workbenchKey, packageCollections, PACKAGES_KEY, documentPackages, missingPackages, missingPackagesRefusal, UNREADABLE_PACKAGES} from './public/design-extension-parts.js';
 
 // The built-in handler of a type, as worker.js resolves it: a function, or true for a type the Worker handles itself.
 let builtInHandler = null;
@@ -183,17 +185,76 @@ export function markPackages(prior, next, command) {
 // built-in trackers' are, and listed in the commit's activity row.
 // Who wrote a change, of what kind and why is what the server says of the commit (worker.js), never what a package
 // says: an event a tracker or a handler of a package adds states none of it, so the server's stamp is the only one.
-// A record of another collection that a tracker changes itself (wp9a's mend of a zone or a placement that names a
-// record no longer there) is answered by the tracker as [as it was, as it is], and stamped here as the commit's, as the
-// boundary stamps a package's own records (the lead's rulings H2 and M1): its stamp says who sent the commit that
-// changed it, never who wrote it before.
+// The boundary, not the package, says what a tracker changed of a built-in collection (the lead's rulings H2 and O2 of
+// 2026-11-21): a package whose tracker mends records of a built-in collection (wp9a's mend of a zone or a placement
+// that names a record no longer there) states those collections as trackPaths. Before each call of a tracker the
+// boundary copies the records of those paths, and after it stamps as the commit's each record whose content the call
+// changed (provenance.js stampTracked, with the copy as `was`), as it stamps a package's own records: its stamp says who
+// sent the commit that changed it, never who wrote it before, and a stamp or a review the tracker writes is not kept.
+// What a tracker answers is ignored. That a tracker changes no other built-in collection, and inside its trackPaths adds
+// and removes no record, changes no field a path does not list and moves a revision only forward by one with a listed
+// field, is held by each package's suite (rc44-s0-readings.mjs assertTrackerStaysInPaths).
+// A tracker mends content; it decides nothing and makes nothing (the lead's rulings R2 and T1 of 2026-11-22), and it
+// changes only what it lists. trackPaths is an allow-list, {'chapter.collection': [field, …]}: the content fields the
+// mend may change in that collection (the start check refuses a field that is a record's identity, revision or history
+// or says whether and how it stands, and a collection whose records a chapter accepts, approves or marks reviewed:
+// design-extension-parts.js trackFieldRefused, TRACK_REFUSED_PATHS). For each record of a path that a call changed, the
+// boundary puts back from its copy every field the path does not list, in the record's own order, so that whatever a
+// tracker writes of a state, an acceptance, governance, a recording, an approval, a review, a confirmation, a snapshot, a
+// history or the provenance, which is the server's, does not stand; its revision moves only forward, by exactly one, and
+// only where a listed field changed in that call, and is otherwise put back. Then it stamps the content change as the
+// commit's. A call that adds a record to such a path, or removes one, is refused, and so is one whose change of a listed
+// field moves the chapter's reading of whether the record is AIW's proposal (canonical-command.js LIFECYCLE_RULES seed,
+// as record-lifecycle.js reads it), which no copy can put back without undoing the mend: the commit is not stored, and
+// the answer names the package (worker.js answers isTrackerRefusal in its words, 500 with code fault: the package is at
+// fault, not the request).
+const TRACKER_REFUSAL = 'package_tracker';
+export const isTrackerRefusal = error => error?.code === TRACKER_REFUSAL;
+const refuseTracker = (e, what) => { throw Object.assign(Error('This action could not be completed: the design package ' + e.id + '\'s tracker ' + what + '. A tracker mends the records of the collections it states (trackPaths); it decides nothing and makes nothing, so nothing was saved.'), {code: TRACKER_REFUSAL, package: e.id}); };
+const proposalOf = (p, path, r) => !!(typeof LIFECYCLE_RULES[path]?.seed === 'function' ? LIFECYCLE_RULES[path].seed(p, r) : r?.state === 'proposed');
+const refOf = r => (r && typeof r === 'object' ? r.ref || r.code || r.id : null) || 'a record';
 const AUTHOR_FIELDS = ['actor', 'authorKind', 'reviewed', 'account', 'session', 'reason'];
 const eventsOf = p => (Array.isArray(p?.changes?.events) ? p.changes.events : []);
 function unstated(next, from) { for (const event of eventsOf(next).slice(from)) if (event && typeof event === 'object') for (const k of AUTHOR_FIELDS) delete event[k]; }
+// The records of a package's trackPaths in `p`, by id, each as a copy in its JSON text (a document is JSON; in the order
+// they stand, should an id stand twice), read back as a record only where a call changed it; an entry with no id is
+// kept by its text alone.
+const tracked = (p, paths) => paths.map(([path]) => { const out = new Map(), loose = []; for (const r of listAt(p, path)) if (r && typeof r === 'object' && r.id != null) out.set(r.id, [...out.get(r.id) || [], JSON.stringify(r)]); else loose.push(JSON.stringify(r)); return [path, out, loose]; });
+// What a call may leave of a record it changed (ruling T1): the fields the path lists as the call left them; every other
+// field as the boundary's copy (`old`, the record's text before the call) had it, in the copy's order; the revision moved
+// forward by one where a listed field changed, else as it was. `now` is the record in the document, changed in place.
+// The fields are kept as [key, value] entries and written back as the record's own (defineProperty), never by
+// assignment, so a field of any name (one named "__proto__" included) is put back as the record held it.
+function keepListed(old, now, listed) {
+  const copy = JSON.parse(old), was = copy.revision ?? 0, out = new Map(), own = (o, k) => Object.getOwnPropertyDescriptor(o, k)?.value;
+  const mended = [...listed].some(k => JSON.stringify(own(now, k)) !== JSON.stringify(own(copy, k)));
+  for (const k of Object.keys(copy)) if (!listed.has(k)) out.set(k, own(copy, k)); else if (Object.hasOwn(now, k)) out.set(k, own(now, k));
+  for (const k of Object.keys(now)) if (listed.has(k) && !out.has(k)) out.set(k, own(now, k));
+  if (mended && Number.isInteger(was) && now.revision === was + 1) out.set('revision', now.revision);
+  for (const k of Object.keys(now)) delete now[k];
+  for (const [k, value] of out) Object.defineProperty(now, k, {value, enumerable: true, writable: true, configurable: true});
+}
 export function trackExtensions(prior, next, command, at, {author = null} = {}) {
-  const inner = innerCommands(command), changed = [];
-  for (const c of inner.includes(command) ? inner : [command, ...inner]) for (const e of EXTENSIONS) if (typeof e.track === 'function') { const from = eventsOf(next).length, answer = e.track(prior, next, c, at); unstated(next, from); if (Array.isArray(answer)) changed.push(...answer); }
-  for (const pair of changed) if (Array.isArray(pair)) stampTracked(pair[0], pair[1], author, at);
+  const inner = innerCommands(command);
+  for (const c of inner.includes(command) ? inner : [command, ...inner]) for (const e of EXTENSIONS) if (typeof e.track === 'function') {
+    const paths = trackedFields(e), before = tracked(next, paths), from = eventsOf(next).length;
+    e.track(prior, next, c, at); unstated(next, from);
+    before.forEach(([path, was, loose], i) => {
+      const listed = new Set(paths[i][1]);
+      for (const now of listAt(next, path)) {
+        const id = now && typeof now === 'object' ? now.id : null, old = id != null ? was.get(id)?.shift() : undefined;
+        if (old === undefined) { const n = id == null ? loose.indexOf(JSON.stringify(now)) : -1; if (n < 0) refuseTracker(e, 'added ' + refOf(now) + ' to ' + path); loose.splice(n, 1); continue; }
+        if (old === JSON.stringify(now)) continue;
+        keepListed(old, now, listed);
+        if (JSON.stringify(now) === old) continue;
+        const copy = JSON.parse(old);
+        if (proposalOf(next, path, copy) !== proposalOf(next, path, now)) refuseTracker(e, 'would change whether ' + refOf(copy) + ' in ' + path + ' is AIW\'s proposal');
+        stampTracked(copy, now, author, at);
+      }
+      const gone = [...was.values()].flat()[0] ?? loose[0];
+      if (gone !== undefined) refuseTracker(e, 'removed ' + refOf(JSON.parse(gone)) + ' from ' + path);
+    });
+  }
 }
 // Whether a request of this type may be large (worker.js, beside LARGE_COMMAND_PREFIXES).
 export const extensionLarge = type => extensionCommand(type)?.large === true;

@@ -1,13 +1,20 @@
 import {readStoredProject,saveStoredProject} from './project-storage.js';
 import {missingPackages,extensionUpgradeNeeded} from './public/design-extension-parts.js';
+import {EXTENSIONS} from './public/design-extensions.js';
 import {errorResponse} from './error-message.js';
 import {withFinalReview} from './public/review-domain.js';
 import {json} from './http.js';
 
+// Whether a document holds a record of a registered design package (rc44; the lead's ruling P2 of 2026-11-22): a value
+// under a key the package states as its own (its design, designKeys, evidenceKeys, lifecycle, provenance.records and
+// the collections of provenance.paths), a list only when it is not empty.
+const own=e=>[...Object.keys(Object(e.design)),...(e.designKeys||[]),...(e.evidenceKeys||[]),...Object.keys(Object(e.lifecycle)),...Object.keys(Object(e.provenance?.records)),...Object.values(Object(e.provenance?.paths)).flat()];
+const holds=(p,e)=>own(e).some(path=>{const [a,b]=String(path).split('.'),v=b?p?.[a]?.[b]:p?.[a];return v!=null&&(!Array.isArray(v)||v.length>0);});
 export function instantiateTemplate(source,id,name,at){
- // The copy holds the template's records, a design package's among them, so it names the packages the template names
- // (rc44, slice S0; the lead's ruling D2: workspace.packages, public/design-extension-parts.js); a template that names
- // none gives a copy without the key.
+ // The copy names the packages whose records it keeps (rc44, slice S0; the lead's rulings D2 and P2:
+ // workspace.packages, public/design-extension-parts.js): a package this build registers stays named only when the
+ // copy holds a record of it (a library's crosswalk goes with its knowledge); a name this build does not register is
+ // copied as stored (K2). A copy that names none has no key.
  // A template row an earlier build stored, whose design package upgrade is due, is copied as the read that opens it
  // would store it (the lead's ruling K2 of 2026-11-20): a copy is the same whether or not anyone opened the template
  // on this build first. A template no package must upgrade is copied as it is stored, as on rc.10.73.42.
@@ -25,6 +32,7 @@ export function instantiateTemplate(source,id,name,at){
  p.finalReview={...p.finalReview,version:1,deliveryVersion:1,narrative:{...p.finalReview.narrative,title:name+' — Solution Design',confirmed:false},baselines:[],reviews:[],governance:[],actions:[],dispositions:[],traces:[],handoff:null,checks:null};
  if(p.workbench)p.workbench={version:1,alternatives:[],analyses:[],catalogue:p.workbench.catalogue.map(e=>({...e,status:'draft',sourceId:'',sourceHash:null,history:[]})),views:[],assignments:[]};
  if(p.interfaces){p.interfaces.specifications=[];p.interfaces.schemaChecks=[];p.interfaces.fieldLineage=[];for(const d of p.interfaces.data){delete d.schemaSource;delete d.schemaRoot;delete d.schema;}}
+ if(p.workspace.packages){const named=p.workspace.packages.filter(x=>{const e=EXTENSIONS.find(y=>y.id===x);return !e||holds(p,e);});if(named.length)p.workspace.packages=named;else delete p.workspace.packages;}
  return withFinalReview(p);
 }
 // A project that names a design package this build does not register (rc44, slice S0; the lead's rulings D2 and F2) is

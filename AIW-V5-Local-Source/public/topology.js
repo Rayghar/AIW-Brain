@@ -17,23 +17,25 @@ import {BLUEPRINTS_PART} from './topology-blueprints.js';
 import {FALLBACK_PART} from './topology-fallback.js';
 export * from './topology-domain.js';
 
-const TABLES=['objectTypes','prefixes','layers','commands','lifecycle','canRestore','quietProposals','design'],LISTS=['hops','designKeys','evidenceKeys','sections'],CALLED=['records','track'],STATED=new Set([...TABLES,...LISTS,...CALLED,'checks','provenance','upgrade','upgradeNote']);
+const TABLES=['objectTypes','prefixes','layers','commands','lifecycle','canRestore','quietProposals','design'],LISTS=['hops','designKeys','evidenceKeys','sections'],CALLED=['records','track'],STATED=new Set([...TABLES,...LISTS,...CALLED,'trackPaths','checks','provenance','upgrade','upgradeNote']);
 // One registration from the parts, in their order: the tables and the provenance rows joined (a row two parts state is
-// refused, but for the collections of a command, which are joined), the lists one after another, the emitters and the
-// trackers each called in turn (the records the trackers answer they changed elsewhere joined, for the boundary to
-// stamp: ruling M1), a chapter's findings those of every part that states them, and the upgrade steps
-// chained in the parts' order (the document itself when no step changes it; its note is one part's).
+// refused, but for the collections of a command, which are joined), the lists one after another, the built-in
+// collections the parts' trackers mend (trackPaths) joined, each path once with its fields each once (ruling T1), the emitters and the trackers each called in turn
+// and answering nothing (ruling O2: the boundary, not the package, says what a tracker changed), a chapter's findings
+// those of every part that states them, and the upgrade steps chained in the parts' order (the document itself when
+// no step changes it; its note is one part's).
 export function assembleParts(id,parts){
  const e={id},row=(table,name,key,value)=>{if(Object.hasOwn(table,key))throw Error(id+': two parts state '+name+' “'+key+'”.');table[key]=value;};
  for(const part of parts){
   for(const k of Object.keys(part))if(!STATED.has(k))throw Error(id+': a part states “'+k+'”, which the assembly does not carry.');
   for(const k of TABLES)for(const [key,v] of Object.entries(part[k]||{}))row(e[k]??={},k,key,v);
   for(const k of LISTS)if(part[k]?.length)e[k]=[...e[k]||[],...part[k]];
+  for(const [path,fields] of Object.entries(part.trackPaths||{}))(e.trackPaths??={})[path]=[...new Set([...e.trackPaths[path]||[],...fields])];
   if(part.upgradeNote!==undefined){if('upgradeNote' in e)throw Error(id+': two parts state upgradeNote.');e.upgradeNote=part.upgradeNote;}
   for(const [k,rows] of Object.entries(part.provenance||{}))for(const [key,v] of Object.entries(rows)){const t=(e.provenance??={})[k]??={};if(k==='paths')t[key]=[...new Set([...t[key]||[],...v])];else row(t,'provenance.'+k,key,v);}
  }
  {const steps=parts.map(part=>part.upgrade).filter(Boolean);if(steps.length)e.upgrade=p=>steps.reduce((q,f)=>f(q)||q,p);}
- for(const k of CALLED){const fs=parts.map(part=>part[k]).filter(Boolean);if(fs.length)e[k]=(...args)=>fs.flatMap(f=>{const a=f(...args);return k==='track'&&Array.isArray(a)?a:[];});}
+ for(const k of CALLED){const fs=parts.map(part=>part[k]).filter(Boolean);if(fs.length)e[k]=(...args)=>{for(const f of fs)f(...args);};}
  const chapters=[...new Set(parts.flatMap(part=>Object.keys(part.checks||{})))];
  if(chapters.length)e.checks=Object.fromEntries(chapters.map(c=>[c,p=>parts.flatMap(part=>part.checks?.[c]?.(p)||[])]));
  return e;

@@ -113,6 +113,10 @@ export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??
  const library=p.knowledge?.library;
  if(library&&typeof library==='object'){if(library.actor!=null)library.importedActor=library.actor;library.actor=null;if(library.enabled===true){library.importedEnabled=true;library.enabled=false;}}
  for(const r of p.knowledge?.releases||[])for(const c of r.claims||[])verifier(c);
+ // A crosswalk row's review (rc44, wp1 slice S2), in the register and as a release holds it, is the same assertion: a row
+ // names an identity here only once a second person here reviews it and a release here holds it.
+ for(const r of Array.isArray(p.knowledge?.crosswalk)?p.knowledge.crosswalk:[])verifier(r);
+ for(const r of p.knowledge?.releases||[])for(const c of Array.isArray(r?.parts?.crosswalk)?r.parts.crosswalk:[])verifier(c);
  // Round 12 (GR-DOM-09): a pinned organisation knowledge release was verified on the workbench it came from; here its
  // claims stay ineligible until this workbench's organisation is found to sign exactly it (refreshOrganizationAssurance).
  for(const r of Array.isArray(p.knowledge?.organizationReleases)?p.knowledge.organizationReleases:[])if(r&&typeof r==='object')r.assurance={eligible:false,status:IMPORTED_AUTHORITY,signature:r.signature??null};

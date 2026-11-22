@@ -14,8 +14,540 @@ here is approved, accepted, released or promoted.
   suite, the fixture, a browser case, the size evidence) and its fix-up: every item 0 to 8 below, the suite at 21
   blocks, green.
 - **Done since:** the second fix-up (rulings M1 to M9), section "Second fix-up" below; the suite at 24 blocks, green.
-- **In progress:** nothing.
-- **Next:** the lead's merge; see "What later slices inherit" and "Open questions (for the lead)".
+- **Done since:** the second fix-up's verifier (merge, three new problems) and the lead's rulings O1 to O5.
+- **Done since:** the third fix-up (rulings O1 to O5), section "Third fix-up" below (branch
+  `rc44/wp9a-s1-topology-fix-c6`, from `rc44/wp9a-s1-topology-fix-c5` at `5cae40a`); the suite at 25 blocks, green.
+- **Done since:** the third fix-up's verifier (merge, two hardening problems and a nit) and the lead's rulings R1 to R4.
+- **Done since:** the fourth fix-up (rulings R1 to R4), section "Fourth fix-up" below (branch
+  `rc44/wp9a-s1-topology-fix-c7`, from `rc44/wp9a-s1-topology-fix-c6` at `ce6eb90`); the suite at 25 blocks, green.
+- **Done since:** the fourth fix-up's verifier (not yet: R2 partly, one new problem and two nits) and the lead's rulings
+  T1 to T3.
+- **Done since:** the fifth fix-up (rulings T1 to T3), section "Fifth fix-up" below (branch
+  `rc44/wp9a-s1-topology-fix-c8`, from `rc44/wp9a-s1-topology-fix-c7` at `41d6fb4`); S0 at 28 blocks and wp9a at 25,
+  green.
+- **Next:** the fifth fix-up's verifier and the lead's merge; see "What later slices must know (fifth fix-up)" and
+  "Open questions (for the lead)".
+
+## Fifth fix-up (after the fourth verifier; the lead's rulings T1 to T3)
+
+Branch `rc44/wp9a-s1-topology-fix-c8`, from `rc44/wp9a-s1-topology-fix-c7` (`41d6fb4`). Verifier:
+`/home/user/hb-review/rc44-build/wp9a-s1-topology.verify4.json` (verdict not yet: R2 partly; new problem 1, a tracker
+that passes the start check can accept a decision, record governance, forge an approval, move a revision back and keep a
+forged snapshot; two nits). Order of work, each case first and seen to fail on the head the item started from, a WIP
+commit after each:
+1. T1, an allow-list: `trackPaths` as `{path: [fields]}` with its start check (each refusal a case in S0's block "O2");
+   the boundary restores every field not listed and lets `revision` move only forward by one when a listed field
+   changed; `assertTrackerStaysInPaths` holds the same; S0's server case extended (status accepted, governance, recorded,
+   approval, a revision moved back, a snapshot; a person's and an agent account's commit); wp9a states
+   `{'runtime.zones': ['nodeId', 'domainIds'], 'runtime.placements': ['nodeId']}`; the contract text and the comments.
+2. T2, the start check reads its table with `Object.hasOwn`, `constructor.name` among the refusals; the fourth fix-up's
+   open questions renumbered 15 to 17.
+3. T3, recorded (no code).
+4. Re-measured; wp9a's size evidence and S1.10's pins where a module moved; the O1 merge check on the final head.
+5. The notes, the suites, the final commit.
+
+Measured before any change (`node build.mjs` on `41d6fb4`): chapters route 3,230,605 B, projects 507,338 B, 148 script
+files, buckets 53/50/45, stylesheet 901,873 B, no violation.
+
+### One line each (fifth fix-up)
+
+| Item | State | Case (suite `rc44-s0-extensions-validate.mjs` unless named) |
+|---|---|---|
+| New problem 1: a tracker passing the start check can accept a decision, record governance, forge a recording and an approval, move a revision back and keep a forged snapshot; the helper accepts the same; the contract says "it decides nothing" without that limit | done (T1): `trackPaths` is an allow-list `{path: [fields]}`; every field a path does not list is put back from the boundary's copy, and the revision moves only forward by one with a listed field; the ten collections whose records a chapter accepts, approves or marks reviewed are refused at start; the helper holds the same; the contract text and the comments say what is true | block "O2" (start check, helper, server: `accept`, `back`, `leap`, `bump`, `title`, `forward`, for A and the agent account; seen to fail on `41d6fb4`) |
+| New problem 2 (nit): `constructor.name` refused in garbled words | done (T2): `Object.hasOwn(WHOSE, head)`; `constructor.name`, `toString.value`, `hasOwnProperty.list` and `valueOf.records` refused as no built-in record collection, in those words | block "O2" (seen to fail on `88424e0`) |
+| New problem 3 (nit): open questions 11 to 13 numbered twice | done (T2): renumbered 15 to 17 after the existing 14; a line in "Fourth fix-up" says so; 15 and 16 closed by T3 | notes, "Open questions (for the lead)" |
+| R2 "partly" (the invariant "a tracker decides nothing" fails for the chapters' own acceptance and approval fields) | done by T1: no field but a listed content field can stand after a tracker's call, and no listed field may be one the chapters read as standing, an acceptance, an approval, a review, a confirmation, a snapshot or a history | block "O2"; wp9a S1.21, S1.24 |
+| T1 | done, with a few refusals more than its words (below) | block "O2"; wp9a S1.11, S1.21, S1.24; S1.10 re-pinned |
+| T2 | done | block "O2" |
+| T3 | recorded, no code (below) | block "O2" (unchanged cases: a removal and a seed move refused 500 `fault`) |
+
+### Where I read a ruling otherwise, or did a little more (plainly)
+
+- **T1, the refused collections.** The lead's five (`decisions.records`, `decisions.conflicts`, `quality.conflicts`,
+  `technologyRealisation.records`, `logical.mappings`) and, as "any other a chapter accepts or approves", five more read
+  from the chapters: `requirementGroups.records` (a person accepts the module structure: `state: 'accepted'`),
+  `realisation.components` and `technology.capabilities` (a person marks them reviewed: `status: 'reviewed'`),
+  `interfaces.contracts` and `interfaces.data` (a person records a review of them: `review`). The case also walks every
+  template (blank, bank-payment and each reference project) and refuses every collection whose records carry an
+  acceptance, an approval or a recorded review, so a collection that gains one in a template fails the suite until it
+  joins `TRACK_REFUSED_PATHS`. 24 built-in record collections remain open to a tracker (34 before T1).
+- **T1, the refused fields.** The ruling's list, and: the record's identity (`id`, `ref`, `code`, `alias`), `acceptedAt`
+  and `acceptedBy`, every name holding `stamp`, the readings a record keeps of others that the chapters bind traces to
+  (`sourceDriverIds`, `sourceDecisionIds`), a choice (`selected…`), and a name every object carries (`constructor`,
+  `toString`, …), which is no field of a record. The rule is by name (`trackFieldRefused`: a set and one pattern), so
+  `priorHistory` or `governanceReference` is refused too, and so is a content field whose name holds one of those words
+  (an `acceptance` criterion). I took the stricter side.
+- **T1, the revision.** It moves forward by exactly one only where a listed field changed in that call; otherwise (moved
+  back, by two, or with no listed change) it is put back and, where nothing else moved, the record is as it was, byte for
+  byte, and nothing is stamped. A record with no `revision` reads as 0, as the mend does (`(r.revision||0)+1`).
+- **T1, order and removal of a listed field.** The boundary rebuilds the record in its copy's key order (an untouched
+  field keeps its place, and a record put back is byte-identical); a listed field the tracker removes stays removed, and
+  one it adds stands (both are content).
+- **T1, where `TRACKED_STANDING` lives.** Moved from the boundary to `design-extension-parts.js`, beside the start check
+  that now reads it (`trackFieldRefused`); the boundary re-exports it, so S0's equality check reads the same name.
+- **T1, the server case.** The ruling asks for a tracker that sets status accepted, records governance, recorded and
+  approval, moves the revision back and writes a snapshot. The collections whose records carry those fields are now
+  refused at start, so no tracker can reach a real decision or approval; the synthetic package of block "O2" therefore
+  mends a Chapter 4 responsibility (`purpose`, `boundary`) and a Chapter 6 need (`description`), and its `accept` mode
+  writes every one of those fields (with `approvals`, `appliedImpact`, `assumptionsResolved`, a `sourceSnapshot` and a
+  `history` entry, and the revision moved back) onto a responsibility while it mends it: all are put back and only the
+  mend stands, stamped as A's and as the agent account's commit. The refusal of each of the ten collections is the other
+  half. The seed-reading refusal moved from an inherited contract (now refused at start) to a need in the catalogue's
+  words.
+- **T1, the helper.** `assertTrackerStaysInPaths` also refuses every listed field the start check refuses (it refused
+  only `id`, `revision` and `TRACKED_STANDING`): it states `trackFieldRefused` itself, since it imports only modules of
+  the baseline, and S0's suite holds the two equal on 41 refused names and 10 content names. That is a second statement
+  of one rule kept equal by a case, as `TRACKED_STANDING` already was; I would rather the helper import the start
+  check's, but that would break its use on the baseline tree.
+- **T1, the built-in collection count.** S0's "every built-in record collection may be mended" held at least 30; it now
+  holds at least 20 accepted and at least 30 with the ten refused (old -> new below).
+- I do not disagree with any ruling of section T.
+
+### T3 (recorded; no code)
+
+The lead confirms what the fourth fix-up did beyond R2's words: a tracker call that removes a record of its `trackPaths`
+is refused as an add is; one that moves a chapter's seed reading is refused; a refused tracker call is the package's
+fault, answered 500 with code `fault` and the package named (`worker.js`, `isTrackerRefusal`). Open questions 15 and 16
+are closed so. Unchanged on this head and still held by S0's block "O2" (the removed record, and the need unseeded
+through its description, both refused 500 `fault` naming `zt-tracking`, nothing stored). wp2's tracker writes only
+wp2's own records and states no `trackPaths` (no `trackPaths` in any wp2 module on this head); wp2's suite calls
+`assertTrackerStaysInPaths` at wp2's next merge (not here: wp2's files are another worktree's).
+
+### What later slices must know (fifth fix-up)
+
+- **Every package with a tracker that states `trackPaths`:** state it as `{'chapter.collection': [field, …]}`, the
+  content fields the mend changes. Anything else the tracker writes on a record of those paths is put back; a revision
+  may move forward by one with a listed field, never otherwise. The start check refuses a listed field that is an
+  identity, a revision, a history, a standing, acceptance, approval, review, confirmation, snapshot or stamp field, and
+  the ten collections of `TRACK_REFUSED_PATHS`. The suite's `assertTrackerStaysInPaths` fails on the same.
+- **wp9a slice 2** (a part that mends zones for the failure set): its part states its own map; the assembly joins the
+  parts' maps, each path once and each field once (S1.11). A new field the mend changes must be listed, or it is put
+  back.
+- **wp2, at its next merge:** its tracker states no `trackPaths` and writes only its own records; its suite calls
+  `assertTrackerStaysInPaths` (T3). Its size block reads the bucket with `assertUnder10kCeiling` (R4).
+- **The lazy entry:** wp9a's share is now 22,674 B (modules 22,506 B pinned, lists 168 B). A merge that moves the
+  deploy-view chunk's lists re-measures them (open question 17).
+
+### By item (fifth fix-up)
+
+1. **T1** (commits `562fb9a` cases, `aaae180` product, `88424e0` helper).
+   - Cases first: S0 block "O2" (the start check's map shape, each path's field list, the ten refused collections and
+     the template walk, 41 refused fields, the fields every object carries, every other collection accepted; the
+     helper's `accept`, `title`, `back`, `leap`, `bump`, the old list shape, a standing field and the revision refused;
+     through the server `accept` for A and the agent account, `forward`, `leap`, `bump` and `title`), wp9a S1.11 (the
+     parts' maps joined) and S1.24 (the map, and `domainIds` left off failing the helper). Seen to fail on `41d6fb4`:
+     the suite as written fails at its first assertion (`.aiw-local/fixup5/t1-before-s0.log`); a scratch copy whose
+     assertions only log, with the synthetic package's paths stated as the list `41d6fb4` reads, shows every new case
+     miss (`t1-before-list.log`; `forward`, a revision moved by one with its mend, holds there too, as it should); wp9a
+     S1.11 and S1.24 fail (`t1-before-wp9a.log`). The helper's refusal of the start check's fields failed first on
+     `aaae180` ("Missing expected exception: the helper refuses ref", `t1h-before.log`).
+   - Product: `public/design-extension-parts.js` (`TRACKED_STANDING`, `trackFieldRefused`, `TRACK_REFUSED_PATHS`,
+     `trackedFields`, the start check's branch), `design-extension-boundary.js` (`trackExtensions`, `keepListed`, the
+     re-exports, the comment), `public/topology-domain.js` (the map), `public/topology.js` (the join),
+     `rc44-s0-readings.mjs` (`assertTrackerStaysInPaths`, `trackFieldRefused`), comments in `public/provenance.js` and
+     `public/design-extensions.js`, the contract text in `s0-extensions.md` (the row, the paragraph, the helper's
+     paragraph, a section "With wp9a slice 1's fifth fix-up").
+   - After: S0 28/28, wp9a 25/25.
+2. **T2** (commit `abf59cd`). Case first: `constructor.name`, `toString.value`, `hasOwnProperty.list` and
+   `valueOf.records` among the "no built-in record collection" refusals, seen to fail on `88424e0` ("is function
+   Object() { [native code] }", `t2-before.log`); then `Object.hasOwn(WHOSE, head)`; green. Open questions renumbered.
+3. **T3** (commit `a508805`): recorded above, no code.
+4. **Size** (commit `16a2b0e`). `node build.mjs` after the change: chapters route 3,230,605 B (unchanged; cap 3,233,792 B
+   unchanged, 3,187 B left), projects 507,338 B, 148 script files (gate 148), buckets 53/50/45 (gate 61), stylesheet
+   901,873 B, no violation. Two modules of the lazy entry moved, seen first as S1.10's failure (`s110-before.log`):
+   `topology-domain.js` 20,903 -> 20,937 B (the map), `topology.js` 1,503 -> 1,529 B (the join); the lists 168 B as
+   before; the share 22,614 -> 22,674 B; the deploy-view chunk 74,415 -> 74,475 B; "opens with records" 4,086,349 ->
+   4,086,409 B. `wp9a-s1-size.json` regenerated with `--measure`. The O1 merge check holds on this build: 765 = 0 + 325
+   + 342 + 98 + 0 (S0 blocks "8" and "O1" green). wp9a's own route bytes stay 342 of 500 B.
+5. **Notes, suites, final commit** (below, "Suites (fifth fix-up)"); commit `1b66839` keeps S0's old bound of at least 30
+   built-in record collections beside T1's ten refusals (old -> new below).
+
+Replaced assertions (old -> new), each at least as strict:
+- S0 "O2", the start check: a tracker with `['decisions.records', 'runtime.zones']` conforms -> one with
+  `{'logical.responsibilities': ['purpose'], 'runtime.zones': ['nodeId', 'domainIds']}` conforms (T1's shape;
+  `decisions.records` is now refused). "Not without a tracker", the package's own three collections and R1's refusals:
+  the same sentences, the paths stated as maps.
+- S0 "O2": "trackPaths is a list of 'chapter.collection' paths…" for 7 bad values -> "trackPaths is
+  {'chapter.collection': [field, …]}…" for 10 bad values (the old list among them), and 8 bad field lists refused in
+  their own sentence (new).
+- S0 "O2": "a path twice" (`['runtime.zones', 'decisions.records', 'runtime.zones']`, "names … twice") -> "a field
+  twice" (`['purpose', 'boundary', 'purpose']`, "lists “purpose” twice"): a map cannot name a key twice.
+- S0 "O2": "no built-in record collection" for 5 paths -> 9 (T2's four added).
+- S0 "O2": every built-in record collection accepted together, at least 30 -> every one not refused accepted together,
+  at least 20, and at least 30 with the ten refused, five named.
+- S0 "O2", the helper: changed `{'decisions.records': 2, 'interfaces.contracts': 0}` -> `{'logical.responsibilities':
+  2, 'technology.needs': 0}`; `confirm` and `decide` refused in the sentence "a tracker mends content; whether and how a
+  record stands…", the fields in the record's order -> in "a tracker changes only the content fields its trackPaths
+  lists…", the fields in alphabetical order (the sentence now covers every unlisted field).
+- S0 "O2", the server: the decision probes (`decisions.records`: A's and the agent account's stamps, a fabricated
+  answer, an added and a removed record refused, a stamp, a confirmation restored, the lifecycle fields restored, a
+  proposal kept) -> the same probes on a responsibility (`logical.responsibilities`); "a proposal the tracker unmakes by
+  its revision" (an inherited contract, `interfaces.contracts`) -> "… by its description" (a need, `technology.needs`),
+  the same refusal and checks.
+- wp9a S1.11 and S1.24: `trackPaths` deep-equal `['runtime.zones', 'runtime.placements']` -> `{'runtime.zones':
+  ['nodeId', 'domainIds'], 'runtime.placements': ['nodeId']}`; the parts' lists joined -> the parts' maps joined, each
+  field once, in the parts' order.
+- wp9a S1.10: `LAZY_SHARE` modules `topology-domain.js` 20,903 -> 20,937, `topology.js` 1,503 -> 1,529, total 22,614
+  -> 22,674 (exact pins, as before); the evidence's name "after its fourth fix-up" -> "after its fifth fix-up".
+
+### Suites (fifth fix-up)
+
+On the final product code (logs under `.aiw-local/fixup5/suites/`, git-ignored), two at a time:
+- the rc44 suites: `test:rc44-s0-extensions` 28/28; `test:rc44-wp9a-deployment` 25/25; `test:rc44-wp2-adoption` 20/20;
+  `test:rc44-wp1-knowledge` 34 passed, 4 pending, 0 failed; `test:rc44-wp9a-deployment-browser` 1/1 (built client,
+  `AIW_BROWSER_EXECUTABLE` set, its own port from 4100 and database under `.aiw-local`). S0 was run again in full after
+  its last edits (the bound on the built-in collections; the helper case over every refused field): 28/28.
+- the suites that import a file changed here or drive the command route through the boundary and wp9a's tracker:
+  `test:native-connections` (imports `deploy-view.js`), `test:deploy`, `test:runtime`, `test:rc42-g5-runtime`,
+  `test:provenance`, `test:seeded-proposals`, `test:workspace`, `test:action-undo-api`, `test:changes`, `test:logical`,
+  `test:technology`, `test:interfaces`, `test:recovery-authority`: all exit 0. `test:deploy-browser` (imports
+  `deploy-view.js` in the page) is on the baseline-red list and was not run.
+- `node check-syntax.mjs`: 938 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, 0 new.
+- `node build.mjs` on the final head: chapters route 3,230,605 B (cap 3,233,792 B), projects 507,338 B, 148 script files,
+  buckets 53/50/45, stylesheet 901,873 B, no violation; `client-bundle.mjs` and `build.mjs` are as at `94dbd4f`.
+- Not run: the full regression (the lead's), the other baseline-red suites, `test:requirements` (a load flake, untouched).
+
+## Fourth fix-up (after the third verifier; the lead's rulings R1 to R4)
+
+Branch `rc44/wp9a-s1-topology-fix-c7`, from `rc44/wp9a-s1-topology-fix-c6` (`ce6eb90`). Verifier:
+`/home/user/hb-review/rc44-build/wp9a-s1-topology.verify3.json` (verdict merge; two hardening problems of O2's row and a
+nit). Order of work, each case first and seen to fail on the head the item started from, a WIP commit after each:
+1. R1, the trackPaths start check: each refusal a case in S0's block "O2".
+2. R2, a tracker mends content, decides nothing and makes nothing: the boundary restores, refuses an added record; the
+   helper holds it; cases through the server for a person's and an agent account's commit.
+3. R3, routeBookings names the file it cannot read: one hostile case in S0's block "O1".
+4. R4, S1.10's share of the lazy entry (own modules pinned, own import and export lists) and the files-under-10-KB
+   bucket read as a ceiling in S0's and wp9a's size cases; re-measured; the O1 merge check on the final head.
+5. The notes, the suites, the final commit.
+
+Measured before any change (`node build.mjs` on `ce6eb90`): chapters route 3,230,605 B, projects 507,338 B, 148 script
+files, buckets 53/50/45, stylesheet 901,873 B, no violation.
+
+Its open questions are 15 to 17 of "Open questions (for the lead)" (numbered 11 to 13 when first written and in the
+fourth fix-up's report; renumbered after the existing 14 in the fifth fix-up, ruling T2).
+
+### One line each (fourth fix-up)
+
+| Item | State | Case (suite `rc44-s0-extensions-validate.mjs` unless named) |
+|---|---|---|
+| New problem 1: the `trackPaths` start check admits any `chapter.collection` path | done (R1): a built-in record collection only, in both tables; never the review's, the change journal's, the workbench's or the members'; never a registered package's own; each once | block "O2", the start check (fifteen refusals, seen to fail on `ce6eb90`; every built-in record collection accepted) |
+| New problem 2: inside `trackPaths` the boundary stamps authorship only; a tracker's lifecycle and review fields stand and an added record reads as a person's | done (R2): restored from the boundary's copy, the content change stamped as the commit's; an added or removed record refused; the helper holds it | block "O2", helper and server parts (A's and the agent account's commits; seen to fail on `ce6eb90`); wp9a S1.24 green |
+| New problem 3 (nit): `routeBookings` does not name a file that is not JSON | done (R3) | block "O1" (seen to fail on `ce6eb90`) |
+| R1 | done | block "O2" |
+| R2 | done, with two refusals more than its words (a removed record; a proposal's reading moved through content or bookkeeping), stated below | block "O2"; S1.24 |
+| R3 | done, and a JSON file that is no object is refused alike | block "O1" |
+| R4 | done: S1.10's share is its modules (pinned) and its own lists (168 B against the adoption record's holder script); S0's block 8 and S1.10 read the bucket as a ceiling; re-measured, the route unchanged; the O1 merge check green | S1.10; block "8 client build"; block "O1" |
+
+### Where I read a ruling otherwise, or did a little more (plainly)
+
+- **R1, "the provenance and lifecycle tables know":** read as both tables (`COLLECTIONS` and `RECORD_PATHS`). So
+  `logical.assets`, the Chapter 4 twin of `realisation.components` that the provenance reader reads once as a component,
+  is refused (a tracker that mended one twin and not the other would split one record, ruling K7). The top-level lists
+  (`artefacts`, `relationships`) stay refused by O2's shape rule (`chapter.collection`), which R1 does not change.
+- **R1, "a collection any registered package states in its lifecycle or provenance rows":** read as the package's own
+  collections: its `lifecycle`, `provenance.records` and `provenance.nouns` rows, and a list of its `provenance.paths`
+  that is no key the workbench writes. A built-in collection that another package's command writes (named in its
+  `provenance.paths`) stays built in and may be mended; on this build no package names one, so the two readings agree.
+- **R2, the fields restored:** the ruling's five (`state`, `confirmed`, `targetConfirmed`, `review`, `reviews`), and as
+  "every field record-lifecycle reads as standing": `origin` (`keepOne` and the chapters' seed rules read it) and
+  `keptAt` (a need's seed rule), and `provenance` (`solDraftOf`, in `record-lifecycle.js`, reads `provenance.draft`;
+  the stamp is the server's, so the boundary puts the whole block back and `settle` then writes the commit's stamp). A
+  `revision` is not put back: the mend moves it, as every save does.
+- **R2, two refusals beyond the words, both "decides nothing and makes nothing":** (1) a call that removes a record of
+  its paths is refused as one that adds a record is (a record leaves the design only through the retire path,
+  `RETIRE_ONLY`; nothing in R2 or O2 caught a removal). (2) Where the chapter's reading of whether a record is AIW's
+  proposal rests on a field that is content or bookkeeping (`interfaces.contracts`: an inherited contract at its first
+  revision; `technology.needs`: a need whose description is the catalogue's), the field cannot be put back without
+  undoing the mend, so a call that moves that reading is refused instead. Neither fires for wp9a (its mend changes a
+  zone's `nodeId` and `domainIds` and a placement's `nodeId`, with their `revision`; zones and placements have no seed
+  rule of their own).
+- **R2, the answer:** the tracker's catch in `worker.js` already answers a tracker's fault 500 with code `fault` and
+  stores nothing; a refusal the boundary tags (`isTrackerRefusal`) is answered there in its own words, naming the
+  package, and logged as `command-fault` as before. I did not make it a 400: the request is not at fault, the package is.
+- **R3:** a size file that is valid JSON but no object (`null`, a list) is refused with its path too; it threw a
+  general fault before.
+- **R4, "its own import and export lists":** the package's modules are bundled into the deploy-view chunk, so they have
+  no import or export statement of their own; their lists are the growth of that script's bytes outside its modules
+  (esbuild's metafile: the output's bytes less its inputs' `bytesInOutput`) against the same script at the adoption
+  record, measured with `node build.mjs` on an archive of `a4c1690`. The 12 B by which the script's other two modules
+  moved (`deploy-view.js`, wp9a's edit of H15; `deploy-layout.js`, a renamed identifier) are in neither part.
+- **R4, the bucket:** the ceiling is read on the evidence's figure (at most the gate, at most the base's count plus the
+  files the slice adds) and, for this build, at most the gate: another package's merge may add a file.
+- I do not disagree with any ruling of section R.
+
+### What later slices must know (fourth fix-up)
+
+- **Every package with a tracker that states `trackPaths`:** each entry is a built-in record collection of a chapter's
+  container, in both `COLLECTIONS` and `RECORD_PATHS`, none of `finalReview.*`, `changes.*`, `workbench.*` or
+  `members.*`, no package's own, each once (else the server does not start). Inside those paths the tracker changes
+  content only: a call that adds or removes a record, or moves a proposal's reading, is refused at run time (500, the
+  package named, nothing stored), and whatever it sets of `TRACKED_STANDING` is put back. Its suite's
+  `assertTrackerStaysInPaths` fails on the same.
+- **wp9a slice 2** (a part that mends zones for the failure set): the same; a new seed rule on zones would join the
+  reading of a proposal.
+- **wp2, at its merge:** its size block reads the bucket with `assertUnder10kCeiling` (R4: "wp2's size block is changed
+  the same way at its own merge"); `trackAdoptionChange` still states no `trackPaths` (O2's note stands).
+- **Every package's share of a lazy entry:** read from the script that holds it (its modules, its lists against the same
+  script at the base), as S1.10 now does; a later package that lands in the deploy-view chunk moves that script's lists
+  and re-measures `ADOPTION_HOLDER`'s counterpart.
+
+### By item (fourth fix-up)
+
+- **Item 1, R1: done.** Case: S0's block "O2", the start check (`rc44-s0-extensions-validate.mjs`). Seen to fail on
+  `ce6eb90` (`.aiw-local/fixup4/r1-before.log`): all fifteen refusals were accepted (the narrative, `finalReview.judgements`,
+  `.dispositions` and `.actions`, `changes.events`, `workbench.history`, `members.roles`, another package's lifecycle
+  collection and its collection for the provenance reader alone, a path named twice, and five paths no table holds as a
+  built-in record collection: `runtime.things`, `security.risks`, `runtime.evidence`, `logical.assets`,
+  `knowledge.claims`). Now `design-extension-parts.js extensionIssues` accepts a path only when it is in both
+  `record-lifecycle.js COLLECTIONS` and `provenance.js RECORD_PATHS`, is none of `finalReview.*` (the narrative with
+  them), `changes.*`, `workbench.*` or `members.*`, is no collection a registered package states as its own, and is named
+  once; each refusal in its own words. The case also holds that every built-in record collection of a chapter's container
+  (34 of them in this build) is accepted together, so the check refuses nothing it should take. wp9a S1.11 and S1.24 pass unchanged.
+- **Item 2, R2: done.** Cases: S0's block "O2", the helper part and the server part, and wp9a's S1.24 (unchanged, green
+  under the stricter helper). Seen to fail on `ce6eb90` (`.aiw-local/fixup4/r2-before-1.log`, and `r2-before-2.log` from a
+  scratch copy of the suite whose helper assertions only log, so the server part ran too): the helper accepted a tracker
+  that adds a record, removes one, sets `confirmed`, or moves every lifecycle and review field; through the server an
+  added record was stored (A's and the agent account's commit), a removed record was stored, a confirmation the tracker
+  set stood, `state`, `keptAt` and the rest the tracker set while it mended stood, a proposal the tracker kept stopped
+  being one, and an inherited contract whose revision the tracker moved stopped being AIW's proposal. What was built:
+  - `design-extension-boundary.js trackExtensions`: for each record of the package's `trackPaths` that a call changed,
+    the boundary puts back from its copy `TRACKED_STANDING` (`state`, `origin`, `keptAt`, `confirmed`,
+    `targetConfirmed`, `review`, `reviews`, `provenance`), then stamps the content change as the commit's
+    (`stampTracked`, as before); a call that adds a record to such a path, or removes one, is refused; so is one whose
+    change of content or bookkeeping moves the chapter's reading of whether the record is AIW's proposal
+    (`canonical-command.js LIFECYCLE_RULES` seed, or `state` where a chapter states no rule), which no copy can put back
+    without undoing the mend. A refusal is an error tagged for `isTrackerRefusal`; `worker.js` answers it in its own
+    words (500, `fault`, logged as every tracker fault is), so nothing is stored and the answer names the package:
+    "This action could not be completed: the design package zt-tracking's tracker added ADR-990 to decisions.records.
+    A tracker mends the records of the collections it states (trackPaths); it decides nothing and makes nothing, so
+    nothing was saved."
+  - `rc44-s0-readings.mjs`: `TRACKED_STANDING` (the same list; this file imports only modules of the baseline, so S0's
+    suite holds the two equal) and `assertTrackerStaysInPaths` also holds, inside the package's `trackPaths`, that no
+    record is added or removed and none of those fields moves on a record, naming the fields, the record and the case.
+  - S0's synthetic package gains modes (`decide`, `keep`, `unseed`, `remove`, and the set-up `propose` and `seed` done
+    by its own command) and states `interfaces.contracts` beside `decisions.records`.
+  - Old -> new (S0's suite, block "O2"): (1) "a confirmation the tracker sets is no person's review": `confirmed` stays
+    `true` and the provenance is as it was -> the confirmation is restored: the record is byte for byte as it was, B's,
+    for A's commit and the agent account's (stricter: the whole record, not the provenance alone). (2) "a record the
+    tracker adds is no one's" (stored, unstamped) -> the call is refused, the commit not stored (revision, the decisions
+    and the probe as they were), the answer naming the package, for A and the agent account. (3) The helper: "a record
+    added to a path it states is inside its paths" (`changed['decisions.records']` equal to 1) -> the helper throws,
+    naming the record. (4) The helper's answer on four cases: `changed {'decisions.records': 2}` -> `changed
+    {'decisions.records': 2, 'interfaces.contracts': 0}` (the package now states the second path; equally strict).
+  - `settle`'s `tracked` flag and `stampTracked`'s replacement of a stamp a tracker wrote are kept, as R2 confirms; with
+    the provenance put back before the stamp, a stamp the tracker writes never reaches `settle`.
+  - The S0 contract text (`s0-extensions.md`: the `trackPaths` row and paragraph, the helper, a section for this
+    fix-up) and the comments of `design-extension-boundary.js`, `provenance.js` and `worker.js` say the same.
+  - S0 28 of 28; wp9a S1.5, S1.6, S1.8, S1.11, S1.12, S1.14, S1.15, S1.21 to S1.24 green.
+- **Item 3, R3: done.** Case: S0's block "O1", one hostile file that is not valid JSON and one that is JSON but no
+  object, each in a scratch copy of the evidence directory. Seen to fail on `ce6eb90` (`.aiw-local/fixup4/r3-before.log`:
+  "Expected double-quoted property name in JSON at position 16" and "Cannot read properties of null", neither naming the
+  file). Now `rc44-s0-readings.mjs routeBookings` refuses each with its path: "<path> is no size file this check can
+  read: it is not valid JSON (<the parser's words>)." and "... : a size file is a JSON object." (the second is a little
+  more than the ruling's words; a `null` file threw a general fault before).
+- **Item 4, R4: done.** Cases: wp9a's S1.10 (the share read from a build's metafile: a script of the entry's closure
+  beside the route and the holder moved by 24 B, as another package's shared chunk would be, does not move the share; the
+  package's own lists one byte past the measure, and a module one byte past its pin, do) and S0's block 8 (the bucket
+  ceiling on seven synthetic figures). Seen to fail first: S1.10 with the share reader wired to the old reading (the
+  entry's whole growth) failed on the shifted chunk (`.aiw-local/fixup4/r4-share-before.log`); S0's block 8 failed for
+  want of the helper (`r4-bucket-before.log`). What was built:
+  - S1.10 reads the package's share as its own modules (pinned exactly, as before) plus its own import and export
+    lists: the bytes of the script that holds it (the deploy-view chunk) outside its modules, against the same script at
+    the adoption record. Measured with `node build.mjs` on an archive of `a4c1690` (`.aiw-local/fixup4/a4c`): that script
+    51,789 B, 49,415 B of modules, 2,374 B of lists; at this head 74,415 B, 71,873 B, 2,542 B. So the lists are 168 B
+    and the share 22,614 B (22,446 B of modules). The script's two other modules moved 12 B with the package beside
+    them (`deploy-view.js` +6 B, wp9a's own edit of L7's H15; `deploy-layout.js` +6 B, a renamed identifier) and the
+    rest of the entry's closure -2 B: they are no part of the share as R4 reads it, and the entry's whole growth stays
+    22,624 B ("opens with records" 4,086,349 B, 855,744 B in 12 scripts, unchanged).
+  - `rc44-s0-readings.mjs assertUnder10kCeiling(slice, base, gate)`: at most the gate and at most the base's count plus
+    the script files the slice adds; S0's block 8 and S1.10 read the bucket with it, and each also holds this build's
+    bucket inside the gate.
+  - Old -> new: (1) S1.10 `LAZY_SHARE.lists` 178 B ("the script's import and export lists with the rest of the entry's
+    closure") -> 168 B (the holder script's own lists, against `ADOPTION_HOLDER`), `total` 22,624 -> 22,614 B, the
+    modules unchanged; (2) S1.10 the evidence's `w.added - ADOPTION_OPENS.added <= LAZY_SHARE.total` (the entry's whole
+    growth) -> the evidence's holder script: its lists are its bytes less its modules and grew no more than
+    `LAZY_SHARE.lists`, with `w.holder.atTheAdoptionRecord` deep-equal to `ADOPTION_HOLDER`; (3) S1.10 this build's
+    `opens.added - ADOPTION_OPENS.added <= LAZY_SHARE.total` -> this build's modules deep-equal to the pins, its own
+    lists at most 168 B and the share at most 22,614 B; (4) S1.10 `size.slice.under10k` equal to `BASE.under10k` -> at
+    most the gate and at most the base's 53 plus the 0 files the slice adds, and this build at most the gate; (5) S0's
+    block 8 `size.slice.under10k` equal to `BASELINE.under10k` -> the same ceiling against 94dbd4f's 53, and this build
+    at most the gate. (1) to (3) are stricter on the package's own bytes (22,614 < 22,624) and no longer read other
+    packages' bytes, as R4 rules; (4) and (5) are the ceiling R4 rules, which accepts a lower count where the equality
+    did not, and they now also read this build's count.
+  - Re-measured (`node build.mjs`, S1.10 `--measure`): chapters route 3,230,605 B (unchanged by items 1 to 4: nothing of
+    them reaches the client), projects 507,338 B, 148 script files, buckets 53/50/45, stylesheet 901,873 B, no
+    violation. `audit/rc44/evidence/wp9a-s1-size.json`: the name, `packageShare` (lists 168, total 22,614) and a new
+    `holder` block; every route figure as before (ownBytes 342). The O1 merge check passes (block "O1": 765 = 0 + 325
+    + 342 + 98 + 0).
+- **Item 5: done.** The notes (this section, "State", "Measurements", "Suites"); the four rc44 suites, the browser
+  case, the 47 suites that import or exercise the changed files, `node check-syntax.mjs`, `node scripts/lint.mjs
+  --summary` and `node build.mjs` on the final code (see "Suites", after the fourth fix-up); the final commit.
+
+## Third fix-up (after the second verifier; the lead's rulings O1 to O5, with K to N)
+
+Branch `rc44/wp9a-s1-topology-fix-c6`, from `rc44/wp9a-s1-topology-fix-c5` (`5cae40a`). Verifier:
+`/home/user/hb-review/rc44-build/wp9a-s1-topology.verify2.json` (verdict merge, three new problems). Order of work, each
+case first and seen to fail on the head the item started from, a WIP commit after each:
+1. O1, the bookings checked: routeBookings refuses; the lead's file; the consistency check in S0's suite.
+2. O2, trackPaths: the boundary says what a tracker changed; the tracker's answer retired.
+3. O3, the notes.
+4. O5, re-measured after O2 (O4 needs no code).
+5. The notes, the suites, the final commit.
+
+### One line each
+
+| Item | State | Case (suite `rc44-wp9a-deployment-validate.mjs` unless named) |
+|---|---|---|
+| New problem 1: the M4 helper trusts whatever the evidence files record | done (O1): `routeBookings` refuses what it cannot trust; the lead's merge check adds the bookings up against the build | S0 block "O1 the bookings add up" (seen to fail on `5cae40a`) |
+| New problem 2: M1 extended S0's contract; the boundary stamps whatever pairs a tracker answers | done (O2): the answer is retired; the boundary copies the package's `trackPaths` and stamps what a call changed; `assertTrackerStaysInPaths` holds that a tracker stays in them | S0 block "O2 tracked paths"; S1.24; S1.11; S1.21 (each new case seen to fail on `5cae40a`) |
+| New problem 3: small inaccuracies in the notes | done (O3) | notes only: "Second fix-up", item 4; "Known limits" (e) |
+| O1 | done: the four refusals, the lead's file, the merge check beside S0's build block | S0 "O1" |
+| O2 | done: the row, its start check, the boundary's copy and stamp, the helper, the S0 block, wp9a's `trackPaths`, `trackTopology` answering nothing, `assembleParts`, S1.11 replaced, S1.21 holding, S1.24 calling the helper; the S0 contract text and the comments | S0 "O2"; S1.24; S1.11; S1.21 |
+| O3 | done | notes |
+| O4 | nothing to do (no code): confirmed as ruled | — |
+| O5 | done: re-measured after O2; S1.10's pins old -> new; S0's row booked at 0 B in the lead's file; the merge check green on the final head; wp9a 342 B of 500 (158 B left), pool 98 + 0 B | S1.10; S0 "O1"; wp2 `size` |
+
+### Where I read a ruling otherwise, or did a little more (plainly)
+
+- **O1:** the lead's own figure is held to 0 (a file named `lead-bookings-size.json` that states bytes of its own is
+  refused); the ruling says "(ownBytes 0)" and I read that as a rule. `routeBookings` also answers `own` for every file
+  (the merge check needs it). The stale-figure case changes, in turn, each package file's own figure by one byte; the
+  lead's own figure cannot be changed at all (refused), so it is not among them.
+- **O2, the join:** `assembleParts` joins the parts' `trackPaths` in their order and lists each path once (two later
+  parts may both mend zones); the ruling says "joins ... in their order".
+- **O2, the helper is stricter than its words:** besides "the whole document outside the package's own keys, its
+  trackPaths and changes.events", `assertTrackerStaysInPaths` holds that `prior` does not move, that the journal's
+  earlier events stand as they were (outside `changes.events` alone, a tracker could rewrite an earlier event) and that
+  the journal's counter moves by exactly the events added (the counter numbers them; the ruling does not name it). "The
+  package's own keys" are its design and evidence keys, the keys of its design row and its lifecycle and provenance
+  collections.
+- **O2, two holes the new stamping would have opened, closed in S0's files:** (1) `stampTracked` stamps through
+  `settle`, which, for a person's commit, reads a record that turned `confirmed` or stopped being a proposal as that
+  person's confirmation or keep; a tracker's call is neither, so `settle` takes a flag (`tracked`) and a tracker's call
+  confirms and keeps nothing and marks no draft of Sol's as a person's edit (S0 "O2", a confirmation the tracker sets;
+  seen to fail with the flag taken out). (2) A stamp the tracker writes on a record of its paths is replaced by the
+  boundary's copy's; a record it adds keeps no author or review stamp at all (the ruling: "not stamped as anyone's").
+- **O2, the copy:** kept as each record's JSON text and read back only where a call changed it; measured at the
+  runtime limits (2,000 zones, 2,000 placements), on the shared machine: about 9 ms per tracker call, 0.44 s for a
+  reviewed batch of 50 commands (about 35 ms and 1.7 s with `structuredClone`).
+- **O2, where the S0 block stands:** last in S0's suite, because it registers its synthetic package for good and no
+  earlier block may read it; the O1 block stands beside the build block, as ruled.
+- **O5:** the ruling expects route bytes for the part's name in `design-extension-parts.js`; that module is in no
+  client bundle (S0's block 8 asserts it), so the build measures 0 B. The row is booked at 0 B in the lead's file with
+  the build it was measured on, so that it is on the books.
+- I do not disagree with any ruling of section O.
+
+### What later slices must know (third fix-up)
+
+- **Every package with a tracker:** it answers nothing. A tracker that mends records of a built-in collection states
+  those collections as `trackPaths`; the boundary stamps what each call changed there. Its suite calls
+  `assertTrackerStaysInPaths(extension, cases)` (`rc44-s0-readings.mjs`) on its tracker's cases, and asserts from the
+  answer that the cases reach what the tracker changes.
+- **wp2 (the adoption record, and S5 being built beside this):** `trackAdoptionChange` states no `trackPaths` and wp2's
+  suite does not yet call `assertTrackerStaysInPaths`. By reading the code it writes the package's own `adoptions` and
+  the journal only; wp2's owner shows it with the helper in wp2's next slice.
+- **Every size file** (`audit/rc44/evidence/*-size.json`): an own figure of at least 0, a pool item that one file
+  books, a negative pool item only in the lead's file. On every merge the lead's check in S0's suite (block "O1") must
+  add up exactly against the integrated base; the slices built beside this one (wp2 S5, wp1 S2) fail it at the merge
+  until their files book what their builds add.
+- **wp9b:** known limit (e) with its consequence (Chapter 11's `review.checks`, the intake and a recorded architect
+  review lapse after a package's proposal is dismissed), with the built-in seeds' rule (M6), the shared sentences (M7)
+  and L11 (b).
+- **Slice 2:** a part that mends zones (the failure set) states `trackPaths` in its own part; `assembleParts` joins them.
+
+### By item
+
+- **Item 1, O1: done.** Case: S0's block "O1 the bookings add up" (`rc44-s0-extensions-validate.mjs`, after block 8,
+  whose build it reads). Seen to fail on `5cae40a` (`.aiw-local/third-fixup/o1-before.log`): a negative own figure, a
+  pool item two files book, a negative pool item in a package's file and bytes of the lead's own were all accepted, a
+  figure that is no integer was refused in other words, and the merge check did not exist. Now `rc44-s0-readings.mjs`
+  `routeBookings` refuses each, naming the file (an own figure is an integer of at least 0; a pool item is an integer
+  one file books; a negative pool item only in `lead-bookings-size.json`, whose own figure is 0), and answers `own` for
+  every file beside `others`; `assertBookingsAddUp(route, base, dir)` is the lead's merge check: the route less the
+  integrated base (3,229,840 B at `9673661`) is every file's own bytes plus the pool's, exactly, or it fails naming each
+  file's figure. The block holds it on this build (765 = 0 + 325 + 342 + 98) and sees it fail for a stale figure (each
+  package file's own figure changed by one byte, in turn), a foreign file with bytes, a foreign pool item and a negative
+  pool item of the lead's that no build shows. `audit/rc44/evidence/lead-bookings-size.json` exists (schema v3, ownBytes
+  0, sharedPoolBytes empty until item 2 measures S0's row, productionAccepted false). wp2's block `size` and S1.10 keep
+  their two checks of M4 and pass unchanged.
+
+- **Item 2, O2: done.** Cases: S0's block "O2 tracked paths" and wp9a's S1.24 "the tracker stays in its paths",
+  with S1.11 replaced and S1.21 unchanged. Seen to fail on `5cae40a`: the start check refused `trackPaths` as no part
+  of the contract (`.aiw-local/third-fixup/o2-s0-before-1.log`); with the start check and the helper left out, all
+  five server cases failed (`o2-s0-before-2.log`: the record the tracker mended, answering nothing, was not stamped
+  for a person's commit nor for an agent account's; a fabricated answer restamped a record the call did not change;
+  a record the tracker added took the commit's stamp; a stamp the tracker wrote was kept); S1.11 failed ("a part
+  states trackPaths"); S1.24 failed in its three parts (no trackPaths; trackTopology answered the pairs; no
+  `assertTrackerStaysInPaths`) (`o2-wp9a-before*.log`). What was built:
+  - S0 (`design-extension-parts.js`): the part `trackPaths`, start-checked (it needs `track`; a non-empty list of
+    `chapter.collection` paths; none of the package's `lifecycle`, `provenance.records` or `provenance.paths`
+    collections).
+  - S0 (`design-extension-boundary.js trackExtensions`): before each call of a package's tracker the records of its
+    `trackPaths` are copied (by id, in order); after it each record whose JSON the call changed is handed to
+    `provenance.js stampTracked` with the copy as `was`; a record with no copy (one the call added) is no one's; the
+    answer is not read. `stampTracked` stamps through `settle` with a new flag `tracked`: a tracker's call confirms and
+    keeps nothing and marks no draft as a person's edit, and a stamp it wrote is replaced by the copy's; for an added
+    record it removes the author and review stamps. Server only.
+  - S0 (`rc44-s0-readings.mjs`): `assertTrackerStaysInPaths(extension, cases)`: the tracker on a copy of each case's
+    `next`; `prior` unchanged; the journal's earlier events unchanged and its counter moved by the events added; the
+    document outside the package's own keys (design and evidence keys, design row, lifecycle and provenance
+    collections), its `trackPaths` and the journal unchanged; answers `{cases, changed, journalled}`.
+  - wp9a: `trackPaths: ['runtime.zones', 'runtime.placements']` (what the mend changes: a zone's `nodeId` and
+    `domainIds`, a placement's `nodeId`, with their `revision`); `trackTopology` answers nothing (and clones a record
+    only where a restore brought it back); `assembleParts` joins the parts' `trackPaths` in their order, each path once,
+    and its tracker answers nothing.
+  - S1.24 calls `assertTrackerStaysInPaths` on nine cases of the tracker (no topology, the step, a node, a failure
+    domain, a zone and a placement located, a zone and a placement a restore brings back naming what is not there, a
+    proposal kept): the calls mend one zone and one placement and journal seven changes, and nothing else moves.
+  - Mutations, each caught: without the boundary's stamp call, S0 "O2" (person, agent, added, stamp) and S1.21 ("the
+    zone the mend changed is stamped as the commit's") fail; without the `tracked` flag, S0 "O2" fails on the tracker's
+    confirmation stamped as A's review; without the unstamp of an added record, S0 "O2" fails on the added record.
+  - Old -> new (wp9a's suite): S1.11 `j.track()` deep-equal to the parts' `[was, is]` pairs ("the trackers' answers are
+    joined in the parts' order") -> `j.trackPaths` deep-equal to the joined paths, `j.track()` answers `undefined` though
+    the parts answer, and every part's tracker runs in order; S1.11 the registration's keys gain `trackPaths`, with its
+    value asserted. S1.21 is unchanged and green (the boundary now stamps what the mend changes).
+  - The S0 contract text (`s0-extensions.md`: the `track` and `trackPaths` rows and paragraphs, the helpers, a section
+    for this fix-up) and the comments of `design-extensions.js`, `design-extension-boundary.js`, `provenance.js`,
+    `topology.js` and `topology-domain.js` say the same.
+  - Route after item 2 (`node build.mjs`): 3,230,605 B, unchanged: the part's name is in `design-extension-parts.js`,
+    in no client bundle (S0 block 8), and `stampTracked` and `settle` are server-only. In the lazy entry:
+    `topology-domain.js` 20,903 B (unchanged: `trackPaths` added what the retired answer saved) and `topology.js`
+    1,448 -> 1,503 B; S1.10 is red until item 4 re-measures it.
+  - Suites after item 2: S0 28 of 28; wp9a 24 of 25 (S1.10, the pins).
+
+- **Item 3, O3: done** (notes only; no case). Under "Second fix-up", item 4: the figures 246 B and 669 - 246 - 98
+  are marked as the figures at item 4, with the final 342 B and 765 - 325 - 98 beside them. Known limit (e) names its
+  consequence (Chapter 11's `review.checks`, the intake and a recorded architect review lapse after a package's
+  proposal is dismissed, the safe direction) and its owner (wp9b, with the built-in seeds' rule). The second fix-up's
+  lines on M1's answer are marked as retired by O2.
+
+- **Item 4, O4 and O5: done.** O4 needs no code (it confirms the second fix-up's S0 edits: `quietProposals`,
+  `routeBookings` as O1 amends it, `stampTracked` as O2 uses it). O5, re-measured after O2 with `node build.mjs` and
+  S1.10 `--measure` (`audit/rc44/evidence/wp9a-s1-size.json`, its name now "after its third fix-up"):
+  - chapters route 3,230,605 B, unchanged by items 1 to 3 (+765 B against `9673661`, +440 B against `rc44/integration`
+    `a4c1690`; cap 3,233,792 B unchanged, 3,187 B left); projects 507,338 B; 148 script files; 53 files under 10 KB
+    (buckets 53/50/45); stylesheet 901,873 B; no violation; no gate changed.
+  - the lazy entry's pinned module bytes, old -> new (S1.10 `LAZY_SHARE`, recorded in its comment and the commit):
+    `topology.js` 1,448 -> 1,503 B (`assembleParts` joins `trackPaths`, its tracker answers nothing);
+    `topology-domain.js` 20,903 -> 20,903 B (the `trackPaths` row added what the retired answer saved); the four
+    parts 10 B each and the lists 178 B unchanged; the package's share 22,569 -> 22,624 B against `a4c1690`'s entry.
+    "Opens with records": 4,086,294 -> 4,086,349 B (855,689 -> 855,744 B in 12 scripts beside the route).
+  - S0's part name booked in the lead's file: `trackPathsPartNameO2` 0 B (`design-extension-parts.js` is in no client
+    bundle; the boundary's copy, `stampTracked` and `settle` are server-only), with the build it was measured on.
+  - The consistency check of item 1 on this build: 3,230,605 - 3,229,840 = 765 = wp2 325 + wp9a 342 + the lead 0, plus
+    the pool 98 (wp9a's 34 + 64) + 0 (the lead's): S0 block "O1" green; wp2's block `size` and S1.10 green.
+  - Restated: **wp9a's own bytes 342 B of its 500 B, 158 B left**; the shared pool's bytes on the route 98 B (wp9a's
+    file) + 0 B (the lead's file), so of the pool of the seven later packages (1,656 B after H1) 1,558 B are left, as
+    ruling N1 states.
+
+- **Item 5: done.** The notes (this section, "State", "Measurements", "Suites"); on the final code (`e87faa6`, whose
+  code is the final head's: the commits after it change these notes only) the four rc44 suites, the browser case and
+  the suites that import or exercise the changed files, `node check-syntax.mjs`, `node scripts/lint.mjs --summary` and
+  `node build.mjs` (see "Suites", after the third fix-up); the lead's merge check by hand on the final build
+  (`assertBookingsAddUp(3230605, 9673661)`: grew 765, own 667, pool 98); the final commit.
+
+Measured before any change (`node build.mjs` on `5cae40a`): chapters route 3,230,605 B, projects 507,338 B, 148 script
+files, buckets 53/50/45, stylesheet 901,873 B, no violation.
 
 ## Second fix-up (after the verifier; the lead's rulings M1 to M9, with K and L)
 
@@ -58,6 +590,7 @@ Where I read a ruling otherwise, or did a little more, plainly:
   stamp current, not the package), S0's `track` row may now answer `[[as it was, as it is]]` for records of other
   collections the tracker changed, and `trackExtensions` stamps each as the commit's (`provenance.js stampTracked`,
   server only; `worker.js` hands the author over). That is an edit of S0's boundary and contract, which M1 does not name.
+  (Retired by ruling O2 in the third fix-up: the answer is ignored, and the boundary copies `trackPaths` instead.)
   The restore rule (L3) reads the same predicate as the mend and the comparison, so a node's restore is no longer
   refused because its domain is a person-kept record a draft changed since.
 - M3: L2's words "the chapter cannot be checked, frozen as checked or handed off" are not built: as M3 rules, they mean
@@ -93,8 +626,10 @@ Where I read a ruling otherwise, or did a little more, plainly:
   package, as wp2's v1 does) and the shared pool's (`sharedPoolBytes`, by item). The adoption record's block `size`
   (`rc44-wp2-adoption-cases/record.mjs`) and wp9a's S1.10 each hold: the build passes every gate with the caps
   unchanged; the figure recorded at the package's own head is inside its allowance (wp2: `delta` 325 B of 600; wp9a:
-  `ownBytes` 246 B of 500); and this build's growth against the integrated base, less every other package's own bytes
-  and less the shared pool's, is inside the allowance (wp2: 669 - 246 - 98 = 325 B; wp9a: 669 - 325 - 98 = 246 B). Seen
+  `ownBytes` 246 B of 500, **the figure at item 4**); and this build's growth against the integrated base, less every
+  other package's own bytes and less the shared pool's, is inside the allowance (**the figures at item 4**, before
+  item 6 added M6's 96 B: wp2: 669 - 246 - 98 = 325 B; wp9a: 669 - 325 - 98 = 246 B; on the final head of the second
+  fix-up wp9a's own bytes are 342 B, and 765 - 325 - 98 = 342 B, as "Measurements" says; ruling O3). Seen
   to fail first: wp2's block red at 669 B (item 0), then "wp9a-s1-size.json states no route bytes of its own" until the
   evidence was measured again; S1.10 failed on the old evidence file. Old -> new, at least as strict (with no other
   package's evidence the new assertion is the old one): wp2 `measured.chapters - INTEGRATED.chapters <= 600` ->
@@ -152,8 +687,10 @@ Where I read a ruling otherwise, or did a little more, plainly:
 
 ### What later slices inherit (second fix-up)
 
-- **Every package:** S0's `track` may answer `[[as it was, as it is]]` for records of other collections it changed
-  itself; the boundary stamps each as the commit's (M1). S0's row `quietProposals {path: true}` says that a proposal of
+- **Every package:** ~~S0's `track` may answer `[[as it was, as it is]]` for records of other collections it changed
+  itself; the boundary stamps each as the commit's (M1).~~ Superseded by ruling O2 (third fix-up): a tracker answers
+  nothing; a package states the built-in collections its tracker mends as `trackPaths`, and the boundary stamps what a
+  call changed there. S0's row `quietProposals {path: true}` says that a proposal of
   a package's own lifecycle collection is no design change when it is dismissed or restored (M6). A package's size case
   follows one rule (M4): its evidence states `ownBytes` and, for anything booked to the shared pool, `sharedPoolBytes`
   by item; its suite asserts the recorded figure at its own head and this build's growth less every other package's
@@ -563,14 +1100,62 @@ slice 6 brings the surface that offers Keep and Retire (ruling J7). See open que
 - (d) For slice 2: no calculated verdict reads as confirmed an ancestor chain that an unreviewed draft changed.
 - (e) A reviewed batch keeps its receipt in `workbench.history`, which the design fingerprint reads on rc.10.73.42: a
   batch of proposals moves the design stamp by its receipt alone (S1.8 holds that nothing else moves). Likewise, found
-  by the second fix-up: a dismissal of a proposal moves no version and clears no check (M6), but the design stamp moves
-  by the dismissal's entry in `retired.records`, which the design fingerprint reads for every retirement on
-  rc.10.73.42 (S1.23 holds it, marked KNOWN LIMIT). Closing it means leaving such entries out of the design source
-  (`review-domain.js reviewSource`, on the route, about 100 to 150 B by estimate, not measured): for the lead.
+  by the second fix-up: a dismissal of a package's proposal moves no chapter version and clears no chapter's check or
+  handoff (M6), but the design stamp moves by the dismissal's entry in `retired.records`, which the design fingerprint
+  reads for every retirement on rc.10.73.42 (S1.23 holds it, marked KNOWN LIMIT). **Its consequence (ruling O3):**
+  after a package's proposal is dismissed, Chapter 11's `review.checks`, the intake and a recorded architect review are
+  no longer current (`finalChecksCurrent` goes from true to false), because the retirement list is in the design
+  source on rc.10.73.42. That is the safe direction: a check lapses, and none stands that should not. It stays a known
+  limit, **owned by wp9b** with the built-in seeds' rule (M6). Closing it would mean leaving such entries out of the
+  design source (`review-domain.js reviewSource`, on the route: the second verifier measured 187 B in a scratch copy,
+  more than wp9a had left).
 - (f) No document bound is enforced by code; the package's limits keep its worst case near 3.74 M of the 8 M characters
   (S1.18), and later wp9a slices measure what they add against that.
 
 ## Measurements
+
+**After the fourth fix-up** (the final head; `node build.mjs`; S1.10 `--measure`; ruling R4). The route did not move:
+R1 and R2 are server-only (`design-extension-parts.js` is in no client bundle; the boundary and `worker.js` are the
+server's; the one edit of `provenance.js` is a comment), R3 and R4 are suite helpers and evidence.
+
+| | 9673661 | rc44/integration a4c1690 | `ce6eb90` (start) | This head | Cap |
+|---|---|---|---|---|---|
+| Chapters route (code) | 3,229,840 B | 3,230,165 B | 3,230,605 B | 3,230,605 B (+765 / **+440**) | 3,233,792 B (unchanged; 3,187 B left) |
+| Projects route (code) | 506,829 B | 507,069 B | 507,338 B | 507,338 B | 1,242,112 B (unchanged) |
+| Script files | 148 | 148 | 148 | 148 | 148 (unchanged) |
+| Files under 10 KB | 53 | 53 | 53 | 53 (buckets 53/50/45) | 61 (unchanged) |
+| Stylesheet | 901,873 B | 901,873 B | 901,873 B | 901,873 B | 902,144 B (unchanged) |
+| Opens with records (D10), entry of `deploy-view.js` | 4,062,884 B | 4,063,285 B | 4,086,349 B | 4,086,349 B (855,744 B in 12 scripts) | — |
+| The script that holds the package (deploy-view chunk): bytes / modules / lists | — | 51,789 / 49,415 / 2,374 B | 74,415 / 71,873 / 2,542 B | 74,415 / 71,873 / 2,542 B | — |
+
+The package's share of the lazy entry as R4 reads it: 22,614 B, its modules 22,446 B (`topology-domain.js` 20,903,
+`topology.js` 1,503, the four empty parts 10 each) and its own import and export lists 168 B (2,542 - 2,374); was
+22,624 B read as the entry's whole growth (lists 178 B "with the rest of the entry's closure"). Bookings on the route
+against `9673661`, unchanged: wp2 325 B, wp9a 342 B, the lead 0 B of their own; the shared pool 98 B (wp9a's file) and
+0 B (the lead's); 765 B, exactly (S0 block "O1"). **wp9a's own: 342 B of its 500 B, 158 B left.** The pool of the
+seven later packages (1,656 B after H1) has 1,558 B left. No gate changed (`client-bundle.mjs` and `build.mjs` are as
+on `94dbd4f`).
+
+**After the third fix-up** (the final head; `node build.mjs`; S1.10 `--measure`; ruling O5). The route did not move:
+O1 is a suite helper and evidence, O2 is server-only on the route side (the part's name is in
+`design-extension-parts.js`, in no client bundle; the boundary, `stampTracked` and `settle` are server-only) and its
+client bytes are in the lazy entry.
+
+| | 9673661 | rc44/integration a4c1690 | `5cae40a` (start) | This head | Cap |
+|---|---|---|---|---|---|
+| Chapters route (code) | 3,229,840 B | 3,230,165 B | 3,230,605 B | 3,230,605 B (+765 / **+440**) | 3,233,792 B (unchanged; 3,187 B left) |
+| Projects route (code) | 506,829 B | 507,069 B | 507,338 B | 507,338 B | 1,242,112 B (unchanged) |
+| Script files | 148 | 148 | 148 | 148 | 148 (unchanged) |
+| Files under 10 KB | 53 | 53 | 53 | 53 (buckets 53/50/45) | 61 (unchanged) |
+| Stylesheet | 901,873 B | 901,873 B | 901,873 B | 901,873 B | 902,144 B (unchanged) |
+| Opens with records (D10), entry of `deploy-view.js` | 4,062,884 B | 4,063,285 B | 4,086,294 B | 4,086,349 B (855,744 B in 12 scripts) | — |
+
+The package's share of the lazy entry: 22,624 B against `a4c1690`'s entry (was 22,569 B): `topology-domain.js` 20,903,
+`topology.js` 1,503 (was 1,448), the four empty parts 10 each, the lists 178. Bookings on the route against
+`9673661`: wp2 325 B, wp9a 342 B, the lead 0 B of their own; the shared pool 98 B (wp9a's file: the `fmt` fix 34, S0's
+design row 64) and 0 B (the lead's file: S0's `trackPaths` row); 325 + 342 + 0 + 98 + 0 = 765 B, the route's growth,
+exactly (S0 block "O1"). **wp9a's own: 342 B of its 500 B, 158 B left.** The pool of the seven later packages (1,656 B
+after H1) has 1,558 B left.
 
 **After the second fix-up** (this head; `node build.mjs`; S1.10 `--measure`, `audit/rc44/evidence/wp9a-s1-size.json`
 schema v3; ruling M8). Bases, each built with `node build.mjs` from an archive of its commit: the integrated base
@@ -668,6 +1253,57 @@ Measured with scratch builds: with a second package's stub beside this one the r
 import of `topology.js` in `deploy-view.js` the route is the same 3,230,089 B (the package's modules add no export).
 
 ## Suites
+
+**After the fourth fix-up** (the final code; logs under `.aiw-local/fixup4/`, not committed). The rc44 suites on the
+final code, two at a time: `rc44-s0-extensions-validate.mjs` 28 of 28 (blocks "O2" and "O1" extended, block 8's
+bucket as a ceiling); `rc44-wp9a-deployment-validate.mjs` 25 of 25 (S1.10 with `--measure` at item 4; S1.24 green
+under the stricter helper); `rc44-wp1-knowledge` 34 of 34 (4 pending); `rc44-wp2-adoption-validate.mjs` 20 of 20 (its
+block `size` green: 325 B of 600); `rc44-wp9a-deployment-browser-validate.mjs` 1 of 1 against the client `node build.mjs`
+built on this code (port from 4100, its own `.aiw-local` database, no server left running). The suites that import a
+changed file (`design-extension-parts.js`, the boundary, `provenance.js`, `rc44-s0-readings.mjs`) or run the server
+that does (`worker.js`, changed too), green and unedited, 47 of them: `provenance`, `seeded-proposals`, `evidence`,
+`recovery-authority`, `changes`, `design-records`, `validation-confirmation`, `deploy`, `runtime`, `rc42-g5-runtime`,
+`workspace`, `fingerprint`, `action-undo`, `action-undo-api`, `model-alternatives`, `wire-merge`, `service-routes`,
+`journal-archive`, `review`, `decisions`, `technology`, `interfaces`, `security`, `quality`, `review-plan` (657 s),
+`rc42-g7-data-contracts`, `rc42-g4-trace-kernel`, `rc42-g3c-evidence-fingerprint`, `sdd-architecture`, `readiness`,
+`drafter-groups`, `model-lifecycle`, `execution-journey`, `platform`, `technology-realisation`, `rc42-g1-tech-approval`,
+`reference-projects`, `chapter-lines`, `not-stated`, `chapter-records`, `design-links`, `resilience`, `reconciliation`,
+`trace-narrative`, `projects`, `connected-design-projections`, `payment-case-journey`. Red, each as on the baseline:
+`test:command-equivalence` and `test:sol-disclosure` (among the 37 of `audit/rc42/regression-2026-11-16.json`; they
+import `provenance.js` and the server) fail with the baseline's own lines ("a working choice made: the saved document
+is the one the route saved before round 12 · $.workbench.history[1]" and "The desk no longer holds F:capacity:run-001,
+F:capacity:run-008"), and fail the same way on an archive of `94dbd4f` run here (`.aiw-local/fixup4/base-ce.log`,
+`base-sd.log`). `test:requirements` was not run (unchanged module and suite; known to flake under load). `node
+check-syntax.mjs`: 938 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, 0 new. `node
+build.mjs`: built, no size violation (chapters route 3,230,605 B, 148 script files, buckets 53/50/45). None of the
+other baseline-red suites was run, and no full regression (the lead runs it).
+
+**After the third fix-up** (the final code; logs under `.aiw-local/third-fixup/`, not committed). The rc44 suites, run
+again on the final head one after another: `rc44-wp9a-deployment-validate.mjs` 25 of 25 (S1.10 with `--measure` at
+item 4; S1.24 new; S1.11 as replaced; S1.21 unchanged); `rc44-s0-extensions-validate.mjs` 28 of 28 (blocks "O1 the
+bookings add up" and "O2 tracked paths" new); `rc44-wp1-knowledge` 34 of 34 (4 pending); `rc44-wp2-adoption-validate.mjs`
+20 of 20 (its block `size` green under M4 and O1); `rc44-wp9a-deployment-browser-validate.mjs` 1 of 1 against the client
+`node build.mjs` built on this head (port from 4100, its own `.aiw-local` database, no server left running). The suites
+that import a changed file (`provenance.js`, the boundary, `design-extension-parts.js`, `design-extensions.js`, the
+package's modules, `rc44-s0-readings.mjs`) or run the server that does (`worker.js` imports the boundary and
+`provenance.js`), green and unedited: `provenance`, `seeded-proposals`, `evidence`, `changes`, `design-records`,
+`validation-confirmation`, `deploy`, `runtime`, `workspace`, `fingerprint`, `action-undo`, `recovery-authority` and
+`review-plan`, run again on the final head; and, run on `e87faa6` (the same code) after its commit, `action-undo-api`,
+`drafter-groups`, `technology`, `model-alternatives`, `rc42-g7-data-contracts`, `wire-merge`, `sdd-architecture`,
+`rc42-g3c-evidence-fingerprint`, `review`, `interfaces`, `security`, `technology-realisation`, `service-routes`,
+`journal-archive`, `rc42-g1-tech-approval`, `rc42-g4-trace-kernel`, `rc42-g5-runtime`, `readiness`,
+`reference-projects`, `not-stated`, `chapter-lines`, `platform`, `component-needs`, `model-lifecycle`,
+`execution-journey`, `quality`, `driver-kinds`. Red, each as on the baseline: `test:command-equivalence` and
+`test:sol-disclosure` (both among the 37 of `audit/rc42/regression-2026-11-16.json`; they import `provenance.js` and
+`design-extensions.js`) fail with the baseline's own line ("a working choice made: the saved document is the one the
+route saved before round 12 · $.workbench.history[1]" and "The desk no longer holds F:capacity:run-001,
+F:capacity:run-008"), and fail the same way on a copy of `94dbd4f`. `test:requirements` (not among the 37) is
+intermittent under load: a timer of `public/requirements.js` `showTip` reads `innerWidth` after the suite's window is
+gone (`ReferenceError: innerWidth is not defined`); on this code it passed 2 of 5 runs, and on copies of `94dbd4f` and
+`5cae40a` it failed the same way in 1 of 2 runs each; the fix-up touches neither the module nor the suite. `node
+check-syntax.mjs`: 938 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, 0 new. `node
+build.mjs`: built, no size violation (chapters route 3,230,605 B, 148 script files, buckets 53/50/45). None of the other
+suites red at the baseline was run, and no full regression (the lead runs it).
 
 **After the second fix-up** (the final head; the machine shared, so times are long): `rc44-wp9a-deployment-validate.mjs`
 24 of 24 (S1.10 with `--measure` at item 6, the last code change); `rc44-s0-extensions-validate.mjs` 26 of 26;
@@ -806,3 +1442,32 @@ Earlier questions, as asked at the slice:
 9. **Ruling J3 on this base.** S0 has no row yet for what a package's record says to the fingerprint. The marker's
    step is kept out of both fingerprints as an evidence key (decision 3). A node's and a failure domain's `history`
    is read by the design fingerprint as a built-in record's is; neither carries a person's step.
+
+New after the fourth fix-up (each stated plainly under "Fourth fix-up", "Where I read a ruling otherwise"; numbered 11 to
+13 when first written, beside the 11 to 13 above, and renumbered 15 to 17 in the fifth fix-up by ruling T2; the fourth
+fix-up's report, `wp9a-s1-topology.fixup4.json`, names them by their first numbers):
+
+15. **Two refusals beyond R2's words.** A tracker call that removes a record of its `trackPaths`, and one whose change
+    of content or bookkeeping moves the chapter's reading of whether a record is AIW's proposal (an inherited contract at
+    its first revision, a need whose description is the catalogue's), are refused as an added record is. Neither fires
+    for wp9a. Confirm, or rule that a removal (or such a move) should be restored or allowed instead. (Closed by ruling
+    T3: confirmed.)
+16. **The status of a refused tracker call.** It is answered 500 with code `fault`, as every tracker fault is, in its own
+    words naming the package; nothing is stored. Confirm 500 (the package's fault, not the request's) over a 4xx. (Closed
+    by ruling T3: confirmed.)
+17. **R4's share at the merge.** The share reads the deploy-view chunk's lists against `a4c1690`'s same script
+    (`ADOPTION_HOLDER`). If the merge with wp2 S5 or wp1 S2 changes what that chunk imports (an alias that moves in a
+    shared chunk shows in its import list), S1.10's lists bound (168 B) may need re-measuring at the merge; the modules
+    are unaffected.
+
+## Lead follow-up after the fifth verifier (2026-11-22)
+
+The fifth verifier's verdict on f784fdb is *merge* (6 of 7 items fixed, the seventh known limit (a) as L11 allows; nothing
+weakened), with one nit, closed here on rc44/wp9a-s1-lead, case first:
+- keepListed dropped an own field named "__proto__" when it rebuilt a mended record (assignment sets a prototype). It now
+  keeps the fields as [key, value] entries and writes each back as the record's own (defineProperty), so every field the
+  path does not list is put back as the record held it. Case: S0 block 'O2', a responsibility holding "__proto__" as its
+  own field, mended by the synthetic tracker through trackExtensions (seen red: the field was gone). Server-only module:
+  no route bytes. Suites: rc44-s0-extensions 28 of 28, rc44-wp9a-deployment 25 of 25.
+- The fifth fix-up's open issues are the lead's at the merge: wp2's suite calls assertTrackerStaysInPaths and reads the
+  bucket as a ceiling at wp2's merge (T3, R4); S1.10's lists bound is re-measured at each merge (open question 17).
