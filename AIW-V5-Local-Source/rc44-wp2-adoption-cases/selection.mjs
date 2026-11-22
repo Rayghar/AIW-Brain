@@ -46,6 +46,7 @@
 //   S5 SDD           the record points to the selection basis, and prints each rejected candidate with its reason;
 //   S5 U5 SDD basis  the package prints the selection basis through S0's sections part: named unproven only on the
 //                    chosen candidate, every candidate's rows at the choice and now, a late constraint listed (U5);
+//                    'after the choice' read against the choice that stands (W1);
 //   S5 fixtures      every fixture reads no clock (ruling Q7);
 //   S5 old documents the references, the document with a review list and the two fixtures read as at the base; the
 //                    shared helpers of rc44-s0-readings.mjs with the selection's records present;
@@ -937,9 +938,35 @@ export default async function ({block, pass, load}) {
       const b = basisOf(architectureMarkdown(withFinalReview(after)).markdown);
       assert.match(line(b, 'Inbox and deduplication component'), /: chosen · at the choice: Customer records stay in region North: pass \(judged by architect-b\); Run only what the platform team operates: unknown, named unproven · now: Customer records stay in region North: pass \(judged by architect-b\); Run only what the platform team operates: pass \(judged by architect-c after the choice\)$/, 'the row judged after the choice is named so, and the chooser\'s naming stays beside it: ' + line(b, 'Inbox and deduplication component'));
       for (const t of ['Regional message relay', 'Ticket consumer v2']) assert.equal(line(b, t), line(basisOf(architectureMarkdown(withFinalReview(p)).markdown), t), t + ' reads as before'); }
+    // (the lead's ruling W1 of 2026-11-22) 'after the choice' means after the choice that stands: selection.choose records on
+    // the new choice where its judgements began (judgementsFrom, written only on a new choice), and the basis reads as late
+    // only the judgements at or after it. At ad8204b a judgement taken after any earlier choice stayed late for good, so a
+    // re-choice printed the row 'at the choice' as unknown, named unproven, although it read as judged at that choice.
+    { const at = (q, title) => line(basisOf(architectureMarkdown(withFinalReview(q)).markdown), title), RELAY = 'It keeps messages outside region North.', LIB = 'It states nothing about where it keeps data.';
+      const judged = (q, alternativeId, state) => doc(send(q, 'selection.judge', {id, alternativeId, constraintId: 'QD-008', state, evidence: 'The platform team ' + (state === 'pass' ? 'operates' : 'does not operate') + ' it (ticket OPS-12).', reason: state === 'pass' ? 'It runs on the platform.' : 'It runs outside the platform.'}, C));
+      // (1) after a late pass the chooser chooses the same candidate again, with no row left unknown
+      const passed = judged(p, inbox.id, 'pass'), again = doc(send(passed, 'selection.choose', {id, alternativeId: inbox.id, reason: 'The inbox deduplicates, stays in region North and runs on the platform.', unproven: [], rejections: {[relay.id]: RELAY, [lib.id]: LIB}}));
+      assert.match(at(again, 'Inbox and deduplication component'), /: chosen · at the choice and now: Customer records stay in region North: pass \(judged by architect-b\); Run only what the platform team operates: pass \(judged by architect-c\)$/, 'a row judged before the choice that stands reads as it did at that choice: ' + at(again, 'Inbox and deduplication component'));
+      assert.ok(!/after the choice|named unproven/.test(at(again, 'Inbox and deduplication component')), 'neither after the choice nor named unproven');
+      for (const t of ['Regional message relay', 'Ticket consumer v2']) assert.equal(at(again, t), at(p, t), t + ' reads as before');
+      assert.deepEqual([decision(p, id).selection.choice.judgementsFrom, decision(again, id).selection.choice.judgementsFrom], [2, 3], 'each choice records where its own judgements begin: after the judgements taken before it');
+      // (2) after a late fail the chooser chooses another candidate (the path selection-breaks asks for): the rejected inbox
+      // prints its row as it read at that choice, judged fail by architect-c, and not as judged after it
+      const failed = judged(p, inbox.id, 'fail'), other = doc(send(failed, 'selection.choose', {id, alternativeId: lib.id, reason: 'The library entry is the one candidate left that may meet both constraints.', unproven: ['QD-007', 'QD-008'], rejections: {[relay.id]: RELAY, [inbox.id]: 'It runs outside the platform.'}}));
+      assert.equal(decision(other, id).selection.choice.rows[inbox.id].rows.find(r => r.constraintId === 'QD-008').state, 'fail', 'the choice stored the inbox\'s row as fail');
+      assert.match(at(other, 'Inbox and deduplication component'), /: rejected · at the choice and now: Customer records stay in region North: pass \(judged by architect-b\); Run only what the platform team operates: fail \(judged by architect-c\)$/, 'the rejected inbox prints its row as it read at the new choice: ' + at(other, 'Inbox and deduplication component'));
+      assert.match(at(other, 'Ticket consumer v2'), /: chosen · at the choice and now: Customer records stay in region North: unknown, named unproven; Run only what the platform team operates: unknown, named unproven$/, 'the chosen library entry, both rows named unproven by the chooser');
+      // a judgement after the choice that stands is late again, and the earlier one stays as it read at that choice
+      const later = judged(other, lib.id, 'pass');
+      assert.match(at(later, 'Ticket consumer v2'), /: chosen · at the choice: Customer records stay in region North: unknown, named unproven; Run only what the platform team operates: unknown, named unproven · now: Customer records stay in region North: unknown, named unproven; Run only what the platform team operates: pass \(judged by architect-c after the choice\)$/, 'a judgement after the choice that stands is named so: ' + at(later, 'Ticket consumer v2'));
+      assert.equal(at(later, 'Inbox and deduplication component'), at(other, 'Inbox and deduplication component'), 'the rejected inbox reads as at its choice');
+      // a document without the key reads as today: every judgement marked afterChoice is late
+      const keyless = q => { const r = structuredClone(q); delete decision(r, id).selection.choice.judgementsFrom; return r; };
+      assert.equal(at(keyless(passed), 'Inbox and deduplication component'), at(passed, 'Inbox and deduplication component'), 'one choice: the same reading with or without the key');
+      assert.match(at(keyless(again), 'Inbox and deduplication component'), /: chosen · at the choice: Customer records stay in region North: pass \(judged by architect-b\); Run only what the platform team operates: unknown, named unproven · now: Customer records stay in region North: pass \(judged by architect-b\); Run only what the platform team operates: pass \(judged by architect-c after the choice\)$/, 'a document without the key reads as at ad8204b'); }
     // a document with no selection prints no basis; the decision record of a selection points to it
     assert.equal(basisOf(architectureMarkdown(withFinalReview(selectionProject())).markdown), '', 'no selection, no basis');
-    pass('S5 U5 SDD basis: the package prints the selection basis through S0\'s sections part, in the trade-off analysis, and the workbench\'s SDD imports none of it; ", named unproven" only on the chosen candidate\'s rows the chooser named; every candidate\'s rows "at the choice and now", or both, each named, with why a candidate no longer stands (the rejected relay whose profile is withdrawn); the constraints from the selection\'s own reading, a constraint that reached it after the choice included and read unknown, not named unproven; a row judged after the choice named so, with the chooser\'s naming kept beside it (ruling V4); a document with no selection prints no basis');
+    pass('S5 U5 SDD basis: the package prints the selection basis through S0\'s sections part, in the trade-off analysis, and the workbench\'s SDD imports none of it; ", named unproven" only on the chosen candidate\'s rows the chooser named; every candidate\'s rows "at the choice and now", or both, each named, with why a candidate no longer stands (the rejected relay whose profile is withdrawn); the constraints from the selection\'s own reading, a constraint that reached it after the choice included and read unknown, not named unproven; a row judged after the choice named so, with the chooser\'s naming kept beside it (ruling V4); after the choice that stands only (ruling W1): re-chosen, the same candidate reads its later judgement as judged at the new choice, neither after it nor named unproven, and a candidate rejected at a new choice reads its row as it read then; a document without the choice\'s judgementsFrom reads as before; a document with no selection prints no basis');
   });
 
   await block('S5 fixtures', async () => {
