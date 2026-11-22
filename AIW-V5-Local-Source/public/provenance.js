@@ -486,7 +486,10 @@ export function mergeStamper(prior,command,merger,at,{fourEyes=false,collections
  // (ruling Z1) the account that prepared command i: workbench-domain.js applies it as that account, as a direct write.
  const stamp=(q,c,i)=>{
   const x=by[i],author={kind:x.kind,id:x.by,account:x.account,...(x.session?{session:x.session}:{})},next=q?.document;if(!next)return;
-  stampAuthorship(before,next,c,q,author,at,{fourEyes});also?.(before,next,author);
+  // Four eyes (a project's setting) in a merge (ruling Z4): a command that confirms or keeps what its own preparer wrote is
+  // refused in words for the person who merges: which command of which alternative, who prepared it, and what to do.
+  try{stampAuthorship(before,next,c,q,author,at,{fourEyes});}catch(e){const m=/^Four eyes: .+ wrote (.+)\. Another signed-in person confirms it\.$/.exec(e?.message||'');if(!m)throw e;throw Error('Four eyes: command '+(i+1)+' of “'+a.title+'” ('+c.type+') was prepared by '+x.by+' and confirms what '+x.by+' wrote ('+m[1]+'). Revise the alternative without the confirmation; another signed-in person confirms it after the merge.');}
+  also?.(before,next,author);
   // What this command stamped: a write (the author stamp), or only a keep or a confirmation its preparer sent (the
   // review stamp): each names the merger beside it.
   for(const path of paths){const old=new Map(listAt(before,path).map(r=>[path===NARRATIVE?'':r?.id,r]));for(const r of listAt(next,path)){

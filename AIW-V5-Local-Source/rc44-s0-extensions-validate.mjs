@@ -1378,6 +1378,27 @@ await block('Z3 a revision keeps a preparer through a rebase', async () => {
   pass('Z3: a revision keeps the preparer of a command it carries as stored or as rebased (the editor\'s payload after another person\'s direct edit of the target), each stored command matched once; a command that differs from both is the reviser\'s and names the earlier preparer\'s kind as from, which the merged record keeps (a revised draft by Sol is still disclosed as from Sol\'s draft)');
 });
 
+// Z4. Four eyes (a project's setting) in a merge: a command that confirms what its own preparer wrote is refused, in
+// words for the person who merges (on 53ce4cf the merge went through and the narrative read as confirmed).
+await block('Z4 four eyes in a merge', async () => {
+  need();
+  const k = await mergeKit(), {d, ok, send, stage} = k, narrative = confirmed => ({title: 'Payments platform design', owner: 'Architecture team', audience: 'Delivery teams', summary: 'The design as A wrote it.', scope: 'Payments.', approach: 'Event-driven.', confirmed});
+  try {
+    ok(await send('workspace.governance', {fourEyes: true, reason: 'A second person on every confirmation.'}, A));
+    const a = await stage([{type: 'review.narrative', payload: narrative(true)}], A), was = structuredClone(d().finalReview.narrative);
+    const r = await k.mergeRequest(a.id, B);
+    assert.equal(r.status, 400, 'the merge is refused: ' + JSON.stringify(r.body).slice(0, 300));
+    assert.match(r.error, /^Four eyes: command 1 of “An alternative” \(review\.narrative\) was prepared by architect-a and confirms what architect-a wrote \([^)]+\)\. Revise the alternative without the confirmation; another signed-in person confirms it after the merge\.$/, 'in words for the merger: ' + r.error);
+    await k.h.read(B); assert.deepEqual([d().workbench.alternatives.find(x => x.id === a.id).status, d().finalReview.narrative], ['draft', was], 'nothing is merged, nothing confirmed');
+    // what the words say to do: the alternative without the confirmation merges, and another signed-in person confirms it after
+    const b = await stage([{type: 'review.narrative', payload: narrative(false)}], A); await k.merge(b.id, B);
+    assert.deepEqual([d().finalReview.narrative.summary, d().finalReview.narrative.confirmed], ['The design as A wrote it.', false]);
+    { const r2 = await send('review.narrative', {...narrative(true)}, A); assert.equal(r2.status, 400); assert.match(r2.error, /^Four eyes: architect-a wrote /, 'directly, its preparer does not confirm it either'); }
+    ok(await send('review.narrative', {...narrative(true)}, C), 'another signed-in person confirms it'); assert.deepEqual([d().finalReview.narrative.confirmed, d().finalReview.narrative.provenance.reviewed.by, d().finalReview.narrative.provenance.reviewed.how], [true, C, 'confirmed']);
+  } finally { k.h.close(); }
+  pass('Z4: with four eyes on, a merge whose command confirms what its own preparer wrote is refused, naming the command, the alternative and its preparer and saying what to do; the alternative without the confirmation merges and another signed-in person confirms it after');
+});
+
 // ---------------------------------------------------------------- should-fix 3, 6, 11 and ruling D7.5: the start check
 await block('SF start check', () => {
   need();
