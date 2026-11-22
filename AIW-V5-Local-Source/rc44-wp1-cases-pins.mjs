@@ -95,9 +95,10 @@ async function world() {
 // The library of the world: SYN-P001 with its definition and applicability forms, written by importer (as a person, or
 // as an import), verified by reviewer, released with conceptIds by releaser and activated; then published to the
 // organisation by its administrator, steward, who wrote none of it.
-async function worldLibrary(W, {authorKind = null, name = 'Northquay knowledge library', conceptId = 'SYN-P001', owner = 'steward', writer = 'importer', row = null, rowWriter = 'architect'} = {}) {
+// (`marker` marks the project a library: its owner unless named; the fix-up's case S3.21 names a person for an agent's library.)
+async function worldLibrary(W, {authorKind = null, name = 'Northquay knowledge library', conceptId = 'SYN-P001', owner = 'steward', marker = owner, writer = 'importer', row = null, rowWriter = 'architect'} = {}) {
   const L = await W.project(owner, 'blank', name, ['steward', 'importer', 'reviewer', 'releaser', 'architect', 'second-architect', 'bot'].filter(a => a !== owner)), extra = authorKind ? {authorKind} : {};
-  await L.ok('knowledge.library', LIBRARY_MARK, owner);
+  await L.ok('knowledge.library', LIBRARY_MARK, marker);
   const sourceId = await L.ok('knowledge.source', F.sourcePayload('SYN-P001 Transactional outbox', F.SYN_P001), writer, extra);
   const concept = {...CONCEPT, conceptId}, record = await L.ok('knowledge.concept', concept, writer, extra), all = F.p001Forms(), claimIds = {};
   for (const t of FORMS) claimIds[t] = await L.ok('knowledge.claim', F.formClaim(sourceId, conceptId, all[t]), writer, extra);
@@ -601,4 +602,46 @@ add('S3.20 (design c, knowledge.withdraw of a concept): a person withdraws a pin
   const out = CC.applyConceptCommand(p, {type: 'knowledge.withdraw', payload: W}, AT, 'steward', F.person('steward')).document, w = out.knowledge.withdrawals.at(-1);
   assert.equal(w.targetId, 'SYN-P001'); assert.deepEqual(w.impact.map(x => [x.kind, x.id]), [['concept pin', pins(p)[0].id], ['record that relies on a pin', 'REQ-001']]);
   assert.equal(out.knowledge.pinCurrency[pins(p)[0].id].state, 'withdrawn'); assert.deepEqual(KC.conceptDecisionForms(out, pins(p)[0].id), [], 'a withdrawn concept hands over nothing');
+});
+
+// ================================================================================================ the fix-up (rulings X1 to X5)
+// ------------------------------------------------------------------------------------------------ 21 (ruling X1)
+// An agent account takes no organisation knowledge step (must-fix 1; rulings E1 and I1): not as the organisation's
+// administrator publishing a release of concepts, not withdrawing one, not pinning one into a project it owns. Each is
+// refused through the route in the words worker.js uses for the organisation's review and releases, and nothing is signed
+// or written; a person's same requests are taken. Behind that gate the release-actor rule reads the real account kind.
+add('S3.21 (ruling X1): an agent account, as the organisation\'s administrator, publishing a release of concepts, withdrawing one and pinning one into its own project is refused through the route, with nothing signed or written; a person\'s same requests are taken; publishRefusal reads the real account kind', async () => {
+  const {CC} = await mods(), W = await world();
+  try {
+    assert.equal((await W.orgApi('members', {actorId: 'bot', role: 'administrator'}, 'steward')).status, 200, 'bot is an administrator of the organisation');
+    const AGENT = /^An agent or service account does not review or release library entries\. A person signs in to do that\.$/;
+    const signed = async () => JSON.stringify((await W.env.DB.prepare('SELECT id,document FROM organization_releases WHERE organization_id=? ORDER BY id').bind(W.O).all()).results);
+    // A library bot owns (its editors write, review and release it), published by bot.
+    const botLib = await worldLibrary(W, {owner: 'bot', marker: 'steward', name: 'A library an agent account owns'}), PUBLISH = {releaseId: botLib.v1, title: 'Synthetic integration concepts 1', reason: 'Shared by an agent account.', reviewed: true};
+    let before = await signed();
+    { const r = await W.orgApi('knowledge', PUBLISH, 'bot', botLib.L.id); assert.equal(r.status, 403, 'an agent publishes: ' + JSON.stringify(r.data).slice(0, 300)); assert.match(r.data.error, AGENT); assert.equal(r.data.code, 'authorship'); }
+    assert.equal(await signed(), before, 'nothing is signed');
+    // A person's library, published by a person: taken; a design project pins it.
+    const lib = await worldLibrary(W), OR1 = await lib.publish(lib.v1, 'Synthetic integration concepts 1'), {D, pinId} = await worldDesign(W, OR1);
+    before = await signed();
+    { const r = await W.orgApi('knowledge-withdraw', {releaseId: OR1.id, reason: 'An agent account withdraws it.', reviewed: true}, 'bot'); assert.equal(r.status, 403, 'an agent withdraws: ' + JSON.stringify(r.data).slice(0, 300)); assert.match(r.data.error, AGENT); }
+    assert.equal(await signed(), before, 'no notice is written');
+    { const doc = await D.read(); assert.equal(doc.knowledge.pinCurrency[pinId].state, 'current', 'the pin stays current'); assert.deepEqual(findings11(doc), [], 'no project that pins the release raises anything'); }
+    // bot pins the organisation release into a design project it owns.
+    const B = await W.project('bot', 'bank-payment', 'A design an agent account owns'); await B.read(); const was = JSON.stringify(B.document);
+    { const r = await W.orgApi('knowledge-pin', {releaseId: OR1.id, revision: B.state.revision, reviewed: true, reason: 'An agent account pins it.', reviewer: 'bot'}, 'bot', B.id); assert.equal(r.status, 403, 'an agent pins: ' + JSON.stringify(r.data).slice(0, 300)); assert.match(r.data.error, AGENT); }
+    assert.equal(JSON.stringify(await B.read()), was, 'nothing is written into its project');
+    // A person's same requests are taken: a pin into a project of their own, a withdrawal.
+    const P = await W.project('second-architect', 'bank-payment', 'A design a person owns'); await P.read();
+    { const r = await W.orgApi('knowledge-pin', {releaseId: OR1.id, revision: P.state.revision, reviewed: true, reason: 'A person pins it.', reviewer: 'Synthetic architect'}, 'second-architect', P.id); assert.equal(r.status, 200, JSON.stringify(r.data).slice(0, 300)); }
+    { const r = await W.orgApi('knowledge-withdraw', {releaseId: OR1.id, reason: 'A person withdraws it.', reviewed: true}, 'steward'); assert.equal(r.status, 200, JSON.stringify(r.data).slice(0, 300)); }
+    // Behind the gate the release-actor rule reads the real account kind: the organisation route, asked directly for an
+    // agent account, refuses at the rule; the rule refuses a request that names no account and takes the person.
+    const {handleOrganizations} = await import('./organization-service.js'), before2 = await signed();
+    const direct = await handleOrganizations(new Request('https://aiw.test/api/organizations?organization=' + W.O + '&action=knowledge', {method: 'POST', headers: {Origin: 'https://aiw.test', 'Content-Type': 'application/json'}, body: JSON.stringify(PUBLISH)}), W.env, 'bot', botLib.L.id);
+    assert.equal(direct.status, 400); assert.equal((await direct.json()).error, 'An organisation release is published by a signed-in person, not by an agent or service account.');
+    assert.equal(await signed(), before2, 'nothing is signed');
+    assert.match(CC.publishRefusal(botLib.L.document, botLib.v1, 'steward'), /not by a request that names no account/, 'a request that names no account kind publishes nothing');
+    assert.equal(CC.publishRefusal(botLib.L.document, botLib.v1, 'steward', 'person'), null, 'a person who wrote none of it publishes it');
+  } finally { W.close(); }
 });

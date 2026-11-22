@@ -11,6 +11,7 @@ import {organizationKnowledgeRelease,pinOrganizationKnowledge} from './public/kn
 import {publishRefusal,organizationAliasRefusal} from './public/knowledge-concept-commands.js';
 import {refreshConceptPins} from './public/knowledge-concepts.js';
 import {json} from './http.js';
+import {accountKind} from './authorship.js';
 import {enterpriseDefinition,enterpriseIdentity,enterpriseReferences,enterpriseReferencePreview,SHARED_ASSET_TYPES} from './public/enterprise-references.js';
 const clean=(v,n=4000)=>typeof v==='string'?v.trim().slice(0,n):'';
 function assetDefinition(raw){if(raw==null)return null;if(typeof raw!=='object'||Array.isArray(raw)||!SHARED_ASSET_TYPES.includes(raw.type)||!clean(raw.owner,180)||!clean(raw.version,160)||!['Planned','Active','Deprecated','Retired'].includes(raw.lifecycle))throw Error('A shared asset needs its type, accountable service owner, contract version and lifecycle.');return {type:raw.type,owner:clean(raw.owner,180),version:clean(raw.version,160),lifecycle:raw.lifecycle,boundary:clean(raw.boundary,2000),interfaceReference:clean(raw.interfaceReference,600),failureDomain:clean(raw.failureDomain,600)};}
@@ -128,8 +129,9 @@ export async function handleOrganizations(request,env,actor,projectId){
   const row=await env.DB.prepare('SELECT document FROM projects WHERE owner_id=? AND id=?').bind(actor,projectId).first();if(!row)return json({error:'Choose a project you own.'},404);
   const p=withFinalReview((await readStoredProject(env,actor,row.document)).document);
   // (rc44, wp1 S3) A release of concepts is published by a person who stands behind none of its forms and rows (ruling
-  // P1): the release-actor rule of the project's release, read for the administrator who publishes it.
-  {const refusal=publishRefusal(p,clean(raw.releaseId,40),actor);if(refusal)throw Error(refusal);}
+  // P1): the release-actor rule of the project's release, read for the administrator who publishes it, with the kind of
+  // their account as it is (ruling X1: worker.js refuses an agent account before this; the rule reads it all the same).
+  {const refusal=publishRefusal(p,clean(raw.releaseId,40),actor,accountKind(env,actor));if(refusal)throw Error(refusal);}
   // The organisation release it supersedes: the one published from the release this project release supersedes.
   const own=(p.knowledge?.releases||[]).find(r=>r.id===clean(raw.releaseId,40)),earlier=own?.supersedes?(await env.DB.prepare('SELECT document FROM organization_releases WHERE organization_id=?').bind(id).all()).results.map(r=>JSON.parse(r.document)).find(r=>r.kind==='knowledge'&&r.from?.projectId===p.id&&r.from?.releaseId===own.supersedes):null;
   const release=organizationKnowledgeRelease(p,clean(raw.releaseId,40),{organizationId:id,id:crypto.randomUUID(),title:clean(raw.title,160),actor,at,supersedes:earlier?.id||null});

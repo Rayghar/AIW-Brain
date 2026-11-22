@@ -363,7 +363,10 @@ function changeRegister(prior,concepts){
 // release holds and every crosswalk row it holds (releaseRows' copies, read as the register holds them): not one who
 // wrote it, not the person who confirmed a row no person wrote, not the person who verified a form or a row an import, a
 // draft by Sol or an agent account wrote. Answers the refusal in words, naming the form or row, or null.
-export function publishRefusal(p,releaseId,actor,account='person'){
+// The publisher's account kind is read as it is (ruling X1): an agent's account, or a request that names none, publishes
+// nothing, whatever the release holds.
+export function publishRefusal(p,releaseId,actor,account){
+ if(account!=='person')return 'An organisation release is published by a signed-in person, not by '+(account==='agent'?'an agent or service account':'a request that names no account')+'.';
  const s=knowledgeState(p),r=list(s.releases).find(x=>x.id===releaseId);if(!r)return null;
  for(const c of r.claims.filter(x=>x?.form)){
   const at=c.id+' ('+c.form.type+' form of '+c.subjectId+'): ',wrote=verifierRefusal({id:c.id,actor:c.actor,history:[],owner:''},actor,account);

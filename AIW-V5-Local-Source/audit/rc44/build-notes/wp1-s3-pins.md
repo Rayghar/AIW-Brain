@@ -222,3 +222,19 @@ Branch `rc44/wp1-s3-pins-fix`, from `ada5954`. Review: `/home/user/hb-review/rc4
   `AIW_RC44_WP1_MEASURE=1` mode, which is valid only at S2's own commit (passes without it). S3.10 fails: "the start
   commit is the integrated base and what the other packages and the pool booked" (wp2 S5's 864 B and the lead's
   -3,047 B are now on the books and S3.10 read every booking): settled in item 4 with S2.12 and re-measured in item 6.
+
+### Item 1: X1 (must-fix 1), no agent account takes an organisation knowledge step
+
+- Done. Case **S3.21**, through the route (`world()`, bot an administrator of the organisation): bot publishing a release
+  of concepts from a library it owns (403, the words of worker.js for review and releases, code `authorship`, nothing
+  signed), withdrawing a person's organisation release (403, no notice row, the design project's pin stays current and
+  raises nothing), pinning it into a design project it owns (403, the project unchanged); a person's same requests are
+  taken (a pin into their own project, a withdrawal by the administrator steward). Behind the gate: the organisation
+  route asked directly for bot refuses at the release-actor rule ("An organisation release is published by a signed-in
+  person, not by an agent or service account."), and `publishRefusal` refuses a call that names no account kind.
+- Seen red: on the start head bot's publication answered 201; with the gate for publication only, the withdrawal answered
+  200 (a notice written); with publication and withdrawal only, the pin answered 200.
+- Code: `worker.js` (the agent gate for `/api/organizations` lists `knowledge`, `knowledge-pin` and `knowledge-withdraw`
+  beside `review` and `releases`; confirmed by the lead in X1), `organization-service.js` (passes
+  `accountKind(env, actor)`), `public/knowledge-concept-commands.js` (`publishRefusal(p, releaseId, actor, account)`: the
+  account has no default any more, and anything but a person's account is refused first).
