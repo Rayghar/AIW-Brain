@@ -126,6 +126,9 @@ export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??
  for(const x of Array.isArray(p.knowledge?.conceptPins)?p.knowledge.conceptPins:[])if(x&&typeof x==='object'&&x.status==='active'){x.importedStatus=x.status;x.status='retired';x.retired={at,actor:null,reviewer:'',reason:'Imported historical pin'};}
  for(const m of Array.isArray(p.knowledge?.conceptMigrations)?p.knowledge.conceptMigrations:[])if(m?.review&&typeof m.review==='object'){m.importedReview=m.review;m.review=null;m.closed='Imported historical migration';}
  if(p.knowledge?.pinCurrency&&typeof p.knowledge.pinCurrency==='object')p.knowledge.pinCurrency={};
+ // The organisation's notices are a copy of its signed state on the workbench the package came from, as the currency is
+ // a reading made there (the fix-up, ruling X4): cleared alike; this workbench reads its own organisation's on the next load.
+ if(p.knowledge?.organizationNotices&&typeof p.knowledge.organizationNotices==='object')p.knowledge.organizationNotices={};
  // Round 12 (GR-DOM-09): a pinned organisation knowledge release was verified on the workbench it came from; here its
  // claims stay ineligible until this workbench's organisation is found to sign exactly it (refreshOrganizationAssurance).
  for(const r of Array.isArray(p.knowledge?.organizationReleases)?p.knowledge.organizationReleases:[])if(r&&typeof r==='object')r.assurance={eligible:false,status:IMPORTED_AUTHORITY,signature:r.signature??null};

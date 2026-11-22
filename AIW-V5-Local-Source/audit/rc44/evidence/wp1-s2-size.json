@@ -87,5 +87,18 @@
   "deltaAgainst37520d6": 0,
   "deltaAgainst5cae40a": 118,
   "note": "The fix-up changes server modules only (public/knowledge-concepts.js and public/knowledge-concept-commands.js, which no client module imports, rc44-wp1-cases-forms.mjs S1.14; and S0's project-lifecycle.js, a server module): no client output moved. S2.12 with AIW_RC44_WP1_MEASURE=1 measures exactly the figures above and the same 'opens with records'. ownBytes stays 118 (an integer of at least 0, ruling O1)."
+ },
+ "bookingsAtStart": {
+  "commit": "5cae40a",
+  "others": {
+   "audit/rc44/evidence/wp2-s1-size.json": 325,
+   "audit/rc44/evidence/wp9a-s1-size.json": 342
+  },
+  "pool": {
+   "audit/rc44/evidence/wp9a-s1-size.json:baselineDefectFmtL10": 34,
+   "audit/rc44/evidence/wp9a-s1-size.json:designRowChapterKeysL5": 64
+  },
+  "ruling": "X4 of 2026-11-22 (the lead's leave to add this record and to edit S2.12 so): S2.12 asserts against the bookings filed at wp1 S2's start, recorded here, so that no later merge edits it again.",
+  "note": "The size files of the tree at 5cae40a and what each booked there: the adoption record's 325 B (wp2-s1-size.json, delta), the typed topology's 342 B and its two shared-pool items (wp9a-s1-size.json). 3,229,840 + 325 + 342 + 34 + 64 = 3,230,605 B, the start commit's chapters route (base.chapters). The lead's own file (lead-bookings-size.json) did not exist there."
  }
 }

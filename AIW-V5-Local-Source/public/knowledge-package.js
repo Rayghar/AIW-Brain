@@ -29,3 +29,7 @@ export const KNOWLEDGE_PACKAGE={id:'p10-knowledge',
  design:{[key('crosswalk')]:crosswalkDesign,[key('conceptPins')]:pinsDesign,[key('conceptLinks')]:linksDesign,[key('conceptMigrations')]:migrationsDesign},
  evidenceKeys:['concepts','topics','library','pinCurrency','organizationNotices'].map(key)};
 registerExtension(KNOWLEDGE_PACKAGE);
+// The package's command types are quiet: they write no line into knowledge.history (rulings B10 and P5 b), and the
+// boundary's activity row records each. The knowledge workspace's history panel reads them from that row beside the log
+// (the fix-up, ruling X4), so a person sees one trail. Whether a command type is one of them:
+export const packageStep=type=>/^knowledge\.(crosswalk|concept-(pin|link|unlink|unpin|repin|migration))\b/.test(type||'');

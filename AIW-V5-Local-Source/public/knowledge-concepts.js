@@ -150,8 +150,11 @@ export function conceptReading(p,conceptId){
  }
  for(const c of released)for(const f of c.forms)if(!forms.some(x=>x.claimId===f.claimId&&x.releaseId===f.releaseId))forms.push(f);
  // Without a register's record (a design project, which reads an organisation's release) the identity is the release's
- // copy of the concept (ruling B10), the newest version first.
- const head=concept||[...released].sort((a,b)=>(b.version??0)-(a.version??0)).find(c=>c.part)?.part||{conceptId,title:conceptId,kind:null,family:'',scope:[],stages:[],lenses:[]};
+ // copy of the concept (ruling B10), the newest version first; and so it is where the register's concept no longer has the
+ // hash a release holds (a library that edited it after its release: the fix-up, ruling X4), unless an active release
+ // holds the register's concept as it is.
+ const parts=[...released].filter(c=>c.part).sort((a,b)=>(b.version??0)-(a.version??0));
+ const head=concept&&(!parts.length||parts.some(c=>c.conceptHash===concept.hash))?concept:parts[0]?.part||concept||{conceptId,title:conceptId,kind:null,family:'',scope:[],stages:[],lenses:[]};
  return {conceptId,title:head.title,kind:head.kind,family:head.family,scope:copy(head.scope),stages:copy(head.stages),lenses:copy(head.lenses),state:concept?concept.state:'released',forms:forms.sort(byForm),releases:released.map(c=>({releaseId:c.release.id,title:c.release.title,eligible:c.eligible,reasons:c.reasons,...(c.version!=null?{version:c.version}:{})})),aliases:aliasesIn(p,conceptId,all),...(pinned?{pin:copy(pinned)}:{})};
 }
 // The teaching forms a concept offers here, each with its state and label: released, reviewed, or a candidate nobody reviewed yet.
@@ -283,19 +286,30 @@ function aliasesIn(p,conceptId,concepts){
 //   current
 const releaseOf=(s,id)=>[...s.releases,...list(s.organizationReleases)].find(r=>r?.id===id)||null;
 const quote=t=>'“'+t+'”';
-export function conceptPinCurrency(p,pin,{today=null,held=null}={}){
+// What a pin rests on, as a withdrawal reaches it: the concept, the pinned release, each form claim of the pinned version
+// and each of their sources (an organisation's ids as organizationRef names them). The currency reads a withdrawal of any
+// of them as withdrawn, and the withdrawal's stored impact names the pin for each (knowledge-concept-commands.js
+// withPinImpact; the fix-up, ruling X4): one list for both.
+export function pinRests(p,pin){
  const s=knowledgeState(p),release=releaseOf(s,pin?.releaseId),org=!!release?.organizationId,ref=id=>org?organizationRef(release,id):id;
- const part=list(release?.parts?.concepts).find(c=>c?.conceptId===pin.conceptId),formIds=list(part?.forms).map(f=>f.claimId),claims=list(release?.claims).filter(c=>formIds.includes(c.id));
+ const part=list(release?.parts?.concepts).find(c=>c?.conceptId===pin?.conceptId),formIds=list(part?.forms).map(f=>f.claimId),claims=list(release?.claims).filter(c=>formIds.includes(c.id));
  const sources=[...new Set(claims.map(c=>c.sourceId))].map(id=>org?list(release.sources).find(x=>x.id===id):s.sources.find(x=>x.id===id)).filter(Boolean);
+ return {release,org,part,sources,ids:[ref(pin?.conceptId),pin?.releaseId,...formIds.map(ref),...sources.map(x=>ref(x.id))]};
+}
+export function conceptPinCurrency(p,pin,{today=null,held=null}={}){
+ const s=knowledgeState(p),{release,org,part,sources,ids}=pinRests(p,pin);
  const name=pin.conceptId+' v'+pin.version+' of '+quote(release?.title||pin.releaseId),notice=s.organizationNotices?.[pin.releaseId];
- const gone=withdrawn(p,[ref(pin.conceptId),pin.releaseId,...formIds.map(ref),...sources.map(x=>ref(x.id))]);
+ const gone=withdrawn(p,ids);
  if(gone.length||notice?.withdrawn)return {state:'withdrawn',title:'Review withdrawn knowledge',detail:name+' was withdrawn'+(notice?.withdrawn?' by the organisation: '+notice.withdrawn.reason:': '+(gone[0].reason||gone[0].targetId))+'.'};
  const record=list(s.concepts).find(c=>c.conceptId===pin.conceptId);
  if(record?.retired)return {state:'retired',title:'Review retired knowledge',detail:name+' is retired in this project: '+(record.retired.reason||'no reason recorded')+'.'};
  if(!release||!s.pins.includes(release.id))return {state:'replaced',title:'Review changed architectural support',detail:name+' is no longer active in this project.'};
  const h=list(held||releasedConcepts(p)).find(c=>c.release.id===release.id&&c.conceptId===pin.conceptId);
  if(!h||!h.eligible||h.part&&(h.conceptHash!==pin.conceptHash||release.checksum!==pin.releaseHash))return {state:'changed',title:'Review changed architectural support',detail:name+' no longer has eligible support: '+(h&&!h.eligible?h.reasons.join(' '):'the release no longer holds the version the pin names')+'.'};
- const own=org?null:s.releases.filter(r=>r.supersedes===release.id).map(r=>[r,list(r.parts?.concepts).find(c=>c?.conceptId===pin.conceptId)]).find(([,c])=>c&&c.conceptHash!==pin.conceptHash);
+ // The project's own successors, nearest first through the supersedes chain; one that is withdrawn (the release, or a form
+ // of the concept in it) is passed over, so the newer version offered is one that stands (the fix-up, ruling X4). The
+ // organisation's successor is read so on the server, through its signed notices (refreshOrganizationAssurance).
+ let own=null;if(!org)for(let ids=[release.id],seen=0;!own&&ids.length&&seen<31;seen++){const next=s.releases.filter(r=>ids.includes(r.supersedes));own=next.map(r=>[r,list(r.parts?.concepts).find(c=>c?.conceptId===pin.conceptId)]).find(([r,c])=>c&&c.conceptHash!==pin.conceptHash&&!withdrawn(p,[r.id,...list(c.forms).map(f=>f.claimId)]).length)||null;ids=next.map(r=>r.id);}
  const theirs=org?list(notice?.successor?.concepts).find(c=>c?.conceptId===pin.conceptId&&c.conceptHash!==pin.conceptHash):null;
  if(own||theirs){const successor=own?{releaseId:own[0].id,title:own[0].title,version:own[1].version,conceptHash:own[1].conceptHash}:{releaseId:notice.successor.id,title:notice.successor.title,version:theirs.version,conceptHash:theirs.conceptHash};
   return {state:'newer-available',title:'Review a newer knowledge version',detail:name+' is pinned; '+quote(successor.title)+' holds v'+successor.version+'.',successor};}

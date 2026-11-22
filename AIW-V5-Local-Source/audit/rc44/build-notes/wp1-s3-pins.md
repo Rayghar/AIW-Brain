@@ -282,3 +282,67 @@ Branch `rc44/wp1-s3-pins-fix`, from `ada5954`. Review: `/home/user/hb-review/rc4
   of an own release resolves only while this register holds it exactly as copied (`releasedRows`), and a row of the
   register comes to read verified only through the doors above. An organisation release's rows resolve on their own,
   which is why the pin is a door. S4's import, if it makes rows read verified, asks `oneAlias(document, rows)`.
+
+### Item 4: X4 (the nine should-fix items), each with its case or its record
+
+Cases first, committed red (`WIP … item 4 (X4): the cases first`), then the change. Each line: the should-fix, the case,
+red before with, the change.
+- **(a) Recovery clears `knowledge.organizationNotices`** as it clears `pinCurrency` (should-fix 1). **S3.8** extended: a
+  hand-made package's forged successor notice ("Forged edition" v9) is cleared to `{}`, the currency too; a document with
+  no notices gains no key. Red before: "recovery clears the notices". Change: `recovery-service.js` (two lines beside the
+  currency's; confirmed by the lead in X4).
+- **(b) A successor the organisation (or the project) withdrew is not offered as newer** (should-fix 2), both branches.
+  **S3.24**: own branch, v2 (supersedes v1) withdrawn by a person reads `current`, then v3 (supersedes v2) reads
+  `newer-available` naming v3; the organisation's branch, OR2 withdrawn by the administrator reads `current` with no
+  finding, then OR3 (supersedes OR2) reads `newer-available` naming OR3 through OR2's notice. Red before: "a withdrawn
+  successor is no newer version". Change: `conceptPinCurrency` walks the project's own supersedes chain nearest first and
+  passes over a successor whose release, or a form of the concept in it, is withdrawn; `refreshOrganizationAssurance`
+  walks the signed notices forward (at most 8 hops, each a signed knowledge release that names the one before it in
+  `from.supersedes`) and passes over a successor whose own notice says withdrawn.
+- **(c) A withdrawal's stored impact names the pins and relying records for every id the currency reads as withdrawn**
+  (should-fix 3). **S3.25**: a withdrawal of the pinned release, of either form claim and of the source each stores the
+  pin and `REQ-001`; a withdrawal of a source no pin rests on stores no pin. Red before: "KR-0005: the impact names the
+  pin and the record on it". Change: one list, `pinRests(p, pin)` (knowledge-concepts.js), read by both
+  `conceptPinCurrency` and `withPinImpact`.
+- **(d) A released concept's identity in the reading comes from the release's part when the register's hash differs**
+  (should-fix 4; B10). **S3.26**: after a person edits title, kind and scope of SYN-P001 behind its release, the reading
+  shows the release's copy; the reading's state stays the register's (`draft`). Red before: "the identity is the release's
+  copy". Change: `conceptReading` takes the head from the newest released part unless an active release holds the
+  register's concept at its current hash.
+- **(e) The knowledge workspace's history panel shows the package's steps from the activity row** (should-fix 5).
+  **S3.27**, through the route: `renderKnowledgeReleases(doc, events)` lists `knowledge.history` and the pin's and link's
+  steps by time, each step with who took it ("· concept-pin · KU-0001 · architect"), the summary counting both; without
+  the activity the panel reads as before; no other activity is listed; every command type of the package is a step it
+  reads (`packageStep`, knowledge-package.js) and no built-in knowledge type is. Red before: "with it: the log and the
+  package's two steps". Change: `renderKnowledgeReleases(p, steps)`; the workspace reads the activity's latest page once
+  per saved revision of a document that holds crosswalk rows or pins (`stepsOf`), and a document without them is drawn
+  as before. Limit: the latest page (60 events) of the activity; older steps are in the project activity itself.
+- **(f) The successor notice walks the supersedes chain to the nearest published ancestor and notifies every
+  organisation release of it** (should-fix 6). **S3.28**: v1 published twice (OR1a, OR1b), v2 never published, v3
+  published as OR3: OR3 names both in `from.supersedes`, and a design project pinning each reads `newer-available` naming
+  OR3. Red before: "it names every organisation release of the nearest published ancestor". Change: the organisation's
+  `knowledge` action walks the library's supersedes chain (at most 31 steps) to the nearest release it published, writes
+  a notice for each organisation release of it, and names one by its id or several by the list of their ids
+  (`from.supersedes`: a string as before for one, a list for several; the refresh reads either).
+- **(g) A mutation for each behavioural case** (should-fix 7), each run on this branch and the file restored byte for byte
+  (`.aiw-local/mutate.mjs`, scratch, not committed):
+  - S3.4: the `retired` branch of `conceptPinCurrency` taken out: red ("Expected values to be strictly deep-equal").
+  - S3.6: the repin's stale-stamp check taken out: red ("knowledge.concept-repin by second-architect was accepted").
+  - S3.15: the release rows' reading in `oneAlias` taken out: red ("Expected values to be strictly equal").
+  - S3.16: `knowledge.concept-unlink` stated as anyone's in the server registration and its `personOnly` taken out: red
+    ("knowledge.concept-unlink by an agent account was accepted").
+  - S3.19: the one-active-pin-per-concept check taken out: red ("knowledge.concept-pin by architect was accepted").
+  - (S3.21 to S3.23 of this fix-up were seen red the same way for each door; see items 1 to 3.)
+- **(h) The pin, migration and link bounds count what stands** (should-fix 9; B8). **S3.29**: 200 pins that moved or were
+  retired, 2,000 retired links and 200 accepted or closed migrations leave room (a new pin, link and proposal are taken,
+  the proposal numbered KM-0201); 200 active pins, 2,000 active links and 200 open migrations refuse ("… that stand").
+  Red before: "This project holds 200 concept pins, the most it holds." Change: the three bounds in `pinCommand` count
+  active pins, active links and open migrations; the words say what to do. What still binds a long-lived design is the
+  document's character bound (8,000,000), as for every record.
+- **(i) S2.12 asserts against the bookings recorded at wp1 S2's start** (should-fix 8). `audit/rc44/evidence/wp1-s2-size.json`
+  gains `bookingsAtStart` (5cae40a: wp2-s1 325 B, wp9a-s1 342 B and its two pool items 34 B and 64 B; 3,229,840 + 769 =
+  3,230,605 B); the lead gave leave in X4 to add the record and edit S2.12 so. **Replaced assertion (S2.12)**, old: the
+  two equalities read every size file less a list of bookings filed after S2's start (wp2 S5's, wp1 S3's, the lead's
+  Q8 saving), which each later merge edited (W2, and the working form of item 0). New: they read the recorded bookings,
+  and each recorded booking is asserted to be on the books still with the same bytes. Red before (the record absent):
+  "the bookings recorded at wp1 S2's start commit". No later merge edits S2.12 again.

@@ -132,13 +132,17 @@ export async function handleOrganizations(request,env,actor,projectId){
   // P1): the release-actor rule of the project's release, read for the administrator who publishes it, with the kind of
   // their account as it is (ruling X1: worker.js refuses an agent account before this; the rule reads it all the same).
   {const refusal=publishRefusal(p,clean(raw.releaseId,40),actor,accountKind(env,actor));if(refusal)throw Error(refusal);}
-  // The organisation release it supersedes: the one published from the release this project release supersedes.
-  const own=(p.knowledge?.releases||[]).find(r=>r.id===clean(raw.releaseId,40)),earlier=own?.supersedes?(await env.DB.prepare('SELECT document FROM organization_releases WHERE organization_id=?').bind(id).all()).results.map(r=>JSON.parse(r.document)).find(r=>r.kind==='knowledge'&&r.from?.projectId===p.id&&r.from?.releaseId===own.supersedes):null;
-  const release=organizationKnowledgeRelease(p,clean(raw.releaseId,40),{organizationId:id,id:crypto.randomUUID(),title:clean(raw.title,160),actor,at,supersedes:earlier?.id||null});
+  // The organisation releases it supersedes: every one published from the nearest release of this project's supersedes
+  // chain that the organisation published (the fix-up, ruling X4): a successor of a release never published, and a
+  // release published twice, leave no project that pins one of them without its notice. One is named by its id, several
+  // by the list of their ids (from.supersedes).
+  const own=(p.knowledge?.releases||[]).find(r=>r.id===clean(raw.releaseId,40)),mine=own?.supersedes?(await env.DB.prepare('SELECT document FROM organization_releases WHERE organization_id=?').bind(id).all()).results.map(r=>JSON.parse(r.document)).filter(r=>r.kind==='knowledge'&&r.from?.projectId===p.id):[];
+  let earlier=[];for(let rid=own?.supersedes,seen=0;rid&&!earlier.length&&seen<31;seen++){earlier=mine.filter(r=>r.from?.releaseId===rid).sort((a,b)=>String(a.at).localeCompare(String(b.at))||String(a.id).localeCompare(String(b.id)));rid=(p.knowledge?.releases||[]).find(r=>r.id===rid)?.supersedes;}
+  const release=organizationKnowledgeRelease(p,clean(raw.releaseId,40),{organizationId:id,id:crypto.randomUUID(),title:clean(raw.title,160),actor,at,supersedes:earlier.length>1?earlier.map(r=>r.id):earlier[0]?.id||null});
   release.signature=await signature(env,id,JSON.stringify(release));
   await env.DB.prepare('INSERT INTO organization_releases(organization_id,id,document,created_at) VALUES(?,?,?,?)').bind(id,release.id,JSON.stringify(release),at).run();
-  // The superseded release's notice, signed as a release is: the projects that pin it read it on their next load.
-  if(earlier)await writeNotice(env,id,earlier.id,{supersededBy:{id:release.id,title:release.title,at}},at);
+  // Each superseded release's notice, signed as a release is: the projects that pin it read it on their next load.
+  for(const e of earlier)await writeNotice(env,id,e.id,{supersededBy:{id:release.id,title:release.title,at}},at);
   auditEvent('organization-knowledge-release',{by:actor,organization:id,release:release.id,from:release.from,claims:release.claims.length,reason:clean(raw.reason)});
   return json({release:{id:release.id,title:release.title,claims:release.claims.length,sources:release.sources.length,checksum:release.checksum,signature:release.signature,from:release.from}},201);
  }
@@ -189,8 +193,13 @@ export async function refreshOrganizationAssurance(env,actor,p){
   // verify is ignored.
   const notice=await readNotice(env,r.organizationId,r.id),seen={};
   if(notice?.withdrawn){eligible=false;status='Withdrawn by the organisation: '+clean(notice.withdrawn.reason,1000);seen.withdrawn={at:notice.withdrawn.at,reason:clean(notice.withdrawn.reason,1000)};}
-  if(notice?.supersededBy?.id){const row=await env.DB.prepare('SELECT document FROM organization_releases WHERE organization_id=? AND id=?').bind(r.organizationId,clean(notice.supersededBy.id,60)).first(),next=row?JSON.parse(row.document):null;
-   if(next?.kind==='knowledge'&&next.from?.supersedes===r.id&&await verifyOrganizationRelease(env,next))seen.successor={id:next.id,title:next.title,at:next.at,concepts:(Array.isArray(next.parts?.concepts)?next.parts.concepts:[]).map(c=>({conceptId:c.conceptId,version:c.version,conceptHash:c.conceptHash}))};}
+  // A successor the organisation withdrew is passed over, to the one its own notice names in turn (the fix-up, ruling X4):
+  // the newer version offered is one that stands. Each step is a signed release that names the one before it.
+  for(let prior=r.id,nextId=notice?.supersededBy?.id,hop=0;nextId&&hop<8;hop++){const row=await env.DB.prepare('SELECT document FROM organization_releases WHERE organization_id=? AND id=?').bind(r.organizationId,clean(nextId,60)).first(),next=row?JSON.parse(row.document):null;
+   if(!(next?.kind==='knowledge'&&[].concat(next.from?.supersedes).includes(prior)&&await verifyOrganizationRelease(env,next)))break;
+   const theirs=await readNotice(env,r.organizationId,next.id);
+   if(!theirs?.withdrawn){seen.successor={id:next.id,title:next.title,at:next.at,concepts:(Array.isArray(next.parts?.concepts)?next.parts.concepts:[]).map(c=>({conceptId:c.conceptId,version:c.version,conceptHash:c.conceptHash}))};break;}
+   prior=next.id;nextId=theirs.supersededBy?.id;}
   if(Object.keys(seen).length)notices[r.id]=seen;
  }catch(err){status=err.message;}r.assurance={eligible,status,signature:r.signature};}
  // Kept beside the pins, and only where a pin reads them: bookkeeping, which neither fingerprint reads (knowledge-package.js).

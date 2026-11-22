@@ -14,12 +14,12 @@
 // agent, not the author or an editor of any revision) and by the commit's author kind (authorship.js): an agent account,
 // a draft by Sol and a request marked as an import review nothing, and neither does a request that states no author.
 // Saving a concept, a form or a topic reviews nothing: each is a candidate until that review, and reaches no check.
-import {applyKnowledgeCommand,knowledgeState,knowledgeEligibility,KNOWLEDGE_LIMIT_TIERS,knowledgeLimits,organizationRef} from './knowledge-governance.js';
+import {applyKnowledgeCommand,knowledgeState,knowledgeEligibility,KNOWLEDGE_LIMIT_TIERS,knowledgeLimits} from './knowledge-governance.js';
 import {verifierRefusal} from './architecture-obligations.js';
 import {QUALITY_TYPES} from './quality-domain.js';
 import {FORM_TYPES,FORM_TIER,FORM_CLAIM_TYPE,FORM_PREDICATE,CONCEPT_KINDS,CONCEPT_SCOPES,CONCEPT_ID,RECORD_REFERENCE,ALIAS_SCHEMES,conceptFormIssues,conceptFormRecord} from './concept-form.js';
 import {recordGraph} from './record-graph.js';
-import {conceptRecords,conceptHash,conceptAuthors,conceptCovered,formIssues,crosswalkRecords,crosswalkRowHash,crosswalkCovered,crosswalkAuthors,crosswalkState,releasedConcepts,releasedCrosswalk,refreshConceptPins,conceptReceipt,migrationStamp,unpinStamp} from './knowledge-concepts.js';
+import {conceptRecords,conceptHash,conceptAuthors,conceptCovered,formIssues,crosswalkRecords,crosswalkRowHash,crosswalkCovered,crosswalkAuthors,crosswalkState,releasedConcepts,releasedCrosswalk,refreshConceptPins,conceptReceipt,migrationStamp,unpinStamp,pinRests} from './knowledge-concepts.js';
 import {catalogue} from './catalogue-store.js';
 import {catalogueMark,catalogueRelation} from './catalogue-curation.js';
 import {templateFields} from './component-snapshot.js';
@@ -310,7 +310,9 @@ function withPinImpact(input,command,out){
  if(command?.type!=='knowledge.withdraw')return out;
  const s=knowledgeState(out.document),w=list(s.withdrawals).find(x=>x?.targetId===command.payload?.id),had=list(knowledgeState(input).withdrawals).some(x=>x?.targetId===command.payload?.id);
  if(!w||had)return out;
- const ref=(r,id)=>r?.organizationId?organizationRef(r,id):id,pins=list(s.conceptPins).filter(x=>x?.status!=='retired'&&ref([...s.releases,...list(s.organizationReleases)].find(r=>r?.id===x.releaseId),x.conceptId)===w.targetId);
+ // Every pin that rests on the target as the currency reads it (pinRests: the concept, the release, a form claim, its
+ // source; the fix-up, ruling X4), not only a withdrawal of the concept's id.
+ const pins=list(s.conceptPins).filter(x=>x?.status!=='retired'&&pinRests(out.document,x).ids.includes(w.targetId));
  if(pins.length)w.impact=[...list(w.impact),...pins.flatMap(x=>[{kind:'concept pin',id:x.id,title:x.conceptId+' v'+x.version},...list(s.conceptLinks).filter(l=>l?.status==='active'&&l.pinId===x.id).map(l=>({kind:'record that relies on a pin',id:l.objectId,title:l.reason||x.conceptId}))])];
  return out;
 }
@@ -597,7 +599,7 @@ function pinCommand({p,s,r,type,at,actor,next},author){
  case 'knowledge.concept-pin':{
   personOnly(author,actor);assertReview(r);const conceptId=text(r.conceptId,80),held=usableVersion(p,s,conceptId,text(r.releaseId,80));
   const other=list(s.conceptPins).find(x=>x?.status==='active'&&x.conceptId===conceptId);if(other)throw Error(conceptId+' already has an active pin ('+other.id+'): a migration a second person accepts moves it.');
-  if(list(s.conceptPins).length>=PIN_BOUND)throw Error('This project holds '+PIN_BOUND+' concept pins, the most it holds.');
+  if(list(s.conceptPins).filter(x=>x?.status==='active').length>=PIN_BOUND)throw Error('This project holds '+PIN_BOUND+' concept pins that stand (active), the most it holds: unpin one first.');
   return newPin(s,held,{at,actor,r,next}).id;
  }
  case 'knowledge.concept-link':{
@@ -607,7 +609,7 @@ function pinCommand({p,s,r,type,at,actor,next},author){
   if(!o||o.type==='concept')throw Error('Choose an existing record of this project: '+objectId.slice(0,60)+' is none.');
   const form=r.form===undefined?'definition':r.form;if(!held.part.forms.some(f=>f.type===form))throw Error(pin.conceptId+' v'+pin.version+' holds no '+String(form).slice(0,40)+' form.');
   if(list(s.conceptLinks).some(l=>l?.status==='active'&&l.pinId===pin.id&&l.objectId===objectId))throw Error(objectId+' is already linked to '+pin.id+'.');
-  if(list(s.conceptLinks).length>=PIN_BOUND*10)throw Error('This project holds '+PIN_BOUND*10+' concept links, the most it holds.');
+  if(list(s.conceptLinks).filter(l=>l?.status==='active').length>=PIN_BOUND*10)throw Error('This project holds '+PIN_BOUND*10+' concept links that stand (active), the most it holds: unlink one first.');
   const link={id:next('KB'),pinId:pin.id,conceptId:pin.conceptId,version:pin.version,objectId,form,relationship:'informs',reason:text(r.reason),reviewer:text(r.reviewer,180),actor,at,status:'active',receipt:conceptReceipt(p,pin.conceptId,pin.releaseId)};
   (s.conceptLinks||=[]).push(link);return link.id;
  }
@@ -623,7 +625,7 @@ function pinCommand({p,s,r,type,at,actor,next},author){
   const hashes=(fs,t)=>fs.filter(f=>f.type===t).map(f=>f.claimHash).sort(),changes=types.filter(t=>JSON.stringify(hashes(was,t))!==JSON.stringify(hashes(now,t))).map(t=>({type:t,was:hashes(was,t),now:hashes(now,t)}));
   const said={pinId:pin.id,conceptId:pin.conceptId,fromReleaseId:pin.releaseId,fromVersion:pin.version,fromConceptHash:pin.conceptHash,toReleaseId,toVersion:held.version,toConceptHash:held.conceptHash,changes,uses:list(s.conceptLinks).filter(l=>l?.status==='active'&&l.pinId===pin.id).map(l=>l.objectId),reason:required(r.reason,'why the pin should move')};
   if(existing){if(sameFields(existing,said))return {selected:existing.id,unchanged:true};Object.assign(existing,said,{revision:existing.revision+1,lastEditor:actor});delete existing.confirmed;existing.history.push({revision:existing.revision,at,actor,change:'Edited'});return existing.id;}
-  if(list(s.conceptMigrations).length>=PIN_BOUND)throw Error('This project holds '+PIN_BOUND+' migrations, the most it holds.');
+  if(list(s.conceptMigrations).filter(x=>!x?.review&&!x?.closed).length>=PIN_BOUND)throw Error('This project holds '+PIN_BOUND+' migrations that stand (open), the most it holds: accept or close one first.');
   // Numbered in a sequence of their own, not the knowledge family's shared counter, which the design fingerprint reads:
   // a proposal says nothing to the design (ruling L6). Migrations are never removed, so the next number is unique.
   const m={id:numbered('KM',list(s.conceptMigrations).length+1),...said,actor,at,lastEditor:actor,revision:1,history:[{revision:1,at,actor,change:'Proposed'}]};(s.conceptMigrations||=[]).push(m);return m.id;
