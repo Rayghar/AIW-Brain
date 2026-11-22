@@ -507,3 +507,16 @@ Rulings:
    moves to 800 B with Q10 at the lead's hand.
 4. The confirm and the judgements are kept on the built-in decision under `selection`; whether S0 states a contract row
    for package steps on built-in records (design concern 4) is the lead's.
+
+## Second fix-up (rulings U1 to U6 of 2026-11-22; verifier /home/user/hb-review/rc44-build/wp2-s5-selection.verify.json)
+
+Branch `rc44/wp2-s5-selection-fix-c2` from `7f1b897` (the fix-up's head). Items in the order the lead gave them, each
+case first, seen to fail on the head it started from, then the change; a WIP commit after each item.
+
+### Progress
+
+- **Done:** item 1 (U1): case `S5 U1 hard constraint` (failed at `7f1b897`: a person's decision.save that drops QD-008
+  was taken, 200 !== 400), then the change (commit 8738d5d); the wp2 suite is green but for S1's `size` (item 5).
+  Route +83 B (3,228,300 -> 3,228,383).
+- **In progress:** item 2 (U4).
+- **Next:** U4, U3, U5, U2, U6, the notes.
