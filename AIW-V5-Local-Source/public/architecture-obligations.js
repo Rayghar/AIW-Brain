@@ -32,10 +32,13 @@ export function architectureEvidenceSources(p,receipts=[]){
 // stays as it was and never makes its obligation current-verified.
 // The owner is free text and the actor an account id: they are compared with case, spaces and punctuation set aside, which
 // catches only a name written as the account id is (a weak check: the Worker holds no display name to compare).
+// (rc44; the lead's ruling Z1 of 2026-11-22) While the stamp of a merge stands on what it wrote (provenance.author.mergedBy,
+// or provenance.reviewed.mergedBy beside a keep or a confirmation it applied: provenance.js mergeStamper), the person who
+// merged it is not the second person either; the preparer is its writer (actor and history), as in a direct save.
 const sameName=(a,b)=>{const n=v=>String(v??'').toLowerCase().replace(/[^\p{L}\p{N}]/gu,'');return !!n(a)&&n(a)===n(b);};
 export const deliveryActionAuthors=a=>unique([a?.actor,...list(a?.history).filter(h=>h?.revision!=null).map(h=>h.actor)]);
 export const SECOND_VERIFIER='A second signed-in person, who did not write or own the action, verifies it.';
-export function verifierRefusal(a,actor,account=null){const id=a?.id;return !actor?'Sign in to verify '+id+'.':account==='agent'?'An agent or Sol does not verify '+id+'.':!a.actor?id+' names no author: save it again first.':deliveryActionAuthors(a).includes(actor)?SECOND_VERIFIER+' '+actor+' wrote '+id+'.':sameName(actor,a.owner)?SECOND_VERIFIER+' '+actor+' owns '+id+'.':null;}
+export function verifierRefusal(a,actor,account=null){const id=a?.id,v=a?.provenance;return !actor?'Sign in to verify '+id+'.':account==='agent'?'An agent or Sol does not verify '+id+'.':!a.actor?id+' names no author: save it again first.':deliveryActionAuthors(a).includes(actor)?SECOND_VERIFIER+' '+actor+' wrote '+id+'.':[v?.author?.mergedBy,v?.reviewed?.mergedBy].includes(actor)?SECOND_VERIFIER+' '+actor+' merged '+id+'.':sameName(actor,a.owner)?SECOND_VERIFIER+' '+actor+' owns '+id+'.':null;}
 export const independentVerification=a=>!!a?.verification&&a.verification.account!=='agent'&&!verifierRefusal(a,a.verification.actor);
 export function architectureObligationActionState(p,a){
  const ref=a?.architectureObligation,basis=architectureObligationBasis(p,ref),reasons=[...basis.reasons],v=a?.verification,comparison=verificationForAction(p,a);

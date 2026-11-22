@@ -806,7 +806,9 @@ export default async function ({block, pass, load}) {
     assert.equal(r.by.upgrade, 3, 'they are counted as what an upgrade wrote'); assert.ok(!('upgrade' in r0.by), 'a document without such a record has no such count'); assert.equal(r.confirmed, r0.confirmed);
     assert.equal(chapter(r, 3).total, chapter(r0, 3).total + 3, 'under the chapter of their object type (ruling J12)'); assert.equal(chapter(r, 5).total, chapter(r0, 5).total, 'not under Chapter 5'); assert.equal(chapter(r, 3).upgrade, 3); assert.equal(chapter(r, 3).person, chapter(r0, 3).person);
     const text = architectureMarkdown(after).markdown, base = architectureMarkdown(before).markdown, E = t => t.slice(t.indexOf('## E. Provenance'));
-    assert.match(E(text), /Written by an upgrade of the project or by a merge, with no author stamp: 3 records\. No person wrote them; none is confirmed by a person\./, 'the SDD counts them on a line of their own: ' + E(text).slice(0, 600));
+    // (the lead's ruling Z6, slice S0-D12; was: /Written by an upgrade of the project or by a merge, with no author stamp: 3 records\. …/) a merge
+    // stamps what it writes unless its alternative names no preparer for the command, and the line says so
+    assert.match(E(text), /Written by an upgrade of the project or by a merge of an alternative that names no preparer, with no author stamp: 3 records\. No person wrote them; none is confirmed by a person\./, 'the SDD counts them on a line of their own: ' + E(text).slice(0, 600));
     assert.ok(!/Written by an upgrade of the project/.test(base), 'a document without such records prints as before'); assert.match(E(text), /3 written by an upgrade of the project or a merge/);
     // once a person has confirmed one, the line says so; it is still not counted as written by a person
     const one = structuredClone(after), x = byId(one, 'ADP-001'); x.confirmed = true; x.provenance = {reviewed: {by: A, at: AT, how: 'confirmed'}};

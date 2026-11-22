@@ -137,6 +137,9 @@ export function reviewOf(p,r,chapter=null){
  const j=judgementOf(p,r,chapter);
  if(j)return {by:j.actor||null,at:j.at||null,how:'judgement',id:j.id,outcome:j.outcome};
  const s=plain(r?.provenance?.reviewed)?r.provenance.reviewed:null;
+ // A merge is a person's review of the alternative, not of the record's words (rc44; the lead's ruling Z7): no review of
+ // the record. (The second-person rule counts it, from the stamp: design-extension-boundary.js personBehind.)
+ if(s?.how==='merged')return null;
  if(s&&!historicalReview(p,s.at)&&(s.how!=='confirmed'||confirmedNow(r)))return {by:s.by||null,at:s.at||null,how:s.how||'confirmed'};
  // Legacy flags have no signed-in reviewer stamp. They remain readable in their original project, but after restore
  // they are historical assertions; a local judgement or confirmation is required to count them on this workbench.
@@ -152,7 +155,7 @@ export function confirmedByPerson(p,r,chapter=null){const rv=reviewOf(p,r,chapte
 
 // ---------------------------------------------------------------- one record, in words
 export function recordProvenance(p,r,chapter){
- const {kind,from:came}=authorship(r),a=stampOf(r),reviewed=reviewOf(p,r,chapter),from=kind==='person'&&came&&came!=='person'?came:null;
+ const {kind,from:came}=authorship(r),a=stampOf(r),reviewed=reviewOf(p,r,chapter),from=kind==='person'&&came&&came!=='person'?came:null,merged=!reviewed&&r?.provenance?.reviewed?.how==='merged'?r.provenance.reviewed.by:null;
  // Who applied Sol's draft and when (GR-GOV-25): the commit's stamp, else the mark workstream E's drafter leaves
  // (provenance.draft {appliedBy, appliedAt}), on the draft and on the person's record it became.
  const draft=solDraftOf(r),stampedDraft=a?.kind==='sol-draft';
@@ -162,7 +165,7 @@ export function recordProvenance(p,r,chapter){
  const own=a?.kind==='person'?a:null;
  // AIW's reference example (the teaching project's own records) says so, and guidance says where its words came from (the
  // component library, a catalogue archetype).
- const rp={kind,word:AUTHOR_WORDS[kind]+(kind==='seeded'&&r?.origin==='reference'&&r?.state!=='proposed'?' (reference example)':''),by:own?.by||null,at:own?.at||null,from,fromWords:from?(from==='guidance'&&GUIDANCE_FROM[r?.origin]?GUIDANCE_FROM[r.origin].replace(/^from /,''):FROM_WORDS[from]):null,edited:!!(own&&from&&from!=='guidance'),session:a?.session||null,applied,reviewed,citations:recordCitations(p,r)};
+ const rp={kind,word:AUTHOR_WORDS[kind]+(kind==='seeded'&&r?.origin==='reference'&&r?.state!=='proposed'?' (reference example)':''),by:own?.by||null,at:own?.at||null,from,fromWords:from?(from==='guidance'&&GUIDANCE_FROM[r?.origin]?GUIDANCE_FROM[r.origin].replace(/^from /,''):FROM_WORDS[from]):null,edited:!!(own&&from&&from!=='guidance'),session:a?.session||null,applied,reviewed,...(merged?{merged}:{}),citations:recordCitations(p,r)};
  rp.label=provenanceLabel(rp);rp.line=provenanceLine(rp);return rp;
 }
 // "Drafted by Sol · not reviewed", "Imported · confirmed by architect-a", "Written by architect-a (from Sol's draft)",
@@ -172,6 +175,8 @@ export function provenanceLabel(rp){
  const who=rp.kind==='person'?(rp.by?'Written by '+rp.by:AUTHOR_WORDS.person)+(rp.from?' (from '+(rp.fromWords||FROM_WORDS[rp.from])+')':''):rp.word||AUTHOR_WORDS[rp.kind]||AUTHOR_WORDS.person;
  const r=rp.reviewed;
  if(r)return who+' · '+(HOW_WORDS[r.how]||'reviewed')+(r.by?' by '+r.by:'')+(r.how==='judgement'&&r.outcome==='follow-up'?' (follow-up required)':'');
+ // (ruling Z7) a merged record names who merged it, which reviews none of its words
+ if(rp.merged)return who+' · merged by '+rp.merged+(rp.kind==='person'?'':', not reviewed');
  return rp.kind==='person'?who:who+' · not reviewed';
 }
 export const recordLabel=(p,r,chapter)=>recordProvenance(p,r,chapter).label;
@@ -459,6 +464,64 @@ export function stampTracked(was,now,author,at){
  if(!plain(now))return now;
  if(!plain(was)){if(plain(now.provenance)){const pv={...now.provenance};delete pv.author;delete pv.reviewed;if(Object.keys(pv).length)now.provenance=tidyProvenance(pv);else delete now.provenance;}return now;}
  if(author)settle(was,now,author,at,false,false,true);return now;
+}
+// ---------------------------------------------------------------- who wrote what a merge writes (rc44; the lead's rulings Y3 and Z1 to Z5 of 2026-11-22)
+// (An alternative keeps who prepared each command it holds, authors[i] beside commands[i]: workbench-domain.js.)
+// mergeStamper(prior, command, merger, at, {fourEyes, collections, also}): what stamps the records workspace.merge
+// writes, command by command (workbench-domain.js calls it with each command's result: the option `merged`); the one
+// stamping of a merge (ruling Z5: worker.js stamps nothing of a merge as the merger's). null only when there is no
+// merger or no such alternative (the merge is then refused by its domain).
+// A record a command made or changed is stamped as written by whoever prepared that command in the alternative (its
+// author kind and actor as the alternative recorded them: a draft by Sol stays a draft by Sol, an agent account's stays
+// the agent's), by the same stamping as any commit (stampAuthorship, and `also` for the collections the design packages
+// hold), and as reviewed by the person who merged it (provenance.reviewed {by, at, how: 'merged'}): the merge is their
+// reviewed step. The author stamp names the merger too (mergedBy), so that while the merged words stand the second-person
+// rule refuses both (design-extension-boundary.js, architecture-obligations.js verifierRefusal); a later change of what
+// the record says is stamped as any save is; a reviser's command names whose draft it started from (from: ruling Z3),
+// which the stamp keeps. A proposal a merge makes is stamped by nobody, as any proposal (settle): a person keeps it.
+// A command the alternative names nobody for (an alternative saved before this build, a command carried from one: null,
+// or a restored alternative, whose list the import moved aside: recovery-service.js importedAuthors) stamps what it writes
+// as nobody's (ruling Z5): a record it made or whose words it changed keeps no author and no review stamp, and one it
+// only confirmed or kept keeps no review stamp; so it fails closed, and a person saves, confirms or keeps it before a
+// second person's step. No date decides who prepared a command (ruling Z2). `collections` are the packages'
+// (design-extension-boundary.js stampedCollections); each command is compared with a copy of those and of its own
+// collections as the merge left them before it.
+export function mergeStamper(prior,command,merger,at,{fourEyes=false,collections=[],also=null}={}){
+ const a=list(prior?.workbench?.alternatives).find(x=>plain(x)&&x.id===command?.payload?.id),cs=list(a?.commands),by=list(a?.authors);
+ if(!merger||!a)return null;
+ const known=i=>{const x=by.length===cs.length?by[i]:null;return plain(x)&&COMMIT_KINDS.includes(x.kind)&&typeof x.at==='string'&&typeof x.by==='string'&&x.by?x:null;};
+ const paths=[...new Set([...cs.flatMap(pathsOfCommand),...collections])],reviewer=personAuthor(merger)?merger.id||null:null;
+ const snap=p=>{const s={retired:{records:structuredClone(list(p?.retired?.records))}};for(const path of paths){const v=path===NARRATIVE?p?.finalReview?.narrative:null,[k,sub]=path.split('.');if(path===NARRATIVE){if(plain(v))s.finalReview={narrative:structuredClone(v)};continue;}const x=sub?p?.[k]?.[sub]:p?.[k];if(!Array.isArray(x))continue;if(sub)(s[k]=plain(s[k])?s[k]:{})[sub]=structuredClone(x);else s[k]=structuredClone(x);}return s;};
+ let before=snap(prior);
+ const changed=(next,fn)=>{for(const path of paths){const old=new Map(listAt(before,path).map(r=>[path===NARRATIVE?'':r?.id,r]));for(const r of listAt(next,path))if(plain(r))fn(r,old.get(path===NARRATIVE?'':r.id),path);}};
+ // (ruling Z1) the account that prepared command i: workbench-domain.js applies it as that account, as a direct write.
+ const stamp=(q,c,i)=>{
+  const x=known(i),next=q?.document;if(!next)return;
+  if(!x){
+   // (ruling Z5) nobody's: a record a restore brought back keeps its own provenance (it is the one that left)
+   const back=new Set();if(c?.type==='record.restore'){const still=new Set(list(next?.retired?.records).map(y=>y?.path+'|'+y?.id));for(const y of list(before?.retired?.records))if(!still.has(y?.path+'|'+y?.id))back.add(y?.path+'|'+y?.id);}
+   // (lead, after review) and it confirms and keeps nothing: a confirmation or a keep is a signed-in person's, after the merge
+   changed(next,(r,was,path)=>{if(!was&&back.has(path+'|'+r.id))return;const what=path===NARRATIVE?'the narrative':r.ref||r.id||'a record',does=!confirmedNow(was)&&confirmedNow(r)?'confirms':was?.state==='proposed'&&r.state!=='proposed'?'keeps':null;
+    if(does)throw Error('Command '+(i+1)+' of “'+a.title+'” ('+c.type+') '+does+' '+what+' and its alternative names no one who prepared it (saved before this version of AIW, carried from one, or restored). Revise the alternative without the '+(does==='confirms'?'confirmation':'keep')+'; a signed-in person '+(does==='confirms'?'confirms':'keeps')+' '+what+' after the merge.');
+    const wrote=!was||contentEdits(was,r).length>0;if(!wrote&&was.confirmed===r.confirmed&&was.state===r.state)return;
+    const pv=plain(r.provenance)?{...r.provenance}:{};if(wrote)delete pv.author;delete pv.reviewed;if(Object.keys(pv).length)r.provenance=tidyProvenance(pv);else delete r.provenance;});
+   before=snap(next);return;
+  }
+  const author={kind:x.kind,id:x.by,account:x.account,...(x.session?{session:x.session}:{})};
+  // Four eyes (a project's setting) in a merge (ruling Z4): a command that confirms or keeps what its own preparer wrote is
+  // refused in words for the person who merges: which command of which alternative, who prepared it, and what to do.
+  try{stampAuthorship(before,next,c,q,author,at,{fourEyes});}catch(e){const m=/^Four eyes: .+ wrote (.+)\. Another signed-in person confirms it\.$/.exec(e?.message||'');if(!m)throw e;throw Error('Four eyes: command '+(i+1)+' of “'+a.title+'” ('+c.type+') was prepared by '+x.by+' and confirms what '+x.by+' wrote ('+m[1]+'). Revise the alternative without the confirmation; another signed-in person confirms it after the merge.');}
+  also?.(before,next,author);
+  // What this command stamped: a write (the author stamp), or only a keep or a confirmation its preparer sent (the
+  // review stamp): each names the merger beside it.
+  changed(next,(r,was)=>{
+   const s=stampOf(r),v=plain(r.provenance?.reviewed)?r.provenance.reviewed:null,same=(y,z)=>JSON.stringify(y??null)===JSON.stringify(z??null);
+   const wrote=!!s&&s.at===at&&!same(s,stampOf(was)),kept=!wrote&&!!v&&v.at===at&&!same(v,was?.provenance?.reviewed);if(!wrote&&!kept)return;
+   const pv={...r.provenance};if(wrote){pv.author={...s,...(x.from?{from:x.from}:{}),mergedBy:merger.id||null};if(reviewer)pv.reviewed={by:reviewer,at,how:'merged'};}else pv.reviewed={...v,mergedBy:merger.id||null};r.provenance=tidyProvenance(pv);
+  });
+  before=snap(next);
+ };
+ stamp.by=i=>known(i)?.by||null;return stamp;
 }
 // The provenance block a command carries (round 12, GR-GOV-09): the source, citations and basis of payload.provenance,
 // checked (provenanceBlock: each citation must name a row, a source version or a record the project holds) and set on the
