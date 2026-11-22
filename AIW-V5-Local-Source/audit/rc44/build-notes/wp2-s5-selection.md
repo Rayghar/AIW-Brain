@@ -24,6 +24,8 @@ is S1's second-person step.
 - **Third fix-up:** branch `rc44/wp2-s5-selection-fix-c3`, from abfdb56, with `rc44/integration` (c709ae3) merged
   first; the rulings of section V (2026-11-22, after the second verifier); see the section "Third fix-up" at the end
   of this file.
+- **Fourth fix-up:** branch `rc44/wp2-s5-selection-fix-c4`, from ad8204b (the third fix-up's head); the rulings of
+  section W (2026-11-22, after the third verifier); see the section "Fourth fix-up" at the end of this file.
 
 ## What was built
 
@@ -973,3 +975,14 @@ Headroom on the route: 5,252 B. The bucket of files under 10 KB went from 53 to 
 2. `design-concern-validate.mjs`'s baseline red line is l.199 now (V5); the baseline bookkeeping that names l.119
    (`audit/rc42/regression-2026-11-16.json`) is the lead's to update.
 3. The owner's decision on candidate profile content in design projects (Q11) is still pending.
+
+## Fourth fix-up (rulings W1 to W3 of 2026-11-22; verifier /home/user/hb-review/rc44-build/wp2-s5-selection.verify3.json)
+
+Branch `rc44/wp2-s5-selection-fix-c4` from `ad8204b` (the third fix-up's head, which already merges `rc44/integration`
+c709ae3). Items in the order the lead gave them: 1, W1; 2, W2; 3, W3; 4, the notes and the final checks. Each case
+first, seen to fail on the head it started from, then the change; a WIP commit after each item.
+
+### Progress
+
+- **In progress:** item 1 (W1).
+- **Next:** items 2 (W2), 3 (W3), 4 (notes, suites, syntax, lint, build, final commit).
