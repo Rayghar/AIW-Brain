@@ -21,6 +21,8 @@
 //   S5 U1 hard constraint  a hard constraint leaves a selection's decision only through the selection; an ineligible
 //                    choice is an error worded as the built-in 'breaks' whatever the drivers say, and is not confirmed (U1);
 //   S5 U4 proposal   a selection before a person's choice says nothing to the context of the requirement it answers (U4);
+//   S5 U3 concern    a candidate concern offers no comparison; a released option is compared only once it is assessed on
+//                    every released criterion (what design-concern-validate.mjs held of the guided path, ruling U3);
 //   S5 Q5 instantiate creates  a payload with an id is refused; the component's source names its release, claim, hash and
 //                    decision, and every reader finds them (ruling Q5);
 //   S5 Q6 elsewhere  a recovery import moves the selection's steps aside; facts and standing read on each read (Q6);
@@ -478,6 +480,33 @@ export default async function ({block, pass, load}) {
       assert.ok(!brainContext(back, context).decisions.some(x => x.id === id), 'after a recovery import it is a proposal again (' + who + ')');
     }
     pass('S5 U4 proposal: a selection started by a person, by a draft by Sol or by an agent account, its candidates and a judgement say nothing to the context of the requirement it answers (a generation that read it stays current), while the decision stays a record of the journey and the subject of its own context; a person\'s choice is a design change that context reads; after a recovery import the selection is a proposal again');
+  });
+
+  // ------------------------------------------------------------ the released concern's comparison, re-pointed (ruling U3)
+  // What design-concern-validate.mjs held of the guided comparison, as selection.* holds it: a candidate concern offers no
+  // comparison (refused by selection.start, and by selection.candidate on a document whose selection names one), and no
+  // released option is compared before it is assessed on every released criterion (the guided path's "Assess every
+  // released approach before preparing a decision"; at the fix-up's head an option was added with no assessment at all).
+  await block('S5 U3 concern', async () => {
+    pkg(); const k = (q, type, payload, actor = 'author') => applyKnowledgeCommand(q, {type, payload}, AT, actor).document;
+    let p = concernProject();
+    p = k(p, 'knowledge.claim', {sourceId: p.knowledge.sources.at(-1).id, lineStart: 2, lineEnd: 2, subjectId: 'design-concern:candidate-ownership', predicate: 'offers a design concern', claimType: 'applicability', polarity: 'neutral', statement: 'Compare owning the schedule in one application with a separate service.', conditions: ['For a schedule two teams change.'], limitations: ['The source makes no measured recovery claim.'], tags: CONCERN_TAGS.map(x => (x.startsWith('title:') ? 'title:Candidate ownership' : x))});
+    const START = {kind: 'option', requirementId: 'REQ-001', driverId: 'QD-001', owner: CONCERN_ANSWERS.owner, reason: CONCERN_ANSWERS.reason}, cand = p.knowledge.claims.at(-1);
+    for (const [who, actor, author] of [['a person', A, person(A)], ['a draft by Sol', A, sol(A)], ['an agent account', AGENT, agent(AGENT)]])
+      assert.throws(() => send(p, 'selection.start', {...START, concernId: 'candidate-ownership'}, actor, author), /Choose a current, released architecture concern/, 'a candidate concern offers no comparison (' + who + ')');
+    const r = send(p, 'selection.start', {...START, concernId: 'schedule-ownership'}), id = r.selected; let q = doc(r);
+    // a selection that names the candidate concern (a document made by hand: no command writes one) is offered no option
+    const hand = structuredClone(q); decision(hand, id).selection.concern = {id: 'candidate-ownership', title: 'Candidate ownership', receipt: {...decision(q, id).selection.concern.receipt, claimId: cand.id}};
+    assert.throws(() => send(withFinalReview(hand, {upgrade: false}), 'selection.candidate', {id, candidate: {kind: 'option', ref: {optionId: 'local'}}, notes: CONCERN_NOTES.local}), /no longer current/, 'candidate claims cannot offer a comparison: selection.candidate refuses an option of a candidate concern');
+    // every released approach is assessed on every released criterion before it is compared, whoever adds it
+    const before = JSON.stringify(q);
+    for (const [who, actor, author] of [['a person', A, person(A)], ['a draft by Sol', A, sol(A)], ['an agent account', AGENT, agent(AGENT)]])
+      for (const notes of [undefined, {}, {recovery: CONCERN_NOTES.local.recovery}, {...CONCERN_NOTES.local, operations: '  '}])
+        assert.throws(() => send(q, 'selection.candidate', {id, candidate: {kind: 'option', ref: {optionId: 'local'}}, ...(notes ? {notes} : {})}, actor, author), /Assess every released approach before it is compared: One application · Operations|Assess every released approach before it is compared: One application · Recovery, Operations/, 'an option not assessed on every criterion is not compared (' + who + ', ' + JSON.stringify(notes) + ')');
+    assert.equal(JSON.stringify(q), before, 'and nothing was written');
+    for (const optionId of ['local', 'separate']) q = doc(send(q, 'selection.candidate', {id, candidate: {kind: 'option', ref: {optionId}}, notes: CONCERN_NOTES[optionId]}, A, sol(A)));
+    assert.deepEqual(decision(q, id).alternatives.map(a => [a.title, a.summary]), [['One application', 'Recovery: Restore one process and reconcile reservations. Operations: Facilities runs the rebuild.'], ['Separate service', 'Recovery: Coordinate partial failure across services. Operations: A platform team runs the rebuild.']], 'assessed on every criterion, both are compared, in the order they were added');
+    pass('S5 U3 concern: a candidate concern offers no comparison (selection.start refuses it for a person, a draft by Sol and an agent account; selection.candidate refuses an option of it on a document whose selection names it); a released option is compared only once it is assessed on every released criterion, whoever adds it (no notes, an empty note, a missing or blank criterion), and nothing is written until it is');
   });
 
   // ------------------------------------------------------------ instantiate creates, never updates (ruling Q5)
