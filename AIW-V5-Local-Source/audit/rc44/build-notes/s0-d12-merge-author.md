@@ -164,3 +164,11 @@ Not the full regression (the lead's). Run on this branch, one after another, on 
    merged node is a proposal; S1.12's tail builds its documents by hand). Not edited: wp9a's words.
 3. The SDD's line "Written by an upgrade of the project or by a merge, with no author stamp" stays true of records
    merged before this build; it could name the build.
+
+## Fix-up (rulings Z1 to Z8; branch rc44/s0-d12-merge-author-fix, from e91365c)
+
+Progress (kept current while the fix-up runs; the final lines follow once it closes):
+- Done: Z1 (19e4fe1), Z2 (ee3d4cc), Z3 (c3605cf), Z4 (3f711d9), each case first in S0's suite (blocks Z1 to Z4).
+- In progress: Z5. Next: Z6, Z7, Z8, then the final suites, syntax, lint, build and the closing commit.
+- Route: 3,228,648 B at e91365c; 3,228,741 B after Z4 (+98 B verifierRefusal, -5 B minifier names); booked
+  `mergeAuthorY3` = 93 B in the lead's file.
