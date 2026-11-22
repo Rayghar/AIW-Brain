@@ -320,3 +320,23 @@ commit after each item: 1 P1; 2 P2; 3 P3 and P4; 4 P5 (a) to (h); 5 P6; 6 P7; 7 
   keys that hold your records as `design`, `designKeys`, `evidenceKeys`, `lifecycle`, `provenance.records` or
   `provenance.paths`, or a copy of a template drops your name).
 - No crosswalk row can be written by a merge or a template copy (S2.20, S2.10): the statement of the first build is withdrawn.
+
+## Lead follow-up after the verifier (2026-11-22)
+
+The verifier's verdict on 7008c39 is *merge*, with two new problems; the lead closed both on rc44/wp1-s2-lead, cases first.
+
+- **The concept view read a collision as released.** conceptAliases now reads a released row as released only while
+  resolveConcept answers through it: a `same` row whose alias another usable concept bears reads as the register holds
+  it, with its release beside it (`release.resolves: false`, no top-level releaseId); a row of another relation is
+  released navigation and resolves no identity (`resolves: false`). Case: S2.4, the row-first ordering, after the
+  adapter concept's release (seen red: the entry read `released`, `resolves: true`).
+- **An edit of a rejected row passed the bound.** An edit lapses a rejection, so the row stands again: it is now held to
+  the bound of 24 standing rows as a proposal is, in the same words. Case: S2.14, with 24 rows standing the person's
+  edit of the rejected row is refused and writes nothing, and is taken once a row is retired; never more than 24 stand
+  (seen red: the edit was accepted).
+- Both changes are in server-only modules (knowledge-concepts.js, knowledge-concept-commands.js): no route bytes.
+- Assertions replaced: none (two added).
+- Left for the lead at the integration merge: S0's person and second checks take an author of kind person with no
+  account (the fix-up's open issue); the crosswalk closes it in the package with personOnly.
+- Suites on this head: rc44-wp1-knowledge 57 passed, 0 failed, 3 pending (S3 to S5); check-syntax 942 modules; lint
+  162 problems, 0 new.

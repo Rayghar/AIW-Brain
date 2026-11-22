@@ -214,7 +214,11 @@ export function builtInNavigation(id,scheme=null){
 export function conceptAliases(p,conceptId){
  const held=heldCrosswalk(p).filter(h=>h.row.conceptId===conceptId),released=releasedCrosswalk(p).filter(h=>h.row.conceptId===conceptId),out=[];
  const entry=(r,state,register,h,ok)=>({scheme:r.scheme,aliasId:r.aliasId,label:r.label,relation:r.relation,state,register,release:h?{releaseId:h.release.id,relation:h.row.relation,resolves:ok}:null,authority:'governed',targetContent:r.targetContent??null,rowId:r.id,releaseId:ok?h.release.id:null});
- for(const r of crosswalkRecords(p))if(r.conceptId===conceptId){const ok=released.find(x=>x.row.id===r.id);out.push(ok?entry(ok.row,'released',r.state,ok,true):entry(r,r.state,r.state,held.find(x=>x.row.id===r.id),false));}
+ // A released row reads as released only while the resolver answers through it (the lead's follow-up to P3): a `same`
+ // row whose alias another usable concept bears resolves nothing, so it reads as the register holds it, with its release
+ // beside it; a row of another relation is released navigation and resolves no identity.
+ const through=h=>h.row.relation==='same'&&resolveConcept(p,h.row.aliasId,h.row.scheme)?.via?.rowId===h.row.id;
+ for(const r of crosswalkRecords(p))if(r.conceptId===conceptId){const ok=released.find(x=>x.row.id===r.id),go=!!ok&&through(ok);out.push(ok&&(go||ok.row.relation!=='same')?entry(ok.row,'released',r.state,ok,go):entry(r,r.state,r.state,ok||held.find(x=>x.row.id===r.id),false));}
  for(const h of held)if(!out.some(x=>x.rowId===h.row.id))out.push(entry(h.row,'unregistered',null,h,false));
  for(const r of BUILT_IN_CROSSWALK)if(r.conceptId===conceptId)out.push({scheme:r.scheme,aliasId:r.aliasId,label:BUILT_IN_WORDS,relation:r.relation,state:'built-in',register:null,release:null,authority:'built-in',targetContent:null,rowId:null,releaseId:null});
  return out;

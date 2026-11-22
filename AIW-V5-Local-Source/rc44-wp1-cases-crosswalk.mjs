@@ -274,6 +274,10 @@ add('S2.4 (one identity): a second verified `same` row for one (scheme, alias) i
       await releasedConcept(S, sourceId, 'PAT-CIRCUIT-BREAKER', 'Circuit breaker');
       assert.equal(KC.releasedConcepts(S.document).filter(c => c.eligible).map(c => c.conceptId).sort().join(), 'PAT-CIRCUIT-BREAKER,PAT-STRANGLER-FIG', 'both concepts are released and usable');
       assert.equal(KC.resolveConcept(S.document, 'PAT-CIRCUIT-BREAKER'), null, 'one id, two concepts: it names none');
+      // (the lead's follow-up after the verifier) the concept view says what the resolver says: the released row that
+      // collides resolves nothing, so it reads as the register holds it, with its release beside it
+      { const a = KC.conceptAliases(S.document, 'PAT-STRANGLER-FIG').find(x => x.rowId === verified);
+        assert.deepEqual([a.state, a.register, a.release?.relation, a.release?.resolves, a.releaseId], ['verified', 'verified', 'same', false, null], 'the concept view reads the collision as the resolver does: ' + JSON.stringify(a)); }
       assert.equal(KC.resolveConcept(S.document, 'PAT-STRANGLER-FIG').conceptId, 'PAT-STRANGLER-FIG', 'a released concept no row claims is still its own identity');
     } finally { S.close(); } }
 });
@@ -604,6 +608,13 @@ add('S2.14 (ruling P4): the bound of 24 rows per concept counts the rows that st
     // The bound still holds for rows that stand: 23 more proposals fill it again, and the next is refused.
     for (let i = 25; i <= 47; i++) await S.ok('knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'external', aliasId: 'EXT-FILL-' + i, label: 'Filler ' + i, relation: 'narrower', note: 'Proposed by an agent account.'}, 'bot');
     await S.refused(FULL, 'knowledge.crosswalk', {...P_STRANGLER, aliasId: 'P-FACADE', label: 'Facade', relation: 'narrower'}, 'architect');
+    // (the lead's follow-up after the verifier) an edit of a rejected row makes it stand again, so it is held to the
+    // bound too: with 24 standing rows the person's edit of the rejected row is refused, and taken once one is retired
+    await S.refused(FULL, 'knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'external', aliasId: 'EXT-FILL-24', label: 'Filler 24 again', relation: 'narrower', note: 'Proposed again by a person.', id: filled[23], reason: 'Worth a second look.'}, 'architect');
+    assert.equal(KC.crosswalkRecords(S.document).find(r => r.id === filled[23]).state, 'rejected', 'the refused edit wrote nothing');
+    await S.ok('knowledge.crosswalk-retire', {...PERSON_STEP, id, reason: 'Proposed again elsewhere.'}, 'steward');
+    await S.ok('knowledge.crosswalk', {conceptId: 'PAT-STRANGLER-FIG', scheme: 'external', aliasId: 'EXT-FILL-24', label: 'Filler 24 again', relation: 'narrower', note: 'Proposed again by a person.', id: filled[23], reason: 'Worth a second look.'}, 'architect');
+    assert.equal(KC.crosswalkRecords(S.document).filter(r => r.conceptId === 'PAT-STRANGLER-FIG' && !['retired', 'rejected'].includes(r.state)).length, 24, 'never more than 24 rows stand');
   } finally { S.close(); }
 });
 
