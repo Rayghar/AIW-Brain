@@ -307,7 +307,11 @@ commit after each item: 1 P1; 2 P2; 3 P3 and P4; 4 P5 (a) to (h); 5 P6; 6 P7; 7 
 - `builtInNavigation(id, scheme = null)` -> `{navigation: [{scheme, aliasId, targetId, relation}], authority: 'built-in',
   label}` or null: AIW's own rows, navigation only (P6).
 - `conceptAliases(p, conceptId)`: each governed entry has `register` (the register's state) and `release` (`{releaseId,
-  relation, resolves}` or null); `state` is `released` only when it resolves; a row only a release holds is `unregistered`.
+  relation, resolves}` or null). `state` is `released` while an active release holds the row verified and this register
+  reads it at the released hash, and, for a `same` row, only while the resolver answers through it (for the row's scheme,
+  and the bare id names the same concept); `release.resolves` is true only for such a `same` row; the top-level
+  `releaseId` names the release that holds every `released` entry; a row only a release holds is `unregistered`
+  (rulings P3, P5 a and the lead's ruling S3 of 2026-11-22).
 - A concept's review holds `crosswalkSeen: [[rowId, rowHash, state], …]` when the concept has rows that stand; a release of
   forms holds (`parts.crosswalk`) only the verified rows that review saw verified at their hash (`releaseRows` in
   `knowledge-concept-commands.js`, the one list the release-actor rule reads and `parts` copies). S3 builds `parts.concepts`
@@ -340,3 +344,32 @@ The verifier's verdict on 7008c39 is *merge*, with two new problems; the lead cl
   account (the fix-up's open issue); the crosswalk closes it in the package with personOnly.
 - Suites on this head: rc44-wp1-knowledge 57 passed, 0 failed, 3 pending (S3 to S5); check-syntax 942 modules; lint
   162 problems, 0 new.
+
+### After the review of the lead's follow-up (2026-11-22)
+
+The narrow review of 043c128 asked for changes (two must-fix, four should-fix, two design concerns); the lead's rulings
+S1 to S5 of 2026-11-22 settle them, and all are done on rc44/wp1-s2-lead, cases first.
+
+- **S1, every door back to standing asks the bound** (must-fix 1, design concern 2). One check, `admit(conceptId, row)`
+  in knowledge-concept-commands.js, is asked at a proposal, at an edit of a rejected row and at a second person's
+  verification of a rejected row; it names the row that would stand again. A later path that makes a row stand (S4's
+  import, a restore) asks it too. Case S2.14: at the bound, a person's edit of a rejected row and a second person's
+  verification of another are each refused in words naming the row and write nothing; each is taken once a place is free;
+  never more than 24 stand (seen red: the verification was accepted). An edit of a row that stands is taken at the bound
+  (should-fix 1: the guard is pinned).
+- **S2, one alias names one concept in every scheme** (design concern 1). A second person's verification of a `same` row
+  is refused when another concept already bears its alias as a verified `same` alias in any scheme; the sentence names
+  the other scheme. Case S2.4 (external and handbook rows of SYN-S001, seen red: the verification was accepted). The
+  bare-id resolver still fails closed for a document that holds such a pair from before.
+- **S3, what a released entry says** (must-fix 2). Old -> new: a released row of another relation (narrower, broader,
+  realises, distinct) read `release.resolves: true`; it now reads `false` (it resolves no identity), and every
+  `released` entry names its release at the top level (043c128 had dropped it to null). A `same` row resolves only while
+  the resolver answers through it for its scheme and the bare id names the same concept. Case S2.4 over all five
+  relations (seen red on 043c128).
+- **S4, recovery is a known limit of the bound** (should-fix 3). A recovery import makes the rows' reviews nobody's, so
+  a rejected row reads proposed and stands: a recovered concept can hold more than 24 standing rows until a person here
+  reviews or retires them, and proposals are refused until then. The bound is a write bound.
+- **S5, one resolver, read once** (should-fix 2). resolveConcept and conceptAliases share `resolveIn(rows, concepts, id,
+  scheme)`; the view reads the released rows and concepts once, not once per row.
+- Wording (should-fix 4): done with S1.
+- Suites on this head: rc44-wp1-knowledge 57 passed, 0 failed, 3 pending.
