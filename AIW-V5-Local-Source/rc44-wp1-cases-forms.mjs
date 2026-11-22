@@ -1453,7 +1453,9 @@ function walkRequests(X) {
     'knowledge.fetch': noCommand, 'knowledge.organization-pin': noCommand, 'knowledge.repository-sync': noCommand, 'knowledge.repository-transfer': noCommand,
     // (rc44 wp1 S2) The crosswalk's types are the design package p10-knowledge's, taken by its boundary and no command of the
     // entry: rc44-wp1-cases-crosswalk.mjs walks them through POST /api/commands (S2.9).
-    'knowledge.crosswalk': noCommand, 'knowledge.crosswalk-confirm': noCommand, 'knowledge.crosswalk-review': noCommand, 'knowledge.crosswalk-retire': noCommand
+    'knowledge.crosswalk': noCommand, 'knowledge.crosswalk-confirm': noCommand, 'knowledge.crosswalk-review': noCommand, 'knowledge.crosswalk-retire': noCommand,
+    // (rc44 wp1 S3) So are the pins' types: rc44-wp1-cases-pins.mjs walks them through POST /api/commands (S3.16).
+    'knowledge.concept-pin': noCommand, 'knowledge.concept-link': noCommand, 'knowledge.concept-unlink': noCommand, 'knowledge.concept-migration': noCommand, 'knowledge.concept-migration-confirm': noCommand, 'knowledge.concept-repin': noCommand, 'knowledge.concept-unpin': noCommand
   };
 }
 add('S1.29 (ruling E1): no request that is not a person\'s lowers the standing of a reviewed or released concept. The walk: every knowledge.* command type the product names, sent by an agent account, a draft by Sol, an import, a request that states no author and one whose author names no account (and by the reviewer\'s and the releaser\'s own accounts as an import and a draft), against a reviewed concept and against a released, active one, leaves the concept\'s state, its hash, each form\'s status, its releases and what a pin hands over as they were; a person\'s same request keeps today\'s effect; a type added later joins the walk or this case fails', async () => {
@@ -1486,6 +1488,8 @@ add('S1.29 (ruling E1): no request that is not a person\'s lowers the standing o
     for (const type of ['knowledge.fetch', 'knowledge.organization-pin', 'knowledge.repository-sync', 'knowledge.repository-transfer']) assert.throws(() => send(doc, type, W[type][0][1](doc), 'architect'), /Choose a supported knowledge action/, type);
     // (rc44 wp1 S2) So are the crosswalk's types, the design package's: the entry refuses them as no type of its own, whoever sends them.
     for (const type of ['knowledge.crosswalk', 'knowledge.crosswalk-confirm', 'knowledge.crosswalk-review', 'knowledge.crosswalk-retire']) assert.throws(() => send(doc, type, W[type][0][1](doc), 'architect'), /Choose a supported knowledge action/, type);
+    // (rc44 wp1 S3) And the pins' types, the design package's too.
+    for (const type of ['knowledge.concept-pin', 'knowledge.concept-link', 'knowledge.concept-unlink', 'knowledge.concept-migration', 'knowledge.concept-migration-confirm', 'knowledge.concept-repin', 'knowledge.concept-unpin']) assert.throws(() => send(doc, type, W[type][0][1](doc), 'architect'), /Choose a supported knowledge action/, type);
   }
   assert(tally.accepted > 100 && tally.refused > 100 && tally.lowering >= 30, JSON.stringify(tally)); console.log('     the walk: ' + JSON.stringify(tally) + ' over ' + Object.keys(W).length + ' types and ' + KINDS.length + ' kinds of request');
   // The words of the refusals this ruling adds.

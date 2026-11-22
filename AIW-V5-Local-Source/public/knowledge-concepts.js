@@ -9,7 +9,8 @@
 // released only, and to a design record only through an active concept pin. Teaching content of a candidate is returned
 // with its label. Nothing in any state other than released is for a check, a gate, a score, a draft or Sol: no module on
 // the route imports this one (rc44-wp1-cases-forms.mjs, S1.14).
-import {knowledgeState,knowledgeEligibility,claimReceipt,withdrawn} from './knowledge-governance.js';
+import {knowledgeState,knowledgeEligibility,claimReceipt,withdrawn,organizationReleaseChecksum,organizationRef,knowledgeImpact} from './knowledge-governance.js';
+import {pinsDesign} from './knowledge-pins.js';
 import {verifierRefusal} from './architecture-obligations.js';
 import {digest} from './brain-integrity.js';
 import {FORM_TYPES,FORM_TIER,conceptFormIssues} from './concept-form.js';
@@ -31,7 +32,10 @@ const sourceOf=(s,claim,release)=>release?.organizationId?list(release.sources).
 // is the one reader of them: releasedClaims hands no form claim to anyone, whatever its state (ruling B1 of 2026-11-18),
 // so no reader of released claims (knowledge structures, the snapshot, the contextual reading, the Brain, Sol's packets,
 // a product comparison, a rationale link) receives one.
-const releasedForms=p=>{const s=knowledgeState(p);return [...s.releases,...list(s.organizationReleases)].filter(r=>s.pins.includes(r.id)).flatMap(r=>r.claims.filter(c=>c?.form).map(c=>({claim:c,release:r,...knowledgeEligibility(p,c,r)})));};
+// Each release is read as made (its checksum) once per read, not once for each of its claims (ruling E6 of 2026-11-18:
+// a tranche-sized release of forms was digested once per form claim).
+const asMade=r=>r.checksum===(r.organizationId?organizationReleaseChecksum(r):digest({...r,checksum:undefined}));
+const releasedForms=p=>{const s=knowledgeState(p);return [...s.releases,...list(s.organizationReleases)].filter(r=>s.pins.includes(r.id)).flatMap(r=>{const forms=r.claims.filter(c=>c?.form);if(!forms.length)return [];const made=asMade(r);return forms.map(c=>({claim:c,release:r,made,...knowledgeEligibility(p,c,r,made)}));});};
 // What a concept's review covers (ruling B3 of 2026-11-18): every field of its record except the bookkeeping (when and by
 // whom the record was written, its history and revision, the change note, the review itself and a retirement), each form
 // claim exactly as it stands (its review included, as claimReceipt hashes a claim), and the topics mapped to it (file,
@@ -71,11 +75,11 @@ export function conceptCovered(p,concept){
 }
 // One state and one label for a form: {claim, release} for a claim as an active release holds it, {claim} for a claim
 // of this project. A released form is checked again here, on every read (its claim's eligibility and its own shape).
-export function formStatus(p,{claim,release=null}){
+export function formStatus(p,{claim,release=null,made}){
  const s=knowledgeState(p),source=sourceOf(s,claim,release),issues=formIssues(claim).map(i=>'The form is invalid: '+i);
  const where=(source?.sourceFile?.file||source?.path||'source unavailable')+' L'+claim.lineStart+'–L'+claim.lineEnd;
  if(release){
-  const reasons=[...knowledgeEligibility(p,claim,release).reasons,...issues];
+  const reasons=[...knowledgeEligibility(p,claim,release,made).reasons,...issues];
   return reasons.length?{state:'released-ineligible',label:'Not usable: '+reasons.join(' '),reasons}:{state:'released',label:'Released · '+release.title+' · verified by '+claim.review.actor+' · '+where+' · passage '+String(claim.excerptHash).slice(0,12),reasons};
  }
  const reasons=[...knowledgeEligibility(p,claim).reasons,...issues];
@@ -83,8 +87,8 @@ export function formStatus(p,{claim,release=null}){
  const decision=claim.review?.decision,fresh=!claim.review&&!issues.length&&!withdrawn(p,[claim.id,claim.sourceId]).length;
  return {state:'candidate',label:decision==='verified'?'Candidate · its review does not stand: '+reasons.join(' '):decision?'Candidate · '+decision+' in review':'Candidate · not reviewed · '+where,reasons,fresh};
 }
-function formEntry(p,claim,release){
- const s=knowledgeState(p),st=formStatus(p,{claim,release}),type=claim.form.type,tier=FORM_TIER[type],source=sourceOf(s,claim,release),released=st.state==='released';
+function formEntry(p,claim,release,made){
+ const s=knowledgeState(p),st=formStatus(p,{claim,release,made}),type=claim.form.type,tier=FORM_TIER[type],source=sourceOf(s,claim,release),released=st.state==='released';
  // Released content is returned in any project. Teaching content that is not released (a candidate nobody reviewed
  // yet, a reviewed form awaiting release) is shown, labelled, in a knowledge library only (ruling B2; build plan
  // section 6 item 4, until the owner decides whether it may be shown inside design projects).
@@ -96,37 +100,62 @@ const byForm=(a,b)=>order(a.type)-order(b.type)||String(a.claimId).localeCompare
 // Every concept an active release holds (the project's own and the organisation's), by release: its form claims are the
 // release's claims on that subject. A concept is reviewed and released whole, so it is eligible there only whole: each of
 // its forms released, exactly one definition among them, and the concept not retired in this project. `reasons` says why not.
+// A release of concepts (knowledge.release with conceptIds, rc44 wp1 S3) also holds each concept as it was released
+// (parts.concepts: its identity, its topics, its version, its hash, its forms with their claim hashes, its review). Its
+// identity is read from there, not from a register (an organisation's release has none here: ruling B10), and it is
+// eligible only while that copy holds: its hash is the hash of what the release holds, its forms are the release's
+// form claims of it, the review it carries stands on it (a second person, a person's account, not an author:
+// verifierRefusal, the one rule), and no withdrawal names the concept.
+const PART_KEYS=['version','conceptHash','topics'];
+const partConcept=c=>Object.fromEntries(Object.entries(c).filter(([k])=>!PART_KEYS.includes(k)));
+export const partHash=(c,claims)=>conceptHash(partConcept(c),claims,list(c?.topics).map(t=>({...t,conceptId:c.conceptId})));
+function partReasons(p,part,release,forms){
+ const out=[],r=part.review,claims=release.claims,org=!!release.organizationId,hash=partHash(part,claims);
+ if(hash!==part.conceptHash)out.push('the release\'s copy of '+part.conceptId+' does not match its hash');
+ const named=list(part.forms).map(f=>f?.claimId).sort(),held=forms.map(f=>f.claimId).sort();
+ if(JSON.stringify(named)!==JSON.stringify(held)||list(part.forms).some(f=>{const c=claims.find(x=>x.id===f?.claimId);return !c||digest(c)!==f.claimHash||c.form?.type!==f.type;}))out.push('the release\'s copy of '+part.conceptId+' names other forms than it holds');
+ if(!(r?.decision==='verified'&&!!r.actor&&r.account==='person'&&r.conceptHash===hash&&!verifierRefusal(conceptAuthors(part,claims),r.actor,r.account)))out.push('the review of '+part.conceptId+' that the release holds does not stand');
+ if(withdrawn(p,[org?organizationRef(release,part.conceptId):part.conceptId]).length)out.push(part.conceptId+' has been withdrawn');
+ return out;
+}
 export function releasedConcepts(p){
  const s=knowledgeState(p),groups=new Map();
  for(const h of releasedForms(p)){
   if(!h.claim?.form||!FORM_TYPES.includes(h.claim.form.type))continue;
   const key=h.release.id+'\n'+h.claim.subjectId;if(!groups.has(key))groups.set(key,{conceptId:h.claim.subjectId,release:h.release,forms:[]});
-  groups.get(key).forms.push(formEntry(p,h.claim,h.release));
+  groups.get(key).forms.push(formEntry(p,h.claim,h.release,h.made));
  }
  return [...groups.values()].map(g=>{
   const record=list(s.concepts).find(c=>c.conceptId===g.conceptId)||null,forms=g.forms.sort(byForm),definitions=forms.filter(f=>f.type==='definition').length,reasons=[];
+  const part=list(g.release.parts?.concepts).find(c=>c?.conceptId===g.conceptId)||null;
   if(record?.retired)reasons.push(g.conceptId+' is retired in this project: '+record.retired.reason);
   else{
    const unusable=forms.filter(f=>f.status!=='released').map(f=>f.type+' ('+f.claimId+'): '+f.reasons.join(' '));
    if(definitions!==1)unusable.push(definitions?'the release holds '+definitions+' definitions of '+g.conceptId:'the release holds no definition of '+g.conceptId);
+   if(part)unusable.push(...partReasons(p,part,g.release,forms));
    if(unusable.length)reasons.push(g.conceptId+' is not usable as a whole in "'+g.release.title+'": '+unusable.join('; '));
   }
-  return {conceptId:g.conceptId,release:g.release,concept:g.release.organizationId?null:record,eligible:!reasons.length,reasons,forms};
+  return {conceptId:g.conceptId,release:g.release,concept:g.release.organizationId?null:record,part,version:part?.version??null,conceptHash:part?.conceptHash??null,eligible:!reasons.length,reasons,forms};
  });
 }
 // What a concept reads as here: the register's concept with each of its forms, the forms active releases hold, and for
 // each of those releases whether the concept is usable there as a whole, with the reasons when it is not.
 export function conceptReading(p,conceptId){
- const s=knowledgeState(p),concept=conceptRecords(p).find(c=>c.conceptId===conceptId),all=releasedConcepts(p),released=all.filter(c=>c.conceptId===conceptId);
+ const s=knowledgeState(p),concept=conceptRecords(p).find(c=>c.conceptId===conceptId),all=releasedConcepts(p),released=all.filter(c=>c.conceptId===conceptId),pinned=list(s.conceptPins).find(x=>x?.status==='active'&&x.conceptId===conceptId);
  if(!concept&&!released.length)return null;
  const hits=releasedForms(p),forms=[];
  for(const f of list(concept?.forms)){
   const hit=hits.find(h=>!h.release.organizationId&&h.claim.id===f.claimId&&h.claim.form),claim=hit?.claim||s.claims.find(c=>c.id===f.claimId);
-  if(claim?.form)forms.push(formEntry(p,claim,hit?.release||null));
+  if(claim?.form)forms.push(formEntry(p,claim,hit?.release||null,hit?.made));
  }
  for(const c of released)for(const f of c.forms)if(!forms.some(x=>x.claimId===f.claimId&&x.releaseId===f.releaseId))forms.push(f);
- const head=concept||{conceptId,title:conceptId,kind:null,family:'',scope:[],stages:[],lenses:[]};
- return {conceptId,title:head.title,kind:head.kind,family:head.family,scope:copy(head.scope),stages:copy(head.stages),lenses:copy(head.lenses),state:concept?concept.state:'released',forms:forms.sort(byForm),releases:released.map(c=>({releaseId:c.release.id,title:c.release.title,eligible:c.eligible,reasons:c.reasons})),aliases:aliasesIn(p,conceptId,all)};
+ // Without a register's record (a design project, which reads an organisation's release) the identity is the release's
+ // copy of the concept (ruling B10), the newest version first; and so it is where the register's concept no longer has the
+ // hash a release holds (a library that edited it after its release: the fix-up, ruling X4), unless an active release
+ // holds the register's concept as it is.
+ const parts=[...released].filter(c=>c.part).sort((a,b)=>(b.version??0)-(a.version??0));
+ const head=concept&&(!parts.length||parts.some(c=>c.conceptHash===concept.hash))?concept:parts[0]?.part||concept||{conceptId,title:conceptId,kind:null,family:'',scope:[],stages:[],lenses:[]};
+ return {conceptId,title:head.title,kind:head.kind,family:head.family,scope:copy(head.scope),stages:copy(head.stages),lenses:copy(head.lenses),state:concept?concept.state:'released',forms:forms.sort(byForm),releases:released.map(c=>({releaseId:c.release.id,title:c.release.title,eligible:c.eligible,reasons:c.reasons,...(c.version!=null?{version:c.version}:{})})),aliases:aliasesIn(p,conceptId,all),...(pinned?{pin:copy(pinned)}:{})};
 }
 // The teaching forms a concept offers here, each with its state and label: released, reviewed, or a candidate nobody reviewed yet.
 export function conceptTeachingForms(p,conceptId){
@@ -143,6 +172,9 @@ export function conceptDecisionReading(p,pinId){
  const held=releasedConcepts(p).find(c=>c.conceptId===pin.conceptId&&c.release.id===pin.releaseId),at={pinId:pin.id,conceptId:pin.conceptId,releaseId:pin.releaseId};
  if(!held)return {...at,forms:[],reasons:[pin.releaseId+' is not an active release that holds '+pin.conceptId+' in this project.']};
  if(!held.eligible)return {...at,forms:[],reasons:held.reasons};
+ // The pin names the version it was taken on: the release as made then, the concept at that hash (fail closed). A
+ // release without parts (made without conceptIds, as in slices S1 and S2) names no version; no command pins one.
+ if(held.part&&(held.conceptHash!==pin.conceptHash||held.release.checksum!==pin.releaseHash))return {...at,forms:[],reasons:[pin.id+' names '+pin.conceptId+' as it was released at another hash or in another release: the release now reads otherwise.']};
  return {...at,forms:held.forms.filter(f=>f.tier==='decision').map(f=>({type:f.type,content:f.content,architectureUnit:f.architectureUnit,receipt:f.receipt})),reasons:[]};
 }
 export const conceptDecisionForms=(p,pinId)=>conceptDecisionReading(p,pinId).forms;
@@ -173,8 +205,9 @@ export const crosswalkRecords=p=>list(knowledgeState(p).crosswalk).map(r=>({...r
 // is not undone by a request that is nobody's.
 export const crosswalkCovered=(p,r)=>{const v=r?.review;return rowReview(r)||!!v?.actor&&v.account==='person'&&(v.decision==='verified'||!!v.verifiedBefore)||knowledgeState(p).releases.some(x=>list(x.parts?.crosswalk).some(y=>y?.id===r?.id));};
 // The rows the project's active releases hold as copied (a release of forms holds the verified rows of its concepts,
-// parts.crosswalk; an organisation's release carries none until slice S3), from releases as they were made (checksum).
-const heldCrosswalk=p=>{const s=knowledgeState(p);return s.releases.filter(r=>s.pins.includes(r.id)&&list(r.parts?.crosswalk).length&&r.checksum===digest({...r,checksum:undefined})).flatMap(release=>release.parts.crosswalk.map(row=>({row,release})));};
+// parts.crosswalk; an organisation's release carries them inside its signed checksum since slice S3), from releases as
+// they were made (checksum), an organisation's while this workbench's organisation signs exactly it (its assurance).
+const heldCrosswalk=p=>{const s=knowledgeState(p);return [...s.releases,...list(s.organizationReleases)].filter(r=>s.pins.includes(r.id)&&list(r.parts?.crosswalk).length&&(!r.organizationId||r.assurance?.eligible===true)&&asMade(r)).flatMap(release=>release.parts.crosswalk.map(row=>({row,release})));};
 // Of those, the rows that still name what they were verified as: the row's review standing as copied, its concept usable
 // as a whole in that release, and this project's register holding the row exactly as the release copied it (its hash;
 // ruling P5 a), neither retired nor rejected since. Anything else fails closed: a person's later edit, a register that
@@ -182,7 +215,9 @@ const heldCrosswalk=p=>{const s=knowledgeState(p);return s.releases.filter(r=>s.
 export function releasedCrosswalk(p){return releasedRows(p,null);}
 function releasedRows(p,known){
  const own=new Map(list(knowledgeState(p).crosswalk).map(r=>[r?.id,r])),held=heldCrosswalk(p),concepts=held.length?known||releasedConcepts(p):[];
- return held.filter(({row:r,release})=>{const here=own.get(r?.id);return crosswalkState(r)==='verified'&&!!here&&crosswalkRowHash(here)===crosswalkRowHash(r)&&!['retired','rejected'].includes(crosswalkState(here))&&concepts.some(c=>c.release.id===release.id&&c.conceptId===r.conceptId&&c.eligible);});
+ // A row of an organisation's release is a row of the library it came from (its identity is the project and the row id,
+ // ruling S10): no register here holds it, so its copy's review and its concept's standing in that release decide.
+ return held.filter(({row:r,release})=>{const here=release.organizationId?r:own.get(r?.id);return crosswalkState(r)==='verified'&&!!here&&crosswalkRowHash(here)===crosswalkRowHash(r)&&!['retired','rejected'].includes(crosswalkState(here))&&concepts.some(c=>c.release.id===release.id&&c.conceptId===r.conceptId&&c.eligible);});
 }
 const BUILT_IN_WORDS='AIW built-in mapping, not reviewed by a person';
 // The one resolver of identity: the concept an id names, {conceptId, relation, via: {scheme, aliasId, rowId, releaseId},
@@ -228,8 +263,115 @@ function aliasesIn(p,conceptId,concepts){
  // (resolves: the resolver answers through the row for its scheme, which it does only while the bare id names the same
  // concept: ruling S8)
  const through=h=>h.row.relation==='same'&&resolveIn(rows,concepts,h.row.aliasId,h.row.scheme)?.via?.rowId===h.row.id;
- for(const r of crosswalkRecords(p))if(r.conceptId===conceptId){const ok=released.find(x=>x.row.id===r.id),go=!!ok&&through(ok);out.push(ok&&(go||ok.row.relation!=='same')?entry(ok.row,'released',r.state,ok,go):entry(r,r.state,r.state,ok||held.find(x=>x.row.id===r.id),false));}
- for(const h of held)if(!out.some(x=>x.rowId===h.row.id))out.push(entry(h.row,'unregistered',null,h,false));
+ for(const r of crosswalkRecords(p))if(r.conceptId===conceptId){const ok=released.find(x=>!x.release.organizationId&&x.row.id===r.id),go=!!ok&&through(ok);out.push(ok&&(go||ok.row.relation!=='same')?entry(ok.row,'released',r.state,ok,go):entry(r,r.state,r.state,ok||held.find(x=>x.row.id===r.id),false));}
+ for(const h of held)if(h.release.organizationId){const ok=released.find(x=>x.row===h.row),go=!!ok&&through(ok);out.push(entry(h.row,ok&&(go||h.row.relation!=='same')?'released':'unregistered',null,h,go));}else if(!out.some(x=>x.rowId===h.row.id))out.push(entry(h.row,'unregistered',null,h,false));
  for(const r of BUILT_IN_CROSSWALK)if(r.conceptId===conceptId)out.push({scheme:r.scheme,aliasId:r.aliasId,label:BUILT_IN_WORDS,relation:r.relation,state:'built-in',register:null,release:null,authority:'built-in',targetContent:null,rowId:null,releaseId:null});
  return out;
+}
+
+// ---------------------------------------------------------------- pins, currency, receipts and the basis (rc44, wp1 slice S3)
+// A project relies on a released concept through a concept pin (knowledge.conceptPins, KU; written by the design package
+// p10-knowledge, knowledge-concept-commands.js): the release, the version, the concept's hash. Its currency is read here,
+// in order, and stored beside the pins by one writer (refreshConceptPins), which the server calls after every knowledge
+// command and on every read (organization-service.js refreshOrganizationAssurance): the organisation's signed notices
+// exist only there. The package's finding reads what is stored (knowledge-pins.js conceptLinkFindings).
+//   withdrawn        a withdrawal names the concept, the release, a form claim or its source, or the organisation withdrew
+//                    the release (its signed notice)
+//   retired          the concept is retired in this project's register behind the active pin (ruling B10)
+//   replaced         the release is no longer active in the project
+//   changed          the concept is not usable as a whole there any more, or is not the version the pin names
+//   newer-available  a release that supersedes the pinned one holds the concept at another hash (the project's own, or
+//                    the organisation's successor, named by its signed notice)
+//   due              the concept's review date, or a form's source's, is before today
+//   current
+const releaseOf=(s,id)=>[...s.releases,...list(s.organizationReleases)].find(r=>r?.id===id)||null;
+const quote=t=>'“'+t+'”';
+// What a pin rests on, as a withdrawal reaches it: the concept, the pinned release, each form claim of the pinned version
+// and each of their sources (an organisation's ids as organizationRef names them). The currency reads a withdrawal of any
+// of them as withdrawn, and the withdrawal's stored impact names the pin for each (knowledge-concept-commands.js
+// withPinImpact; the fix-up, ruling X4): one list for both.
+export function pinRests(p,pin){
+ const s=knowledgeState(p),release=releaseOf(s,pin?.releaseId),org=!!release?.organizationId,ref=id=>org?organizationRef(release,id):id;
+ const part=list(release?.parts?.concepts).find(c=>c?.conceptId===pin?.conceptId),formIds=list(part?.forms).map(f=>f.claimId),claims=list(release?.claims).filter(c=>formIds.includes(c.id));
+ const sources=[...new Set(claims.map(c=>c.sourceId))].map(id=>org?list(release.sources).find(x=>x.id===id):s.sources.find(x=>x.id===id)).filter(Boolean);
+ return {release,org,part,sources,ids:[ref(pin?.conceptId),pin?.releaseId,...formIds.map(ref),...sources.map(x=>ref(x.id))]};
+}
+export function conceptPinCurrency(p,pin,{today=null,held=null}={}){
+ const s=knowledgeState(p),{release,org,part,sources,ids}=pinRests(p,pin);
+ const name=pin.conceptId+' v'+pin.version+' of '+quote(release?.title||pin.releaseId),notice=s.organizationNotices?.[pin.releaseId];
+ const gone=withdrawn(p,ids);
+ if(gone.length||notice?.withdrawn)return {state:'withdrawn',title:'Review withdrawn knowledge',detail:name+' was withdrawn'+(notice?.withdrawn?' by the organisation: '+notice.withdrawn.reason:': '+(gone[0].reason||gone[0].targetId))+'.'};
+ const record=list(s.concepts).find(c=>c.conceptId===pin.conceptId);
+ if(record?.retired)return {state:'retired',title:'Review retired knowledge',detail:name+' is retired in this project: '+(record.retired.reason||'no reason recorded')+'.'};
+ if(!release||!s.pins.includes(release.id))return {state:'replaced',title:'Review changed architectural support',detail:name+' is no longer active in this project.'};
+ const h=list(held||releasedConcepts(p)).find(c=>c.release.id===release.id&&c.conceptId===pin.conceptId);
+ if(!h||!h.eligible||h.part&&(h.conceptHash!==pin.conceptHash||release.checksum!==pin.releaseHash))return {state:'changed',title:'Review changed architectural support',detail:name+' no longer has eligible support: '+(h&&!h.eligible?h.reasons.join(' '):'the release no longer holds the version the pin names')+'.'};
+ // The project's own successors, nearest first through the supersedes chain; one that rests on anything withdrawn (what
+ // pinRests gives for a pin on it: the concept, the release, its form claims and their sources) is passed over, so the
+ // newer version offered is one that stands (the fix-up and the lead's follow-up, ruling X4). The
+ // organisation's successor is read so on the server, through its signed notices (refreshOrganizationAssurance).
+ let own=null;if(!org)for(let ids=[release.id],seen=0;!own&&ids.length&&seen<31;seen++){const next=s.releases.filter(r=>ids.includes(r.supersedes));own=next.map(r=>[r,list(r.parts?.concepts).find(c=>c?.conceptId===pin.conceptId)]).find(([r,c])=>c&&c.conceptHash!==pin.conceptHash&&!withdrawn(p,pinRests(p,{conceptId:pin.conceptId,releaseId:r.id}).ids).length)||null;ids=next.map(r=>r.id);}
+ const theirs=org?list(notice?.successor?.concepts).find(c=>c?.conceptId===pin.conceptId&&c.conceptHash!==pin.conceptHash):null;
+ if(own||theirs){const successor=own?{releaseId:own[0].id,title:own[0].title,version:own[1].version,conceptHash:own[1].conceptHash}:{releaseId:notice.successor.id,title:notice.successor.title,version:theirs.version,conceptHash:theirs.conceptHash};
+  return {state:'newer-available',title:'Review a newer knowledge version',detail:name+' is pinned; '+quote(successor.title)+' holds v'+successor.version+'.',successor};}
+ const due=today?[...(part?.reviewDue&&part.reviewDue<today?['its review date '+part.reviewDue]:[]),...sources.filter(x=>x.reviewDue&&x.reviewDue<today).map(x=>'the review date of its source '+x.id+', '+x.reviewDue)]:[];
+ if(due.length)return {state:'due',title:'Knowledge due for re-validation',detail:name+' is due for re-validation: '+due.join('; ')+'.'};
+ return {state:'current',title:'Knowledge is current',detail:name+' is current.'};
+}
+// The one writer of the pins' currency. It writes into the document it is handed (as the organisation's assurance is
+// refreshed), and nothing for a document that holds no active pin. The currency is bookkeeping beside the design
+// (knowledge-package.js states it so): neither fingerprint reads it.
+export function refreshConceptPins(p,{today=null}={}){
+ const s=p?.knowledge,active=list(s?.conceptPins).filter(x=>x?.status==='active');
+ if(!active.length){if(s?.pinCurrency&&Object.keys(s.pinCurrency).length)s.pinCurrency={};return p;}
+ const held=releasedConcepts(p),next=Object.fromEntries(active.map(pin=>[pin.id,conceptPinCurrency(p,pin,{today,held})]));
+ if(JSON.stringify(s.pinCurrency)!==JSON.stringify(next))s.pinCurrency=next;
+ return p;
+}
+// The identity of a released version, for a pin, a link and an adoption (wp2): the release as made and the concept at
+// its hash, with its forms. scoring:false: a receipt informs, it never scores.
+export function conceptReceipt(p,conceptId,releaseId,held=null){
+ const h=list(held||releasedConcepts(p)).find(c=>c.conceptId===conceptId&&c.release.id===releaseId);if(!h?.part)return null;
+ return {kind:'governed-concept',conceptId,releaseId,releaseHash:h.release.checksum,version:h.version,conceptHash:h.conceptHash,forms:list(h.part.forms).map(f=>({type:f.type,claimId:f.claimId,claimHash:f.claimHash})),...(h.release.organizationId?{organizationId:h.release.organizationId}:{}),scoring:false};
+}
+export function conceptReceiptCurrent(p,r){const h=releasedConcepts(p).find(c=>c.conceptId===r?.conceptId&&c.release.id===r?.releaseId);return !!h&&h.eligible&&h.conceptHash===r.conceptHash&&h.release.checksum===r.releaseHash;}
+// The records that rely on a pin: its active links (the record graph reads the same: linkedVia(p, pinId, 'informs')).
+export const conceptUses=(p,pinId)=>[...new Set(list(knowledgeState(p).conceptLinks).filter(l=>l?.status==='active'&&l.pinId===pinId).map(l=>l.objectId))];
+// What a withdrawal of a concept, or of anything its pinned forms rest on, reaches: the records linked to its form claims
+// as knowledgeImpact reads them, and the records that rely on its pins.
+export function conceptImpact(p,id){
+ const s=knowledgeState(p),pin=list(s.conceptPins).find(x=>x?.id===id),pinsOf=pin?[pin]:list(s.conceptPins).filter(x=>x?.conceptId===id);
+ const claims=[...new Set(pinsOf.flatMap(x=>list(list(releaseOf(s,x.releaseId)?.parts?.concepts).find(c=>c?.conceptId===x.conceptId)?.forms).map(f=>f.claimId)))];
+ return {pins:pinsOf.map(x=>x.id),uses:[...new Set(pinsOf.flatMap(x=>conceptUses(p,x.id)))],claims:claims.flatMap(c=>knowledgeImpact(p,c))};
+}
+// The stamps a person's step reads (a repin, an unpin): what the step covers as it stands. A step sent with an earlier
+// stamp is refused: something it covers changed after the person read it.
+const relying=(p,pinId)=>list(knowledgeState(p).conceptLinks).filter(l=>l?.pinId===pinId).map(l=>[l.id,l.status,l.objectId]);
+const pinSaid=(p,pinId)=>list(pinsDesign(p)).find(x=>x?.id===pinId)||null;
+export function migrationStamp(p,id){const s=knowledgeState(p),m=list(s.conceptMigrations).find(x=>x?.id===id);if(!m)return null;const {review:_r,history:_h,provenance:_p,confirmed:_c,...said}=m;return digest([said,pinSaid(p,m.pinId),releaseOf(s,m.toReleaseId)?.checksum??null,relying(p,m.pinId)]);}
+export const unpinStamp=(p,pinId)=>digest([pinSaid(p,pinId),relying(p,pinId)]);
+// The change register of a release of concepts (K-12): computed at release, held in its parts, immutable.
+export const releaseChangeRegister=(p,releaseId)=>copy(list(releaseOf(knowledgeState(p),releaseId)?.parts?.changes));
+// The versions of a concept the project's releases hold (its own and the organisation's), newest first.
+export function conceptVersions(p,conceptId){const s=knowledgeState(p);return [...s.releases,...list(s.organizationReleases)].flatMap(r=>list(r.parts?.concepts).filter(c=>c?.conceptId===conceptId).map(c=>({releaseId:r.id,title:r.title,version:c.version,conceptHash:c.conceptHash,active:s.pins.includes(r.id),organizationId:r.organizationId||null}))).sort((a,b)=>b.version-a.version||String(a.releaseId).localeCompare(String(b.releaseId)));}
+// K-25: what of a release the project uses: the concepts it holds, those pinned, those linked, those never used.
+export function knowledgeUsage(p,releaseId){
+ const s=knowledgeState(p),r=releaseOf(s,releaseId),held=list(r?.parts?.concepts).map(c=>c.conceptId),pins=list(s.conceptPins).filter(x=>x?.releaseId===releaseId);
+ const pinned=[...new Set(pins.filter(x=>x.status==='active').map(x=>x.conceptId))],linked=[...new Set(pins.filter(x=>conceptUses(p,x.id).length).map(x=>x.conceptId))];
+ return {releaseId,concepts:held,pinned,linked,neverUsed:held.filter(c=>!pins.some(x=>x.conceptId===c)),withdrawn:held.filter(c=>withdrawn(p,[r?.organizationId?organizationRef(r,c):c]).length)};
+}
+// The pinned versions a design rests on, for the SDD (design f.1, Appendix E): each pin that is active or that a record
+// still relies on, its version, release and state, each form's file, lines and passage hash, and the records on it.
+export function knowledgeBasis(p){
+ const s=knowledgeState(p),currency=s.pinCurrency||{},held=releasedConcepts(p);
+ return {pins:list(s.conceptPins).filter(x=>x?.status==='active'||conceptUses(p,x?.id).length).map(pin=>{
+  const release=releaseOf(s,pin.releaseId),h=held.find(c=>c.release.id===pin.releaseId&&c.conceptId===pin.conceptId),part=list(release?.parts?.concepts).find(c=>c?.conceptId===pin.conceptId);
+  const forms=list(part?.forms).map(f=>{const claim=list(release?.claims).find(c=>c.id===f.claimId),entry=h?.forms.find(x=>x.claimId===f.claimId),src=claim&&(release.organizationId?list(release.sources):s.sources).find(x=>x.id===claim.sourceId);return {type:f.type,file:entry?.source.file||src?.sourceFile?.file||src?.path||null,lineStart:claim?.lineStart??null,lineEnd:claim?.lineEnd??null,passageSha256:claim?.excerptHash||null};});
+  const c=pin.status==='active'?currency[pin.id]:null;
+  return {pinId:pin.id,conceptId:pin.conceptId,title:pin.title||part?.title||pin.conceptId,version:pin.version,releaseId:pin.releaseId,release:release?.title||pin.releaseId,state:pin.status==='active'?c?.state||'not read':pin.status,successor:c?.successor||null,forms,uses:conceptUses(p,pin.id)};
+ })};
+}
+export function knowledgeBasisMarkdown(p){
+ const b=knowledgeBasis(p);if(!b.pins.length)return '';
+ return '### Knowledge versions this design rests on\n\n'+b.pins.map(x=>'- '+x.conceptId+' · '+x.title+' · version '+x.version+' of '+quote(x.release)+' · '+x.state+(x.forms.length?'\n'+x.forms.map(f=>'  - '+f.type+' · '+(f.file||'source unavailable')+' L'+f.lineStart+'–L'+f.lineEnd+' · passage '+String(f.passageSha256).slice(0,12)).join('\n'):'')+'\n  - Relied on by: '+(x.uses.join(', ')||'no record')+(x.successor?'\n  - A newer version exists: version '+x.successor.version+' in '+quote(x.successor.title)+'.':'')).join('\n')+'\n\nA pinned version informs these records; it scores nothing and decides nothing. A newer version is adopted only through a migration a second person accepts.\n';
 }

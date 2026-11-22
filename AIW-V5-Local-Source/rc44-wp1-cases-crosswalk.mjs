@@ -347,7 +347,7 @@ add('S2.4 (one identity): a second verified `same` row for one (scheme, alias) i
     try {
       const evidence = await S.ok('knowledge.claim', {sourceId, lineStart: 1, lineEnd: 1, subjectId: 'The synthetic handbook entry', predicate: 'names', statement: 'The entry is SYN-S001, the strangler fig.', claimType: 'definition'}, 'importer');
       const A = {conceptId: 'PAT-STRANGLER-FIG', scheme: 'external', aliasId: 'SYN-S001', label: 'Strangler fig (an external register)', relation: 'same', note: 'The register names it so.', evidenceClaimId: evidence};
-      const a = await S.ok('knowledge.crosswalk', A, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: a}, 'reviewer'); await release();
+      const a = await S.ok('knowledge.crosswalk', A, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: a}, 'reviewer'); const first = await release();
       const verifiedA = clone(row(S.document, a));
       await S.ok('knowledge.crosswalk', {...A, id: a, label: 'Strangler fig (renamed)', reason: 'A clearer label.'}, 'architect');
       // another concept, with a handbook row of the same alias verified while the first reads proposed, then released
@@ -355,9 +355,17 @@ add('S2.4 (one identity): a second verified `same` row for one (scheme, alias) i
       const claim = await S.ok('knowledge.claim', {...DEFINITION, sourceId, subjectId: 'PAT-CIRCUIT-BREAKER'}, 'importer');
       await S.ok('knowledge.concept', {...STRANGLER, conceptId: 'PAT-CIRCUIT-BREAKER', title: 'Circuit breaker', id: record, forms: [{type: 'definition', claimId: claim}]}, 'importer');
       await S.ok('knowledge.review', {...F.REVIEW, formChecked: true, id: claim}, 'reviewer');
-      const b = await S.ok('knowledge.crosswalk', {conceptId: 'PAT-CIRCUIT-BREAKER', scheme: 'handbook', aliasId: 'SYN-S001', label: 'Circuit breaker (synthetic handbook)', relation: 'same', evidenceClaimId: evidence}, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: b}, 'reviewer');
+      const b = await S.ok('knowledge.crosswalk', {conceptId: 'PAT-CIRCUIT-BREAKER', scheme: 'handbook', aliasId: 'SYN-S001', label: 'Circuit breaker (synthetic handbook)', relation: 'same', evidenceClaimId: evidence}, 'architect');
+      // (rc44 wp1 S3 fix-up, the lead's ruling X3, old -> new: b was verified here, accepted, while the active release
+      // `first` held a's verified copy. The one-alias rule now reads the project's own active releases too, keyed by
+      // (project, row id), so that verification is refused, naming a by project and row id; the pair is then made as a
+      // document from before X3 could hold it: b verified while `first` is not active, and `first` activated again.)
+      await S.refused(new RegExp('^handbook SYN-S001 is already the same as PAT-STRANGLER-FIG in the external scheme \\(' + a + ' of project ' + S.projectId + '\\): one alias names one concept\\. Deactivate or withdraw the knowledge that names the other first\\.$'), 'knowledge.crosswalk-review', {...ROW_REVIEW, id: b}, 'reviewer');
+      await S.ok('knowledge.deactivate', {...F.REVIEW, id: first, stamp: K.knowledgeStamp(S.document)}, 'releaser');
+      await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: b}, 'reviewer');
       await S.ok('knowledge.concept-review', {...CONCEPT_REVIEW, id: record}, 'reviewer');
       const rel = await S.ok('knowledge.release', {...F.REVIEW, title: 'Synthetic circuit breaker 1', claimIds: [claim]}, 'releaser'); await S.ok('knowledge.activate', {...F.REVIEW, id: rel, stamp: K.knowledgeStamp(S.document)}, 'releaser');
+      await S.ok('knowledge.activate', {...F.REVIEW, id: first, stamp: K.knowledgeStamp(S.document)}, 'releaser');
       // the pair, as a document from before holds it: the first row back as it was verified and released
       const q = clone(S.document); q.knowledge.crosswalk = q.knowledge.crosswalk.map(r => r.id === a ? verifiedA : r);
       assert.deepEqual(KC.crosswalkRecords(q).filter(r => r.aliasId === 'SYN-S001').map(r => [r.scheme, r.conceptId, r.state]), [['external', 'PAT-STRANGLER-FIG', 'verified'], ['handbook', 'PAT-CIRCUIT-BREAKER', 'verified']], 'the pair is there, both verified');
@@ -554,8 +562,13 @@ add('S2.10 (old documents and S0\'s helpers): with ' + PACKAGE + ' registered, t
   await import('./worker.js');
   const mine = () => X.EXTENSIONS.find(e => e.id === PACKAGE);
   assert(mine(), PACKAGE + ' is registered'); assert.deepEqual(boundary.extensionIssues(mine()), [], 'the package conforms to the registration contract'); assert.deepEqual(boundary.extensionConflicts(), []);
-  assert.deepEqual(Object.keys(mine()).sort(), ['commands', 'design', 'id', 'provenance'], 'the package states its commands, the collection they write and what its rows say to the fingerprint, nothing more');
-  assert.deepEqual(Object.keys(mine().commands).sort(), [...TYPES].sort());
+  // (rc44 wp1 S3, old -> new: the parts were commands, design, id, provenance and the commands the crosswalk's four) S3
+  // adds the pins' object type, emitter, finding, section and knowledge keys, and seven types: the exact sets, as strict.
+  // (rc44 wp1 S3 fix-up, the lead's ruling X5 a, old -> new: the parts listed checks too; the check row of list 11 is
+  // held back until S5's concept view offers the steps that clear its finding (J7), so the package states no checks)
+  assert.deepEqual(Object.keys(mine()).sort(), ['commands', 'design', 'evidenceKeys', 'id', 'objectTypes', 'provenance', 'records', 'sections'], 'the package states its commands, the collections they write, what its records say to the fingerprint, the pins\' type, emitter, finding and section, nothing more');
+  assert.deepEqual(Object.keys(mine().commands).sort(), [...TYPES, 'knowledge.concept-pin', 'knowledge.concept-link', 'knowledge.concept-unlink', 'knowledge.concept-migration', 'knowledge.concept-migration-confirm', 'knowledge.concept-repin', 'knowledge.concept-unpin'].sort());
+  for (const t of TYPES) assert.deepEqual(mine().provenance.paths[t], ['knowledge.crosswalk'], t + ' writes the crosswalk only');
   const golden = JSON.parse(readFileSync('rc44-s0-extensions-baseline.json', 'utf8')); assert.equal(golden.capturedFrom, '94dbd4f');
   for (const t of R.REFERENCES) {
     const q = R.reference(t), now = R.digests(q);
@@ -566,7 +579,7 @@ add('S2.10 (old documents and S0\'s helpers): with ' + PACKAGE + ' registered, t
   }
   { const listed = R.reviewListDocument(), now = R.digests(listed); for (const k of Object.keys(golden.reviewList.readings)) assert.equal(now[k], golden.reviewList.readings[k], 'a document with a review list: ' + k); }
   // The browser can open a document that names the package: its route stub is registered under <id>-route.
-  const routes = readFileSync('public/design-package-routes.js', 'utf8'); assert.match(routes, /registerExtension\(\{id:'p10-knowledge-route',needs:p=>p\.knowledge\?\.crosswalk,load:\(\)=>import\('\.\/knowledge-workspace-ui\.js'\)\}\);/);
+  const routes = readFileSync('public/design-package-routes.js', 'utf8'); assert.match(routes, /registerExtension\(\{id:'p10-knowledge-route',needs:p=>p\.knowledge\?\.crosswalk\|\|p\.knowledge\?\.conceptPins,load:\(\)=>import\('\.\/knowledge-workspace-ui\.js'\)\}\);/); // (S3, old -> new: needs reads the concept pins as well)
   assert.match(readFileSync('design-packages.js', 'utf8'), /^import '\.\/knowledge-package-server\.js'; \/\/ p10-knowledge/m);
   assert.match(readFileSync('public/knowledge-workspace-ui.js', 'utf8'), /import '\.\/knowledge-package\.js';/, 'the host entry registers the package in the browser');
   const {S} = await strangler();
@@ -622,14 +635,17 @@ add('S2.12 (size, ruling A4 and M4): the client build passes every gate with the
   const booked = R.routeBookings(EVIDENCE);
   assert.equal(booked.others['audit/rc44/evidence/wp9a-s1-size.json'], 342, 'the other packages\' evidence is read');
   // The integrated base of ruling M4 (S0 and wp1 S1, 3,229,840 B), the other packages' own bytes and the shared pool's: what is left is wp1 S2's.
-  // (the lead's ruling W2 of 2026-11-22; was: the two assertions below added every size file's bookings, so a booking filed after wp1 S2's start
-  // broke them. Now they read the bookings filed at wp1 S2's start: each booking filed after it, wp2 S5's own bytes and the lead's saving of the
-  // retirement of row 9, is named here and left out, as S1's size block leaves out the later wp2 slices' bookings. At wp1's own head neither is on
-  // the books, so there they read every booking, as before.)
-  const LATER = {files: ['audit/rc44/evidence/wp2-s5-size.json'], pool: ['audit/rc44/evidence/lead-bookings-size.json:guidedConcernRetirementQ8']};
-  const atStart = {others: booked.othersTotal - LATER.files.reduce((n, f) => n + (booked.others[f] ?? 0), 0), pool: booked.poolTotal - LATER.pool.reduce((n, k) => n + (booked.pool[k] ?? 0), 0)};
-  assert.equal(3229840 + atStart.others + atStart.pool, size.base.chapters, 'the start commit is the integrated base and what the other packages and the pool booked at wp1 S2\'s start');
-  assert.equal(size.slice.chapters - 3229840 - atStart.others - atStart.pool, size.ownBytes, 'the route at the slice\'s head, less the base and the others booked at its start, is what S2 books');
+  // (the lead's ruling X4 of 2026-11-22, old -> new; it replaces the forms of rulings W2 and of wp1 S3's first build. Was:
+  // the two assertions below read every size file's bookings less a list of the bookings filed after wp1 S2's start
+  // (wp2 S5's, wp1 S3's, the lead's saving of row 9), a list each later merge had to edit. Now they read the bookings
+  // recorded at wp1 S2's start in its own evidence (bookingsAtStart, the start commit 5cae40a), and each booking so
+  // recorded is asserted to be on the books still, as it was: as strict as both forms, and no later merge edits it.)
+  const start = size.bookingsAtStart, sum = o => Object.values(o).reduce((n, x) => n + x, 0);
+  assert.equal(start?.commit, size.base.commit, 'the bookings recorded at wp1 S2\'s start commit');
+  for (const [f, n] of Object.entries(start.others)) assert.equal(booked.others[f], n, f + ' books what it booked at wp1 S2\'s start');
+  for (const [k, n] of Object.entries(start.pool)) assert.equal(booked.pool[k], n, k + ' is in the shared pool as at wp1 S2\'s start');
+  assert.equal(3229840 + sum(start.others) + sum(start.pool), size.base.chapters, 'the start commit is the integrated base and what the other packages and the pool booked at wp1 S2\'s start');
+  assert.equal(size.slice.chapters - 3229840 - sum(start.others) - sum(start.pool), size.ownBytes, 'the route at the slice\'s head, less the base and the others booked at its start, is what S2 books');
   assert.ok(size.slice.chapters <= BUDGET.routes.chapters); assert.deepEqual([size.slice.scripts, size.slice.css], [148, size.base.css]); assert.ok(size.slice.under10k <= size.base.under10k, 'no new file under 10 KB');
   { const w = size['opens with records']; assert.ok(w && w.host === 'public/knowledge-workspace-ui.js' && w.total === w.route + w.added && w.route === size.slice.chapters && w.files >= 1, 'opens with records'); }
   if (existsSync('dist/client-size-report.json') && existsSync('dist/client-metafile.json')) {
@@ -755,21 +771,26 @@ add('S2.15 (ruling P5 a): a released row whose register row no longer has the re
 });
 
 // ------------------------------------------------------------------------------------------------ 16 (ruling P5 b)
-// What a crosswalk step does to the library's design stamp, through the commands: the rows' own steps move no stamp (S2.10,
-// assertStepsMoveNoStamp, which writes the steps into the row in place), but every knowledge command, the crosswalk's
-// included, appends to knowledge.history and moves knowledge.version, which the design fingerprint reads on rc.10.73.42:
-// a known limit, owned by S3 with the knowledge keys (rulings B10 and P5 b). This case states it; S3 turns it around.
-add('S2.16 (ruling P5 b, a known limit for S3): through the commands, a person\'s confirmation and a second person\'s review of a row move the library\'s design stamp only through knowledge.history and knowledge.version', async () => {
+// What a crosswalk step does to the library's design stamp, through the commands. Until slice S3 every knowledge command,
+// the crosswalk's included, appended to knowledge.history and moved knowledge.version, which the design fingerprint reads
+// on rc.10.73.42, so a person's confirmation and a second person's review moved the stamp (a known limit, rulings B10 and
+// P5 b). S3 turns it around, as ruled: a step of the design package writes no line into the family's log and moves no
+// version (the boundary's activity row records it, and the row keeps who took it), and the rows say to the fingerprint
+// what they say, never their steps (S2.10). Old -> new (rc44 wp1 S3): "moves the library's design stamp (the known
+// limit)", history + 1, version moved, and the stamp back with the log put back -> the stamp does not move, the history
+// and the version do not move, the row keeps who took the step, and the boundary's activity row names it.
+add('S2.16 (ruling P5 b, turned around by S3 with the knowledge keys, ruling B10): through the commands, a person\'s confirmation and a second person\'s review of a row move no design stamp of the library: the package\'s step writes no line into knowledge.history and moves no knowledge.version, and the row and the activity keep who took it', async () => {
   const {S} = await strangler();
   const stamp = d => { const q = rv.withFinalReview(clone(d), {upgrade: false}); return rv.reviewSourceStamp(q) + ' ' + rv.reviewDesignStamp(q); };
   try {
     const id = await S.ok('knowledge.crosswalk', {...P_STRANGLER, aliasId: 'P-FACADE', label: 'Facade', relation: 'narrower'}, 'importer', {authorKind: 'import'});
     for (const [type, payload, as] of [['knowledge.crosswalk-confirm', {...PERSON_STEP, id}, 'steward'], ['knowledge.crosswalk-review', {...ROW_REVIEW, id}, 'reviewer']]) {
       const before = clone(S.document); await S.ok(type, payload, as);
-      assert.notEqual(stamp(S.document), stamp(before), type + ' moves the library\'s design stamp (the known limit)');
-      assert.equal(S.document.knowledge.history.length, before.knowledge.history.length + 1); assert.notEqual(S.document.knowledge.version, before.knowledge.version);
-      const back = clone(S.document); back.knowledge.history = before.knowledge.history; back.knowledge.version = before.knowledge.version;
-      assert.equal(stamp(back), stamp(before), type + ': with the family\'s log and version put back, the stamp is the earlier one');
+      assert.equal(stamp(S.document), stamp(before), type + ' moves no design stamp of the library');
+      assert.equal(S.document.knowledge.history.length, before.knowledge.history.length, type + ' writes no line into knowledge.history'); assert.equal(S.document.knowledge.version, before.knowledge.version, type + ' moves no knowledge.version');
+      const r = row(S.document, id); assert.ok(type.endsWith('-confirm') ? r.confirmed === true && r.provenance?.reviewed?.by === 'steward' : r.review?.actor === 'reviewer' && r.review.account === 'person', type + ': the row keeps who took the step');
+      const activity = await S.api('/api/activity?project=' + S.projectId, null, 'importer');
+      assert.equal(activity.status, 200, JSON.stringify(activity.data).slice(0, 200)); assert.ok(JSON.stringify(activity.data).includes(type), type + ': the boundary\'s activity row names the step');
     }
   } finally { S.close(); }
 });

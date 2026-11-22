@@ -117,6 +117,18 @@ export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??
  // names an identity here only once a second person here reviews it and a release here holds it.
  for(const r of Array.isArray(p.knowledge?.crosswalk)?p.knowledge.crosswalk:[])verifier(r);
  for(const r of p.knowledge?.releases||[])for(const c of Array.isArray(r?.parts?.crosswalk)?r.parts.crosswalk:[])verifier(c);
+ // (rc44, wp1 slice S3) A release of concepts holds each concept's review as released: the same assertion. A pin and a
+ // migration's acceptance were a person's steps on the workbench the package came from: the pin is retired as imported
+ // history and the acceptance moved aside, so the recovered project relies on nothing until a person here pins again.
+ // An organisation's release keeps its signed bytes (its parts included): it reads ineligible below until this
+ // workbench's organisation is found to sign exactly it.
+ for(const r of p.knowledge?.releases||[])for(const c of Array.isArray(r?.parts?.concepts)?r.parts.concepts:[])verifier(c);
+ for(const x of Array.isArray(p.knowledge?.conceptPins)?p.knowledge.conceptPins:[])if(x&&typeof x==='object'&&x.status==='active'){x.importedStatus=x.status;x.status='retired';x.retired={at,actor:null,reviewer:'',reason:'Imported historical pin'};}
+ for(const m of Array.isArray(p.knowledge?.conceptMigrations)?p.knowledge.conceptMigrations:[])if(m?.review&&typeof m.review==='object'){m.importedReview=m.review;m.review=null;m.closed='Imported historical migration';}
+ if(p.knowledge?.pinCurrency&&typeof p.knowledge.pinCurrency==='object')p.knowledge.pinCurrency={};
+ // The organisation's notices are a copy of its signed state on the workbench the package came from, as the currency is
+ // a reading made there (the fix-up, ruling X4): cleared alike; this workbench reads its own organisation's on the next load.
+ if(p.knowledge?.organizationNotices&&typeof p.knowledge.organizationNotices==='object')p.knowledge.organizationNotices={};
  // Round 12 (GR-DOM-09): a pinned organisation knowledge release was verified on the workbench it came from; here its
  // claims stay ineligible until this workbench's organisation is found to sign exactly it (refreshOrganizationAssurance).
  for(const r of Array.isArray(p.knowledge?.organizationReleases)?p.knowledge.organizationReleases:[])if(r&&typeof r==='object')r.assurance={eligible:false,status:IMPORTED_AUTHORITY,signature:r.signature??null};

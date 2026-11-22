@@ -454,8 +454,9 @@ async function route(request,env,ctx){
   if(!/^[a-z0-9][a-z0-9-]{0,79}$/.test(projectId))return json({error:'Choose a valid project.'},400);
   try{
     // An agent or service account reviews and approves nothing (round 12, GR-GOV-12): not an organisation library entry,
-    // not a release of one.
-    if(url.pathname==='/api/organizations'&&request.method==='POST'&&['review','releases'].includes(url.searchParams.get('action'))&&accountKind(env,actor)==='agent')return json({error:'An agent or service account does not review or release library entries. A person signs in to do that.',code:'authorship'},403);
+    // not a release of one. Nor does it take an organisation knowledge step (rc44 wp1 S3, the lead's ruling X1): publishing
+    // a release of concepts, withdrawing one, or pinning one into a project (rulings E1 and I1).
+    if(url.pathname==='/api/organizations'&&request.method==='POST'&&['review','releases','knowledge','knowledge-pin','knowledge-withdraw'].includes(url.searchParams.get('action'))&&accountKind(env,actor)==='agent')return json({error:'An agent or service account does not review or release library entries. A person signs in to do that.',code:'authorship'},403);
     if(url.pathname==='/api/organizations')return await handleOrganizations(request,env,actor,projectId);
     const identity=await projectIdentity(env,actor,projectId);owner=identity.owner;
     // An agent or service account is never a person (round 12, GR-GOV-12): its account kind travels with its identity.

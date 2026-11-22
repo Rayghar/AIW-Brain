@@ -45,14 +45,16 @@ export function withdrawn(p,refs){return knowledgeState(p).withdrawals.filter(w=
 // project), and on the organisation's assurance, refreshed from the signed release on every load.
 export const ORGANIZATION_KNOWLEDGE_LIMITS=Object.freeze({claims:1000,sources:300,characters:6000000});
 export const organizationReleases=p=>list(knowledgeState(p).organizationReleases);
-const orgContent=r=>({kind:r.kind,id:r.id,organizationId:r.organizationId,title:r.title,from:r.from,claims:r.claims,sources:r.sources,createdBy:r.createdBy,at:r.at,engine:r.engine,authority:r.authority});
+const orgContent=r=>({kind:r.kind,id:r.id,organizationId:r.organizationId,title:r.title,from:r.from,claims:r.claims,sources:r.sources,parts:r.parts,createdBy:r.createdBy,at:r.at,engine:r.engine,authority:r.authority});
 export const organizationReleaseChecksum=r=>digest(orgContent(r));
 // An organisation release's claims and sources are named in a project by release-qualified ids, so they never meet the
 // project's own ids (both start at KC-0001 and KS-0001).
 export const organizationRef=(release,id)=>release.id+':'+id;
 const isOrganization=release=>!!release?.organizationId;
 const sourceFor=(s,claim,release)=>isOrganization(release)?list(release.sources).find(x=>x.id===claim?.sourceId):s.sources.find(x=>x.id===claim?.sourceId);
-export function knowledgeEligibility(p,claim,release=null){
+// `made` (rc44, wp1 S3; ruling E6): whether the release is as it was made, when the caller read that once for the whole
+// release; otherwise each call digests the release again.
+export function knowledgeEligibility(p,claim,release=null,made){
  const s=knowledgeState(p),org=isOrganization(release),source=sourceFor(s,claim,release),reasons=[];
  if(!claim||!source)return {eligible:false,reasons:['The original source is unavailable.']};
  if(claim.review?.decision!=='verified')reasons.push('The claim has not passed an explicit source and interpretation review.');
@@ -75,7 +77,7 @@ export function knowledgeEligibility(p,claim,release=null){
   if(sync?.invalidations?.some(n=>n.identity===[source.repository,source.revision,source.path,source.hash].join('\n')))reasons.push('The signed repository update invalidated this source revision.');
  }
  if(org&&release.assurance?.eligible!==true)reasons.push('The organisation release is not verified for this project: '+(release.assurance?.status||'its signature has not been checked')+'.');
- if(release&&(!s.pins.includes(release.id)||release.checksum!==(org?organizationReleaseChecksum(release):digest({...release,checksum:undefined}))))reasons.push('This exact release is not active for the project.');
+ if(release&&(!s.pins.includes(release.id)||!(made??release.checksum===(org?organizationReleaseChecksum(release):digest({...release,checksum:undefined})))))reasons.push('This exact release is not active for the project.');
  return {eligible:reasons.length===0,reasons};
 }
 // The project's pinned releases and the organisation releases pinned to it, each claim with its eligibility. A release
@@ -106,13 +108,15 @@ export function pinOrganizationKnowledge(input,release,{at=new Date().toISOStrin
 // The organisation release a project release would become (organization-service.js signs and stores it): the release's
 // claims and the exact sources they rest on, refused unless every claim is eligible in this project now. Repository
 // claims keep their own signed path (repository-sync.js) and are not published this way.
-export function organizationKnowledgeRelease(p,releaseId,{organizationId,id,title,actor,at}){
+// A release of concepts (rc44, wp1 S3) carries its parts (each concept as released, the change register, the crosswalk
+// rows) inside the signed checksum, and names the organisation release it supersedes (`supersedes`, found by the route).
+export function organizationKnowledgeRelease(p,releaseId,{organizationId,id,title,actor,at,supersedes=null}){
  const s=knowledgeState(p),r=s.releases.find(x=>x.id===releaseId);if(!r)throw Error('Choose a release of this project.');
  if(!s.pins.includes(r.id))throw Error('Activate the release in this project before publishing it.');
  for(const c of r.claims){const check=knowledgeEligibility(p,c,r);if(!check.eligible)throw Error(c.id+': '+check.reasons.join(' '));}
  const sources=r.sourceIds.map(sid=>s.sources.find(x=>x.id===sid)).filter(Boolean);
  if(sources.some(x=>x.origin==='repository-fetch'||x.repository))throw Error('A release with repository sources is shared through the knowledge repository, not published here.');
- const out={kind:'knowledge',id,organizationId,title:required(title,'a release title',160),from:{projectId:p.id,releaseId:r.id,checksum:r.checksum},claims:copy(r.claims),sources:copy(sources),createdBy:actor,at,engine:'organization-knowledge-1',authority:'Project knowledge published once for the organisation: each claim verified by a second person against its exact passage in its project. Pinned per project; it informs no score, hard constraint or conformance result.'};
+ const out={kind:'knowledge',id,organizationId,title:required(title,'a release title',160),from:{projectId:p.id,releaseId:r.id,checksum:r.checksum,...(supersedes?{supersedes}:{})},claims:copy(r.claims),sources:copy(sources),...(r.parts?{parts:copy(r.parts)}:{}),createdBy:actor,at,engine:'organization-knowledge-1',authority:'Project knowledge published once for the organisation: each claim verified by a second person against its exact passage in its project. Pinned per project; it informs no score, hard constraint or conformance result.'};
  const L=ORGANIZATION_KNOWLEDGE_LIMITS;if(out.claims.length>L.claims||out.sources.length>L.sources||JSON.stringify(out).length>L.characters)throw Error('This release is larger than an organisation release may be.');
  return {...out,checksum:organizationReleaseChecksum(out)};
 }
@@ -162,9 +166,9 @@ function formsRestingOn(s,type,r){
  const held=x=>list(x?.claims).filter(c=>c?.form),hit=(claims,what,more={})=>claims.map(claim=>({claim,what:what(claim),...more})),release=id=>s.releases.find(x=>x.id===id);
  switch(type){
  case 'knowledge.source':{const prior=r.supersedes?s.sources.find(x=>x.id===r.supersedes):null;return prior&&typeof r.body==='string'&&sha256(r.body)!==prior.hash?hit(s.claims.filter(c=>c.form&&c.sourceId===prior.id),c=>'a source that supersedes '+prior.id+', which '+c.id+', a form of it, rests on'):[];}
- case 'knowledge.withdraw':return [...hit(s.claims.filter(c=>c.form&&c.id===r.id),c=>'the withdrawal of '+c.id+', a form of it'),...hit(s.claims.filter(c=>c.form&&c.sourceId===r.id),c=>'the withdrawal of '+r.id+', which '+c.id+', a form of it, rests on'),
+ case 'knowledge.withdraw':return [...hit(s.claims.filter(c=>c.form&&(c.id===r.id||c.subjectId===r.id)),c=>'the withdrawal of '+r.id+(c.id===r.id?', a form of it':', the concept '+c.id+' is a form of')),...hit(s.claims.filter(c=>c.form&&c.sourceId===r.id),c=>'the withdrawal of '+r.id+', which '+c.id+', a form of it, rests on'),
   ...[...s.releases,...list(s.organizationReleases)].filter(x=>x.id===r.id).flatMap(x=>hit(held(x),c=>'the withdrawal of '+x.id+', a release that holds '+c.id+', a form of it')),
-  ...list(s.organizationReleases).flatMap(o=>hit(held(o).filter(c=>[organizationRef(o,c.id),organizationRef(o,c.sourceId)].includes(r.id)),c=>'the withdrawal of '+r.id+', which '+c.id+', a form of it, rests on'))];
+  ...list(s.organizationReleases).flatMap(o=>hit(held(o).filter(c=>[organizationRef(o,c.id),organizationRef(o,c.sourceId),organizationRef(o,c.subjectId)].includes(r.id)),c=>'the withdrawal of '+r.id+', which '+c.id+', a form of it, rests on'))];
  case 'knowledge.contradiction':{const x=s.contradictions.find(c=>c.id===r.id);return x?hit(s.claims.filter(c=>c.form&&x.claimIds.includes(c.id)),c=>'the disposition of '+x.id+', which names '+c.id+', a form of it',{contradiction:x.id}):[];}
  case 'knowledge.deactivate':return hit(held([...s.releases,...list(s.organizationReleases)].find(x=>x.id===r.id)),c=>'the active release of '+c.id+', a form of it');
  case 'knowledge.activate':{const x=release(r.id);return hit([...held(x),...(x&&s.pins.includes(x.supersedes)?held(release(x.supersedes)):[])],c=>'the active release of '+c.id+', a form of it');}
@@ -296,7 +300,7 @@ export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),
   if(release.supersedes&&!s.releases.some(x=>x.id===release.supersedes))throw Error('Choose the previous release.');
   // A release of forms holds the verified crosswalk rows of its concepts beside its claims (rc44, wp1 slice S2; the form
   // capability's parts): in the checksum, and only when there is one, so a release without them is as it was.
-  const parts=forms?.parts?.(p,claims);if(parts)release.parts=parts;
+  const parts=forms?.parts?.(p,claims,r);if(parts)release.parts=parts;
   release.checksum=digest(release);s.releases.push(release);selected=release.id;break;
  }
  case 'knowledge.activate':{
@@ -310,7 +314,7 @@ export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),
  }
  case 'knowledge.deactivate':{assertReview(r);if(r.stamp!==knowledgeStamp(p)||!s.pins.includes(r.id))throw Error('Review the current active releases before changing the pin.');s.pins=s.pins.filter(id=>id!==r.id);selected=r.id;break;}
  case 'knowledge.withdraw':{
-  assertReview(r);const known=[...s.sources,...s.claims,...s.releases].some(x=>x.id===r.id)||list(s.organizationReleases).some(o=>[o.id,...o.claims.map(c=>organizationRef(o,c.id)),...o.sources.map(x=>organizationRef(o,x.id))].includes(r.id))||['SA-PLAYBOOK',BRAIN_PLAYBOOK.id,'AIW-PLAYBOOK-3',BRAIN_TRADEOFFS.id,'AIW-PRODUCT-MECHANISMS-1','AIW-INTERACTION-1','AIW-READS-1','AIW-PERSISTENCE-1',EXECUTION_COMPOSITION.id,...EXECUTION_COMPOSITION.sources.map(s=>s.id),CATALOGUE.releaseId,...CATALOGUE.records.map(c=>c.id),...Object.values(COMPOSITION_METHOD_IDENTITIES).map(m=>m.packId),...Object.values(COMPOSITION_REFERENCE_IDS)].includes(r.id)||/^MS-|^PG-|^MDB-/.test(r.id);
+  assertReview(r);const known=[...s.sources,...s.claims,...s.releases].some(x=>x.id===r.id)||list(s.concepts).some(c=>c.conceptId===r.id)||s.releases.some(x=>list(x.parts?.concepts).some(c=>c.conceptId===r.id))||list(s.organizationReleases).some(o=>list(o.parts?.concepts).some(c=>organizationRef(o,c.conceptId)===r.id))||list(s.organizationReleases).some(o=>[o.id,...o.claims.map(c=>organizationRef(o,c.id)),...o.sources.map(x=>organizationRef(o,x.id))].includes(r.id))||['SA-PLAYBOOK',BRAIN_PLAYBOOK.id,'AIW-PLAYBOOK-3',BRAIN_TRADEOFFS.id,'AIW-PRODUCT-MECHANISMS-1','AIW-INTERACTION-1','AIW-READS-1','AIW-PERSISTENCE-1',EXECUTION_COMPOSITION.id,...EXECUTION_COMPOSITION.sources.map(s=>s.id),CATALOGUE.releaseId,...CATALOGUE.records.map(c=>c.id),...Object.values(COMPOSITION_METHOD_IDENTITIES).map(m=>m.packId),...Object.values(COMPOSITION_REFERENCE_IDS)].includes(r.id)||/^MS-|^PG-|^MDB-/.test(r.id);
   if(!known)throw Error('Choose a recorded source, claim, release or method.');if(r.stamp!==knowledgeImpactStamp(p,r.id))throw Error('The affected design changed. Review the withdrawal impact again.');
   if(!s.withdrawals.some(w=>w.targetId===r.id))s.withdrawals.push({id:next(s,'KW'),targetId:r.id,at,actor,reviewer:text(r.reviewer,180),reason:text(r.reason),impact:knowledgeImpact(p,r.id)});selected=r.id;
   // Withdrawn from the stewards' queue: the item is handled by this withdrawal.
@@ -331,7 +335,10 @@ export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),
  // The pinned organisation releases count against their own limit, not the project's (GR-DOM-09).
  // A knowledge library is told what to do at the bound (ruling E3): it holds one tranche, and the next goes into another.
  const {organizationReleases:_pinned,...own}=s;if(JSON.stringify(own).length>8000000)throw Error(s.library?.enabled===true?'This knowledge library has reached its storage limit (8,000,000 characters): start another library for the next tranche.':'This project knowledge collection has reached its storage limit. Export it before extending it.');
- s.version++;s.history.push({at,actor,type:command.type,id:selected,reason:text(r.reason),reviewer:text(r.reviewer,180)});return {document:p,selected};
+ // A design package's command (rc44, wp1 S3: the crosswalk's and the pins') writes no line into the family's log and
+ // moves no version, which the design fingerprint reads: the boundary records it (the activity row), and its records
+ // keep who took each step. So a person's or a second person's step moves no design stamp (rulings J3, P5 b, B10).
+ if(!forms?.quiet){s.version++;s.history.push({at,actor,type:command.type,id:selected,reason:text(r.reason),reviewer:text(r.reviewer,180)});}return {document:p,selected};
 }
 export function knowledgeFindings(p){const s=knowledgeState(p);return s.links.filter(l=>l.status!=='retired'&&!claimReceiptCurrent(p,l.receipt)).map(l=>({id:'knowledge:'+l.id,chapter:11,chapterTitle:'Knowledge support',objectId:l.objectId,level:'warning',title:'Review changed architectural support',detail:l.receipt.claimId+' no longer has eligible support in the active project release. The original rationale is retained.'}));}
 export function knowledgeMarkdown(p){const s=knowledgeState(p);if(!s.history.length)return '';return '## Architecture knowledge and source history\n\nActive project releases: '+(s.pins.join(', ')||'Playbook methods only')+'. No calibrated quality scoring.\n\n'+s.links.map(l=>'- '+l.objectId+' ← '+l.receipt.claimId+' / '+l.receipt.releaseId+' · '+(l.status==='retired'?'Retired rationale':claimReceiptCurrent(p,l.receipt)?'Current support':'Support changed; review required')+'\n  '+l.reason+'\n  Source: '+l.receipt.repository+' / '+l.receipt.path+' @ '+l.receipt.revision+' lines '+l.receipt.lineStart+'–'+l.receipt.lineEnd+'; SHA-256 '+l.receipt.sourceHash).join('\n\n')+'\n\n'+s.withdrawals.map(w=>'- Withdrawn '+w.targetId+' · '+w.at+' · '+w.reason).join('\n')+'\n\n';}
