@@ -191,9 +191,12 @@ const BUILT_IN_WORDS='AIW built-in mapping, not reviewed by a person';
 export function resolveConcept(p,id,scheme=null){
  if(typeof id!=='string'||!id)return null;
  const fits=r=>r.relation==='same'&&r.aliasId===id&&(!scheme||r.scheme===scheme),one=list=>new Set(list.map(r=>r.conceptId)).size===1;
- const own=scheme?[]:releasedConcepts(p).filter(c=>c.eligible&&c.conceptId===id);
- if(own.length)return {conceptId:id,relation:'same',via:{scheme:'concept',aliasId:id,rowId:null,releaseId:own[0].release.id},authority:'governed'};
- const governed=releasedCrosswalk(p).filter(h=>fits(h.row));
+ // One id names one concept (ruling P3 of 2026-11-22): an id that is a usable released concept and, in any scheme, a
+ // governed alias the same as another concept names none.
+ const rows=releasedCrosswalk(p),own=releasedConcepts(p).filter(c=>c.eligible&&c.conceptId===id);
+ if(own.length&&rows.some(h=>h.row.relation==='same'&&h.row.aliasId===id&&h.row.conceptId!==id))return null;
+ if(own.length&&!scheme)return {conceptId:id,relation:'same',via:{scheme:'concept',aliasId:id,rowId:null,releaseId:own[0].release.id},authority:'governed'};
+ const governed=rows.filter(h=>fits(h.row));
  if(governed.length)return one(governed.map(h=>h.row))?{conceptId:governed[0].row.conceptId,relation:'same',via:{scheme:governed[0].row.scheme,aliasId:id,rowId:governed[0].row.id,releaseId:governed[0].release.id},authority:'governed'}:null;
  const built=BUILT_IN_CROSSWALK.filter(fits);
  return built.length&&one(built)?{conceptId:built[0].conceptId,relation:'same',via:{scheme:built[0].scheme,aliasId:id,rowId:null,releaseId:null},authority:'built-in',label:BUILT_IN_WORDS}:null;

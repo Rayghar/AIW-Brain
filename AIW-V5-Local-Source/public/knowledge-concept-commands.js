@@ -19,7 +19,7 @@ import {verifierRefusal} from './architecture-obligations.js';
 import {QUALITY_TYPES} from './quality-domain.js';
 import {FORM_TYPES,FORM_CLAIM_TYPE,FORM_PREDICATE,CONCEPT_KINDS,CONCEPT_SCOPES,CONCEPT_ID,RECORD_REFERENCE,ALIAS_SCHEMES,conceptFormIssues,conceptFormRecord} from './concept-form.js';
 import {recordGraph} from './record-graph.js';
-import {conceptRecords,conceptHash,conceptAuthors,conceptCovered,formIssues,crosswalkRecords,crosswalkRowHash,crosswalkCovered,crosswalkAuthors} from './knowledge-concepts.js';
+import {conceptRecords,conceptHash,conceptAuthors,conceptCovered,formIssues,crosswalkRecords,crosswalkRowHash,crosswalkCovered,crosswalkAuthors,crosswalkState} from './knowledge-concepts.js';
 import {catalogue} from './catalogue-store.js';
 import {catalogueMark,catalogueRelation} from './catalogue-curation.js';
 import {templateFields} from './component-snapshot.js';
@@ -317,6 +317,9 @@ function targetContent(scheme,aliasId,conceptId){
  const id=scheme==='akr'?aliasId:conceptId,record=catalogueRelation(id);
  return !record?undefined:catalogueMark(id)?'marked':record.stub?'stub':templateFields(record).includes('summary')?'template':'authored';
 }
+// One id names one concept (ruling P3 of 2026-11-22): the alias of a `same` row is not the id of another concept of the
+// register, whichever was registered first; asked at the proposal and again at verification.
+function oneIdentity(s,aliasId,conceptId){const other=list(s.concepts).find(c=>c.conceptId===aliasId&&c.conceptId!==conceptId);if(other)throw Error(aliasId+' is a concept of this register ('+other.id+'): one id names one concept, so it is no alias the same as '+conceptId+'.');}
 function crosswalkInput(s,r,existing){
  const scheme=r.scheme,aliasId=typeof r.aliasId==='string'?r.aliasId.trim():'',conceptId=text(r.conceptId,200);
  if(scheme==='lens')throw Error('A lens row maps a quality lens to a Chapter 2 category: it is no crosswalk row of a concept (wp1 slice S4).');
@@ -327,6 +330,7 @@ function crosswalkInput(s,r,existing){
  if(!concept)throw Error(conceptId.slice(0,80)+' is not in the concept register: a crosswalk row names a registered concept.');
  if(concept.retired)throw Error(conceptId+' is retired: a crosswalk row names a concept that stands.');
  if(!RELATIONS.includes(r.relation))throw Error('Choose how the alias relates to the concept ('+RELATIONS.join(', ')+').');
+ if(r.relation==='same')oneIdentity(s,aliasId,conceptId);
  const evidenceClaimId=r.evidenceClaimId??null,evidence=evidenceClaimId===null?null:s.claims.find(c=>c.id===evidenceClaimId),note=text(r.note,600);
  if(evidenceClaimId!==null&&!evidence)throw Error(String(evidenceClaimId).slice(0,40)+' is not a claim of this project.');
  if(scheme==='akr'&&!catalogueRelation(aliasId))throw Error(aliasId+' is neither a catalogue record nor a relation stub of '+catalogue().releaseId+'.');
@@ -349,7 +353,9 @@ function crosswalkCommand({p,s,r,type,at,actor,next},author){
   if(!existing){
    const same=list(s.crosswalk).find(y=>!y.retired&&y.scheme===x.scheme&&y.aliasId===x.aliasId&&y.conceptId===x.conceptId);
    if(same)throw Error(x.scheme+' '+x.aliasId+' is already in the crosswalk of '+x.conceptId+' as '+same.id+': edit that row.');
-   if(list(s.crosswalk).filter(y=>y.conceptId===x.conceptId).length>=ROWS_PER_CONCEPT)throw Error(x.conceptId+' has '+ROWS_PER_CONCEPT+' crosswalk rows, the most a concept holds.');
+   // The bound counts the rows that stand (ruling P4): a retired or rejected row frees its place, so no run of proposals
+   // locks a concept's crosswalk for a person.
+   if(list(s.crosswalk).filter(y=>y.conceptId===x.conceptId&&!['retired','rejected'].includes(crosswalkState(y))).length>=ROWS_PER_CONCEPT)throw Error(x.conceptId+' has '+ROWS_PER_CONCEPT+' crosswalk rows that stand (neither retired nor rejected), the most a concept holds: retire or reject one first.');
    s.crosswalk||=[];const id=next('KA');s.crosswalk.push({id,...x,revision:1,at,actor,lastEditor:actor,history:[{revision:1,at,actor,change:'Proposed'}]});return id;
   }
   // Saved again as it is, a row is not written: no revision, no new time, no new editor, no history line.
@@ -371,6 +377,7 @@ function crosswalkCommand({p,s,r,type,at,actor,next},author){
   if(r.decision==='verified'){
    if(r.aliasChecked!==true)throw Error('Check the alias against its source and the concept before verifying the row (aliasChecked).');
    const concept=list(s.concepts).find(c=>c.conceptId===x.conceptId);if(!concept||concept.retired)throw Error(x.conceptId+' is not a concept that stands in the register.');
+   if(x.relation==='same')oneIdentity(s,x.aliasId,x.conceptId);
    // One verified `same` row per alias: one alias names one concept.
    const other=x.relation==='same'&&crosswalkRecords(p).find(y=>y.id!==x.id&&y.state==='verified'&&y.relation==='same'&&y.scheme===x.scheme&&y.aliasId===x.aliasId&&y.conceptId!==x.conceptId);
    if(other)throw Error(x.scheme+' '+x.aliasId+' is already the same as '+other.conceptId+' ('+other.id+', verified): one alias names one concept. Reject or retire that row first.');
