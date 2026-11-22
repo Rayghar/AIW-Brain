@@ -500,7 +500,10 @@ export function mergeStamper(prior,command,merger,at,{fourEyes=false,collections
   if(!x){
    // (ruling Z5) nobody's: a record a restore brought back keeps its own provenance (it is the one that left)
    const back=new Set();if(c?.type==='record.restore'){const still=new Set(list(next?.retired?.records).map(y=>y?.path+'|'+y?.id));for(const y of list(before?.retired?.records))if(!still.has(y?.path+'|'+y?.id))back.add(y?.path+'|'+y?.id);}
-   changed(next,(r,was,path)=>{if(!was&&back.has(path+'|'+r.id))return;const wrote=!was||contentEdits(was,r).length>0;if(!wrote&&was.confirmed===r.confirmed&&was.state===r.state)return;
+   // (lead, after review) and it confirms and keeps nothing: a confirmation or a keep is a signed-in person's, after the merge
+   changed(next,(r,was,path)=>{if(!was&&back.has(path+'|'+r.id))return;const what=path===NARRATIVE?'the narrative':r.ref||r.id||'a record',does=!confirmedNow(was)&&confirmedNow(r)?'confirms':was?.state==='proposed'&&r.state!=='proposed'?'keeps':null;
+    if(does)throw Error('Command '+(i+1)+' of “'+a.title+'” ('+c.type+') '+does+' '+what+' and its alternative names no one who prepared it (saved before this version of AIW, carried from one, or restored). Revise the alternative without the '+(does==='confirms'?'confirmation':'keep')+'; a signed-in person '+(does==='confirms'?'confirms':'keeps')+' '+what+' after the merge.');
+    const wrote=!was||contentEdits(was,r).length>0;if(!wrote&&was.confirmed===r.confirmed&&was.state===r.state)return;
     const pv=plain(r.provenance)?{...r.provenance}:{};if(wrote)delete pv.author;delete pv.reviewed;if(Object.keys(pv).length)r.provenance=tidyProvenance(pv);else delete r.provenance;});
    before=snap(next);return;
   }

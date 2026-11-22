@@ -1400,6 +1400,17 @@ await block('Z4 four eyes in a merge', async () => {
     assert.deepEqual([d().finalReview.narrative.summary, d().finalReview.narrative.confirmed], ['The design as A wrote it.', false]);
     { const r2 = await send('review.narrative', {...narrative(true)}, A); assert.equal(r2.status, 400); assert.match(r2.error, /^Four eyes: architect-a wrote /, 'directly, its preparer does not confirm it either'); }
     ok(await send('review.narrative', {...narrative(true)}, C), 'another signed-in person confirms it'); assert.deepEqual([d().finalReview.narrative.confirmed, d().finalReview.narrative.provenance.reviewed.by, d().finalReview.narrative.provenance.reviewed.how], [true, C, 'confirmed']);
+    // (the lead's follow-up after the verifier) a command whose alternative names no one who prepared it (a draft saved before
+    // this build, carried from one, or restored) confirms nothing: its merge is refused in words for the merger, whoever
+    // merges it, and writes nothing; so neither the record's own writer nor anyone else confirms it through such a draft
+    { const again = {...narrative(false), summary: 'The design as A wrote it, again.'};
+      ok(await send('review.narrative', again, A)); assert.equal(d().finalReview.narrative.confirmed, false);
+      const c = await stage([{type: 'review.narrative', payload: {...again, confirmed: true}}], A);
+      await k.rewrite(p => { delete p.workbench.alternatives.find(x => x.id === c.id).authors; });
+      for (const as of [A, B]) { await k.h.read(as); const was = structuredClone(d().finalReview.narrative), r = await k.mergeRequest(c.id, as);
+        assert.equal(r.status, 400, 'merged by ' + as + ': ' + JSON.stringify(r.body).slice(0, 300));
+        assert.match(r.error, /^Command 1 of “An alternative” \(review\.narrative\) confirms the narrative and its alternative names no one who prepared it \(saved before this version of AIW, carried from one, or restored\)\. Revise the alternative without the confirmation; a signed-in person confirms the narrative after the merge\.$/, r.error);
+        await k.h.read(B); assert.deepEqual([d().workbench.alternatives.find(x => x.id === c.id).status, d().finalReview.narrative], ['draft', was], 'nothing is merged, nothing confirmed'); } }
   } finally { k.h.close(); }
   pass('Z4: with four eyes on, a merge whose command confirms what its own preparer wrote is refused, naming the command, the alternative and its preparer and saying what to do; the alternative without the confirmation merges and another signed-in person confirms it after');
 });
@@ -1473,6 +1484,18 @@ await block('Z6 a merge carries no commands; the merger of a keep or a confirmat
       assert.deepEqual([req(own.id).confirmed, ...stamps(req(own.id)), req(own.id).provenance.reviewed.mergedBy], [true, 'person', B, undefined, A, 'confirmed', C], 'B wrote it, A confirmed it, C merged the confirmation');
       const r = await k.step('vouchreq.accept', own.id, C); assert.equal(r.status, 400); assert.match(r.error, words(own.id, A, 'confirmed', C));
       ok(await k.step('vouchreq.accept', own.id, D), 'a fourth person'); }
+    // (the lead's follow-up after the verifier) an alternative that names no one who prepared it confirms and keeps nothing,
+    // whoever merges it: an agent account's requirement it confirms, and a proposal it keeps, are refused in words
+    { ok(await send('artefact', {type: 'requirement', title: 'Record the permit issued', description: 'The service records the permit it issues.', acceptance: 'Given a permit, when it is issued, then it is recorded.', owner: 'Permits office', priority: 'Must'}, AGENT));
+      const own = d().artefacts.find(x => x.title === 'Record the permit issued'), a = await stage([{type: 'artefact', payload: {...own, confirmed: true}}], A);
+      ok(await send('decision.save', {question: 'Which queue holds the permits, as Sol proposes it?'}, AGENT)); const prop = d().decisions.records.at(-1).id; await rewrite(p => { p.decisions.records.find(x => x.id === prop).state = 'proposed'; });
+      const b = await stage([{type: 'record.keep', payload: {id: prop, chapter: 3}}], A);
+      await rewrite(p => { for (const id of [a.id, b.id]) delete p.workbench.alternatives.find(x => x.id === id).authors; });
+      for (const [alt, does, what, noun] of [[a, 'confirms', own.ref || own.id, 'confirmation'], [b, 'keeps', d().decisions.records.find(x => x.id === prop).ref || prop, 'keep']]) {
+        const was = JSON.stringify([req(own.id), d().decisions.records.find(x => x.id === prop)]), r = await k.mergeRequest(alt.id, B);
+        assert.equal(r.status, 400, JSON.stringify(r.body).slice(0, 300)); const esc = t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        assert.match(r.error, new RegExp('^Command 1 of “' + esc(alt.title) + '” \\((artefact|record\\.keep)\\) ' + does + ' ' + esc(what) + ' and its alternative names no one who prepared it .+ Revise the alternative without the ' + noun + '; a signed-in person ' + does + ' ' + esc(what) + ' after the merge\\.$'), r.error);
+        await k.h.read(B); assert.equal(JSON.stringify([req(own.id), d().decisions.records.find(x => x.id === prop)]), was, 'nothing changed'); } }
   } finally { k.h.close(); }
   pass('Z6: a merge request that carries commands of its own is refused in words and writes and names nothing; the merger of a keep or of a confirmation an alternative carried is refused in words that say kept or confirmed');
 });
