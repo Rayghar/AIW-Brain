@@ -346,3 +346,57 @@ red before with, the change.
   Q8 saving), which each later merge edited (W2, and the working form of item 0). New: they read the recorded bookings,
   and each recorded booking is asserted to be on the books still with the same bytes. Red before (the record absent):
   "the bookings recorded at wp1 S2's start commit". No later merge edits S2.12 again.
+
+### Item 5: X5, the design concerns as ruled
+
+- **(a) J7: the list-11 check row is held back until S5.** Done. `public/knowledge-package.js` states no `checks`; the
+  finding stays the package's reader (`knowledge-pins.js conceptLinkFindings`, unchanged) and Appendix E of the SDD,
+  which already says "A newer version exists". So the review's list raises nothing a browser user could only waive, until
+  S5's concept view offers relink, migration, repin and unpin in the browser; S5 registers the row again (one line:
+  `checks:{11:conceptLinkFindings}`) with its surface. Case **S3.1**, seen red before the hold ("the package registers no
+  check of list 11 (ruling X5 a)"). **Replaced assertions (ruling X5 a)**:
+  - S3.1: old: the review's knowledge findings (`inheritedFindings`, chapterTitle "Knowledge support") hold exactly one
+    "Review a newer knowledge version" for api-pod, and the package's registered check gives `knowledge:<link id>`. New:
+    the package's reader gives exactly that one finding with that id, the package registers no check, the review's list
+    is empty, and Appendix E prints "… version 1 of “Synthetic integration concepts 1” · newer-available … A newer version
+    exists: version 2 in “Synthetic integration concepts 2”." (the case's name says so too). At least as strict: the same
+    finding is asserted, at its reader, and two more facts are.
+  - S3.5, S3.6, S3.19: each assertion on the review's list (`findings11`) of the package's finding -> the same assertion
+    on the package's reader, plus the review's list asserted empty where the finding is raised.
+  - S3.17 and S2.10: the package's parts `[checks, commands, design, evidenceKeys, id, objectTypes, provenance, records,
+    sections]` -> the same without `checks` (exact sets both).
+- **(b) B10's remaining part** (the built-in knowledge commands still move a library's design stamp through
+  `knowledge.history` and `knowledge.version`) is the lead's at the close of wave 2, with D10. Until then the history
+  panel of X4 (e) shows both trails as one. Recorded; nothing built.
+- **(c) The two stored caches (`pinCurrency`, `organizationNotices`).** Listed, reader by reader, on this branch:
+  - Refresh first (`refreshOrganizationAssurance`, which ends with `refreshConceptPins`): worker.js's project read, its
+    command route (before and after applying), its export route (the SDD with Appendix E, the registers, the ARS);
+    baseline-service.js; drafting-service.js; intelligence-service.js; organization-service.js (the dependencies scan,
+    the library install, the pins). The command boundary refreshes the currency after every knowledge command too
+    (`withCurrency`).
+  - Read no stored currency or notice: object-service.js (the graph and discussions read the record graph, whose
+    `concept` objects carry no currency), collaboration-service.js, intake-service.js, intelligence-draft-service.js
+    (Sol reads no form: B1), knowledge-repository.js, repository-sync.js, retention.js, storage-upgrade.js,
+    project-lifecycle.js (a template copy drops the knowledge), project-storage.js.
+  - **Known limits, owned by S4:** operation-service.js reads the review's findings (`inheritedFindings`) without a
+    refresh: it reads no currency while X5 (a) holds the row back, but it will once S5 registers it, so S4 (or S5 with its
+    row) refreshes there first or reads the currency computed on read. repository-transfer.js exports the stored caches
+    as they are; recovery clears both (X4 a) and the next read writes them again. A pin made in the same commit as the
+    first notice of its release reads the notice only at the next read (design risk 5): the read refreshes.
+- **(d) `knowledge.conceptLinks` stands (B1);** wp2 S2's brief confirms its contract f.2 (relation `applies`,
+  `conceptPin`, the adoption findings) against `knowledge.conceptLinks` before binding to it. Recorded for wp2 S2.
+- **(e) The concept record is a row the release holds.** Done. Case **S3.30**: in a project release the concept record's
+  author and an editor of it (who wrote no form) are each refused ("KN-0001 (the concept record of SYN-P001): A second
+  signed-in person … architect wrote KN-0001. A release holds no concept record its releaser wrote …"), a third person
+  releases it; in an organisation release the administrator who edited the record is refused the publication of the
+  release that holds the edited record, and publishes the earlier release whose record they never wrote. Seen red before:
+  "Missing expected exception: architect, its author, is refused the release". Code: the release capability
+  (`formCapability.release`) and `publishRefusal` read the record's author and editors (`recordAuthors`) with
+  `verifierRefusal`, after the forms and rows (so the words of S1.11 and S3.13 for a form's author stand).
+- **(f) A concept object in the model** (design risk 3: `architectureModel(p)` holds a `concept` object, Chapter 11,
+  level intent, and an `informs` relation for each pin) is wp7's to draw or not. Recorded for wp7.
+- **(g) For the merge evidence (the lead's):** rc44 development documents that hold concepts, topics or a library mark
+  take new design and evidence stamps at their first read under S3 (B10: `knowledge.concepts` and `.topics` are evidence
+  and `.library`, `.pinCurrency`, `.organizationNotices` bookkeeping, so they leave the design source), and no released
+  document does: no document of rc.10.73.42 or earlier holds those keys (S3.17 reads the three references and the
+  review-list document as at 94dbd4f).

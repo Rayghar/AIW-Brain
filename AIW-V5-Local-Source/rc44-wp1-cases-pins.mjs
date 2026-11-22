@@ -842,3 +842,34 @@ add('S3.29 (ruling X4, B8): the bounds count what stands: 200 pins that moved or
   { const q = clone(M.document); q.knowledge.conceptMigrations = many(200, i => migrationOf(i, false)); const out = await packaged(q, 'knowledge.concept-migration', MIGRATE, 'architect'); assert.equal(migrations(out.document).at(-1).id, 'KM-0201', 'closed migrations leave room; the numbers stay unique'); }
   { const q = clone(M.document); q.knowledge.conceptMigrations = many(200, i => migrationOf(i, true)); await assert.rejects(() => packaged(q, 'knowledge.concept-migration', MIGRATE, 'architect'), /This project holds 200 migrations that stand/); }
 });
+
+// ------------------------------------------------------------------------------------------------ 30 (ruling X5 e, by P1)
+// The concept record is a row the release holds (parts.concepts holds the record itself: identity, scope, review): the
+// releaser is refused as its author or as an editor of it, in a project release and in an organisation one, as for its
+// forms and rows; a third person releases and publishes it.
+add('S3.30 (ruling X5 e): the releaser of a release of concepts, and the administrator who publishes it, is refused as the author or an editor of the concept record it holds; a third person is not', async () => {
+  const {CC} = await mods(); let p = F.blankProject();
+  const k = (type, payload, actor) => { const r = CC.applyConceptCommand(p, {type: 'knowledge.' + type, payload}, AT, actor, F.person(actor)); p = r.document; return r.selected; };
+  k('library', LIBRARY_MARK, 'steward');
+  const sourceId = k('source', F.sourcePayload('SYN-P001 Transactional outbox', F.SYN_P001), 'importer');
+  const record = k('concept', CONCEPT, 'architect'), all = F.p001Forms(), claimIds = {};
+  for (const t of FORMS) claimIds[t] = k('claim', F.formClaim(sourceId, 'SYN-P001', all[t]), 'importer');
+  k('concept', {...CONCEPT, id: record, forms: FORMS.map(t => ({type: t, claimId: claimIds[t]}))}, 'second-architect');
+  for (const t of FORMS) k('review', {...F.REVIEW, formChecked: true, id: claimIds[t]}, 'reviewer');
+  k('concept-review', {...CONCEPT_REVIEW, id: record}, 'reviewer');
+  const RELEASE = {...F.REVIEW, title: 'Synthetic integration concepts 1', conceptIds: ['SYN-P001']}, held = new RegExp('^Error: ' + record + ' \\(the concept record of SYN-P001\\): ');
+  for (const [who, words] of [['architect', 'its author'], ['second-architect', 'its last editor']]) assert.throws(() => k('release', RELEASE, who), e => held.test(String(e)) && new RegExp(who + ' wrote ' + record).test(String(e)), who + ', ' + words + ', is refused the release');
+  const releaseId = k('release', RELEASE, 'releaser'); assert.ok(releaseId, 'a third person releases it');
+  // The organisation's: an administrator who edited the concept record publishes the library's release of it.
+  const W = await world();
+  try {
+    assert.equal((await W.orgApi('members', {actorId: 'architect', role: 'administrator'}, 'steward')).status, 200);
+    const lib = await worldLibrary(W, {owner: 'architect', name: 'Library E'}), L = lib.L;
+    { const ok = await W.orgApi('knowledge', {releaseId: lib.v1, title: 'Synthetic integration concepts 1', reason: 'Shared.', reviewed: true}, 'architect', L.id); assert.equal(ok.status, 201, 'a release that holds a record architect never wrote: ' + JSON.stringify(ok.data).slice(0, 200)); }
+    await L.ok('knowledge.concept', {...CONCEPT, id: lib.record, forms: L.document.knowledge.concepts.find(c => c.id === lib.record).forms, reviewDue: '2028-01-31'}, 'architect');
+    await L.ok('knowledge.concept-review', {...CONCEPT_REVIEW, id: lib.record}, 'reviewer');
+    const v2 = await lib.release('Synthetic integration concepts 2', {supersedes: lib.v1});
+    const r = await W.orgApi('knowledge', {releaseId: v2, title: 'Synthetic integration concepts 2', reason: 'Shared.', reviewed: true}, 'architect', L.id);
+    assert.equal(r.status, 400, JSON.stringify(r.data).slice(0, 300)); assert.match(r.data.error, new RegExp('^' + lib.record + ' \\(the concept record of SYN-P001\\): .*architect wrote ' + lib.record));
+  } finally { W.close(); }
+});

@@ -275,6 +275,9 @@ export function formCapability(author=null,limits=KNOWLEDGE_LIMIT_TIERS.project)
     if(origin!=='person'&&x.provenance?.reviewed?.by===actor)throw Error(at+actor+' confirmed '+x.id+', which no person wrote, and so stands in its author\'s place: a third person releases it.');
     if(origin!=='person'&&x.review?.actor===actor)throw Error(at+actor+' verified '+x.id+', which was '+(ORIGIN_WORDS[origin]||'written by no person')+': a third person releases it.');
    }
+   // The concept record is a row the release holds too (the lead's ruling X5 e, by P1: parts.concepts holds the record
+   // itself): not released by one who wrote or edited it.
+   for(const id of new Set(claims.filter(c=>c.form).map(c=>c.subjectId))){const c=list(knowledgeState(p).concepts).find(x=>x.conceptId===id),wrote=c&&verifierRefusal(recordAuthors(c),actor,author?.account);if(wrote)throw Error(c.id+' (the concept record of '+id+'): '+wrote+' A release holds no concept record its releaser wrote: a person who wrote none of the concept, its forms and rows releases it.');}
   },
   // What a release of forms holds beside its claims (rc44, wp1 slice S2): the crosswalk rows a second person verified of
   // the concepts it releases, as they read, without the boundary's stamps. The release's checksum covers them, so a row
@@ -286,6 +289,8 @@ export function formCapability(author=null,limits=KNOWLEDGE_LIMIT_TIERS.project)
  };
 }
 const RELEASE_LEAVES=['state','provenance','confirmed'];
+// Who wrote a concept record, for the release-actor rule: its author and every editor (the projection the rule reads).
+const recordAuthors=c=>({id:c?.id,actor:c?.actor,owner:'',history:list(c?.history).map(h=>({revision:h?.revision,actor:h?.actor}))});
 // The rows a release of these claims holds: the verified rows of the concepts whose forms it releases, each as the
 // concept's standing review saw it verified (its id, hash and state; ruling P5 c): a row verified after that review waits
 // for the concept's next review, and nothing lapses. One list, which the release-actor rule reads and parts copies.
@@ -382,6 +387,8 @@ export function publishRefusal(p,releaseId,actor,account){
   if(origin!=='person'&&x.provenance?.reviewed?.by===actor)return at+actor+' confirmed '+x.id+', which no person wrote, and so stands in its author\'s place: a third person publishes it.';
   if(origin!=='person'&&x.review?.actor===actor)return at+actor+' verified '+x.id+', which was '+(ORIGIN_WORDS[origin]||'written by no person')+': a third person publishes it.';
  }
+ // Each concept record the release holds, as it holds it (ruling X5 e).
+ for(const c of list(r.parts?.concepts)){const wrote=verifierRefusal(recordAuthors(c),actor,account);if(wrote)return c.id+' (the concept record of '+c.conceptId+'): '+wrote+' An organisation release is published by a person who wrote none of its concepts, forms and rows.';}
  return standsBehind(p,s,r);
 }
 // What the library stands behind now (ruling X2 of 2026-11-22): a release that holds parts is published only while each
