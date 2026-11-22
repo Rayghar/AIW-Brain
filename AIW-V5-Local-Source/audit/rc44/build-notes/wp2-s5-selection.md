@@ -19,6 +19,8 @@ is S1's second-person step.
   the fixture's time, so its SDD printed the day it was read and no longer matched the golden captured the day before.
 - **Fix-up:** branch `rc44/wp2-s5-selection-fix`, from 082e06b; the rulings of section Q (2026-11-22); see the section
   "Fix-up" at the end of this file for each item, its case and what is left.
+- **Second fix-up:** branch `rc44/wp2-s5-selection-fix-c2`, from 7f1b897; the rulings of section U (2026-11-22,
+  after the fix-up's verifier); see the section "Second fix-up" at the end of this file.
 
 ## What was built
 
@@ -511,7 +513,9 @@ Rulings:
 ## Second fix-up (rulings U1 to U6 of 2026-11-22; verifier /home/user/hb-review/rc44-build/wp2-s5-selection.verify.json)
 
 Branch `rc44/wp2-s5-selection-fix-c2` from `7f1b897` (the fix-up's head). Items in the order the lead gave them, each
-case first, seen to fail on the head it started from, then the change; a WIP commit after each item.
+case first, seen to fail on the head it started from, then the change; a WIP commit after each item. Items 1 and 2 were
+done by a session that was cut off (78b820b to 3242f98); the next session continued on the same branch, in the same
+worktree, from item 3.
 
 ### Progress
 
@@ -541,5 +545,209 @@ case first, seen to fail on the head it started from, then the change; a WIP com
   1,200 B; S1's share exactly 325 B), S0's block 8 (lower bound less the lead's booked savings); wp9a's `S1.10` reads as
   it did and is green (342 B). The O1 identity holds: −1,418 = 0 + 325 + 864 + 342 − 3,047 + 98 (`S5 size`, and wp9a's
   branch's `assertBookingsAddUp` run in a scratch copy on this branch's files).
-- **In progress:** item 6 (U6).
-- **Next:** U6, the notes.
+- **Done:** item 6 (U6): the pass line of `S5 registration` states the six steps and `selection.confirm` as a second
+  person's; the known limit and the projects-route figure are below.
+- **Done:** item 7: this section; the suites, syntax, lint and build below; the final commit.
+- **In progress:** nothing. **Next:** the lead's review.
+
+### Second fix-up, line by line
+
+New problems (verifier):
+1. decision.save drops a hard constraint from a selection's decision (walk H-A) — done (U1): `S5 U1 hard constraint`,
+   through the server, failed at `7f1b897` (a person's save dropping QD-008 was taken, 200 !== 400). A decision.save that
+   drops a hard constraint the decision names is refused (`own(d)`, "Change ADR-nnn through its selection.") to a person,
+   an agent account and a draft by Sol unless it is an inner step of selection.*; the package's error `selection-breaks`,
+   worded as the built-in 'The working choice breaks a hard constraint', stands while the chosen candidate reads
+   ineligible, whatever the drivers say (a hand-edited document without the driver included), so accept and governance
+   refuse it; `selection.confirm` is refused while it does (`adoption-selection.js` failsOf, selectionFindings, confirm).
+2. Three red size blocks — done (U2): the lead's file books the retirement's saving; S1's `size`, S0's `8 client build`
+   and wp9a's `S1.10` are green (item 5 above).
+3. design-concern-validate.mjs stopped at l.24 — done (U3): re-pointed; it runs to its baseline red assertion (l.119 at
+   `5cae40a`, l.199 now) and stops there for the same reason (`'QD-002': ''` in the assessments).
+4. ', named unproven' on every candidate — done (U5): only on the chosen candidate's rows the chooser named
+   (`S5 U5 SDD basis`; `S5 SDD` re-pointed).
+5. Q9 (9) partly: the rejected withdrawn profile, the late constraint — done (U5): every candidate's rows "at the choice and
+   now", or both, each named, with why it no longer stands; the constraints from `selectionReading` (`S5 U5 SDD basis`).
+6. Size booking hidden by the retirement — done (U2): S5 books its gross additions, 864 B; the lead's file books −3,047 B.
+7. Stale pass line of `S5 registration` — done (U6).
+
+Items the verifier read as partly:
+- Must-fix 1 and ruling Q1 (H-A) — done by U1 (`S5 U1 hard constraint`).
+- Must-fix 2 and ruling Q2 (decision.save of the drivers, H-B) — done by U1 (the same case: a person, an agent account and
+  a draft by Sol are refused; a save of the texts or of a driver that is no hard constraint is taken).
+- Must-fix 9 and ruling Q8 (design-concern-validate.mjs not re-pointed; architecture-intelligence-validate.mjs inverted) —
+  done by U3 and U4.
+- Should-fix 9 and ruling Q9 (9) (the SDD's current reading only for the chosen candidate) — done by U5.
+
+Weakened (verifier):
+1. architecture-intelligence-validate.mjs l.112-118 inverted — restored (U4): the two assertions read exactly as on
+   `5cae40a` ('Creating a proposed task cannot invalidate the source that suggested it'; 'Answering a draft is not an
+   architectural source change') and hold; a person's choice is asserted a source change after them. The suite is green.
+2. design-concern-validate.mjs's guided blocks skipped — re-pointed (U3), each replaced assertion marked "U3: was … ->"
+   in the suite (list below); none is skipped.
+
+Rulings:
+- U1 — done (item 1). U2 — done (item 5). U3 — done (item 3), with a product gate the ruling does not name (deviation 1
+  below). U4 — done (item 2). U5 — done (item 4). U6 — done (item 6, and the notes below).
+
+### Replaced assertions in this round, old -> new (each recorded beside the assertion)
+
+- `architecture-intelligence-validate.mjs` (a 5cae40a suite): the first fix-up's inverted pair -> the two assertions of
+  `5cae40a`, exactly (U4); the draft's answer now states a note on the concern's one criterion (U3's gate), which only
+  adds to what the answer says.
+- `design-concern-validate.mjs` (a 5cae40a suite; U3, the lead's leave), each at least as strict:
+  - architecture.start of a candidate concern refused /current, released/ -> the guided start refused (retired) and
+    selection.start of the candidate concern refused /current, released/ (a person, a draft by Sol); in K2 the same;
+  - 'candidate claims cannot offer a comparison' -> kept (releasedDesignConcerns), and selection.candidate refuses an
+    option of a candidate concern on a document whose selection names it; the selection view offers no comparison of it;
+  - the guided picker offers the released concern -> it no longer does, and the selection view offers its options (the
+    requirement, the driver, a note per option and criterion, the architect, the reason);
+  - the task pins the released claim -> selection.start pins exactly that claim (the whole receipt); the held task too;
+  - partial answers then prepare refused /Assess every released approach/ -> a held task is answered no more; an option
+    not assessed on every criterion is refused /Assess every released approach/; one option is no comparison;
+  - the answered task's readiness and score -> read on the held answered task; the selection's reading holds no score,
+    rank or weight key, candidates in order;
+  - prepare writes no decision -> the held prepared task holds none and is prepared no more; the selection writes its
+    decision only, which joins no journey before a person chooses;
+  - the preview's decision (draft, two options, 'One application' chosen, no component, effects unknown, the reasons and
+    consequences) -> the held alternative is not previewed; the selection's decision after a person's choice, the same
+    assertions on it;
+  - the preview's one signal -> the decision's source is the released claim, every alternative's evidence is it, and it
+    names no driver but the comparison's own;
+  - the task's checks, caveats and reasoning graph -> read on the held tasks, unchanged;
+  - the reviewed apply (draft, task applied and current, claim current) -> the held alternative is applied no more; the
+    held applied task reads applied and current; a held task can be set aside; a second person's confirm is not Chapter
+    3 acceptance; the person's choice joins the requirement's and the driver's journeys;
+  - the withdrawn release refuses the held proposal /sources changed/ -> refused whatever its sources (retired); the
+    held task reads stale; the selection's options are not chosen and a chosen one is the error `selection-withdrawn`
+    (also after a withdrawal and a supersession in K2);
+  - K2: the preview's signal 'Drivers the released criteria weigh' -> each released criterion's drivers are exactly those
+    whose reason in the decision names it with its released consequence; the reviewed apply -> the person's choice links
+    the drivers (journey); `reading2.state === 'unjudged'` -> `'unweighed'` (a selection weighs no driver, Q1). The
+    assertions on l.115-l.119 and 'applied, the decision weighs the linked drivers' keep their expected values of
+    `5cae40a` (each fails there for the QD-002 reason).
+- `rc44-wp2-adoption-cases/record.mjs` (S1's suite, a 5cae40a suite) block `size`: `mine`, this build less the integrated
+  base less every other file's own and the pool's, in (0, 600] -> wp2's own bytes read through routeBookings in (0,
+  1,200] and exactly what wp2's size files book, and what is left for S1 exactly S1's evidence (325 B) (U2).
+- `rc44-wp2-adoption-cases/record.mjs` block `browser load` (S1's suite, a 5cae40a suite): the server's package is the
+  browser's parts and `upgrade`, `upgradeNote` -> the browser's parts and `sections`, `upgrade`, `upgradeNote`, and its one
+  section is the architecture edition's after "## Trade-off analysis" (U5: only the server prints an SDD); the browser's
+  parts are still exactly the list the block names.
+- `rc44-s0-extensions-validate.mjs` block 8 (the lead confirms the edit in U2): measured >= slice − 700 -> measured >=
+  slice − 700 − the savings the lead's file books (negative pool items, each an integer); identical when none is booked.
+- This slice's own suite (`rc44-wp2-adoption-cases/selection.mjs`): `S5 size` (ownBytes max(0, delta) within 475 B, wp2
+  within 800 B -> ownBytes the gross additions, a positive integer equal to the put-back route less the start, wp2 within
+  1,200 B and exactly S1's and S5's, the lead's item equal to the saving, the bookings add up and O1's rules on every size
+  file); `S5 SDD` (the basis in the decision record -> the record's pointer and the package's section, rows "at the choice
+  and now", the rejected relay's unknown row not named unproven). New blocks: `S5 U1 hard constraint`, `S5 U4 proposal`,
+  `S5 U3 concern`, `S5 U5 SDD basis`.
+- Not changed: wp9a's `S1.10` (it reads its own bytes through routeBookings as it did, and is green: 342 B).
+
+### Measurements (node build.mjs, dist/client-size-report.json)
+
+| | `5cae40a` (start) | `7f1b897` (first fix-up) | this round (head) | head with the retirement put back |
+|---|---|---|---|---|
+| Chapters route (`routes.chapters.code`) | 3,230,605 B | 3,228,300 B | **3,228,422 B** (−2,183) | 3,231,469 B (+864) |
+| Projects route | 507,338 B | 507,960 B | 508,043 B (+705; budget 1,242,112 B) | 508,057 B |
+| Script files | 148 | 148 | 148 | 148 |
+| Buckets (under 10 KB / 10–50 / over 50) | 53 / 50 / 45 | 53 / 50 / 45 | 53 / 50 / 45 | 53 / 50 / 45 |
+| Stylesheet | 901,873 B | 901,873 B | 901,873 B | 901,873 B |
+| Opens with records (host `architecture-task-ui.js`) | — | 3,359,476 B | 3,360,760 B (132,338 B in 2 scripts beside the route) | — |
+
+Itemised on the route: U1 +83 B (`decisions-domain.js`), U4 +39 B (`journey-context.js`); U3 (`adoption-selection.js`,
+`adoption-ui.js`, the lazy entry) and U5 (`sdd-architecture.js`, `adoption-server.js`, server-only) 0 B. "Put back":
+a git archive of 9df762c with `public/architecture-design.js` and `public/architecture-task-ui.js` as at 082e06b (only
+the retirement's commits 4334100 and 452604e touched them since), built with node build.mjs. Bookings (U2): S5 864 B of
+its own; the lead −3,047 B in the pool (`guidedConcernRetirementQ8`); wp2 1,189 B of 1,200 B (S1 325 + S5 864), **11 B
+left**; the route less the integrated base, −1,418 B, = 0 + 325 + 864 + 342 − 3,047 + 98. The projects route grew 622 B
+in the first fix-up and 83 B more by U1 (`decisions-domain.js` is on it): 705 B against the start, within its budget
+(U6). Cap unchanged; no gate raised.
+
+### Suites (this round, two at a time, the machine shared)
+
+- `test:rc44-wp2-adoption`: **44 blocks green** (S1's 20, S5's 24: the first fix-up's 20 and `S5 U1 hard constraint`,
+  `S5 U4 proposal`, `S5 U3 concern`, `S5 U5 SDD basis`). S1's `size` is green again (wp2 1,189 B of 1,200, S1 325 B).
+  S1's `browser load` failed once after U5 (the server's package gained `sections`) and was re-pointed (below).
+- `rc44-s0-extensions`: 26 checks green (block 8 with the lead's booked saving). `rc44-wp9a-deployment`: 24 checks green
+  (S1.10: 342 B, unchanged). `rc44-wp1-knowledge`: 34 passed, 0 failed, 4 pending.
+- `design-concern-validate.mjs`: runs through its first block (PASS) and stops in K2 at l.199 (l.119 at `5cae40a`), the
+  baseline's assertion and reason (`'QD-002': ''` in the assessments). `architecture-intelligence-validate.mjs`: green.
+- Every other suite that imports a module changed in this round (`decisions-domain.js`, `journey-context.js`,
+  `sdd-architecture.js`, `adoption-selection.js`, `adoption-ui.js`): action-undo, architecture-whatif, chapter-insight,
+  decision-prerequisite, decision-reading, decisions, design-records, desk, drafter-groups, fingerprint,
+  knowledge-retrieval, logical, order-independence, rc42-g3a-risk-and-limits, review, tradeoff, utility, development,
+  journey-context-model-dom, journey-context, operations, rc42-g3c-evidence-fingerprint, reconciliation, sol-coverage,
+  architecture-verification, connected-design-projections, outcome-design-journey, provenance, rc42-g2-library,
+  rc42-g3b-trace-and-delivery, rc42-g4-trace-kernel, sdd-architecture, sdd-content, sdd-formats, sdd-modules, sol-sdd:
+  **all green**. `command-equivalence`: red at l.60, the same first message on an archive of `5cae40a` run here.
+- `node check-syntax.mjs`: 940 modules pass. `node scripts/lint.mjs --summary`: 162 problems, the baseline's 162, 0 new.
+  `node build.mjs`: every gate passes; chapters route 3,228,422 B; projects 508,043 B; 148 scripts; buckets 53 / 50 / 45;
+  stylesheet 901,873 B.
+- Not run: the full regression (the lead's); the browser suites (red at the baseline on this machine; `ux-shell-browser`
+  imports `journey-context.js`); `scale` and `sdd-size` (timers, on the baseline-red list).
+
+### Deviations from the rulings and the design, and my view
+
+1. **U3: a product gate the ruling does not name.** 'A blank alternative cannot masquerade as a comparison' was the guided
+   path's refusal to prepare before every released approach was assessed on every criterion; selection.* had no such
+   rule (an option was added with no assessment). To keep the re-pointed assertion at least as strict, `selection.candidate`
+   of kind option now refuses an option without a note on each released criterion ("Assess every released approach
+   before it is compared: …"), whoever adds it, and the selection view asks one note per option and criterion (the
+   start-option action sends them). Off the route. The intelligence suite's draft answer states the one criterion's note.
+   For the lead: accept the gate, or rule the assertion retired with the guided path.
+2. **U3: the held documents.** The task readers read the six documents the guided path made at `5cae40a`, captured by the
+   suite as it was there on a git archive of `5cae40a` (`rc44-wp2-design-concern-held.json`, 322,752 B; each document
+   whole or as the top-level keys that differ from an earlier one, the reconstruction checked byte for byte when it was
+   written; `workspace.createdAt` is the capture run's clock, which no assertion reads).
+3. **U3: the baseline red line moves.** The suite stops at the assertion that was l.119 at `5cae40a`; it is l.199 now
+   (the re-pointing added lines). The baseline-red bookkeeping that names l.119 (audit/rc42/regression-2026-11-16.json)
+   is the lead's to update. With the two QD-002 assertions skipped in a scratch copy, every other re-pointed assertion
+   after it passes (checked, not committed).
+4. **U5: where the basis stands.** S0's sections part places a section at a fixed heading, and a decision's heading is
+   its own, so the basis is printed by the package at the end of "## Trade-off analysis" as "### Selection basis" (one
+   paragraph and list per selection), and the decision record says "**Selection basis**: in “Selection basis”, in the
+   trade-off analysis below." The renderer is server-only (`adoption-server.js`, beside the read upgrade: only the server
+   prints an SDD); it imports `sdd-architecture.js`'s md, bullets, plural and decisionOrder (a package module importing
+   the workbench; never the reverse). The inline basis and `sdd-architecture.js`'s read of the package's finding are
+   retired, not kept beside it.
+5. **U2: the O1 merge check itself is not on this branch.** O1's routeBookings checks, `assertBookingsAddUp` and S0's
+   block 'O1 the bookings add up' are on wp9a's branch (fix-c3 and later), not on `5cae40a`. I did not copy them here
+   (they would collide at the merge). `S5 size` holds the identity and O1's rules on every size file of this branch, and
+   wp9a's `assertBookingsAddUp`, run in a scratch copy on this branch's files and build, passes ({grew −1,418, own 1,531,
+   pool −2,949}). `lead-bookings-size.json` is created here as O1 describes (ownBytes 0, schema v3); wp9a's file of the
+   same name books `trackPathsPartNameO2` (0 B): the lead merges the two at the merge.
+6. **U2: S0's block 8 reads the lead's file directly** (the sum of its negative pool items), not through routeBookings,
+   so that it reads the same on this branch and after O1's routeBookings is merged.
+
+### Known limits (U6 and this round)
+
+- A `selection.confirm` moves Chapter 3's design stamp (`decisions.version`, the review and the handoff cleared), as
+  `decision.accept` does on rc.10.73.42 (U6).
+- Package steps kept on built-in records (design concern 4): the recovery helper (`assertRecoveryClearsSteps`) and the
+  template-copy helper hold them now; an S0 contract row for them is the lead's, at the close of wave 2 with D10 (U6).
+- U1: no selection step removes a hard constraint from a selection's decision. A hard constraint leaves it only when it
+  no longer reaches what is selected or is no longer hard (Chapter 1 and Chapter 2); until then a person changes the
+  decision's other drivers and texts only.
+- U4: a selection's decision joins no requirement's or driver's journey until a person chooses (`journey-context.js`), so
+  before the choice it is reached from Chapter 3 only.
+- wp2's route headroom: 11 B of 1,200 B. The later wp2 slices (S2 to S4, S6) need the lead's booking before they add
+  route bytes.
+
+### What later slices must know (this round)
+
+- A decision.save that drops a hard constraint from a selection's decision is refused unless it is an inner step of
+  selection.*; `selection-breaks` (the built-in words) is the package's error while the chosen candidate reads ineligible.
+- A released option is added to a selection only with a note on every released criterion (`notes {criterionId: text}`).
+- The SDD's selection basis is the package's section (`adoption-server.js` `selectionBasis`, S0's sections part, after
+  "## Trade-off analysis"); no workbench module reads the package's reading for it.
+- Retirement savings are the lead's (negative pool items in `lead-bookings-size.json`); a package books its gross
+  additions, measured with the retirement put back.
+
+### Open points for the lead
+
+1. The gate of deviation 1 (accept, or retire the assertion).
+2. The baseline-red line of `design-concern` moves from l.119 to l.199, the same failure.
+3. Merge `lead-bookings-size.json` with wp9a's (two items: `trackPathsPartNameO2` 0 B, `guidedConcernRetirementQ8`
+   −3,047 B) and run O1's merge check on the merged tree.
+4. wp2 has 11 B of route headroom.
+5. The owner's decision on candidate profile content in design projects (Q11) is still pending.
