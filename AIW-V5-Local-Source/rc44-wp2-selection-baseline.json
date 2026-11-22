@@ -83,7 +83,7 @@
    "readiness": "4b7acd3e2dc431ca33bc7d33b08589fad1ffaf3d5ea4cecf712cc395258d5897",
    "provenance": "d296797c8940135469991da2357a0b5061f7e68bbe9a2d22d5e1316712aab0b5",
    "registers": "b582fe2bd5fefd9a783b8fd5c084bbcaf6da43dd3e478cf03a6f9a34ecc0842e",
-   "sdd": "d6cee5252c3df30c30fe6c09f7a9fd97baccb8d1257d54e47ee15e9125f21af7",
+   "sdd": "e2b3adc2e52b40ab4d8f6c69d645f56fea17a96edc66903523629b0f89b3cdd7",
    "ars": "b9d407bd12717f26cceefae9925a7860fb5140b4a2a7662db7fcf0a88aca3c19"
   }
  },
@@ -276,5 +276,6 @@
     }
    ]
   }
- }
+ },
+ "concernProjectRecaptured": "The readings of concernProject were captured again on 5cae40a's product source (git archive of 5cae40a with this branch's test fixtures copied in; nothing else changed) once the fixture gave createProject its fixed time (ruling Q7): the first capture printed the day of capture in the SDD."
 }

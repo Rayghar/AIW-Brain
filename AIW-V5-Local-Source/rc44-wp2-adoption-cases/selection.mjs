@@ -26,6 +26,7 @@
 //                    comparison gave at the base (public/architecture-design.js previewReleasedConcern, captured at
 //                    5cae40a), and the guided comparison still does;
 //   S5 SDD           the record prints the selection basis and each rejected candidate with its reason;
+//   S5 fixtures      every fixture reads no clock (ruling Q7);
 //   S5 old documents the references, the document with a review list and the two fixtures read as at the base; the
 //                    shared helpers of rc44-s0-readings.mjs with the selection's records present;
 //   S5 surface       the selection view (adoption-ui.js), held in the comparison tools' entry and opened from the
@@ -35,7 +36,7 @@ import assert from 'node:assert/strict';
 import {readFileSync, existsSync, writeFileSync, mkdirSync} from 'node:fs';
 import worker, {commandHandler, commandShape} from '../worker.js';
 import * as R from '../rc44-s0-readings.mjs';
-import {server, A, B, C, AGENT, SELECTION_AT, CONCERN_NOTES, CONCERN_ANSWERS, concernProject, guidedConcernPreview, decisionSays, selectionProject, PROFILE_FACTS, ARCHETYPE} from '../rc44-wp2-fixtures.mjs';
+import {server, A, B, C, AGENT, SELECTION_AT, CONCERN_NOTES, CONCERN_ANSWERS, concernProject, guidedConcernPreview, decisionSays, selectionProject, PROFILE_FACTS, ARCHETYPE, bankPaymentApplied, governedConcernApplied, otherKindApplied} from '../rc44-wp2-fixtures.mjs';
 import {withFinalReview, CHAPTERS, inheritedFindings, reviewSourceStamp} from '../public/review-domain.js';
 import {EXTENSIONS} from '../public/design-extensions.js';
 import {extensionIssues, extensionConflicts, builtInType} from '../design-extension-boundary.js';
@@ -340,6 +341,16 @@ export default async function ({block, pass, load}) {
     assert.match(section, /Not chosen: It keeps messages outside region North\./); assert.match(section, /Not chosen: It states nothing about where it keeps data\./);
     assert.ok(!/score|weigh/i.test(section.slice(section.indexOf('**Selection basis**'))), 'the basis weighs nothing');
     pass('S5 SDD: the decision record prints the selection basis (what is selected, each hard constraint with its typed reading or none), each candidate with its kind, its pinned knowledge, its outcome and its rows, the unproven rows named, and each rejected candidate with its reason; nothing is weighed');
+  });
+
+  // ------------------------------------------------------------ the fixtures read no clock (ruling Q7)
+  await block('S5 fixtures', async () => {
+    // Each fixture of the package's suite, built under two clocks years apart, is the same document: none reads the
+    // time, so a golden captured once holds on every later day.
+    const atClock = (t, fn) => { const Real = Date; class Fake extends Real { constructor(...a) { super(...(a.length ? a : [t])); } static now() { return new Real(t).getTime(); } } globalThis.Date = Fake; try { return fn(); } finally { globalThis.Date = Real; } };
+    for (const [name, make] of [['bankPaymentApplied', bankPaymentApplied], ['governedConcernApplied', () => governedConcernApplied().document], ['otherKindApplied', otherKindApplied], ['concernProject', concernProject], ['guidedConcernPreview', () => guidedConcernPreview().preview], ['selectionProject', selectionProject]])
+      assert.equal(JSON.stringify(atClock('2031-01-01T00:00:00.000Z', make)), JSON.stringify(atClock('2032-06-01T12:00:00.000Z', make)), name + ' reads no clock: built on two days it is the same document');
+    pass('S5 fixtures: every fixture of the package\'s suite (bankPaymentApplied, governedConcernApplied, otherKindApplied, concernProject, guidedConcernPreview, selectionProject) is the same document built under two clocks years apart: none reads the time');
   });
 
   // ------------------------------------------------------------ old documents and the shared helpers

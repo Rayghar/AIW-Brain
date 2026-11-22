@@ -10,12 +10,15 @@ is S1's second-person step.
 
 ## State
 
-- **Done:** the selection module and its five steps, the registration rows, the built-in edits, the parity of row 9,
-  the SDD's selection basis, the surface, the size evidence, the 13 blocks of `rc44-wp2-adoption-cases/selection.mjs`
-  (all green; each seen to fail on the base first), S1's suite green with three assertions replaced (below), the
-  related suites (below).
-- **In progress:** nothing.
-- **Next (for the lead):** the open questions below; the review of the slice.
+- **Built (082e06b):** the selection module and its five steps, the registration rows, the built-in edits, the parity
+  of row 9, the SDD's selection basis, the surface, the size evidence, the 13 blocks of
+  `rc44-wp2-adoption-cases/selection.mjs` (each seen to fail on the base first), S1's suite with three assertions
+  replaced (below), the related suites (below).
+- **Corrected by the fix-up (ruling Q7):** at 082e06b the block `S5 old documents`, and so `test:rc44-wp2-adoption`,
+  were **red**, not green as this file and the builder's result said: `concernProject` called `createProject` without
+  the fixture's time, so its SDD printed the day it was read and no longer matched the golden captured the day before.
+- **Fix-up:** branch `rc44/wp2-s5-selection-fix`, from 082e06b; the rulings of section Q (2026-11-22); see the section
+  "Fix-up" at the end of this file for each item, its case and what is left.
 
 ## What was built
 
@@ -182,3 +185,25 @@ and a builder of closures); see deviation 3.
 4. Template copies clear the whole `selection` key (the reset rule names it): the copy keeps the alternatives with their
    candidates and reads no selection (and no weighing). Whether the constraints' typed readings should travel into a
    copy is for the lead.
+
+## Fix-up (rulings Q1 to Q11 of 2026-11-22; review /home/user/hb-review/rc44-build/wp2-s5-selection.review.json)
+
+Branch `rc44/wp2-s5-selection-fix` from `082e06b`. Each item: the case first, seen to fail on the head it started
+from, then the change; a WIP commit after each item.
+
+### Progress
+
+- **Done:** item 1 (Q7).
+- **In progress:** item 2 (Q1).
+- **Next:** items 3 to 9 in the order of the task (Q2, Q3, Q4, Q5 and Q6, Q8, Q9, notes and size).
+
+### Items
+
+1. **Q7, must-fix 8, should-fix 11 — done.** `concernProject` and S1's `governedConcernApplied` (the lead's leave of Q8
+   covers S1's fixture) give `createProject` their fixed time. Case `S5 fixtures` (new): every fixture of the suite
+   (`bankPaymentApplied`, `governedConcernApplied`, `otherKindApplied`, `concernProject`, `guidedConcernPreview`,
+   `selectionProject`) built under two clocks years apart is the same document; it failed first on
+   `governedConcernApplied` and `concernProject`. The golden `documents.concernProject` was captured again on
+   `5cae40a`'s product source (a `git archive` of `5cae40a` with this branch's `rc44-wp2-fixtures.mjs` copied in; only
+   test files differ): only its `sdd` reading changed; `selectionProject` and both guided comparisons read as the golden
+   already held. The baseline file says so (`concernProjectRecaptured`). `S5 old documents` is green again.
