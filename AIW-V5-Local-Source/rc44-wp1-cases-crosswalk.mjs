@@ -633,15 +633,17 @@ add('S2.12 (size, ruling A4 and M4): the client build passes every gate with the
   const booked = R.routeBookings(EVIDENCE);
   assert.equal(booked.others['audit/rc44/evidence/wp9a-s1-size.json'], 342, 'the other packages\' evidence is read');
   // The integrated base of ruling M4 (S0 and wp1 S1, 3,229,840 B), the other packages' own bytes and the shared pool's: what is left is wp1 S2's.
-  // (the lead's ruling W2 of 2026-11-22; was: the two assertions below added every size file's bookings, so a booking filed after wp1 S2's start
-  // broke them. Now they read the bookings filed at wp1 S2's start: each booking filed after it, wp2 S5's own bytes and the lead's saving of the
-  // retirement of row 9, is named here and left out, as S1's size block leaves out the later wp2 slices' bookings. At wp1's own head neither is on
-  // the books, so there they read every booking, as before.)
-  // (merged with wp1 S3's edit: wp1 S3's own booking is filed after S2's start as well; settled by ruling X4.)
-  const LATER = {files: ['audit/rc44/evidence/wp2-s5-size.json', 'audit/rc44/evidence/wp1-s3-size.json'], pool: ['audit/rc44/evidence/lead-bookings-size.json:guidedConcernRetirementQ8']};
-  const atStart = {others: booked.othersTotal - LATER.files.reduce((n, f) => n + (booked.others[f] ?? 0), 0), pool: booked.poolTotal - LATER.pool.reduce((n, k) => n + (booked.pool[k] ?? 0), 0)};
-  assert.equal(3229840 + atStart.others + atStart.pool, size.base.chapters, 'the start commit is the integrated base and what the other packages and the pool booked at wp1 S2\'s start');
-  assert.equal(size.slice.chapters - 3229840 - atStart.others - atStart.pool, size.ownBytes, 'the route at the slice\'s head, less the base and the others booked at its start, is what S2 books');
+  // (the lead's ruling X4 of 2026-11-22, old -> new; it replaces the forms of rulings W2 and of wp1 S3's first build. Was:
+  // the two assertions below read every size file's bookings less a list of the bookings filed after wp1 S2's start
+  // (wp2 S5's, wp1 S3's, the lead's saving of row 9), a list each later merge had to edit. Now they read the bookings
+  // recorded at wp1 S2's start in its own evidence (bookingsAtStart, the start commit 5cae40a), and each booking so
+  // recorded is asserted to be on the books still, as it was: as strict as both forms, and no later merge edits it.)
+  const start = size.bookingsAtStart, sum = o => Object.values(o).reduce((n, x) => n + x, 0);
+  assert.equal(start?.commit, size.base.commit, 'the bookings recorded at wp1 S2\'s start commit');
+  for (const [f, n] of Object.entries(start.others)) assert.equal(booked.others[f], n, f + ' books what it booked at wp1 S2\'s start');
+  for (const [k, n] of Object.entries(start.pool)) assert.equal(booked.pool[k], n, k + ' is in the shared pool as at wp1 S2\'s start');
+  assert.equal(3229840 + sum(start.others) + sum(start.pool), size.base.chapters, 'the start commit is the integrated base and what the other packages and the pool booked at wp1 S2\'s start');
+  assert.equal(size.slice.chapters - 3229840 - sum(start.others) - sum(start.pool), size.ownBytes, 'the route at the slice\'s head, less the base and the others booked at its start, is what S2 books');
   assert.ok(size.slice.chapters <= BUDGET.routes.chapters); assert.deepEqual([size.slice.scripts, size.slice.css], [148, size.base.css]); assert.ok(size.slice.under10k <= size.base.under10k, 'no new file under 10 KB');
   { const w = size['opens with records']; assert.ok(w && w.host === 'public/knowledge-workspace-ui.js' && w.total === w.route + w.added && w.route === size.slice.chapters && w.files >= 1, 'opens with records'); }
   if (existsSync('dist/client-size-report.json') && existsSync('dist/client-metafile.json')) {

@@ -332,6 +332,12 @@ add('S3.8 (recovery import): the reviews of a concept and of a crosswalk row, in
   assert.deepEqual([out.knowledge.conceptPins[0].status, out.knowledge.conceptPins[0].retired.reason], ['retired', 'Imported historical pin']);
   assert.equal(out.knowledge.conceptMigrations[0].review, null); assert.equal(out.knowledge.conceptMigrations[0].importedReview.actor, 'second-architect');
   assert.equal(KC.releasedConcepts(out).every(c => !c.eligible), true, 'nothing released on another workbench is usable here');
+  // (the fix-up, ruling X4) the organisation's notices are a copy of its signed state elsewhere, as the currency is: a
+  // recovery clears them as it clears the currency, a hand-made package's forged successor included; a document that
+  // holds none gains no key.
+  assert.equal('organizationNotices' in out.knowledge, false, 'no notices, no key');
+  { const forged = clone(p); forged.knowledge.organizationNotices = {[L.releaseId]: {successor: {id: 'KR-0999', title: 'Forged edition', at: AT, concepts: [{conceptId: 'SYN-P001', version: 9, conceptHash: 'f'.repeat(64)}]}}};
+    const recovered = neutraliseImportedAuthority(forged, AT); assert.deepEqual(recovered.knowledge.organizationNotices, {}, 'recovery clears the notices'); assert.deepEqual(recovered.knowledge.pinCurrency, {}, 'and the currency'); }
   // An organisation release keeps its signed bytes (its checksum) and reads ineligible until verified here.
   { const W = await world(); try { const lib = await worldLibrary(W), OR1 = await lib.publish(lib.v1, 'Synthetic integration concepts 1'), {D} = await worldDesign(W, OR1); const doc = await D.read(), q = neutraliseImportedAuthority(clone(doc), AT), held = q.knowledge.organizationReleases[0];
     assert.equal(K.organizationReleaseChecksum(held), held.checksum, 'its parts are not rewritten: they are what the organisation signed'); assert.equal(held.assurance.eligible, false); assert.ok(q.knowledge.conceptPins.every(x => x.status === 'retired')); } finally { W.close(); } }
@@ -700,4 +706,125 @@ add('S3.23 (ruling X3): the one-alias rule reads the organisation release a libr
     doc = await L.read(); assert.equal(KC.resolveConcept(doc, 'Outbox')?.conceptId, 'SYN-P001', 'one alias still names one concept');
     assert.deepEqual(KC.crosswalkRecords(doc).filter(r => r.aliasId === 'Outbox' && r.state === 'verified'), [], 'no row of library B gives the alias to SYN-P002');
   } finally { W.close(); }
+});
+
+// ------------------------------------------------------------------------------------------------ 24 (ruling X4, should-fix 2)
+// A successor the organisation, or the project, withdrew is not offered as the newer version: both branches of the
+// currency (the project's own successor release, the organisation's successor named by its signed notice) pass over a
+// withdrawn successor, to a later one that stands.
+add('S3.24 (ruling X4): a withdrawn successor is not offered as newer, in the project\'s own releases and in the organisation\'s; a later successor that stands is', async () => {
+  const {KC} = await mods(), state = doc => KC.conceptPinCurrency(doc, pins(doc).find(x => x.status === 'active'), {today: '2026-11-16'});
+  // The project's own: v2 supersedes v1 and is withdrawn by a person; v3 supersedes v2.
+  { const M = await libraryDoc(); M.document = (await packaged(M.document, 'knowledge.concept-pin', {conceptId: 'SYN-P001', releaseId: M.releaseId, ...STEP}, 'architect')).document;
+    const next = (from, title, reviewDue) => { M.k('concept', {...CONCEPT, id: M.record, forms: M.document.knowledge.concepts[0].forms, reviewDue}, 'importer'); M.k('concept-review', {...CONCEPT_REVIEW, id: M.record}, 'reviewer'); return M.k('release', {...F.REVIEW, title, conceptIds: ['SYN-P001'], supersedes: from}, 'releaser'); };
+    const v2 = next(M.releaseId, 'Synthetic integration concepts 2', '2028-01-31');
+    assert.equal(state(M.document).state, 'newer-available');
+    M.k('withdraw', {...F.REVIEW, id: v2, stamp: K.knowledgeImpactStamp(M.document, v2)}, 'steward');
+    assert.deepEqual([state(M.document).state, M.document.knowledge.pinCurrency[pins(M.document)[0].id].state], ['current', 'current'], 'a withdrawn successor is no newer version');
+    const v3 = next(v2, 'Synthetic integration concepts 3', '2028-06-30');
+    assert.deepEqual([state(M.document).state, state(M.document).successor.releaseId], ['newer-available', v3], 'the successor of the withdrawn one is'); }
+  // The organisation's: OR2 succeeds OR1 and the organisation withdraws it; OR3 succeeds OR2.
+  const W = await world();
+  try {
+    const lib = await worldLibrary(W), OR1 = await lib.publish(lib.v1, 'Synthetic integration concepts 1'), {D, pinId} = await worldDesign(W, OR1);
+    const v2 = await lib.successor(lib.v1, 'Synthetic integration concepts 2'), OR2 = await lib.publish(v2, 'Synthetic integration concepts 2');
+    assert.equal((await D.read()).knowledge.pinCurrency[pinId].state, 'newer-available');
+    { const r = await W.orgApi('knowledge-withdraw', {releaseId: OR2.id, reason: 'The second edition was wrong.', reviewed: true}, 'steward'); assert.equal(r.status, 200, JSON.stringify(r.data)); }
+    let doc = await D.read(); assert.equal(doc.knowledge.pinCurrency[pinId].state, 'current', 'the organisation\'s withdrawn successor is no newer version'); assert.deepEqual(findings11(doc), []);
+    const v3 = await lib.successor(v2, 'Synthetic integration concepts 3', {reviewDue: '2028-06-30'}), OR3 = await lib.publish(v3, 'Synthetic integration concepts 3');
+    doc = await D.read(); assert.deepEqual([doc.knowledge.pinCurrency[pinId].state, doc.knowledge.pinCurrency[pinId].successor?.releaseId], ['newer-available', OR3.id], 'the successor of the withdrawn one is, through its notice');
+  } finally { W.close(); }
+});
+
+// ------------------------------------------------------------------------------------------------ 25 (ruling X4, should-fix 3)
+// A withdrawal's stored impact names the pins and the records that rely on them for every id the currency reads as
+// withdrawn: the concept (S3.20), the pinned release, a form claim of the pinned version and the form's source.
+add('S3.25 (ruling X4): a withdrawal of the pinned release, of a form claim of the pinned version or of its source stores the pin and the records that rely on it in its impact, as a withdrawal of the concept does', async () => {
+  const {CC} = await mods(), L = await libraryDoc();
+  let p = (await packaged(L.document, 'knowledge.concept-pin', {conceptId: 'SYN-P001', releaseId: L.releaseId, ...STEP}, 'architect')).document; const pinId = pins(p)[0].id;
+  p = (await packaged(p, 'knowledge.concept-link', {pinId, objectId: 'REQ-001', ...STEP}, 'architect')).document;
+  for (const target of [L.releaseId, L.claimIds.applicability, L.claimIds.definition, L.sourceId]) {
+    const out = CC.applyConceptCommand(p, {type: 'knowledge.withdraw', payload: {...F.REVIEW, id: target, stamp: K.knowledgeImpactStamp(p, target)}}, AT, 'steward', F.person('steward')).document, w = out.knowledge.withdrawals.at(-1);
+    assert.equal(w.targetId, target); assert.equal(out.knowledge.pinCurrency[pinId].state, 'withdrawn', target + ' reads withdrawn');
+    assert.deepEqual(w.impact.filter(x => /pin/.test(x.kind)).map(x => [x.kind, x.id]), [['concept pin', pinId], ['record that relies on a pin', 'REQ-001']], target + ': the impact names the pin and the record on it');
+  }
+  // A withdrawal of something no pin rests on names no pin.
+  { const q = clone(p); const other = CC.applyConceptCommand(q, {type: 'knowledge.source', payload: F.sourcePayload('Another source', ['Another passage.', 'Its second line.'])}, AT, 'importer', F.person('importer')); const id = other.selected;
+    const out = CC.applyConceptCommand(other.document, {type: 'knowledge.withdraw', payload: {...F.REVIEW, id, stamp: K.knowledgeImpactStamp(other.document, id)}}, AT, 'steward', F.person('steward')).document;
+    assert.deepEqual((out.knowledge.withdrawals.at(-1).impact || []).filter(x => /pin/.test(x.kind)), []); }
+});
+
+// ------------------------------------------------------------------------------------------------ 26 (ruling X4, should-fix 4; ruling B10)
+// A released concept's identity in the reading comes from the release's copy of it when the register's concept no longer
+// has the hash the release holds (a library that edited the concept after its release): the edited title, kind and scope
+// are not shown as what was released.
+add('S3.26 (ruling X4, B10): the concept reading takes a released concept\'s identity from the release\'s part when the register\'s hash differs from the part\'s; while they agree it is the register\'s', async () => {
+  const {KC} = await mods(), L = await libraryDoc(), was = KC.conceptReading(L.document, 'SYN-P001');
+  assert.deepEqual([was.title, was.kind, was.scope], ['Transactional outbox', 'pattern', ['data-owner', 'interaction']]);
+  L.k('concept', {...CONCEPT, id: L.record, title: 'An edited outbox', kind: 'tactic', scope: ['interaction'], forms: L.document.knowledge.concepts[0].forms}, 'importer');
+  const now = KC.conceptReading(L.document, 'SYN-P001'), part = L.document.knowledge.releases[0].parts.concepts[0];
+  assert.notEqual(KC.conceptRecords(L.document)[0].hash, part.conceptHash, 'the register was edited after the release');
+  assert.deepEqual([now.title, now.kind, now.scope, now.family], [part.title, part.kind, part.scope, part.family], 'the identity is the release\'s copy');
+  assert.equal(now.state, 'draft', 'the register\'s own state stays the reading\'s state');
+});
+
+// ------------------------------------------------------------------------------------------------ 27 (ruling X4, should-fix 5)
+// The design package's steps write no line into knowledge.history (they are quiet: rulings B10 and P5 b): the boundary's
+// activity row records each, faithfully. The knowledge workspace's history panel reads them from that row beside the
+// family's log, so a person sees one trail; without the activity the panel reads as before.
+add('S3.27 (ruling X4): the knowledge workspace\'s history panel shows the design package\'s steps, read from the project activity, beside knowledge.history, as one trail; the package\'s command types are the ones it reads, and no built-in knowledge type is', async () => {
+  const KW = await import('./public/knowledge-workspace-ui.js'), KG = await import('./public/knowledge-package.js'), X = await import('./public/design-extensions.js'), W = await world();
+  try {
+    const lib = await worldLibrary(W), OR1 = await lib.publish(lib.v1, 'Synthetic integration concepts 1'), {D, pinId, linkId} = await worldDesign(W, OR1);
+    const doc = await D.read(), events = (await W.api('/api/activity?project=' + D.id, null, 'architect')).data.events;
+    assert.ok(events.some(e => e.command === 'knowledge.concept-pin' && e.objectId === pinId) && events.some(e => e.command === 'knowledge.concept-link' && e.objectId === linkId), 'the activity records the steps');
+    const panel = html => html.slice(html.indexOf('Recorded knowledge history'));
+    const plain = panel(KW.renderKnowledgeReleases(doc)), both = panel(KW.renderKnowledgeReleases(doc, events));
+    assert.match(plain, new RegExp('^Recorded knowledge history · ' + doc.knowledge.history.length + '<'), 'without the activity: the family\'s log alone');
+    assert.match(both, new RegExp('^Recorded knowledge history · ' + (doc.knowledge.history.length + 2) + '<'), 'with it: the log and the package\'s two steps');
+    for (const [type, id] of [['concept-pin', pinId], ['concept-link', linkId]]) assert.match(both, new RegExp(' · ' + type + ' · ' + id + ' · architect<'), type + ' is in the trail, with who took it');
+    for (const h of doc.knowledge.history) assert.ok(both.includes(' · ' + h.type.replace('knowledge.', '') + ' · ' + h.id), h.type + ' of the log is still in it');
+    assert.ok(!events.filter(e => !KG.packageStep(e.command)).some(e => e.command && both.includes(' · ' + e.command + ' ')), 'no other activity is listed');
+    const mine = Object.keys(X.EXTENSIONS.find(e => e.id === PACKAGE).commands);
+    assert.ok(mine.every(KG.packageStep), 'every command type of the package is a step the panel reads');
+    for (const t of ['knowledge.concept', 'knowledge.concept-review', 'knowledge.concept-retire', 'knowledge.concept-restore', 'knowledge.claim', 'knowledge.review', 'knowledge.release', 'knowledge.activate', 'knowledge.deactivate', 'knowledge.withdraw', 'knowledge.link', 'knowledge.unlink', 'knowledge.topic', 'knowledge.library', 'knowledge.source', 'knowledge.organization-pin']) assert.equal(KG.packageStep(t), false, t + ' writes its own line into knowledge.history');
+  } finally { W.close(); }
+});
+
+// ------------------------------------------------------------------------------------------------ 28 (ruling X4, should-fix 6)
+// The successor notice walks the supersedes chain of the library's releases to the nearest one the organisation
+// published, and notifies every organisation release published from it: a successor of an unpublished intermediate
+// release, and a release published twice, leave no pinning project without its notice.
+add('S3.28 (ruling X4): a successor whose direct predecessor was never published notifies every organisation release of its nearest published ancestor, a release published twice included', async () => {
+  const W = await world();
+  try {
+    const lib = await worldLibrary(W), OR1a = await lib.publish(lib.v1, 'Synthetic integration concepts 1'), OR1b = await lib.publish(lib.v1, 'Synthetic integration concepts 1, again');
+    const one = await worldDesign(W, OR1a, {name: 'Design one'}), two = await worldDesign(W, OR1b, {name: 'Design two'});
+    const v2 = await lib.successor(lib.v1, 'Synthetic integration concepts 2'), v3 = await lib.successor(v2, 'Synthetic integration concepts 3', {reviewDue: '2028-06-30'}), OR3 = await lib.publish(v3, 'Synthetic integration concepts 3');
+    assert.deepEqual([OR3.from.supersedes].flat().sort(), [OR1a.id, OR1b.id].sort(), 'it names every organisation release of the nearest published ancestor');
+    for (const {D, pinId} of [one, two]) { const doc = await D.read(); assert.deepEqual([doc.knowledge.pinCurrency[pinId].state, doc.knowledge.pinCurrency[pinId].successor?.releaseId], ['newer-available', OR3.id], D.id + ' reads its notice'); }
+  } finally { W.close(); }
+});
+
+// ------------------------------------------------------------------------------------------------ 29 (ruling X4, should-fix 9; ruling B8)
+// The pin, link and migration bounds count what stands (as P4's bound of rows does): a pin that moved or was retired, a
+// link that was retired and a migration accepted or closed leave room, so a long-lived design reaches no bound through its
+// history; what stands is still bounded.
+add('S3.29 (ruling X4, B8): the bounds count what stands: 200 pins that moved or were retired, 2,000 retired links and 200 closed migrations leave room; 200 active pins, 2,000 active links and 200 open migrations do not', async () => {
+  const L = await libraryDoc(), many = (n, f) => Array.from({length: n}, (_, i) => f(i)), PIN = {conceptId: 'SYN-P001', releaseId: L.releaseId, ...STEP};
+  const pinOf = (i, status) => ({id: 'KU-' + (5000 + i), conceptId: 'SYN-X' + String(i).padStart(3, '0'), title: 'A pin written in place', releaseId: 'KR-0999', version: 1, conceptHash: 'x', status, revision: 1, history: []});
+  { const q = clone(L.document); q.knowledge.conceptPins = many(200, i => pinOf(i, i % 2 ? 'retired' : 'moved')); const out = await packaged(q, 'knowledge.concept-pin', PIN, 'architect'); assert.equal(pins(out.document).filter(x => x.status === 'active').length, 1, 'pins that no longer stand leave room'); }
+  { const q = clone(L.document); q.knowledge.conceptPins = many(200, i => pinOf(i, 'active')); await assert.rejects(() => packaged(q, 'knowledge.concept-pin', PIN, 'architect'), /This project holds 200 concept pins that stand/); }
+  const d = (await packaged(L.document, 'knowledge.concept-pin', PIN, 'architect')).document, pinId = pins(d)[0].id, LINK = {pinId, objectId: 'REQ-001', ...STEP};
+  const linkOf = (i, status) => ({id: 'KB-' + (5000 + i), pinId: 'KU-0999', conceptId: 'SYN-X', version: 1, objectId: 'REQ-001', form: 'definition', relationship: 'informs', status, actor: 'architect', at: AT});
+  { const q = clone(d); q.knowledge.conceptLinks = many(2000, i => linkOf(i, 'retired')); const out = await packaged(q, 'knowledge.concept-link', LINK, 'architect'); assert.equal(links(out.document).filter(l => l.status === 'active').length, 1, 'retired links leave room'); }
+  { const q = clone(d); q.knowledge.conceptLinks = many(2000, i => linkOf(i, 'active')); await assert.rejects(() => packaged(q, 'knowledge.concept-link', LINK, 'architect'), /This project holds 2000 concept links that stand/); }
+  // A successor release to migrate to, then 200 migrations accepted or closed, and 200 open.
+  const M = await libraryDoc(); M.document = (await packaged(M.document, 'knowledge.concept-pin', PIN, 'architect')).document; const mPin = pins(M.document)[0].id;
+  M.k('concept', {...CONCEPT, id: M.record, forms: M.document.knowledge.concepts[0].forms, reviewDue: '2028-01-31'}, 'importer'); M.k('concept-review', {...CONCEPT_REVIEW, id: M.record}, 'reviewer');
+  const v2 = M.k('release', {...F.REVIEW, title: 'Synthetic integration concepts 2', conceptIds: ['SYN-P001'], supersedes: M.releaseId}, 'releaser'); M.k('activate', {...F.REVIEW, id: v2, stamp: K.knowledgeStamp(M.document)}, 'releaser');
+  const migrationOf = (i, open) => ({id: 'KM-' + String(i + 1).padStart(4, '0'), pinId: 'KU-0999', conceptId: 'SYN-X', toReleaseId: 'KR-0999', reason: 'Written in place.', actor: 'architect', at: AT, revision: 1, history: [], ...(open ? {} : i % 2 ? {closed: 'Imported historical migration'} : {review: {decision: 'accepted', actor: 'second-architect', account: 'person', at: AT}})});
+  const MIGRATE = {pinId: mPin, toReleaseId: v2, reason: 'Version 2.'};
+  { const q = clone(M.document); q.knowledge.conceptMigrations = many(200, i => migrationOf(i, false)); const out = await packaged(q, 'knowledge.concept-migration', MIGRATE, 'architect'); assert.equal(migrations(out.document).at(-1).id, 'KM-0201', 'closed migrations leave room; the numbers stay unique'); }
+  { const q = clone(M.document); q.knowledge.conceptMigrations = many(200, i => migrationOf(i, true)); await assert.rejects(() => packaged(q, 'knowledge.concept-migration', MIGRATE, 'architect'), /This project holds 200 migrations that stand/); }
 });
