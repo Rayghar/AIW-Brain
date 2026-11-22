@@ -45,7 +45,7 @@ import assert from 'node:assert/strict';
 import {readFileSync, existsSync, writeFileSync, mkdirSync} from 'node:fs';
 import worker, {commandHandler, commandShape} from '../worker.js';
 import * as R from '../rc44-s0-readings.mjs';
-import {server, A, B, C, AGENT, SELECTION_AT, CONCERN_NOTES, CONCERN_ANSWERS, CONCERN_TAGS, concernProject, guidedConcernPreview, decisionSays, selectionProject, PROFILE_FACTS, ARCHETYPE, bankPaymentApplied, governedConcernApplied, otherKindApplied} from '../rc44-wp2-fixtures.mjs';
+import {server, A, B, C, AGENT, SELECTION_AT, CONCERN_NOTES, CONCERN_ANSWERS, CONCERN_TAGS, concernProject, decisionSays, selectionProject, PROFILE_FACTS, ARCHETYPE, bankPaymentApplied, governedConcernApplied, otherKindApplied} from '../rc44-wp2-fixtures.mjs';
 import {withFinalReview, CHAPTERS, inheritedFindings, reviewSourceStamp} from '../public/review-domain.js';
 import {EXTENSIONS} from '../public/design-extensions.js';
 import {extensionIssues, extensionConflicts, builtInType} from '../design-extension-boundary.js';
@@ -53,6 +53,7 @@ import {isReviewCommand} from '../authorship.js';
 import {applyDecisionCommand, decisionFindings} from '../public/decisions-domain.js';
 import {readDecision} from '../public/decision-reading.js';
 import {applyKnowledgeCommand, knowledgeStamp, claimReceiptCurrent} from '../public/knowledge-governance.js';
+import {applyArchitectureCommand, previewArchitectureDesign} from '../public/architecture-design.js';
 import {architectureMarkdown} from '../public/sdd-architecture.js';
 import {instantiateTemplate} from '../project-lifecycle.js';
 import {neutraliseImportedAuthority} from '../recovery-service.js';
@@ -603,8 +604,21 @@ export default async function ({block, pass, load}) {
   // ------------------------------------------------------------ parity for row 9 of the retirement table (design §e.1)
   await block('S5 parity row 9', async () => {
     pkg();
-    // the guided comparison, as the code at the base gave it (captured at 5cae40a), for each option chosen
-    for (const o of ['local', 'separate']) assert.deepEqual(decisionSays(guidedConcernPreview(concernProject(), o).preview.document.decisions.records[0]), BASE.guided[o], 'the guided comparison of a released concern gives what it gave at ' + BASE.capturedFrom + ' (' + o + ')');
+    // (ruling Q8; was: the guided comparison of a released concern, run now, gives what it gave at the base. Now the guided
+    // front-end is retired: its start, its answers, its preparation and the preview of an alternative it prepared are
+    // refused, a task an older project holds can be set aside, and the comparison is read only through selection.*, which
+    // gives the decision the guided comparison gave at the base, captured then: BASE.guided.)
+    { const p = concernProject();
+      assert.throws(() => applyArchitectureCommand(p, {type: 'architecture.start', payload: {requirementId: 'REQ-001', driverId: 'QD-001', topic: 'knowledge:schedule-ownership'}}, AT), /guided comparison of a released concern is retired/, 'the guided start of a released concern is refused');
+      const old = governedConcernApplied().document, task = old.coauthoring.designTasks.find(t => t.governedConcern), held = structuredClone(old), t = held.coauthoring.designTasks.find(x => x.id === task.id); t.status = 'questions';
+      for (const [type, payload] of [['architecture.answers', {answers: {reason: 'x'}}], ['architecture.prepare', {optionId: 'local'}], ['architecture.refresh', {reviewed: true, reason: 'x', reviewer: 'y', stamp: 'z'}]]) assert.throws(() => applyArchitectureCommand(held, {type, payload: {id: t.id, taskRevision: t.revision, ...payload}}, AT), /retired/, type + ' of a task an older project holds is refused');
+      assert.equal(applyArchitectureCommand(held, {type: 'architecture.dismiss', payload: {id: t.id, taskRevision: t.revision, reason: 'Compared as a selection now.'}}, AT).document.coauthoring.designTasks.find(x => x.id === t.id).status, 'dismissed', 'and it can be set aside');
+      const prepared = structuredClone(old), pt = prepared.coauthoring.designTasks.find(x => x.id === task.id), alternative = prepared.modelAlternatives.records.find(a => a.taskId === task.id); pt.status = 'proposed';
+      assert.throws(() => previewArchitectureDesign(prepared, alternative, AT), /retired/, 'an alternative the guided comparison prepared is not previewed, so not applied');
+      const src = readFileSync(new URL('../public/architecture-design.js', import.meta.url), 'utf8'), ui = readFileSync(new URL('../public/architecture-task-ui.js', import.meta.url), 'utf8');
+      assert.ok(!/concernComparison|previewReleasedConcern/.test(src), 'the guided comparison\'s builder and preview are gone from the route');
+      assert.ok(!/releasedDesignConcerns\(p\)\.map\(c=>'knowledge:'/.test(ui), 'the comparison tools offer no released concern as a guided topic');
+      assert.match(ui, /window\.aiwSelection\?\.\(\{store:[^}]*concernId:[^}]*\}\)/, 'a released concern opened from the tools or the intelligence (openConcern) opens a selection of its options'); }
     // the same comparison through selection.*
     for (const o of ['local', 'separate']) {
       let p = concernProject(); const r = send(p, 'selection.start', {kind: 'option', concernId: 'schedule-ownership', requirementId: 'REQ-001', driverId: 'QD-001', owner: CONCERN_ANSWERS.owner, reason: CONCERN_ANSWERS.reason}), id = r.selected; p = doc(r);
@@ -628,14 +642,25 @@ export default async function ({block, pass, load}) {
     // a concern that is no longer released is not compared
     { const p = concernProject(), off = withFinalReview(applyKnowledgeCommand(p, {type: 'knowledge.deactivate', payload: {reviewed: true, reviewer: 'Second reviewer', reason: 'Withdraw project activation.', id: p.knowledge.releases.at(-1).id, stamp: knowledgeStamp(p)}}, AT, 'author').document, {upgrade: false});
       assert.throws(() => send(off, 'selection.start', {kind: 'option', concernId: 'schedule-ownership', requirementId: 'REQ-001', driverId: 'QD-001', owner: 'x', reason: 'y'}), /current, released/); }
-    // retired: the guided comparison's own builder; it reads the one builder the selection uses (architecture-design.js)
-    const src = readFileSync(new URL('../public/architecture-design.js', import.meta.url), 'utf8');
-    assert.match(src, /export function concernComparison\(/, 'the released concern\'s comparison is one builder');
-    assert.equal(src.match(/run\('decision\.alternative',\{id:decisionId,title:option\.title,summary:reasons/g)?.length, 1, 'its alternatives are written in one place');
-    const guided = src.slice(src.indexOf('function previewReleasedConcern('), src.indexOf('export function previewArchitectureDesign('));
-    assert.match(guided, /concernComparison\(input,t,assessment\.optionId,notes,run\)/, 'the guided comparison writes through that builder'); assert.ok(!/run\('decision\.(?:save|alternative)'/.test(guided), 'and writes no decision or alternative of its own');
-    assert.match(readFileSync(new URL('../public/adoption-selection.js', import.meta.url), 'utf8'), /concernComparison/, 'the selection writes its options through that builder');
-    pass('S5 parity row 9: the guided comparison of a released concern gives, for each option chosen, the decision and alternatives it gave at ' + BASE.capturedFrom + ' (question, context, requirements, drivers, owner, source, rationale, assumptions, risks, mitigation, status; each alternative\'s texts, assessments and rejection reason); selection.* with kind option gives the same, with the concern pinned and each option a candidate; an option meets the hard constraints (unknown, so chosen only as unproven); a concern that is no longer released is not compared; the comparison has one builder');
+    // (ruling Q8; was: the one builder in architecture-design.js, which the guided comparison and the selection both wrote
+    // through. Now the builder is the selection's alone, off the route, and nothing else writes a released concern's decision.)
+    const sel = readFileSync(new URL('../public/adoption-selection.js', import.meta.url), 'utf8');
+    assert.match(sel, /export function concernComparison\(/, 'the released concern\'s comparison is one builder, the selection\'s');
+    assert.equal(sel.match(/run\('decision\.alternative',\{id:decisionId,title:option\.title,summary:reasons/g)?.length, 1, 'its alternatives are written in one place');
+    for (const f of ['architecture-design', 'architecture-task-ui', 'architecture-intelligence']) assert.ok(!/concernComparison|previewReleasedConcern/.test(readFileSync(new URL('../public/' + f + '.js', import.meta.url), 'utf8')), f + ' writes no released concern\'s comparison');
+    // a selection's decision raises the finding the guided path raised through its concern adoption once its released
+    // knowledge is withdrawn (should-fix 4): an error on Chapter 3
+    { let p = concernProject(); const r = send(p, 'selection.start', {kind: 'option', concernId: 'schedule-ownership', requirementId: 'REQ-001', driverId: 'QD-001', owner: CONCERN_ANSWERS.owner, reason: CONCERN_ANSWERS.reason}), id = r.selected; p = doc(r);
+      for (const optionId of ['local', 'separate']) p = doc(send(p, 'selection.candidate', {id, candidate: {kind: 'option', ref: {optionId}}, notes: CONCERN_NOTES[optionId]}));
+      const d = decision(p, id); p = doc(send(p, 'selection.choose', {id, alternativeId: d.alternatives[0].id, reason: CONCERN_ANSWERS.reason, rejections: {[d.alternatives[1].id]: 'Two teams.'}}));
+      assert.deepEqual(decisionFindings(p).filter(f => f.decisionId === id && f.code === 'selection-withdrawn'), [], 'no finding while the concern is current');
+      const off = withFinalReview(applyKnowledgeCommand(p, {type: 'knowledge.deactivate', payload: {reviewed: true, reviewer: 'Second reviewer', reason: 'Withdraw project activation.', id: p.knowledge.releases.at(-1).id, stamp: knowledgeStamp(p)}}, AT, 'author').document, {upgrade: false});
+      assert.deepEqual(decisionFindings(off).filter(f => f.decisionId === id && f.code === 'selection-withdrawn').map(f => f.level), ['error'], 'a selection of options whose concern is withdrawn raises an error on its decision'); }
+    { let {p, id} = threeCandidates(); const d0 = decision(p, id), inbox = alt(d0, 'Inbox and deduplication component');
+      p = doc(send(p, 'selection.choose', {id, alternativeId: inbox.id, reason: 'Fits.', unproven: ['QD-008'], rejections: Object.fromEntries(d0.alternatives.filter(a => a.id !== inbox.id).map(a => [a.id, 'Not this one.']))}));
+      const off = withFinalReview(applyKnowledgeCommand(p, {type: 'knowledge.deactivate', payload: {reviewed: true, reviewer: 'Second reviewer', reason: 'Withdraw project activation.', id: p.knowledge.releases.at(-1).id, stamp: knowledgeStamp(p)}}, AT, 'author').document, {upgrade: false});
+      assert.deepEqual(decisionFindings(off).filter(f => f.decisionId === id && f.code === 'selection-withdrawn').map(f => f.level), ['error'], 'and so does the decision behind a chosen profile whose release is withdrawn'); }
+    pass('S5 parity row 9: the guided front-end of a released concern is retired (its start, answers, preparation, re-reading and the preview of an alternative it prepared are refused; a task an older project holds can be set aside; no route module builds the comparison; the tools and the intelligence open a selection of the options); selection.* with kind option gives, for each option chosen, the decision and alternatives the guided comparison gave at ' + BASE.capturedFrom + ' (captured then), with the concern pinned and each option a candidate; an option meets the hard constraints (unknown, so chosen only as unproven); a concern that is no longer released is not compared, and a selection whose concern or chosen profile is withdrawn raises an error on its decision; the comparison has one builder, the selection\'s');
   });
 
   // ------------------------------------------------------------ the SDD
@@ -660,9 +685,9 @@ export default async function ({block, pass, load}) {
     // Each fixture of the package's suite, built under two clocks years apart, is the same document: none reads the
     // time, so a golden captured once holds on every later day.
     const atClock = (t, fn) => { const Real = Date; class Fake extends Real { constructor(...a) { super(...(a.length ? a : [t])); } static now() { return new Real(t).getTime(); } } globalThis.Date = Fake; try { return fn(); } finally { globalThis.Date = Real; } };
-    for (const [name, make] of [['bankPaymentApplied', bankPaymentApplied], ['governedConcernApplied', () => governedConcernApplied().document], ['otherKindApplied', otherKindApplied], ['concernProject', concernProject], ['guidedConcernPreview', () => guidedConcernPreview().preview], ['selectionProject', selectionProject]])
+    for (const [name, make] of [['bankPaymentApplied', bankPaymentApplied], ['governedConcernApplied', () => governedConcernApplied().document], ['otherKindApplied', otherKindApplied], ['concernProject', concernProject], ['selectionProject', selectionProject]])
       assert.equal(JSON.stringify(atClock('2031-01-01T00:00:00.000Z', make)), JSON.stringify(atClock('2032-06-01T12:00:00.000Z', make)), name + ' reads no clock: built on two days it is the same document');
-    pass('S5 fixtures: every fixture of the package\'s suite (bankPaymentApplied, governedConcernApplied, otherKindApplied, concernProject, guidedConcernPreview, selectionProject) is the same document built under two clocks years apart: none reads the time');
+    pass('S5 fixtures: every fixture of the package\'s suite (bankPaymentApplied, governedConcernApplied, otherKindApplied, concernProject, selectionProject) is the same document built under two clocks years apart: none reads the time');
   });
 
   // ------------------------------------------------------------ old documents and the shared helpers

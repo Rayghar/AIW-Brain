@@ -193,10 +193,10 @@ from, then the change; a WIP commit after each item.
 
 ### Progress
 
-- **Done:** items 1 to 6 (Q7, Q1, Q2, Q3, Q4, Q5 and Q6). Every S5 block is green; S1's `size` block is red until item 9
-  (wp2's allowance is 800 B since Q10; the route is over until item 7 retires the guided path's code).
-- **In progress:** item 7 (Q8).
-- **Next:** items 8 and 9 (Q9, notes and size).
+- **Done:** items 1 to 7 (Q7, Q1, Q2, Q3, Q4, Q5 and Q6, Q8). Every S5 block is green; S1's `size` block is red until
+  item 9 (its allowance check). `design-concern-validate.mjs` now fails at l.24 instead of l.119 (see item 7).
+- **In progress:** item 8 (Q9).
+- **Next:** item 9 (notes, size, suites, final commit).
 
 ### Items
 
@@ -323,3 +323,50 @@ from, then the change; a WIP commit after each item.
    (`S5 eligibility`): the stored candidate's facts -> no copy stored, and the reading's facts are the released claim's.
    Known limit: the lifecycle refuses to retire a component a selection compares, so an existing candidate loses its
    standing only in a document made by hand; the case reads such a document.
+7. **Q8, must-fix 9, should-fix 4 — done, but for one suite (below).** Row 9 is retired in this slice. The guided
+   front-end of a released concern is gone: `architecture.start` on a `knowledge:` topic is refused ("Compare the
+   released options of a concern as a selection in Chapter 3: the guided comparison of a released concern is retired.",
+   `architecture-design.js` CONCERN_RETIRED); a task on a released concern that an older project holds is read as before
+   and can be set aside (`architecture.dismiss`), while its answers, preparation and re-reading are refused, and an
+   alternative it prepared is not previewed, so not applied. The comparison's one builder (`concernComparison`) moved to
+   `adoption-selection.js` (off the route); `previewReleasedConcern` is deleted. The comparison tools' concern picker no
+   longer offers a released concern as a guided topic, and `window.aiwArchitectureTask.openConcern('knowledge:…')` (the
+   path of architecture-intelligence's "Compare the released approaches" action and of the knowledge workspace) opens a
+   selection of the concern's options (`window.aiwSelection` with `concernId`, whose view asks for the requirement, the
+   driver, the accountable architect and the reason, then adds each released option as a candidate). A selection's
+   decision gets the error `selection-withdrawn` on Chapter 3 when what its chosen candidate rests on no longer stands
+   (a concern's or a profile's released knowledge withdrawn, a library entry, archetype or component gone): the finding
+   the guided path got through S1's concern adoption (should-fix 4). Cases: `S5 parity row 9` (failed first on "the
+   guided start of a released concern is refused"). Replaced assertions, old -> new:
+   - `S5 parity row 9`: the guided comparison, run now, gives the decision captured at the base -> the guided start,
+     answers, preparation, re-reading and preview are refused, a held task can be set aside, no route module builds the
+     comparison, the tools and the intelligence open a selection; `selection.*` still gives `BASE.guided` (captured from
+     the guided path at the base). The one builder in `architecture-design.js` -> the one builder in
+     `adoption-selection.js`, and no route module (`architecture-design`, `architecture-task-ui`,
+     `architecture-intelligence`) writes the comparison. New: the withdrawal finding for an option selection and for a
+     chosen profile.
+   - S1's fixture `governedConcernApplied` (the lead's leave): it ran the guided path -> it answers the document that
+     path made, captured at `5cae40a` by running the function there with its fixed time
+     (`rc44-wp2-governed-concern.json`); S1's `J4` block is green on it. S5's fixture `guidedConcernPreview` is removed
+     with the path (what it gave at the base is `BASE.guided`); `S5 fixtures` no longer lists it.
+   - `architecture-intelligence-validate.mjs` (the lead's leave; l.112-118 at the base): (1) `architecture.start` on the
+     action's concern opens a task pinning the released claim -> the guided start is refused, and `selection.start` of
+     kind option on the action's concern, requirement and driver pins exactly that claim, with the action's driver, as a
+     draft by Sol's proposal; (2) "creating a proposed task cannot invalidate the source that suggested it" and (3)
+     "answering a draft is not an architectural source change" do **not** carry over as they were: a selection writes a
+     Chapter 3 decision at its start, a design change the requirement's context reads, where the guided task wrote none.
+     Replaced by the exact statement: the generation is stale after the start, the selection's decision is the only
+     source change the action makes (with the decisions as they were the generation is current), and adding the options
+     as candidates changes no other source. **My view, for the lead:** I do not think (2) can be kept as stated without
+     reading a Sol-drafted selection's decision as no design source, which is a rule of its own; I replaced it with the
+     strictest statement that holds and flag it here rather than weaken it silently.
+   - **Not done: `design-concern-validate.mjs`** (on the baseline-red list, failing at l.119 at `5cae40a`) exercises the
+     guided path itself in two blocks (start, answers, prepare, preview signals, reasoning-graph edges, apply, staleness:
+     about 40 assertions). With the start retired it now fails at l.24 (the refusal's words). The lead's leave of Q8
+     names S1's fixture and `architecture-intelligence-validate.mjs`, not this suite, and its guided-task readers'
+     assertions (`assessInteraction`, `interactionReasoningGraph`, the preview's signals) have no `selection.*`
+     counterpart to point at. It is left unchanged for the lead to rule: leave to re-point it (most of its decision
+     assertions map onto the selection's decision; its task-reader assertions would read a task as an older project
+     holds it), or a decision that it retires with the path.
+   Route: the retirement takes the guided path's code off the chapters route (`architecture-design.js` 11,622 -> 8,608
+   B in the route's output), which more than pays for Q1, Q2 and Q4 (see item 9).

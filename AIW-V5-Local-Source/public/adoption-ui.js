@@ -16,13 +16,18 @@
 // module of the package (rc44-s0-extensions-validate.mjs tells a package's modules by who imports them).
 import {esc} from './html-escape.js';
 import {selectionReading,selectableProfiles,confirmStands} from './adoption-selection.js';
+import {releasedDesignConcern} from './domain-knowledge.js';
 const list=v=>Array.isArray(v)?v:[];
 const STATE={pass:'pass',fail:'fail',unknown:'unknown'},KIND={profile:'Profile',library:'Library entry',archetype:'Catalogue archetype',existing:'Existing component',build:'Build',buy:'Buy',option:'Released option'};
 const btn=(action,label,attrs='',cls='btn')=>`<button type="button" class="${cls}" data-sel-action="${action}" ${attrs}>${esc(label)}</button>`;
 const decisionOf=(p,id)=>list(p?.decisions?.records).find(d=>d.id===id)||null;
 // The selection view of one decision, or the start of one for a responsibility.
-export function selectionView(p,{decisionId='',responsibilityId=''}={}){
+export function selectionView(p,{decisionId='',responsibilityId='',concernId='',driverId=''}={}){
  const d=decisionOf(p,decisionId),r=selectionReading(p,d);
+ // the options of a released concern (ruling Q8: the guided comparison of a released concern is retired; its options
+ // are compared here): the requirement and the driver the comparison answers, the accountable architect and the reason
+ const concern=!r&&concernId?releasedDesignConcern(p,concernId):null;
+ if(concern){const reqs=list(p?.artefacts).filter(a=>a.type==='requirement');return `<section class="arc-verdict" data-selection data-sel-concern="${esc(concern.id)}"><h3>Compare the released options of ${esc(concern.title)}</h3><p>A selection is a Chapter 3 decision: each released option is a candidate, read against the hard constraints that reach the requirement. Unknown is never neutral.</p><label class="brain-field"><span>Requirement</span><select data-sel-requirement>${reqs.map(x=>`<option value="${esc(x.id)}">${esc(x.id+' · '+x.title)}</option>`).join('')}</select></label><label class="brain-field"><span>Driver it answers</span><input data-sel-driver value="${esc(driverId)}"></label><label class="brain-field"><span>Accountable architect</span><input data-sel-owner></label><label class="brain-field"><span>Why this comparison is made</span><textarea data-sel-why rows="2"></textarea></label>${btn('start-option','Start the selection','','btn primary')}</section>`;}
  if(!r){const rs=list(p?.logical?.responsibilities);return `<section class="arc-verdict" data-selection><h3>Select a component for a responsibility</h3><p>A selection is a Chapter 3 decision: each candidate is read against the hard constraints that reach the responsibility. Unknown is never neutral.</p><label class="brain-field"><span>Responsibility</span><select data-sel-responsibility>${rs.map(x=>`<option value="${esc(x.id)}" ${x.id===responsibilityId?'selected':''}>${esc((x.ref||x.id)+' · '+x.title)}</option>`).join('')}</select></label><label class="brain-field"><span>Accountable architect</span><input data-sel-owner></label>${btn('start','Start the selection','','btn primary')}</section>`;}
  const label=id=>r.constraints.find(k=>k.id===id)?.label||id,chosen=!!r.choice;
  const rows=c=>c.eligibility.rows.map(x=>`<li data-selection-row="${esc(x.constraintId)}" data-state="${STATE[x.state]||'unknown'}">${esc(label(x.constraintId))}: <b>${esc(x.state)}</b>${x.basis==='person'?esc(' · judged by '+x.by+': '+x.reason):''}${x.state==='unknown'&&(!chosen||c.alternativeId===r.choice.alternativeId)?' '+btn('judge','Judge','data-alternative="'+esc(c.alternativeId)+'" data-constraint="'+esc(x.constraintId)+'"'):''}${x.state==='unknown'&&!chosen?` <label><input type="checkbox" data-sel-unproven="${esc(c.alternativeId+':'+x.constraintId)}"> Name unproven if chosen</label>`:''}</li>`).join('');
@@ -35,14 +40,15 @@ export function selectionView(p,{decisionId='',responsibilityId=''}={}){
 }
 // Opens the selection in a dialog, from the library chooser or the comparison tools. The store sends each step as a
 // command; the view is drawn again from the document the server answers.
-export function openSelection({store,modal,decisionId='',responsibilityId=''}={}){
+export function openSelection({store,modal,decisionId='',responsibilityId='',concernId='',driverId=''}={}){
  const doc=()=>store?.value?.document||{};let id=decisionId;
- const d=modal('Select a component',selectionView(doc(),{decisionId:id,responsibilityId})),redraw=()=>{const body=d.querySelector('.intake-body');if(body)body.innerHTML=selectionView(doc(),{decisionId:id,responsibilityId});};
+ const d=modal('Select a component',selectionView(doc(),{decisionId:id,responsibilityId,concernId,driverId})),redraw=()=>{const body=d.querySelector('.intake-body');if(body)body.innerHTML=selectionView(doc(),{decisionId:id,responsibilityId,concernId,driverId});};
  const send=async(type,payload)=>{const result=await store.command({type,payload});if(type==='selection.start')id=result?.selected||id;redraw();};
  const val=sel=>d.querySelector(sel)?.value||'';
  d.addEventListener('click',async e=>{const b=e.target.closest('[data-sel-action]');if(!b||b.disabled)return;b.disabled=true;
   try{const a=b.dataset.selAction;
    if(a==='start')await send('selection.start',{kind:'component',responsibilityIds:[val('[data-sel-responsibility]')],owner:val('[data-sel-owner]')});
+   else if(a==='start-option'){await send('selection.start',{kind:'option',concernId,requirementId:val('[data-sel-requirement]'),driverId:val('[data-sel-driver]'),owner:val('[data-sel-owner]'),reason:val('[data-sel-why]')});const c=releasedDesignConcern(doc(),concernId);for(const o of c?.options||[])await send('selection.candidate',{id,candidate:{kind:'option',ref:{optionId:o.id}}});}
    else if(a==='add-profile')await send('selection.candidate',{id,candidate:{kind:'profile',ref:{scope:'knowledge',claimId:b.dataset.claim,releaseId:b.dataset.release}}});
    else if(a==='judge'){const evidence=prompt('Evidence for the judgement'),reason=evidence&&prompt('Reason'),state=reason&&prompt('pass or fail','pass');if(state)await send('selection.judge',{id,alternativeId:b.dataset.alternative,constraintId:b.dataset.constraint,state,evidence,reason});}
    else if(a==='choose'){const r=selectionReading(doc(),decisionOf(doc(),id)),c=r.candidates.find(x=>x.alternativeId===b.dataset.alternative);await send('selection.choose',{id,alternativeId:c.alternativeId,reason:val('[data-sel-reason]'),unproven:[...d.querySelectorAll('[data-sel-unproven^="'+c.alternativeId+':"]:checked')].map(x=>x.dataset.selUnproven.slice(c.alternativeId.length+1)),rejections:Object.fromEntries(r.candidates.filter(x=>x!==c).map(x=>[x.alternativeId,val('[data-sel-reject="'+x.alternativeId+'"]')]))});}

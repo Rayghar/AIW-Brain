@@ -50,7 +50,7 @@ import {driverKind} from './quality-domain.js';
 import {driverScope,driverScopeIndex} from './driver-scope.js';
 import {releasedClaims,claimReceipt,claimReceiptCurrent,knowledgeState} from './knowledge-governance.js';
 import {releasedDesignConcern} from './domain-knowledge.js';
-import {concernComparison} from './architecture-design.js';
+import {knowledgeConcern,architectureOptions,criterionDrivers} from './architecture-knowledge.js';
 import {designBasis} from './design-basis.js';
 import {cleanLibraryRef,proposalSource,COMPONENT_ARCHETYPES} from './component-library.js';
 import {adoptionRecords,ADOPTION_LIMITS} from './adoption-domain.js';
@@ -185,10 +185,45 @@ export function selectionFindings(p){
  for(const d of list(p?.decisions?.records)){
   const s=d?.selection;if(!plain(s)||d.status==='superseded')continue;
   const chosen=d.selectedAlternativeId?list(d.alternatives).find(a=>a.id===d.selectedAlternativeId):null;
+  // the knowledge (or the library entry, archetype or component) the chosen candidate rests on no longer stands: the
+  // finding the guided path got through its concern adoption (S1, adoption-definition-withdrawn), on the decision
+  const ca=s.choice&&list(d.alternatives).find(a=>a.id===s.choice.alternativeId&&a.candidate),gone=ca&&standingOf(p,d,ca.candidate);
+  if(gone)add('selection-withdrawn',d,'Review the knowledge the selection rests on',ca.title+': '+gone+' Choose again, or review it with the knowledge steward, before '+d.id+' is accepted or approved.',{alternativeId:ca.id});
   if(s.choice&&!confirmStands(p,d)){const who=confirmSubject(p,d).history.map(x=>x.actor);add('selection-confirm',d,'A second person confirms the selection',(s.confirm?'The confirm of '+d.id+' no longer covers what the selection says. ':'')+'Before '+d.id+' is accepted, a signed-in person who is not '+who.join(' or ')+' (the chooser and the judges of the chosen candidate\'s rows) confirms the selection.');}
   if((d.selectedAlternativeId||null)!==(s.choice?.alternativeId||null)||chosen&&!chosen.candidate)add('selection-choice',d,'The working choice is not the selection\'s',(chosen?chosen.title+(chosen.candidate?' is the working choice in Chapter 3, and the selection chose '+(list(d.alternatives).find(a=>a.id===s.choice?.alternativeId)?.title||'nothing'):' is no candidate of the selection'):'Chapter 3 holds no working choice, and the selection chose one')+'. Choose through the selection: its choice is the decision\'s.',{alternativeId:d.selectedAlternativeId||null});
  }
  return out;
+}
+
+// ---------------------------------------------------------------- the comparison of a released concern (design §e.1 row 9)
+// The one builder of a released concern's comparison, moved here from architecture-design.js when the guided comparison
+// of a released concern was retired (the lead's ruling Q8): what the decision says, and what each alternative says for
+// its released option, written by the selection's start and candidates through the chapter's own handler.
+// Round 25 (D-25-10, K2): a criterion tied to a quality category or a driver kind links the project's drivers of it
+// to the decision, beside the comparison's own scenario. The person's reviewed apply links them, and the preview names
+// each with the criterion that brings it. Their effects stay unstated ('unknown') for every option, with the option's
+// released consequence on that criterion as the reason, until a person records one.
+// `t` is the comparison ({governedConcern, requirementId, driverId, basis, answers: {owner, reason}}); `run(type,
+// payload)` writes each step through the chapter's handler (or keeps it: the selection takes its decision at its start
+// and each option's alternative when that option is added as a candidate); `chosen` is the option the comparison
+// chose, if any, and `notes` the criterion notes of each option. Answers [source, scope, options, decision id].
+export function concernComparison(input,t,chosen,notes,run){
+  const concern=knowledgeConcern(t),receipt=concern.receipt,a=t.answers,options=architectureOptions(t);
+  const source='Released design concern '+receipt.claimId+' / '+receipt.releaseId+' · '+receipt.path+' @ '+receipt.revision+' lines '+receipt.lineStart+'–'+receipt.lineEnd;
+  const scope=concern.criteria.filter(c=>c.category||c.kind).map(c=>({c,ids:criterionDrivers(input,c).map(d=>d.id)}));
+  const driverIds=[...new Set([t.driverId,...scope.flatMap(x=>x.ids)])],linked=driverIds.filter(id=>id!==t.driverId);
+  const decisionId=run('decision.save',{question:concern.question,context:t.basis.requirement.description+' '+concern.statement,requirementIds:[t.requirementId],driverIds,owner:a.owner,source,rationale:a.reason,assumptions:[...concern.conditions,...concern.limitations].join(' '),risks:options.find(o=>o.id===chosen)?.cost,mitigation:'Verify the project-specific criteria and quality scenario before acceptance.'});
+  for(const option of options){
+    const released=concern.options.find(o=>o.id===option.id)||{},said=c=>released.consequences?.[c.id]||'';
+    const reasons=concern.criteria.map(c=>c.label+': '+String(notes?.[option.id]?.[c.id]||'Not assessed').trim());
+    // The released consequences and the evidence the option needs, as the concern states them; nothing when it does not.
+    const consequences=option.counterfactual+(concern.criteria.some(said)?' As the released concern states: '+concern.criteria.filter(said).map(c=>c.label+': '+said(c)).join(' '):'')+(released.evidence?' The evidence it needs: '+released.evidence:'');
+    // A driver's reason: the criteria assessed on it (every criterion for the comparison's own scenario), each with the
+    // option's released consequence where that criterion weighs the driver.
+    const weighs=(c,id)=>scope.some(x=>x.c===c&&x.ids.includes(id)),reasonOf=(id,cs)=>cs.map(c=>reasons[concern.criteria.indexOf(c)]+(said(c)&&weighs(c,id)?' Released consequence: '+said(c):'')).join(' ');
+    run('decision.alternative',{id:decisionId,title:option.title,summary:reasons.join(' '),benefits:'Fit to this project requires the architect’s criterion assessments.',costs:option.cost,consequences,pattern:'Released design concern · '+concern.title,antiPattern:'Claiming an outcome without project evidence.',assessments:{[t.driverId]:{effect:'unknown',reason:reasonOf(t.driverId,concern.criteria),evidence:source},...Object.fromEntries(linked.map(id=>[id,{effect:'unknown',reason:reasonOf(id,concern.criteria.filter(c=>weighs(c,id))),evidence:source}]))},rejectionReason:option.id===chosen?'':a.reason});
+  }
+  return [source,scope,options,decisionId];
 }
 
 // ---------------------------------------------------------------- the commands
@@ -196,8 +231,7 @@ export function selectionFindings(p){
 const step=(s,actor,at,author)=>Object.assign(s,{actor:actor||null,at,account:author?.account??null});
 // How an author is marked on what it writes: a draft by Sol, an import, an agent account or a person.
 const kindOf=author=>author?.kind==='sol-draft'||author?.kind==='import'?author.kind:author?.account==='agent'?'agent':'person';
-// The one builder of a released concern's comparison (architecture-design.js concernComparison), its steps kept, not
-// written: [the decision's payload, then one alternative's payload per released option, in the concern's order].
+// The one builder of a released concern's comparison (concernComparison, below), its steps kept, not written: [the decision's payload, then one alternative's payload per released option, in the concern's order].
 const comparison=(p,concern,t,notes)=>{const steps=[],[,,options]=concernComparison(p,{...t,governedConcern:concern},null,notes,(type,payload)=>{steps.push(payload);return '';});return {options,steps};};
 // The released concern a selection of kind option compares, while it is current, and the payload of one option.
 function optionOf(p,s,optionId,notes){
