@@ -8,7 +8,7 @@ import {applyWorkbenchCommand} from './public/workbench-domain.js';
 import {sha256} from './public/workbook-reader.js';
 import {COMPONENT_LIBRARY_KIND,readComponentSnapshot,snapshotText,SNAPSHOT_LIMIT} from './public/component-library.js';
 import {organizationKnowledgeRelease,pinOrganizationKnowledge} from './public/knowledge-governance.js';
-import {publishRefusal,organizationAliasRefusal} from './public/knowledge-concept-commands.js';
+import {publishRefusal,oneAlias} from './public/knowledge-concept-commands.js';
 import {refreshConceptPins} from './public/knowledge-concepts.js';
 import {json} from './http.js';
 import {accountKind} from './authorship.js';
@@ -148,8 +148,9 @@ export async function handleOrganizations(request,env,actor,projectId){
   const rel=await env.DB.prepare('SELECT document FROM organization_releases WHERE organization_id=? AND id=?').bind(id,clean(raw.releaseId,60)).first();if(!rel)throw Error('Choose an existing knowledge release.');const release=JSON.parse(rel.document);
   if(release.kind!=='knowledge')throw Error('Choose a knowledge release.');if(!await verifyOrganizationRelease(env,release))throw Error('The release signature could not be verified.');if(raw.reviewed!==true)throw Error('Review this release and its effect on your project.');
   const stored=await readStoredProject(env,actor,row.document),p=withFinalReview(stored.document);if(p.workspace?.status==='archived')throw Error('Restore this project before changing its knowledge.');
-  // (rc44, wp1 S3; ruling S10) the rows the release holds come to read verified here: one alias names one concept.
-  {const refusal=organizationAliasRefusal(p,release);if(refusal)throw Error(refusal);}
+  // (rc44, wp1 S3; rulings S10 and X3) the rows the release holds come to read verified here: one alias names one
+  // concept, by the one rule every door asks (it refuses in words; nothing is pinned).
+  oneAlias(p,release.parts?.crosswalk||[],release);
   const pinned=pinOrganizationKnowledge(p,release,{at,actor,reviewer:clean(raw.reviewer,180),reason:clean(raw.reason),verified:true}).document;
   const result=await saveStoredProject(env,actor,projectId,pinned,row.revision,at,stored.keys);if(!result.meta.changes)return json({error:'The project changed during pinning.',conflict:true},409);
   auditEvent('organization-knowledge-pin',{by:actor,organization:id,release:release.id,project:projectId});

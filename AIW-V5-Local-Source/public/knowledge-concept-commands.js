@@ -399,24 +399,6 @@ function standsBehind(p,s,r){
  }
  return null;
 }
-// The one-alias rule over organisation releases (ruling S10 of 2026-11-22): asked where the rows of an organisation's
-// release come to read verified in a project, when it is pinned. It reads this project's register (its verified rows)
-// and the rows the project's active releases hold, its own and the organisation's, each row known by its project and its
-// id, never by its id alone: two libraries both number their first row KA-0001. A `same` row of the release whose alias
-// another concept already bears as a verified `same` alias, in any scheme, is refused in words; the release is not pinned.
-// (oneAlias reads this register only, for the rows written here.)
-export function organizationAliasRefusal(p,release){
- const s=knowledgeState(p),here=p?.id||'this project',known=[];
- for(const r of crosswalkRecords(p))if(r.state==='verified'&&r.relation==='same')known.push({row:r,project:here});
- for(const r of [...s.releases,...list(s.organizationReleases)])if(s.pins.includes(r.id)&&r.id!==release?.id)for(const row of list(r.parts?.crosswalk))if(row?.relation==='same'&&crosswalkState(row)==='verified')known.push({row,project:r.organizationId?r.from?.projectId:here});
- const from=release?.from?.projectId;
- for(const row of list(release?.parts?.crosswalk)){
-  if(row?.relation!=='same'||crosswalkState(row)!=='verified')continue;
-  const other=known.find(x=>x.row.aliasId===row.aliasId&&x.row.conceptId!==row.conceptId&&!(x.project===from&&x.row.id===row.id));
-  if(other)return row.scheme+' '+row.aliasId+' is already the same as '+other.row.conceptId+' ('+other.row.id+' of project '+other.project+(other.row.scheme===row.scheme?'':', in the '+other.row.scheme+' scheme')+'): one alias names one concept, so the organisation release that gives it '+row.conceptId+' is not pinned here. Deactivate or withdraw the knowledge that names the other first.';
- }
- return null;
-}
 
 // ---------------------------------------------------------------- the crosswalk (rc44, wp1 slice S2)
 // The commands of the design package p10-knowledge (knowledge-package-server.js registers them through S0's contract;
@@ -448,15 +430,24 @@ function targetContent(scheme,aliasId,conceptId){
 const documentOnly=(p,name)=>{if(p&&typeof p==='object'&&('crosswalk' in p||'concepts' in p)&&!('knowledge' in p))throw Error(name+' takes the project document, not its knowledge state.');};
 const standing=(s,c)=>list(s.crosswalk).filter(y=>y.conceptId===c&&!['retired','rejected'].includes(crosswalkState(y))).length;
 export function admit(p,c,row=null){documentOnly(p,'admit');if((!row||crosswalkState(row)==='rejected')&&standing(knowledgeState(p),c)>=ROWS_PER_CONCEPT)throw Error(c+' has '+ROWS_PER_CONCEPT+' crosswalk rows that stand (neither retired nor rejected), the most a concept holds: '+(row?row.id+' would stand again. Retire':'retire')+' or reject one first.');}
-// One verified `same` row per alias: one alias names one concept, in every scheme (rulings S2, S6 and S10), asked of the
-// row as written wherever a row comes to read verified (a second person's verification, an edit that revives a standing
-// review). It reads this project's register only: S4's import may ask oneAlias(document, row); S3's organisation releases
-// need the rule over this register plus the rows releases hold, keyed by (project, row id), which this is not.
-// Both shared checks take the document and refuse a knowledge state, so a misuse fails closed.
-export function oneAlias(p,x){
+// One verified `same` row per alias: one alias names one concept, in every scheme and whichever project a row comes from
+// (rulings S2, S6, S10 and X3 of 2026-11-22). The one rule, asked at every door where rows come to read verified here: a
+// second person's verification and an edit that revives a standing review (rows: the row as written), and the
+// organisation pin (rows: the release's rows; release: that release). It reads this register's verified `same` rows and
+// those the project's active releases hold, its own and the organisation's, each known by (project, row id), an
+// organisation release's from.projectId as its project: two libraries both number their first row KA-0001. A row is
+// refused in words that name the other row, by its project when a release holds it; nothing is written.
+// It takes the document and refuses a knowledge state (as admit does), so a misuse fails closed.
+export function oneAlias(p,rows,release=null){
  documentOnly(p,'oneAlias');
- const other=x.relation==='same'&&crosswalkRecords(p).find(y=>y.id!==x.id&&y.state==='verified'&&y.relation==='same'&&y.aliasId===x.aliasId&&y.conceptId!==x.conceptId);
- if(other)throw Error(x.scheme+' '+x.aliasId+' is already the same as '+other.conceptId+(other.scheme===x.scheme?'':' in the '+other.scheme+' scheme')+' ('+other.id+', verified): one alias names one concept. Reject or retire that row first.');
+ const s=knowledgeState(p),here=p?.id||'this project',from=release?release.from?.projectId:here,known=[];
+ for(const r of crosswalkRecords(p))if(r.state==='verified'&&r.relation==='same')known.push({row:r,project:here,held:false});
+ for(const r of [...s.releases,...list(s.organizationReleases)])if(s.pins.includes(r.id)&&r.id!==release?.id)for(const row of list(r.parts?.crosswalk))if(row?.relation==='same'&&crosswalkState(row)==='verified')known.push({row,project:r.organizationId?r.from?.projectId:here,held:true});
+ for(const x of Array.isArray(rows)?rows:[rows]){
+  if(x?.relation!=='same'||release&&crosswalkState(x)!=='verified')continue;
+  const o=known.find(k=>k.row.aliasId===x.aliasId&&k.row.conceptId!==x.conceptId&&!(k.project===from&&k.row.id===x.id));
+  if(o)throw Error(x.scheme+' '+x.aliasId+' is already the same as '+o.row.conceptId+(o.row.scheme===x.scheme?'':' in the '+o.row.scheme+' scheme')+' ('+o.row.id+(o.held?' of project '+o.project:', verified')+'): one alias names one concept'+(release?', so the organisation release that gives it '+x.conceptId+' is not pinned here':'')+'.'+(o.held?' Deactivate or withdraw the knowledge that names the other first.':' Reject or retire that row first.'));
+ }
 }
 // One id names one concept (ruling P3 of 2026-11-22): the alias of a `same` row is not the id of another concept of the
 // register, whichever was registered first; asked at the proposal and again at verification.
@@ -528,8 +519,8 @@ function crosswalkCommand({p,s,r,type,at,actor,next},author){
   Object.assign(existing,x,{revision:existing.revision+1,lastEditor:actor});if(!x.targetContent)delete existing.targetContent;delete existing.confirmed;
   existing.history.push({revision:existing.revision,at,actor,change:text(r.reason,300)||'Edited'});
   // An edit back to the content a standing review covered revives that review: the row comes to read verified without a
-  // verification, so it asks the one-alias rule as a verification does, of the row as written (rulings S6 and S10). The
-  // command works on a copy, so a refusal here writes nothing.
+  // verification, so it asks the one-alias rule as a verification does, of the row as written (rulings S6, S10 and X3).
+  // The command works on a copy, so a refusal here writes nothing.
   if(was!=='verified'&&crosswalkState(existing)==='verified')oneAlias(p,existing);
   return existing.id;
  }

@@ -669,3 +669,35 @@ add('S3.22 (ruling X2): a release of concepts is published to the organisation o
     { const lib = await worldLibrary(W, {name: 'Library S', row: {}}); const OR = await lib.publish(lib.v1, 'Synthetic integration concepts 1'); assert.deepEqual(OR.from.releaseId, lib.v1); }
   } finally { W.close(); }
 });
+
+// ------------------------------------------------------------------------------------------------ 23 (ruling X3)
+// One one-alias rule at every door (must-fix 3; completes rulings S6 and S10): one function (oneAlias), asked at a second
+// person's verification, at an edit whose written row reads verified and at the organisation pin, reads this register's
+// verified `same` rows and those of the project's active releases, its own and the organisation's, each known by
+// (project, row id), an organisation release's from.projectId as its project. The review's reverse order: a library pins
+// an organisation release that holds Outbox -> SYN-P001, then verifies its own Outbox -> SYN-P002: refused, in words that
+// name the other row by project and row id; and an edit that revives a lapsed review of such a row is refused the same way.
+add('S3.23 (ruling X3): the one-alias rule reads the organisation release a library pinned: a local verification, and an edit that revives a review, of an alias that release gives another concept are refused, naming the other row by project and row id; the organisation row still resolves', async () => {
+  const {KC} = await mods(), W = await world();
+  try {
+    const a = await worldLibrary(W, {name: 'Library A', row: {}}), A = await a.publish(a.v1, 'Library A concepts 1');
+    const b = await worldLibrary(W, {name: 'Library B', conceptId: 'SYN-P002'}), L = b.L;
+    const ROW = {conceptId: 'SYN-P002', scheme: 'external', label: 'Outbox (an external register)', relation: 'same', note: 'The register names it so.', evidenceClaimId: b.claimIds.definition, aliasId: 'Outbox'};
+    const VERIFY = id => ({decision: 'verified', reviewer: 'Synthetic second person', reason: 'Checked the alias against its passage.', reviewed: true, aliasChecked: true, id});
+    // Library B verifies a row of its own first and then lets its review lapse (a person's edit of the label), so that the
+    // organisation pin finds no verified row of the alias here and pins library A's release.
+    const own = await L.ok('knowledge.crosswalk', ROW, 'architect'); await L.ok('knowledge.crosswalk-review', VERIFY(own), 'reviewer');
+    await L.ok('knowledge.crosswalk', {...ROW, id: own, label: 'Outbox (another label)', reason: 'Another label.'}, 'architect');
+    await L.read(); { const r = await W.orgApi('knowledge-pin', {releaseId: A.id, revision: L.state.revision, reviewed: true, reason: 'The guild\'s outbox.', reviewer: 'Synthetic steward'}, 'steward', L.id); assert.equal(r.status, 200, JSON.stringify(r.data).slice(0, 300)); }
+    let doc = await L.read(); assert.equal(KC.resolveConcept(doc, 'Outbox')?.conceptId, 'SYN-P001', 'library A\'s row resolves in library B');
+    const OTHER = '^external Outbox is already the same as SYN-P001 \\(' + a.rowId + ' of project ' + a.L.id + '\\): one alias names one concept\\. Deactivate or withdraw the knowledge that names the other first\\.$';
+    // The edit back to what the lapsed review covered would revive it: refused.
+    await L.refused(new RegExp(OTHER), 'knowledge.crosswalk', {...ROW, id: own, reason: 'Back to the first label.'}, 'architect');
+    // The lapsed row retired, a new row of the same alias for SYN-P002, verified by a second person: refused.
+    await L.ok('knowledge.crosswalk-retire', {id: own, reason: 'Replaced by a new row.', reviewer: 'Synthetic steward', reviewed: true}, 'steward');
+    const fresh = await L.ok('knowledge.crosswalk', {...ROW, label: 'Outbox (a second register)'}, 'second-architect');
+    await L.refused(new RegExp(OTHER), 'knowledge.crosswalk-review', VERIFY(fresh), 'reviewer');
+    doc = await L.read(); assert.equal(KC.resolveConcept(doc, 'Outbox')?.conceptId, 'SYN-P001', 'one alias still names one concept');
+    assert.deepEqual(KC.crosswalkRecords(doc).filter(r => r.aliasId === 'Outbox' && r.state === 'verified'), [], 'no row of library B gives the alias to SYN-P002');
+  } finally { W.close(); }
+});

@@ -253,3 +253,32 @@ Branch `rc44/wp1-s3-pins-fix`, from `ada5954`. Review: `/home/user/hb-review/rc4
   `parts.concepts` usable as a whole in that release (`releasedConcepts`), each row of `parts.crosswalk` among
   `releasedCrosswalk`'s rows of that release; a release that is not active is left to `organizationKnowledgeRelease`'s
   own words. Server only: no route byte.
+
+### Item 3: X3 (must-fix 3), one one-alias rule at every door
+
+- Done. `oneAlias(p, rows, release = null)` (public/knowledge-concept-commands.js) is the one function: asked at a second
+  person's verification (`knowledge.crosswalk-review`), at an edit whose written row reads verified (`knowledge.crosswalk`)
+  and at the organisation pin (organization-service.js `knowledge-pin`, rows: the release's rows). It reads this register's
+  verified `same` rows and the verified `same` rows the project's active releases hold, its own and the organisation's,
+  each known by (project, row id), an organisation release's `from.projectId` as its project. `organizationAliasRefusal`
+  is retired into it (removed; its one caller now asks `oneAlias`). The words: a row of this register is named as before
+  ("(KA-0007, verified): one alias names one concept. Reject or retire that row first."); a row a release holds is named
+  by row id and project ("(KA-0001 of project <id>): one alias names one concept[, so the organisation release that gives
+  it SYN-P002 is not pinned here]. Deactivate or withdraw the knowledge that names the other first.").
+- Case **S3.23**, the review's reverse order through the route: library B pins library A's organisation release (Outbox
+  -> SYN-P001); B's edit back to what a lapsed review of its own Outbox -> SYN-P002 covered is refused, and a second
+  person's verification of a new Outbox -> SYN-P002 is refused, each naming `KA-0001 of project <library A>`; Outbox
+  still resolves to SYN-P001 and no row of B gives it to SYN-P002. S3.15 (the forward order) is kept as it was.
+- Seen red: on the head of item 2 the edit back was accepted; with the fix, the edit door's call and the verification
+  door's call each taken out by mutation turn S3.23 red at that step ("was accepted"), and the reading of releases taken
+  out turns S3.15 red.
+- **Replaced assertion (S2.4, the block of ruling S8, "a pair held from before")**: old: b (handbook SYN-S001 ->
+  PAT-CIRCUIT-BREAKER) is verified, accepted, while the active release `first` holds a's verified copy (external SYN-S001
+  -> PAT-STRANGLER-FIG). New: that verification is refused, naming a by project and row id (X3 reads the project's own
+  active releases too); the pair is then made as a document from before X3 could hold it (`first` deactivated, b
+  verified, `first` activated again), and every assertion of the block on the pair stands as it was. At least as strict:
+  one more refusal is asserted, nothing is dropped.
+- For later slices: activating a release is not one of X3's doors. It needs none for the project's own releases: a row
+  of an own release resolves only while this register holds it exactly as copied (`releasedRows`), and a row of the
+  register comes to read verified only through the doors above. An organisation release's rows resolve on their own,
+  which is why the pin is a door. S4's import, if it makes rows read verified, asks `oneAlias(document, rows)`.

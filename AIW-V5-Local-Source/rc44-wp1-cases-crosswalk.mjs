@@ -347,7 +347,7 @@ add('S2.4 (one identity): a second verified `same` row for one (scheme, alias) i
     try {
       const evidence = await S.ok('knowledge.claim', {sourceId, lineStart: 1, lineEnd: 1, subjectId: 'The synthetic handbook entry', predicate: 'names', statement: 'The entry is SYN-S001, the strangler fig.', claimType: 'definition'}, 'importer');
       const A = {conceptId: 'PAT-STRANGLER-FIG', scheme: 'external', aliasId: 'SYN-S001', label: 'Strangler fig (an external register)', relation: 'same', note: 'The register names it so.', evidenceClaimId: evidence};
-      const a = await S.ok('knowledge.crosswalk', A, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: a}, 'reviewer'); await release();
+      const a = await S.ok('knowledge.crosswalk', A, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: a}, 'reviewer'); const first = await release();
       const verifiedA = clone(row(S.document, a));
       await S.ok('knowledge.crosswalk', {...A, id: a, label: 'Strangler fig (renamed)', reason: 'A clearer label.'}, 'architect');
       // another concept, with a handbook row of the same alias verified while the first reads proposed, then released
@@ -355,9 +355,17 @@ add('S2.4 (one identity): a second verified `same` row for one (scheme, alias) i
       const claim = await S.ok('knowledge.claim', {...DEFINITION, sourceId, subjectId: 'PAT-CIRCUIT-BREAKER'}, 'importer');
       await S.ok('knowledge.concept', {...STRANGLER, conceptId: 'PAT-CIRCUIT-BREAKER', title: 'Circuit breaker', id: record, forms: [{type: 'definition', claimId: claim}]}, 'importer');
       await S.ok('knowledge.review', {...F.REVIEW, formChecked: true, id: claim}, 'reviewer');
-      const b = await S.ok('knowledge.crosswalk', {conceptId: 'PAT-CIRCUIT-BREAKER', scheme: 'handbook', aliasId: 'SYN-S001', label: 'Circuit breaker (synthetic handbook)', relation: 'same', evidenceClaimId: evidence}, 'architect'); await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: b}, 'reviewer');
+      const b = await S.ok('knowledge.crosswalk', {conceptId: 'PAT-CIRCUIT-BREAKER', scheme: 'handbook', aliasId: 'SYN-S001', label: 'Circuit breaker (synthetic handbook)', relation: 'same', evidenceClaimId: evidence}, 'architect');
+      // (rc44 wp1 S3 fix-up, the lead's ruling X3, old -> new: b was verified here, accepted, while the active release
+      // `first` held a's verified copy. The one-alias rule now reads the project's own active releases too, keyed by
+      // (project, row id), so that verification is refused, naming a by project and row id; the pair is then made as a
+      // document from before X3 could hold it: b verified while `first` is not active, and `first` activated again.)
+      await S.refused(new RegExp('^handbook SYN-S001 is already the same as PAT-STRANGLER-FIG in the external scheme \\(' + a + ' of project ' + S.projectId + '\\): one alias names one concept\\. Deactivate or withdraw the knowledge that names the other first\\.$'), 'knowledge.crosswalk-review', {...ROW_REVIEW, id: b}, 'reviewer');
+      await S.ok('knowledge.deactivate', {...F.REVIEW, id: first, stamp: K.knowledgeStamp(S.document)}, 'releaser');
+      await S.ok('knowledge.crosswalk-review', {...ROW_REVIEW, id: b}, 'reviewer');
       await S.ok('knowledge.concept-review', {...CONCEPT_REVIEW, id: record}, 'reviewer');
       const rel = await S.ok('knowledge.release', {...F.REVIEW, title: 'Synthetic circuit breaker 1', claimIds: [claim]}, 'releaser'); await S.ok('knowledge.activate', {...F.REVIEW, id: rel, stamp: K.knowledgeStamp(S.document)}, 'releaser');
+      await S.ok('knowledge.activate', {...F.REVIEW, id: first, stamp: K.knowledgeStamp(S.document)}, 'releaser');
       // the pair, as a document from before holds it: the first row back as it was verified and released
       const q = clone(S.document); q.knowledge.crosswalk = q.knowledge.crosswalk.map(r => r.id === a ? verifiedA : r);
       assert.deepEqual(KC.crosswalkRecords(q).filter(r => r.aliasId === 'SYN-S001').map(r => [r.scheme, r.conceptId, r.state]), [['external', 'PAT-STRANGLER-FIG', 'verified'], ['handbook', 'PAT-CIRCUIT-BREAKER', 'verified']], 'the pair is there, both verified');
