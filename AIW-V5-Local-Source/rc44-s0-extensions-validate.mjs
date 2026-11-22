@@ -103,6 +103,8 @@ function applySynthetic(p, command, at, actor, options) {
     if (!r) { r = {id: 'SYN-' + String(++s.counter).padStart(3, '0'), revision: 0, history: []}; r.ref = r.id; s.records.push(r); }
     Object.assign(r, {title: raw.title.trim(), requirementIds: list(raw.requirementIds), componentId: raw.componentId || '', dependsOn: raw.dependsOn || '', broken: raw.broken === true, note: r.note || '', revision: r.revision + 1, actor});
     r.history.push({revision: r.revision, actor, at});
+    // switched on by a case (rulings H3 and Y3): the staged handler journals the save itself, stating author fields of its own
+    if (forge === 'staged') p.changes.events.push({id: 'CHG-' + String(++p.changes.counter).padStart(3, '0'), source: {chapter: 3, id: r.id, ref: r.id, kind: 'synthetic', title: r.title}, title: r.title, at, before: null, after: {title: r.title}, fields: [{key: 'staged', label: 'Journalled by the staged handler', before: null, after: r.id}], items: [], actor: 'architect-z', authorKind: 'person', reviewed: true, account: 'person', session: 'forged', reason: 'forged'});
     s.version++; return {document: p, selected: r.id};
   }
   if (command.type === 'synthetic.note') { const r = find(); r.note = String(raw.note || ''); s.version++; return {document: p, selected: r.id}; }
@@ -1035,39 +1037,146 @@ await block('SF boundary', async () => {
   pass('should-fix 1, 2, 6: the undo of a person-only or second-person step is refused for a draft by Sol, an import, an agent account and another account; validate is asked for every command an alternative carries when it is saved, revised and merged; a treatment of a finding id two findings share is refused');
 });
 
-// ---------------------------------------------------------------- D12. a record a merge wrote carries no author stamp
-// So it is at the baseline for built-in records, and a package's records inherit it (stamping what a merge writes is a
-// slice of its own, the lead's, in wave 2: it moves the provenance counts of existing documents). Until then, under
-// ruling D1, no person stands behind such a record: a second person's step on it is refused until a person saves or
-// confirms it. When the merge stamps its records this case changes with it: the first refusal below goes.
+// ---------------------------------------------------------------- D12. who wrote what a merge writes (rulings D12, Y3)
+// (the lead's ruling Y3 of 2026-11-22, which settles D12; this block replaces the block of the same name, recorded old ->
+// new in audit/rc44/build-notes/s0-d12-merge-author.md) An alternative records who prepared each command it holds: the
+// author kind, actor and account kind of the commit that saved it, as the server classified it (authorship.js), and a
+// revision names the reviser only for what it changes or adds. A record a merge writes is stamped as written by whoever
+// prepared the command that wrote it, a draft by Sol as Sol's and an agent account's as the agent's, and as reviewed by
+// the person who merged it: the merge is their reviewed step. So the second-person rule refuses both the preparer and the
+// merger as the second person, and a third person takes the step; so for a package's record and for a built-in one. An
+// alternative saved before this build records nobody: it merges as before, and its records carry no author stamp (no
+// stamp is invented), so a second person's step on them is refused until a person saves or confirms them (the cases of
+// the earlier block, kept below as they were).
+// A second person's step on a built-in record, as a package may state one (wp2's selection.confirm acts on
+// decisions.records): a decision keeps no writer of its own, so the projection names whom the server's stamp names.
+const VOUCH = {id: 'zm-vouch', commands: {'vouch.accept': {apply(p, c, at, actor, o) { const r = p.decisions.records.find(x => x.id === c.payload?.id); if (!r) throw Error('Choose a decision.'); r.review = {actor, at, account: o?.author?.account ?? null}; return {document: p, selected: r.id}; }, second: (p, c) => { const r = (p.decisions?.records || []).find(x => x.id === c.payload?.id); return r ? {id: r.id, actor: r.provenance?.author?.by ?? null, history: []} : null; }}}, provenance: {paths: {vouch: ['decisions.records']}}};
 await block('D12 a record a merge wrote', async () => {
   need();
+  assert.deepEqual(boundary.extensionIssues(VOUCH), []); X.registerExtension(VOUCH);
   const h = await harness(), {send, rec} = h, d = () => h.state.document, accept = (id, as) => send('synthetic.accept', {id, reviewed: true}, as), NO_PERSON = id => new RegExp('needs two persons: no person other than \\S+ stands behind ' + id + ' as it stands .*names no author\\)\\. A second signed-in person saves or confirms ' + id + ' first\\.');
+  const ok = (r, why = '') => assert.equal(r.status, 200, why + ' ' + JSON.stringify(r.body).slice(0, 300));
+  const stage = async (commands, as, extra = {}) => { await h.read(as); ok(await send('workspace.alternative', {commands, stamp: previewScenarioAlternative(d(), commands, undefined).stamp, title: 'An alternative', reason: 'Prepared for a merge.'}, as, extra), 'saved'); return d().workbench.alternatives.at(-1); };
+  const merge = async (id, as = B) => { await h.read(as); const a = d().workbench.alternatives.find(x => x.id === id); const r = await send('workspace.merge', {id, stamp: rebaseWorkingAlternative(d(), a).stamp, reviewed: true, reason: 'Merged by a person.'}, as); ok(r, 'merged'); return r; };
+  const step = (type, id, as) => send(type, {id, reviewed: true}, as), decision = id => d().decisions.records.find(x => x.id === id), node = id => d().runtime.nodes.find(x => x.id === id);
+  const stamps = r => [r?.provenance?.author?.kind, r?.provenance?.author?.by, r?.provenance?.author?.mergedBy, r?.provenance?.reviewed?.by, r?.provenance?.reviewed?.how];
+  const MERGED = (id, by, merger) => new RegExp('^A second person.s step needs two persons: ' + id + ' reads as ' + by + ' prepared it in an alternative and ' + merger + ' merged it\\. A signed-in person who neither prepared nor merged ' + id + ' takes this step\\.$');
+  const refused = async (type, id, as, words, why) => { const r = await step(type, id, as); assert.equal(r.status, 400, why + ': ' + JSON.stringify(r.body).slice(0, 200)); assert.match(r.error, words, why + ': ' + r.error); };
+  // the stored row rewritten as an older build kept it (a list this build writes taken out, or a restore marked)
+  const rewrite = async change => { const row = await h.env.DB.prepare('SELECT document,revision FROM projects WHERE owner_id=? AND id=?').bind(A, h.pid).first(), stored = await readStoredProject(h.env, A, row.document); change(stored.document); const {saveStoredProject} = await import('./project-storage.js'); assert.ok((await saveStoredProject(h.env, A, h.pid, stored.document, row.revision, new Date().toISOString(), stored.keys)).meta?.changes); await h.read(); };
   try {
-    // two records written by one merge that a person reviewed
-    const commands = [{type: 'synthetic.save', payload: {title: 'Written by a merge'}}, {type: 'synthetic.save', payload: {title: 'Written by the same merge'}}];
-    assert.equal((await send('workspace.alternative', {commands, stamp: previewScenarioAlternative(d(), commands, undefined).stamp, title: 'An alternative', reason: 'Two records of a package.'})).status, 200);
-    const a = d().workbench.alternatives.at(-1); assert.equal((await send('workspace.merge', {id: a.id, stamp: rebaseWorkingAlternative(d(), a).stamp, reviewed: true, reason: 'Merged by a person.'})).status, 200);
-    const [first, second] = d().synthetic.records.slice(-2).map(r => r.id);
-    assert.deepEqual([rec(first).actor, rec(first).provenance?.author, rec(second).provenance?.author], [A, undefined, undefined], 'the merge wrote them for the person who merged, and stamped no author (so at the baseline)');
-    // a second person's step is refused: nobody stands behind the record by the server's stamp
-    for (const as of [B, C]) { const r = await accept(first, as); assert.equal(r.status, 400, 'refused while the record carries no author stamp'); assert.match(r.error, NO_PERSON(first)); }
-    await h.read(); assert.equal(rec(first).acceptance, undefined);
-    // the person who merged is its author to the one rule, as before
-    assert.match((await accept(first, A)).error, /architect-a wrote /);
-    // a save that changes nothing the record says writes no stamp (provenance.js settle stamps what a commit made or
-    // changed), so it puts no person behind the record: the step stays refused
-    assert.equal((await send('synthetic.save', {id: first, title: 'Written by a merge'})).status, 200); assert.equal(rec(first).provenance?.author, undefined, 'an unchanged save stamps no author');
-    { const r = await accept(first, B); assert.equal(r.status, 400, 'still refused after a save that changed nothing'); assert.match(r.error, NO_PERSON(first)); }
-    // once a person saves it: the stamp is that person's, and a second person accepts
-    assert.equal((await send('synthetic.save', {id: first, title: 'Written by a merge, saved by a person'})).status, 200); assert.deepEqual([rec(first).provenance.author.kind, rec(first).provenance.author.by], ['person', A]);
-    { const r = await accept(first, B); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); assert.equal(rec(first).acceptance.actor, B); }
-    // or once a person confirms it: the one who confirmed is one person, a second accepts
-    assert.equal((await send('synthetic.confirm', {id: second}, C)).status, 200); assert.equal(rec(second).provenance.reviewed.by, C);
-    { const r = await accept(second, C); assert.equal(r.status, 400); assert.match(r.error, NO_PERSON(second)); }
-    { const r = await accept(second, B); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); assert.equal(rec(second).acceptance.actor, B); }
+    // 1. who prepared each command, for an alternative a person staged, one Sol drafted and one an agent account staged;
+    // a built-in record (a decision) and a package's record, each merged by a second person
+    for (const [who, as, extra, prepared] of [['a person', A, {}, {kind: 'person', by: A, account: 'person'}], ['a draft by Sol', A, {authorKind: 'sol-draft'}, {kind: 'sol-draft', by: A, account: 'person'}], ['an agent account', AGENT, {}, {kind: 'sol-draft', by: AGENT, account: 'agent'}]]) {
+      const a = await stage([{type: 'synthetic.save', payload: {title: 'Prepared by ' + who}}, {type: 'decision.save', payload: {question: 'Which queue holds the retries, as ' + who + ' prepared it?'}}], as, extra);
+      assert.deepEqual(list(a.authors).map(({at, ...x}) => x), [prepared, prepared], who + ': the alternative names who prepared each command: ' + JSON.stringify(a.authors));
+      assert.ok(a.authors.every(x => x.at === a.at), 'and when');
+      await merge(a.id, B);
+      const syn = d().synthetic.records.at(-1), dec = d().decisions.records.at(-1);
+      assert.deepEqual([syn.title, dec.question], ['Prepared by ' + who, 'Which queue holds the retries, as ' + who + ' prepared it?']);
+      for (const r of [syn, dec]) assert.deepEqual(stamps(r), [prepared.kind, prepared.by, B, B, 'merged'], who + ': ' + r.id + ' is stamped as written by whoever prepared it and as reviewed by the person who merged it: ' + JSON.stringify(r.provenance));
+      assert.equal(authorship(syn).kind, prepared.kind, who + ': a draft by Sol stays a draft by Sol, an agent account\'s stays the agent\'s, a person\'s is the person\'s');
+      assert.equal(syn.actor, B, 'the record names who applied it, as before');
+      // the second person is neither the preparer nor the merger
+      if (as === AGENT) { const r = await step('synthetic.accept', syn.id, AGENT); assert.equal(r.status, 400); assert.equal(r.body.code, 'authorship', 'an agent account takes no second person\'s step'); }
+      else { await refused('synthetic.accept', syn.id, as, MERGED(syn.id, as, B), who + ': the preparer of a package\'s record'); await refused('synthetic.endorse', syn.id, as, MERGED(syn.id, as, B), who + ': on a projection that names only who applied it'); await refused('vouch.accept', dec.id, as, new RegExp(as + ' wrote ' + dec.id), who + ': the preparer of a built-in record'); }
+      await refused('synthetic.accept', syn.id, B, /architect-b wrote /, 'the merger of a package\'s record (the record names who applied it)');
+      await refused('vouch.accept', dec.id, B, MERGED(dec.id, prepared.by, B), 'the merger of a built-in record');
+      await h.read(); assert.deepEqual([rec(syn.id).acceptance, decision(dec.id).review], [undefined, undefined], 'nothing is accepted by a refused request');
+      // a third person: two persons stand behind it, the one who prepared or merged it and the one who takes the step
+      { const r = await step('synthetic.accept', syn.id, C); ok(r, who + ': a third person accepts the package\'s record'); assert.equal(rec(syn.id).acceptance.actor, C); }
+      { const r = await step('vouch.accept', dec.id, C); ok(r, who + ': and the built-in one'); assert.equal(decision(dec.id).review.actor, C); }
+    }
+    // 2. per command: a revision names the reviser for what it changes or adds and keeps the preparer of what it carries
+    { const a = await stage([{type: 'synthetic.save', payload: {title: 'Kept as the agent account prepared it'}}, {type: 'synthetic.save', payload: {title: 'Changed in the revision'}}], AGENT), r = rebaseWorkingAlternative(d(), a);
+      const commands = [a.commands[0], {type: 'synthetic.save', payload: {title: 'Changed in the revision by a person'}}, {type: 'synthetic.save', payload: {title: 'Added in the revision'}}];
+      await h.read(C); ok(await send('workspace.revise-alternative', {id: a.id, revision: a.revision, commands, stamp: previewScenarioAlternative(d(), commands, a.scenario).stamp, basisStamp: r.stamp, reviewed: true, title: a.title, reason: 'Revised by a person.'}, C), 'revised');
+      const b = d().workbench.alternatives.find(x => x.id === a.id);
+      assert.deepEqual(b.authors.map(x => [x.kind, x.by, x.account]), [['sol-draft', AGENT, 'agent'], ['person', C, 'person'], ['person', C, 'person']], 'the reviser prepared what the revision changed or added');
+      assert.deepEqual(b.authors[0], a.authors[0], 'and the earlier preparer what it carried as it was'); assert.deepEqual(b.history.at(-1).authors, a.authors, 'the revision it replaced keeps its list');
+      await merge(a.id, B);
+      const [kept, changed, added] = d().synthetic.records.slice(-3);
+      assert.deepEqual([stamps(kept), stamps(changed), stamps(added)], [['sol-draft', AGENT, B, B, 'merged'], ['person', C, B, B, 'merged'], ['person', C, B, B, 'merged']]);
+      await refused('synthetic.accept', changed.id, C, MERGED(changed.id, C, B), 'the reviser prepared it');
+      ok(await accept(changed.id, A), 'a person who neither prepared nor merged it'); ok(await accept(kept.id, C), 'the reviser did not prepare what they carried'); }
+    // 3. a later save: one that changes nothing leaves the merge's stamps; a confirmation leaves who wrote it; a person's
+    // change makes it that person's, as any save does
+    { const a = await stage([{type: 'synthetic.save', payload: {title: 'Saved again later'}}, {type: 'synthetic.save', payload: {title: 'Confirmed later'}}], A); await merge(a.id, B);
+      const [saved, confirmed] = d().synthetic.records.slice(-2).map(r => r.id);
+      ok(await send('synthetic.save', {id: saved, title: 'Saved again later'}, C)); assert.deepEqual(stamps(rec(saved)), ['person', A, B, B, 'merged'], 'an unchanged save stamps nothing');
+      await refused('synthetic.accept', saved, A, MERGED(saved, A, B), 'still the preparer\'s words');
+      ok(await send('synthetic.confirm', {id: confirmed}, C)); assert.deepEqual(stamps(rec(confirmed)), ['person', A, B, C, 'confirmed'], 'a confirmation is a review, not a write');
+      await refused('synthetic.accept', confirmed, A, MERGED(confirmed, A, B), 'the preparer\'s words still stand'); await refused('synthetic.accept', confirmed, B, /architect-b wrote /, 'and the merger applied them');
+      ok(await send('synthetic.save', {id: saved, title: 'Saved again later, changed by a person'}, C)); assert.deepEqual(stamps(rec(saved)), ['person', C, undefined, undefined, undefined], 'a person\'s change is that person\'s write');
+      await refused('synthetic.accept', saved, C, /architect-c wrote /, 'its writer'); }
+    // 4. a topology node, a package's record of its own kind: a person's is stamped as theirs and reviewed by the merger; a
+    // node a draft by Sol or an agent account prepared arrives as their proposal, which no merge stands behind (a person
+    // keeps it: rulings F4 and L1); and an agent account's change of a person's node, merged, is the agent's
+    { ok(await send('runtime.topology-start', {}), 'typed');
+      const a = await stage([{type: 'runtime.node', payload: {title: 'Sweden Central', kind: 'region'}}], A); await merge(a.id, B); const placed = d().runtime.nodes.at(-1).id;
+      assert.deepEqual(stamps(node(placed)), ['person', A, B, B, 'merged'], 'a person\'s node');
+      for (const [as, extra] of [[AGENT, {}], [A, {authorKind: 'sol-draft'}]]) { const b = await stage([{type: 'runtime.node', payload: {title: 'Iceland ' + as, kind: 'region', origin: 'sol-draft'}}], as, extra); await merge(b.id, B); const n = d().runtime.nodes.at(-1);
+        assert.deepEqual([n.state, n.origin, authorship(n).kind, ...stamps(n)], ['proposed', 'sol-draft', 'sol-draft', undefined, undefined, undefined, undefined, undefined], 'a proposal: no merge stands behind it'); }
+      const c = await stage([{type: 'runtime.node', payload: {id: placed, reason: 'Drafted reason.', origin: 'sol-draft'}}], AGENT); await merge(c.id, B);
+      assert.deepEqual([node(placed).reason, ...stamps(node(placed))], ['Drafted reason.', 'sol-draft', AGENT, B, B, 'merged'], 'the agent account\'s change, merged by a person, is the agent\'s and reviewed by that person (it read as the merger\'s)'); }
+    // 5. an adoption: no command an alternative carries writes one (its steps are a person's or a second person's, and
+    // the selection's are never staged), so a merge writes none
+    for (const type of ['adoption.accept', 'adoption.reassess', 'selection.start', 'selection.choose']) {
+      assert.throws(() => previewScenarioAlternative(d(), [{type, payload: {id: 'ADP-001'}}], undefined), /This action must use its chapter review workflow/, type + ' is not staged');
+      const r = await send('workspace.alternative', {commands: [{type, payload: {id: 'ADP-001'}}], stamp: 'none', title: 'An alternative', reason: 'Holds ' + type + '.'}); assert.equal(r.status, 400, type + ' is refused in an alternative'); }
+    // 6. an alternative saved before this build names nobody: it merges as before (the earlier block's cases, as they were)
+    { const commands = [{type: 'synthetic.save', payload: {title: 'Written by a merge'}}, {type: 'synthetic.save', payload: {title: 'Written by the same merge'}}];
+      assert.equal((await send('workspace.alternative', {commands, stamp: previewScenarioAlternative(d(), commands, undefined).stamp, title: 'An alternative', reason: 'Two records of a package.'})).status, 200);
+      const id = d().workbench.alternatives.at(-1).id; await rewrite(p => { delete p.workbench.alternatives.find(x => x.id === id).authors; });
+      const a = d().workbench.alternatives.find(x => x.id === id); assert.equal(a.authors, undefined, 'as an older build kept it');
+      assert.equal((await send('workspace.merge', {id: a.id, stamp: rebaseWorkingAlternative(d(), a).stamp, reviewed: true, reason: 'Merged by a person.'})).status, 200);
+      const [first, second] = d().synthetic.records.slice(-2).map(r => r.id);
+      assert.deepEqual([rec(first).actor, rec(first).provenance?.author, rec(second).provenance?.author], [A, undefined, undefined], 'the merge wrote them for the person who merged, and stamped no author (as before this build)');
+      for (const as of [B, C]) { const r = await accept(first, as); assert.equal(r.status, 400, 'refused while the record carries no author stamp'); assert.match(r.error, NO_PERSON(first)); }
+      await h.read(); assert.equal(rec(first).acceptance, undefined);
+      assert.match((await accept(first, A)).error, /architect-a wrote /, 'the person who merged is its author to the one rule, as before');
+      assert.equal((await send('synthetic.save', {id: first, title: 'Written by a merge'})).status, 200); assert.equal(rec(first).provenance?.author, undefined, 'an unchanged save stamps no author');
+      { const r = await accept(first, B); assert.equal(r.status, 400, 'still refused after a save that changed nothing'); assert.match(r.error, NO_PERSON(first)); }
+      assert.equal((await send('synthetic.save', {id: first, title: 'Written by a merge, saved by a person'})).status, 200); assert.deepEqual([rec(first).provenance.author.kind, rec(first).provenance.author.by], ['person', A]);
+      { const r = await accept(first, B); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); assert.equal(rec(first).acceptance.actor, B); }
+      assert.equal((await send('synthetic.confirm', {id: second}, C)).status, 200); assert.equal(rec(second).provenance.reviewed.by, C);
+      { const r = await accept(second, C); assert.equal(r.status, 400); assert.match(r.error, NO_PERSON(second)); }
+      { const r = await accept(second, B); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); assert.equal(rec(second).acceptance.actor, B); } }
+    // and one whose list was recorded before the project was restored here (ruling F3: a step taken elsewhere is no step here)
+    { const a = await stage([{type: 'synthetic.save', payload: {title: 'Prepared before a restore'}}], A); await rewrite(p => { p.finalReview.imported = {...(p.finalReview.imported || {}), at: new Date(Date.parse(a.at) + 1).toISOString()}; });
+      await merge(a.id, B); assert.deepEqual(stamps(d().synthetic.records.at(-1)), [undefined, undefined, undefined, undefined, undefined], 'merged as before: no stamp names who prepared it elsewhere'); }
   } finally { h.close(); }
-  pass('D12: a record a merge wrote carries no author stamp, so a second person\'s step on it is refused, in words, until a person saves or confirms it; the merge\'s own stamping is unchanged (another slice)');
+  pass('D12 (ruling Y3): an alternative records who prepared each command; a record a merge writes, a built-in one and a package\'s, is stamped as written by its preparer (a person, a draft by Sol, an agent account) and as reviewed by the merger, and the second-person step is refused for both and taken by a third person; a proposal stays no one\'s; an adoption is written by no merge; an alternative saved before this build merges as before');
+});
+
+// ---------------------------------------------------------------- H3. an event a package's staged handler adds
+// (the lead's rulings H3 and Y3 of 2026-11-22) Inside a reviewed batch or a merge, a package's staged handler is called
+// with four arguments, as every staged handler is, and an event it adds to the journal states no author fields: the
+// boundary removes them, as it does for a tracker and for a command sent on its own, so the server's stamp of the commit
+// is the only one.
+await block('H3 a staged handler states no author', async () => {
+  need();
+  const h = await harness(), {send} = h, d = () => h.state.document, at = () => d().changes.events.length, written = from => d().changes.events.slice(from).filter(e => e.fields?.[0]?.key === 'staged');
+  const who = e => [e.actor, e.authorKind, e.reviewed, e.account, e.session, e.reason];
+  try {
+    forge = 'staged';
+    // sent on its own (so before this build too)
+    { const from = at(); assert.equal((await send('synthetic.save', {title: 'Sent on its own'})).status, 200); const e = written(from); assert.equal(e.length, 1, 'the handler journals'); assert.deepEqual(who(e[0]), [A, 'person', true, undefined, undefined, undefined]); }
+    // in a reviewed batch
+    { const commands = [{type: 'synthetic.save', payload: {title: 'In a reviewed batch'}}], from = at(); await h.read();
+      const r = await send('workspace.apply', {commands, stamp: previewWorkingChange(d(), commands).stamp, reviewed: true, reason: 'A reviewed batch.'}); assert.equal(r.status, 200, r.error);
+      const e = written(from); assert.equal(e.length, 1); assert.deepEqual(who(e[0]), [A, 'person', true, undefined, undefined, 'A reviewed batch.'], 'the commit\'s author, not the handler\'s words: ' + JSON.stringify(e[0]).slice(0, 300)); }
+    // in a batch an agent account drafted
+    { const commands = [{type: 'synthetic.save', payload: {title: 'In a drafted batch'}}], from = at(); await h.read(AGENT);
+      const r = await send('workspace.apply', {commands, stamp: previewWorkingChange(d(), commands).stamp, reviewed: false, reason: 'A drafted batch.'}, AGENT); assert.equal(r.status, 200, r.error);
+      const e = written(from); assert.equal(e.length, 1); assert.deepEqual(who(e[0]), [AGENT, 'sol-draft', false, 'agent', undefined, 'A drafted batch.']); }
+    // in a merge
+    { const commands = [{type: 'synthetic.save', payload: {title: 'In a merge'}}]; await h.read();
+      assert.equal((await send('workspace.alternative', {commands, stamp: previewScenarioAlternative(d(), commands, undefined).stamp, title: 'An alternative', reason: 'For a merge.'})).status, 200);
+      const a = d().workbench.alternatives.at(-1), from = at(); await h.read(B); const r = await send('workspace.merge', {id: a.id, stamp: rebaseWorkingAlternative(d(), a).stamp, reviewed: true, reason: 'Merged.'}, B); assert.equal(r.status, 200, r.error);
+      const e = written(from); assert.equal(e.length, 1); assert.deepEqual(who(e[0]), [B, 'person', true, undefined, undefined, 'Merged.'], 'the merge\'s author: ' + JSON.stringify(e[0]).slice(0, 300)); }
+  } finally { forge = ''; h.close(); }
+  pass('H3: an event a package\'s staged handler adds states no author fields of its own, sent on its own, in a reviewed batch, in a drafted batch and in a merge: the server\'s stamp of the commit is the only one');
 });
 
 // ---------------------------------------------------------------- should-fix 3, 6, 11 and ruling D7.5: the start check
