@@ -261,8 +261,8 @@ merge. Nothing of the fix-up is left undone; the points where I read a ruling on
 - design concern 4 (the SDD reads a merge as a confirmation): Z7.
 
 ### Replaced assertions (old -> new)
-All in `rc44-s0-extensions-validate.mjs`; the first five and the seventh and eighth are in block D12, which this slice
-added at e91365c (not on 53ce4cf); the sixth is S0's block D5, on 53ce4cf.
+Items 1 to 8 are in `rc44-s0-extensions-validate.mjs`: 1 to 5, 7 and 8 in block D12, which this slice added at e91365c
+(not on 53ce4cf); 6 in S0's block D5, on 53ce4cf. Items 9 and 10 are in wp2's and wp1's suites, on 53ce4cf.
 1. D12 `assert.equal(syn.actor, B, 'the record names who applied it, as before')` -> `[syn.actor, syn.history actors]`
    deepEqual `[prepared.by, [prepared.by]]` (Z1).
 2. D12 the merger of a package record `/architect-b wrote /` -> the merge's exact words `MERGED(syn.id, prepared.by, B)`,
@@ -280,7 +280,37 @@ added at e91365c (not on 53ce4cf); the sixth is S0's block D5, on 53ce4cf.
 8. D12 the merge request carrying commands, either outcome -> one outcome, 400 in words, then the merge and its stamp
    (Z6); D12 the merger of a keep `MERGED(prop, A, B)` ("prepared it") -> the same sentence with "kept" (Z6).
 
-Each new assertion is at least as strict: everyone refused before is refused now, in exact words.
+9. wp2's J9 (`rc44-wp2-adoption-cases/record.mjs`, on 53ce4cf) `/Written by an upgrade of the project or by a merge,
+   with no author stamp: 3 records\. …/` -> `/… or by a merge of an alternative that names no preparer, with no author
+   stamp: 3 records\. …/` (Z6, the same line as D5's).
+10. wp1's S3.10 (`rc44-wp1-cases-pins.mjs`, on 53ce4cf): `atMerge.chapters - 3229840 - booked.othersTotal -
+   booked.poolTotal === size.ownBytes` (the route recorded at wp1 S3's head less every booking on the books now) ->
+   the same equality with the bookings recorded with that route (`atMerge.otherPackages`, `atMerge.sharedPool`), each
+   asserted to be on the books still with its bytes. The old form broke on any booking filed after wp1 S3's merge, here
+   `mergeAuthorY3` (290 B); the lead's ruling X4 ruled the same for S2.12. The head's build is still held to every
+   booking by the case's own "this build: S3 is …" check and by S0's O1. This edits wp1's suite, which the slice was not
+   named to edit: the lead confirms or rules otherwise.
+
+Each new assertion is at least as strict: everyone refused before is refused now, in exact words; the size equality
+still holds wp1's own figure exactly, against the bookings that stood when it was measured.
+
+### Suites (on the fix-up's code)
+- The four rc44 suites: S0 (`rc44-s0-extensions`, 36 checks), wp9a, wp2 and wp1 green (wp2 and wp1 after items 9 and
+  10 above; before them each was red on its one assertion, J9 and S3.10).
+- Every suite that imports a changed file and the ones the task names, all green: provenance, evidence, review-plan,
+  seeded-proposals, recovery-authority, rc42-g3b-trace-and-delivery, architecture-obligation, architecture-verification,
+  sdd-architecture, sdd-content, sdd-modules, sol-sdd, rc42-g2-library, rc42-g6-import, action-undo, action-undo-api,
+  model-alternatives, workspace, workbench-ui, desk-fixes, connected-design-projections, design-records, journal-archive,
+  rc42-g7-data-contracts, rc42-g3c-evidence-fingerprint, fingerprint, drafter-groups, local-accounts,
+  model-reconciliation, module-model, rc42-g1-tech-approval, rc42-g3a-risk-and-limits, architecture-scenarios,
+  development, enhancements.
+- `sol-disclosure` and `command-equivalence` fail, in the same words here and on 53ce4cf (a git archive run in this
+  worktree's scratch folder): "The desk no longer holds F:capacity:run-001, F:capacity:run-008 …" and "a working choice
+  made: the saved document is the one the route saved before round 12 · $.workbench.history[1] …": red at the baseline,
+  as the merge evidence lists them.
+- `node check-syntax.mjs`: 945 modules. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, 0 new.
+  `node build.mjs`: every gate passes; the measurements above.
+- Not run: the full regression and the browser suites (the lead's).
 
 ### Measurements
 `node build.mjs` (dist/client-size-report.json routes.chapters.code): 3,228,648 B at e91365c; 3,228,746 B after Z1
