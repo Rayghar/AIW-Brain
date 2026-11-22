@@ -38,6 +38,71 @@ nit). Order of work, each case first and seen to fail on the head the item start
 Measured before any change (`node build.mjs` on `ce6eb90`): chapters route 3,230,605 B, projects 507,338 B, 148 script
 files, buckets 53/50/45, stylesheet 901,873 B, no violation.
 
+### One line each (fourth fix-up)
+
+| Item | State | Case (suite `rc44-s0-extensions-validate.mjs` unless named) |
+|---|---|---|
+| New problem 1: the `trackPaths` start check admits any `chapter.collection` path | done (R1): a built-in record collection only, in both tables; never the review's, the change journal's, the workbench's or the members'; never a registered package's own; each once | block "O2", the start check (fifteen refusals, seen to fail on `ce6eb90`; every built-in record collection accepted) |
+| New problem 2: inside `trackPaths` the boundary stamps authorship only; a tracker's lifecycle and review fields stand and an added record reads as a person's | done (R2): restored from the boundary's copy, the content change stamped as the commit's; an added or removed record refused; the helper holds it | block "O2", helper and server parts (A's and the agent account's commits; seen to fail on `ce6eb90`); wp9a S1.24 green |
+| New problem 3 (nit): `routeBookings` does not name a file that is not JSON | done (R3) | block "O1" (seen to fail on `ce6eb90`) |
+| R1 | done | block "O2" |
+| R2 | done, with two refusals more than its words (a removed record; a proposal's reading moved through content or bookkeeping), stated below | block "O2"; S1.24 |
+| R3 | done, and a JSON file that is no object is refused alike | block "O1" |
+| R4 | done: S1.10's share is its modules (pinned) and its own lists (168 B against the adoption record's holder script); S0's block 8 and S1.10 read the bucket as a ceiling; re-measured, the route unchanged; the O1 merge check green | S1.10; block "8 client build"; block "O1" |
+
+### Where I read a ruling otherwise, or did a little more (plainly)
+
+- **R1, "the provenance and lifecycle tables know":** read as both tables (`COLLECTIONS` and `RECORD_PATHS`). So
+  `logical.assets`, the Chapter 4 twin of `realisation.components` that the provenance reader reads once as a component,
+  is refused (a tracker that mended one twin and not the other would split one record, ruling K7). The top-level lists
+  (`artefacts`, `relationships`) stay refused by O2's shape rule (`chapter.collection`), which R1 does not change.
+- **R1, "a collection any registered package states in its lifecycle or provenance rows":** read as the package's own
+  collections: its `lifecycle`, `provenance.records` and `provenance.nouns` rows, and a list of its `provenance.paths`
+  that is no key the workbench writes. A built-in collection that another package's command writes (named in its
+  `provenance.paths`) stays built in and may be mended; on this build no package names one, so the two readings agree.
+- **R2, the fields restored:** the ruling's five (`state`, `confirmed`, `targetConfirmed`, `review`, `reviews`), and as
+  "every field record-lifecycle reads as standing": `origin` (`keepOne` and the chapters' seed rules read it) and
+  `keptAt` (a need's seed rule), and `provenance` (`solDraftOf`, in `record-lifecycle.js`, reads `provenance.draft`;
+  the stamp is the server's, so the boundary puts the whole block back and `settle` then writes the commit's stamp). A
+  `revision` is not put back: the mend moves it, as every save does.
+- **R2, two refusals beyond the words, both "decides nothing and makes nothing":** (1) a call that removes a record of
+  its paths is refused as one that adds a record is (a record leaves the design only through the retire path,
+  `RETIRE_ONLY`; nothing in R2 or O2 caught a removal). (2) Where the chapter's reading of whether a record is AIW's
+  proposal rests on a field that is content or bookkeeping (`interfaces.contracts`: an inherited contract at its first
+  revision; `technology.needs`: a need whose description is the catalogue's), the field cannot be put back without
+  undoing the mend, so a call that moves that reading is refused instead. Neither fires for wp9a (its mend changes a
+  zone's `nodeId` and `domainIds` and a placement's `nodeId`, with their `revision`; zones and placements have no seed
+  rule of their own).
+- **R2, the answer:** the tracker's catch in `worker.js` already answers a tracker's fault 500 with code `fault` and
+  stores nothing; a refusal the boundary tags (`isTrackerRefusal`) is answered there in its own words, naming the
+  package, and logged as `command-fault` as before. I did not make it a 400: the request is not at fault, the package is.
+- **R3:** a size file that is valid JSON but no object (`null`, a list) is refused with its path too; it threw a
+  general fault before.
+- **R4, "its own import and export lists":** the package's modules are bundled into the deploy-view chunk, so they have
+  no import or export statement of their own; their lists are the growth of that script's bytes outside its modules
+  (esbuild's metafile: the output's bytes less its inputs' `bytesInOutput`) against the same script at the adoption
+  record, measured with `node build.mjs` on an archive of `a4c1690`. The 12 B by which the script's other two modules
+  moved (`deploy-view.js`, wp9a's edit of H15; `deploy-layout.js`, a renamed identifier) are in neither part.
+- **R4, the bucket:** the ceiling is read on the evidence's figure (at most the gate, at most the base's count plus the
+  files the slice adds) and, for this build, at most the gate: another package's merge may add a file.
+- I do not disagree with any ruling of section R.
+
+### What later slices must know (fourth fix-up)
+
+- **Every package with a tracker that states `trackPaths`:** each entry is a built-in record collection of a chapter's
+  container, in both `COLLECTIONS` and `RECORD_PATHS`, none of `finalReview.*`, `changes.*`, `workbench.*` or
+  `members.*`, no package's own, each once (else the server does not start). Inside those paths the tracker changes
+  content only: a call that adds or removes a record, or moves a proposal's reading, is refused at run time (500, the
+  package named, nothing stored), and whatever it sets of `TRACKED_STANDING` is put back. Its suite's
+  `assertTrackerStaysInPaths` fails on the same.
+- **wp9a slice 2** (a part that mends zones for the failure set): the same; a new seed rule on zones would join the
+  reading of a proposal.
+- **wp2, at its merge:** its size block reads the bucket with `assertUnder10kCeiling` (R4: "wp2's size block is changed
+  the same way at its own merge"); `trackAdoptionChange` still states no `trackPaths` (O2's note stands).
+- **Every package's share of a lazy entry:** read from the script that holds it (its modules, its lists against the same
+  script at the base), as S1.10 now does; a later package that lands in the deploy-view chunk moves that script's lists
+  and re-measures `ADOPTION_HOLDER`'s counterpart.
+
 ### By item (fourth fix-up)
 
 - **Item 1, R1: done.** Case: S0's block "O2", the start check (`rc44-s0-extensions-validate.mjs`). Seen to fail on
