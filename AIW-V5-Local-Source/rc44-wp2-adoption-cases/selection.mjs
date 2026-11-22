@@ -18,6 +18,8 @@
 //                    hard constraints, except as the selection's inner steps; the mismatch finding (ruling Q2);
 //   S5 Q4 second person  selection.confirm (a second person's), decision.accept refused without it for every kind of
 //                    candidate, approval refused while a row is unproven, a judgement after the choice (ruling Q4);
+//   S5 U1 hard constraint  a hard constraint leaves a selection's decision only through the selection; an ineligible
+//                    choice is an error worded as the built-in 'breaks' whatever the drivers say, and is not confirmed (U1);
 //   S5 Q5 instantiate creates  a payload with an id is refused; the component's source names its release, claim, hash and
 //                    decision, and every reader finds them (ruling Q5);
 //   S5 Q6 elsewhere  a recovery import moves the selection's steps aside; facts and standing read on each read (Q6);
@@ -52,7 +54,7 @@ import {withFinalReview, CHAPTERS, inheritedFindings, reviewSourceStamp} from '.
 import {EXTENSIONS} from '../public/design-extensions.js';
 import {extensionIssues, extensionConflicts, builtInType} from '../design-extension-boundary.js';
 import {isReviewCommand} from '../authorship.js';
-import {applyDecisionCommand, decisionFindings} from '../public/decisions-domain.js';
+import {applyDecisionCommand, decisionFindings, decisionCurrent} from '../public/decisions-domain.js';
 import {readDecision} from '../public/decision-reading.js';
 import {applyKnowledgeCommand, knowledgeStamp, claimReceiptCurrent} from '../public/knowledge-governance.js';
 import {applyArchitectureCommand, previewArchitectureDesign} from '../public/architecture-design.js';
@@ -396,6 +398,51 @@ export default async function ({block, pass, load}) {
         assert.equal(decision(h.doc(), k).status, 'accepted', kind + ': accepted once a second person confirmed');
       }
       pass('S5 Q4 second person: a chosen selection nobody confirmed is an error and decision.accept is refused, for a profile, a library entry, an archetype, an existing component, a build, a buy and a released option; selection.confirm is refused to the chooser, the judge of a chosen row, an agent account and a draft by Sol, and taken from a third person; approval evidence and resolving the assumptions are refused while a chosen row is unproven; the profile adoption\'s projection names the chooser and the judge, each refused adoption.accept; the unproven row is judged after the choice only by a person other than the chooser, only on the chosen candidate, and the choice\'s rows follow, the acceptance and the confirm lapse and the new judge does not confirm; a row judged fail after the choice raises the built-in "breaks" error, and Chapter 3 shows it');
+    } finally { h.close(); }
+  });
+
+  // ------------------------------------------------------------ a hard constraint leaves a selection only through the selection (ruling U1)
+  // The verifier's walk H-A, through the server: B judges the inbox on the first constraint (pass), A chooses it with the
+  // second named unproven, C judges the second fail. Then A, an agent account and a draft by Sol each send a decision.save
+  // that drops the second from the decision's drivers (at the fix-up's head: taken, and 'breaks' vanished while the
+  // candidate read ineligible; a third person's confirm, the acceptance and the approval followed).
+  await block('S5 U1 hard constraint', async () => {
+    pkg(); const {h, id, inbox} = await serverSelection();
+    try {
+      await h.ok('selection.judge', {id, alternativeId: inbox, constraintId: 'QD-008', state: 'fail', evidence: 'The inbox runs outside the platform (ticket OPS-13).', reason: 'Another platform.'}, C);
+      const d = decision(h.doc(), id), drop = d.driverIds.filter(x => x !== 'QD-008'), soft = d.driverIds.find(x => !['QD-007', 'QD-008'].includes(x)), title = 'The working choice breaks a hard constraint';
+      assert.equal(S.candidateEligibility(h.doc(), d, d.alternatives.find(a => a.id === inbox)).state, 'ineligible', 'C judged the chosen candidate\'s second row fail');
+      const before = JSON.stringify(decision(h.doc(), id));
+      for (const [who, actor, extra] of WHO) {
+        const r = await h.send('decision.save', {id, driverIds: drop}, actor, extra);
+        assert.equal(r.status, 400, 'a decision.save that drops a hard constraint from a selection, by ' + who + ', is refused: ' + JSON.stringify(r.body).slice(0, 200));
+        assert.match(r.error, /through its selection/, 'and says why (' + who + ')');
+      }
+      assert.equal(JSON.stringify(decision(h.doc(), id)), before, 'nothing of the decision changed');
+      // what is not a hard constraint stays Chapter 3's: a person's save of the texts, and of the other drivers, is taken
+      await h.ok('decision.save', {id, mitigation: 'Verify on the platform before acceptance.'});
+      await h.ok('decision.save', {id, driverIds: d.driverIds.filter(x => x !== soft)});
+      assert.deepEqual(decision(h.doc(), id).driverIds.filter(x => ['QD-007', 'QD-008'].includes(x)), ['QD-007', 'QD-008'], 'the hard constraints stay named');
+      // the rest of the walk through the server: no second person confirms an ineligible choice, and nothing is accepted
+      const breaks = q => decisionFindings(q).filter(f => f.decisionId === id && f.title === title && f.level === 'error');
+      assert.ok(breaks(h.doc()).length > 0, 'an error says the working choice breaks a hard constraint');
+      for (const payload of completion(decision(h.doc(), id), h.doc())) await h.ok('decision.alternative', payload); await h.ok('decision.record', {id, acknowledge: true});
+      for (const as of [B, C]) { const r = await h.send('selection.confirm', {id, note: 'Read the rows and the choice.'}, as); assert.equal(r.status, 400, as + ' does not confirm an ineligible choice: ' + JSON.stringify(r.body).slice(0, 200)); assert.match(r.error, /breaks a hard constraint/); }
+      assert.ok(!decision(h.doc(), id).selection.confirm, 'nothing is confirmed');
+      { const r = await h.send('decision.accept', {id, acknowledge: true}); assert.equal(r.status, 400, 'decision.accept is refused'); }
+      // a document whose drivers no longer name the constraint (edited by hand: no command writes it): the chosen candidate
+      // still reads ineligible, and the package's error, worded as the built-in, stands whatever the drivers say
+      const q = structuredClone(h.doc()), x = decision(q, id); x.driverIds = x.driverIds.filter(k => k !== 'QD-008'); for (const a of x.alternatives) delete a.assessments['QD-008']; delete x.sourceSnapshot.drivers['QD-008'];
+      const hand = withFinalReview(q, {upgrade: false}), y = decision(hand, id), ya = y.alternatives.find(a => a.id === inbox);
+      assert.equal(S.candidateEligibility(hand, y, ya).state, 'ineligible', 'the constraint still reaches the responsibility');
+      assert.deepEqual(decisionFindings(hand).filter(f => f.decisionId === id && f.code === 'breaks'), [], 'Chapter 3\'s own finding reads the drivers the decision names');
+      assert.deepEqual(breaks(hand).map(f => [f.code, f.alternativeId, f.driverIds, f.detail]), [['selection-breaks', inbox, ['QD-008'], ya.title + ' breaks QD-008. Choose an alternative that meets it, or change the constraint in Chapter 1 and its driver in Chapter 2.']], 'the package raises the error, worded as the built-in');
+      assert.throws(() => send(hand, 'selection.confirm', {id, note: 'x'}, B), /breaks a hard constraint/, 'no confirm on it');
+      assert.throws(() => applyDecisionCommand(hand, {type: 'decision.accept', payload: {id, acknowledge: true}}, AT), /Resolve this decision/, 'no acceptance');
+      const acc = structuredClone(hand); decision(acc, id).status = 'accepted'; const accd = withFinalReview(acc, {upgrade: false});
+      assert.equal(decisionCurrent(accd, decision(accd, id)), true, 'read as accepted as it stands');
+      assert.throws(() => applyDecisionCommand(accd, {type: 'decision.governance', payload: {id, status: 'approved', reviewer: 'Governance board', evidence: 'Minutes 12'}}, AT), /Resolve content gaps/, 'and no approval evidence');
+      pass('S5 U1 hard constraint: after a person other than the chooser judged a chosen row fail (the verifier\'s walk H-A, through the server), a decision.save that drops that hard constraint from the decision\'s drivers is refused to a person, an agent account and a draft by Sol and changes nothing, while a save of the texts or of a driver that is no hard constraint is taken; no second person confirms the ineligible choice and it is not accepted; on a document whose drivers no longer name the constraint, the chosen candidate still reads ineligible, the package raises "The working choice breaks a hard constraint" in the built-in\'s words, and the confirm, the acceptance and the approval are refused');
     } finally { h.close(); }
   });
 
