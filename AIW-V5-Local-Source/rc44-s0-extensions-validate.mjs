@@ -1465,7 +1465,11 @@ await block('8 client build', async () => {
   assert.equal(size.allowance.chapters, 915); assert.equal(size.delta, size.slice.chapters - size.baseline.chapters); assert.ok(size.delta > 0 && size.delta <= 915, 'the route delta measured at the slice is at most 915 B: ' + size.delta);
   assert.ok(size.slice.chapters <= BUDGET.routes.chapters);
   { const w = size['opens with records']; assert.ok(w && /holds no package records/.test(w.gate) && /opensWithRecords/.test(w.how) && w.hosts?.[HOST]?.total === w.hosts[HOST].route + w.hosts[HOST].added, 'the size file says what the gate measures and how a package measures what a document with its records opens with'); }
-  assert.ok(measured.chapters >= size.slice.chapters - 700, 'the route as built now is the slice\'s or a later one\'s: ' + measured.chapters);
+  // (the lead's ruling U2 of 2026-11-22; was: measured >= the slice's route - 700 B. A later slice may retire an old path, whose saving the lead
+  // books as a negative item of the shared pool in the lead's own file: the lower bound is the slice's route less 700 B, less the savings the
+  // lead books there, each an integer, and no more.)
+  const LEAD = 'audit/rc44/evidence/lead-bookings-size.json', saved = existsSync(LEAD) ? -Object.values(JSON.parse(readFileSync(LEAD, 'utf8')).sharedPoolBytes || {}).filter(b => { assert.ok(Number.isInteger(b), 'the lead\'s pool items are counts of bytes'); return b < 0; }).reduce((n, b) => n + b, 0) : 0;
+  assert.ok(measured.chapters >= size.slice.chapters - 700 - saved, 'the route as built now is the slice\'s or a later one\'s: ' + measured.chapters + ' (the lower bound ' + (size.slice.chapters - 700 - saved) + ': the slice\'s ' + size.slice.chapters + ' B less 700 B, less the ' + saved + ' B the lead books as saved)');
   if (process.env.AIW_S0_MEASURE || process.argv.includes('--measure')) assert.deepEqual(measured, size.slice, 'at the slice\'s commit the build measures what the evidence says');
   pass('8: the client build passes every gate with the caps unchanged; S0 measured ' + size.delta + ' B on the chapters route (' + size.baseline.chapters + ' → ' + size.slice.chapters + ' of ' + BUDGET.routes.chapters + '), 148 script files; the registry is ' + on[0][1].bytesInOutput + ' B; this build: ' + measured.chapters + ' B');
 });
@@ -1511,8 +1515,11 @@ await block('O1 the bookings add up', async () => {
   // a stale figure: each file's own figure changed by one byte, in turn, fails, naming each file's figure
   const own = R.routeBookings(null, BOOKINGS).own; assert.ok(Object.keys(own).length >= 3, 'the files of the build\'s packages and the lead\'s: ' + JSON.stringify(own));
   // (the lead's own figure is 0 by rule: a changed one is refused above)
+  // (the lead's ruling V3 of 2026-11-22; was: /the chapters route grew \d+ B … and the size files book \d+ B: /) the growth, and the
+  // bookings it is held to, are signed numbers: a retirement's saving (U2) makes both negative, so each reads -?\d+; the message shape and
+  // every file's figure are still required
   for (const file of Object.keys(own).filter(f => !f.endsWith('/lead-bookings-size.json'))) { const name = file.split('/').pop(), key = name === 'wp2-s1-size.json' && !('ownBytes' in JSON.parse(readFileSync(file, 'utf8'))) ? 'delta' : 'ownBytes', dir = scratch('stale-' + name.replace(/\.json$/, ''), {[name]: e => ({...e, [key]: e[key] + 1})});
-    assert.throws(() => assertBookingsAddUp(route, INTEGRATED, dir), e => { assert.match(e.message, /^The bookings do not add up: the chapters route grew \d+ B against 9673661 \(\d+ - 3229840\), and the size files book \d+ B: /, name + ' stale: ' + e.message); for (const [f, n] of Object.entries(own)) assert.ok(e.message.includes(f.split('/').pop() + ' ' + (f === file ? n + 1 : n) + ' B of its own'), name + ' stale: the failure names ' + f + '\'s figure: ' + e.message); return true; }, name + ' changed by one byte'); }
+    assert.throws(() => assertBookingsAddUp(route, INTEGRATED, dir), e => { assert.match(e.message, /^The bookings do not add up: the chapters route grew -?\d+ B against 9673661 \(\d+ - 3229840\), and the size files book -?\d+ B: /, name + ' stale: ' + e.message); for (const [f, n] of Object.entries(own)) assert.ok(e.message.includes(f.split('/').pop() + ' ' + (f === file ? n + 1 : n) + ' B of its own'), name + ' stale: the failure names ' + f + '\'s figure: ' + e.message); return true; }, name + ' changed by one byte'); }
   // a foreign file that books bytes, and one that books a pool item, fail the check too
   for (const [why, files] of [['a foreign file with bytes of its own', {'zz-foreign-size.json': e => ({...e, ownBytes: 300})}], ['a foreign pool item', {'zz-foreign-size.json': e => ({...e, ownBytes: 0, sharedPoolBytes: {strayItem: 12}})}], ['the lead\'s negative pool item that no build shows', {'lead-bookings-size.json': e => ({...e, sharedPoolBytes: {...e.sharedPoolBytes, sharedOnceN1: -46}})}]])
     assert.throws(() => assertBookingsAddUp(route, INTEGRATED, scratch('add-' + why.replace(/\W+/g, '-'), files)), /^Error: The bookings do not add up: /, why);

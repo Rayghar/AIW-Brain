@@ -3,19 +3,18 @@ import {extendedTopic,COMPOSITION_TOPICS} from './composition-knowledge.js';
 import {previewComposition} from './composition-design.js';
 import {recordQualityMeasurement} from './quality-analysis.js';
 import {methodKnowledgeCurrent,knowledgeStamp,linkedKnowledge} from './knowledge-governance.js';
-import {releasedDesignConcern} from './domain-knowledge.js';
 import {previewPersistenceDesign} from './persistence-design.js';
 import {previewReadDesign} from './read-design.js';
 import {architectureProposal} from './architecture-proposal.js';
 import {withDesignTasks,designTask,designTasks,designBasis,designBasisCurrent} from './design-task-state.js';
 import {withModelAlternatives,modelAlternative,modelAlternatives} from './model-alternatives-state.js';
-import {architectureOptions,interactionAnswers,interactionSourceReceipt,interactionContext,interactionContextCurrent,assessInteraction,interactionReasoningGraph,topicFromReceipt,knowledgeConcern,criterionDrivers} from './architecture-knowledge.js';
+import {architectureOptions,interactionAnswers,interactionSourceReceipt,interactionContext,interactionContextCurrent,assessInteraction,interactionReasoningGraph,topicFromReceipt,knowledgeConcern} from './architecture-knowledge.js';
 import {applyLogicalCommand} from './logical-domain.js';
 import {applyRealisationCommand} from './realisation-domain.js';
 import {applyTechnologyCommand} from './technology-domain.js';
 import {applyTechnologyRealisationCommand} from './technology-realisation-domain.js';
 import {applyDecisionCommand} from './decisions-domain.js';
-import {driverCode} from './quality-domain.js';
+
 import {modelEditSnapshot} from './model-impact.js';
 import {changeFingerprint} from './changes-domain.js';
 
@@ -26,8 +25,8 @@ export function applyArchitectureCommand(input,command,at=new Date().toISOString
   const p=withDesignTasks(copy(input)),r=command.payload||{};let t;
   if(command.type==='architecture.start'){
     if(designTasks(p).length>=60)throw Error('This project has reached its guided-task limit.');
-    const topic=r.topic||'interaction',concern=topic.startsWith('knowledge:')?releasedDesignConcern(p,topic.slice('knowledge:'.length)):null;
-    if(!['interaction','reads','persistence',...Object.keys(COMPOSITION_TOPICS)].includes(topic)&&!concern)throw Error('Choose a current, released architecture concern.');
+    const topic=r.topic||'interaction';if(String(topic).startsWith('knowledge:'))throw Error(CONCERN_RETIRED);
+    if(!['interaction','reads','persistence',...Object.keys(COMPOSITION_TOPICS)].includes(topic))throw Error('Choose a current, released architecture concern.');
     const data=['reads','persistence','delivery','partitioning'].includes(topic)&&r.dataId?p.interfaces.data.find(d=>d.id===r.dataId):null;
     if(r.dataId&&!data)throw Error('Choose an existing data definition.');
     const contextIds=[...new Set(Array.isArray(r.contextIds)?r.contextIds:[])],contextRecords=[...p.logical.responsibilities,...p.realisation.components,...p.technology.capabilities,...p.technologyRealisation.records];
@@ -38,12 +37,12 @@ export function applyArchitectureCommand(input,command,at=new Date().toISOString
     const apps=p.realisation.components.filter(c=>p.logical.mappings.some(m=>m.physicalId===c.id&&links.some(l=>l.id===m.logicalId)));
     const possible=apps.filter(c=>c.id!==data?.authorityId),caller=possible.length===1?possible[0]:null;
     const answers=interactionAnswers({...(topic==='delivery'?{dataId:data?.id,dataScope:data?.title||'',classification:data?.classification||'Unclassified',retention:data?.retentionPolicy,isolation:data?.protection,processorId:data?.authorityId}:{}),callerId:caller?.id,callerTitle:'Intake · '+basis.requirement.title,processorTitle:'Process · '+basis.requirement.title,queueTitle:'Work queue · '+basis.requirement.title,owner:caller?.owner,information:caller?.inputs,...(topic==='reads'?{dataId:data?.id,readScope:data?.title||'',classification:data?.classification,retention:data?.retentionPolicy,isolation:data?.protection,processorId:data?.authorityId,callerTitle:'Read service · '+basis.requirement.title,processorTitle:'Authority · '+basis.requirement.title,cacheTitle:'Read cache · '+basis.requirement.title}: {}),...(topic==='persistence'?{owner:data?.owner||caller?.owner,dataId:data?.id,dataScope:data?.title||'',classification:data?.classification,retention:data?.retentionPolicy,isolation:data?.protection,processorId:data?.authorityId,processorTitle:'Authority · '+basis.requirement.title,storeTitle:'Persistence · '+basis.requirement.title,recoveryTitle:'Recovery · '+basis.requirement.title}:{})},topic);
-    const governedConcern=concern?copy(concern):null;
-    t={id:'DES-'+String(++p.coauthoring.counters.design).padStart(3,'0'),kind:'architecture',...(topic!=='interaction'?{topic}:{}),...(concern?{governedConcern}:{}),revision:1,title:basis.requirement.title,requirementId:r.requirementId,driverId:driver.id,basis,initialBasis:copy(basis),methodReceipt:interactionSourceReceipt(concern?{governedConcern}:topic),governedKnowledge:linkedKnowledge(p,[r.requirementId,...basis.drivers.map(d=>d.id)]),answers,architectureBasis:interactionContext(p,answers),knowledge:[],status:'questions',alternativeIds:[],considerations:[],createdAt:at,updatedAt:at,history:[{at,event:concern?'Started released '+concern.title+' comparison':extendedTopic(topic)?'Started '+extendedTopic(topic).label.toLowerCase()+' comparison':topic==='persistence'?'Started persistence comparison':topic==='reads'?'Started read comparison':'Started interaction comparison',driverId:driver.id,basis:copy(basis)}]};
+    t={id:'DES-'+String(++p.coauthoring.counters.design).padStart(3,'0'),kind:'architecture',...(topic!=='interaction'?{topic}:{}),revision:1,title:basis.requirement.title,requirementId:r.requirementId,driverId:driver.id,basis,initialBasis:copy(basis),methodReceipt:interactionSourceReceipt(topic),governedKnowledge:linkedKnowledge(p,[r.requirementId,...basis.drivers.map(d=>d.id)]),answers,architectureBasis:interactionContext(p,answers),knowledge:[],status:'questions',alternativeIds:[],considerations:[],createdAt:at,updatedAt:at,history:[{at,event:extendedTopic(topic)?'Started '+extendedTopic(topic).label.toLowerCase()+' comparison':topic==='persistence'?'Started persistence comparison':topic==='reads'?'Started read comparison':'Started interaction comparison',driverId:driver.id,basis:copy(basis)}]};
     p.coauthoring.designTasks.push(t);return {document:p,selected:t.id};
   }
   t=designTask(p,r.id);if(t?.kind!=='architecture')throw Error('Choose a saved architecture comparison.');
   if(t.revision!==r.taskRevision)throw Error('This comparison changed. Reopen the saved task; your input is retained.');
+  if(knowledgeConcern(t)&&command.type!=='architecture.dismiss')throw Error(CONCERN_RETIRED);
   if(command.type==='architecture.measure'){
     if(!architectureOptions(t).some(o=>o.id===(t.applied?.reasoningGraph?.assessment.optionId||r.optionId)))throw Error('Choose the compared architecture approach.');
     const measurement=recordQualityMeasurement(p,t,r,at,actor);t.history.push({at,event:'Recorded quantitative evidence',note:measurement.id+' · '+measurement.reason,reviewer:measurement.reviewer});t.revision++;t.updatedAt=at;return {document:p,selected:t.id};
@@ -52,10 +51,6 @@ export function applyArchitectureCommand(input,command,at=new Date().toISOString
     if(r.reviewed!==true||!text(r.reason)||!text(r.reviewer))throw Error('Confirm the source review, reviewer and conclusion.');
     if(r.stamp!==architectureSourceStamp(p,t))throw Error('Sources changed again. Review the current source definitions.');
     t.history.push({at,event:'Reviewed changed architecture sources',note:text(r.reason),reviewer:text(r.reviewer,180),basis:copy(t.sourceReview?.basis||t.basis),methodReceipt:copy(t.methodReceipt),architectureBasis:copy(t.architectureBasis)});
-    if(knowledgeConcern(t)){
-      const current=releasedDesignConcern(p,t.governedConcern.id);if(!current)throw Error('This design concern has no current released claim. Choose an available concern.');
-      t.governedConcern=copy(current);
-    }
     t.sourceReview={at,basis:designBasis(p,t.requirementId,undefined,undefined,undefined,t.basis.contextIds),reviewer:text(r.reviewer,180),reason:text(r.reason)};t.architectureBasis=interactionContext(p,t.answers);t.methodReceipt=interactionSourceReceipt(t);t.governedKnowledge=linkedKnowledge(p,[t.requirementId,...t.sourceReview.basis.drivers.map(d=>d.id)]);
     if(t.status!=='applied'){retire(p,t,at,'Source review requires fresh model proposals.');t.basis=copy(t.sourceReview.basis);t.status='questions';}
   }else{
@@ -69,7 +64,6 @@ export function applyArchitectureCommand(input,command,at=new Date().toISOString
     }else if(command.type==='architecture.prepare'){
       const assessment=assessInteraction(p,t,r.optionId);
       if(!assessment.ready)throw Error([...assessment.blockers,...assessment.unknown].map(c=>c.title+': '+c.detail).join(' '));
-      if(knowledgeConcern(t))for(const option of architectureOptions(t)){const other=assessInteraction(p,t,option.id);if(!other.ready)throw Error('Assess every released approach before preparing a decision: '+option.title+' · '+other.unknown.map(c=>c.title).join(', '));}
       if(!t.answers.reason)throw Error('Explain why this approach fits and which trade-off you accept.');
       withModelAlternatives(p);
       if(p.modelAlternatives.records.length>=60)throw Error('This project has reached its saved-alternative limit.');
@@ -87,50 +81,20 @@ export function applyArchitectureCommand(input,command,at=new Date().toISOString
 export const architectureSourceStamp=(p,t)=>changeFingerprint([knowledgeStamp(p),designBasis(p,t.requirementId,undefined,undefined,undefined,t.basis.contextIds),interactionContext(p,t.answers),interactionSourceReceipt(t)]);
 export const architecturePreviewStamp=(p,a)=>changeFingerprint(['architecture-composition-6',knowledgeStamp(p),p.id,p.contentVersion,...['quality','decisions','logical','realisation','technology','technologyRealisation','interfaces','security','runtime'].map(k=>p[k]?.version),a.revision,a.design,a.designAnswers,a.designBasis,a.architectureBasis,a.methodReceipt,interactionSourceReceipt(a.methodReceipt?.governedConcern?{governedConcern:a.methodReceipt.governedConcern}:topicFromReceipt(a.methodReceipt))]);
 
-// A released concern supplies questions and alternatives. It does not supply
-// model roles or architecture facts, so its reviewed proposal is a decision
-// comparison only; Chapter 4–10 modelling remains an architect's next step.
-function previewReleasedConcern(input,alternative,t,assessment,at){
-  const concern=knowledgeConcern(t),receipt=concern.receipt,a=t.answers;
-  for(const option of architectureOptions(t))if(!assessInteraction(input,t,option.id).ready)throw Error('Assess every released approach before previewing the decision.');
-  if(!a.owner.trim())throw Error('Name the architect accountable for this comparison.');
-  let notes={};try{notes=JSON.parse(a.criteriaNotes||'{}');}catch{throw Error('Reopen and complete the comparison criteria.');}
-  let p=copy(input);const executed=[];
-  const run=(type,payload)=>{const r=applyDecisionCommand(p,{type,payload},at);p=r.document;executed.push({type,payload:copy(payload)});return r.selected;};
-  const source='Released design concern '+receipt.claimId+' / '+receipt.releaseId+' · '+receipt.path+' @ '+receipt.revision+' lines '+receipt.lineStart+'–'+receipt.lineEnd;
-  // Round 25 (D-25-10, K2): a criterion tied to a quality category or a driver kind links the project's drivers of it
-  // to the decision, beside the comparison's own scenario. The person's reviewed apply of this preview links them, and
-  // the preview names each with the criterion that brings it. Their effects stay unstated ('unknown') for every option,
-  // with the option's released consequence on that criterion as the reason, until a person records one.
-  const scope=concern.criteria.filter(c=>c.category||c.kind).map(c=>({c,ids:criterionDrivers(input,c).map(d=>d.id)}));
-  const driverIds=[...new Set([t.driverId,...scope.flatMap(x=>x.ids)])],linked=driverIds.filter(id=>id!==t.driverId);
-  const decisionId=run('decision.save',{question:concern.question,context:t.basis.requirement.description+' '+concern.statement,requirementIds:[t.requirementId],driverIds,owner:a.owner,source,rationale:a.reason,assumptions:[...concern.conditions,...concern.limitations].join(' '),risks:assessment.option.cost,mitigation:'Verify the project-specific criteria and quality scenario before acceptance.'});
-  let selectedAlternativeId='';
-  for(const option of architectureOptions(t)){
-    const released=concern.options.find(o=>o.id===option.id)||{},said=c=>released.consequences?.[c.id]||'';
-    const reasons=concern.criteria.map(c=>c.label+': '+String(notes?.[option.id]?.[c.id]||'Not assessed').trim());
-    // The released consequences and the evidence the option needs, as the concern states them; nothing when it does not.
-    const consequences=option.counterfactual+(concern.criteria.some(said)?' As the released concern states: '+concern.criteria.filter(said).map(c=>c.label+': '+said(c)).join(' '):'')+(released.evidence?' The evidence it needs: '+released.evidence:'');
-    // A driver's reason: the criteria assessed on it (every criterion for the comparison's own scenario), each with the
-    // option's released consequence where that criterion weighs the driver.
-    const weighs=(c,id)=>scope.some(x=>x.c===c&&x.ids.includes(id)),reasonOf=(id,cs)=>cs.map(c=>reasons[concern.criteria.indexOf(c)]+(said(c)&&weighs(c,id)?' Released consequence: '+said(c):'')).join(' ');
-    run('decision.alternative',{id:decisionId,title:option.title,summary:reasons.join(' '),benefits:'Fit to this project requires the architect’s criterion assessments.',costs:option.cost,consequences,pattern:'Released design concern · '+concern.title,antiPattern:'Claiming an outcome without project evidence.',assessments:{[t.driverId]:{effect:'unknown',reason:reasonOf(t.driverId,concern.criteria),evidence:source},...Object.fromEntries(linked.map(id=>[id,{effect:'unknown',reason:reasonOf(id,concern.criteria.filter(c=>weighs(c,id))),evidence:source}]))},rejectionReason:option.id===assessment.optionId?'':a.reason});
-    if(option.id===assessment.optionId)selectedAlternativeId=p.decisions.records.find(d=>d.id===decisionId).alternatives.at(-1).id;
-  }
-  run('decision.choose',{id:decisionId,alternativeId:selectedAlternativeId});
-  const result=architectureProposal(input,p,t,alternative,[{type:'decision.save',id:decisionId,slot:'reviewed concern comparison'}],executed,decisionId,assessment,at);
-  const named=id=>{const d=input.quality.drivers.find(x=>x.id===id);return d?driverCode(input,d)+' · '+d.title:id;};
-  return {...result,previewChapters:[3],signals:[{title:'Source-grounded comparison',detail:'Options and criteria came from '+source+'. The selected alternative is an architect proposal; Chapter 3 acceptance and measured evidence remain separate.'},...(scope.length?[{title:'Drivers the released criteria weigh',detail:scope.map(x=>x.c.label+': '+(x.ids.length?x.ids.map(named).join(', '):'no driver of it is recorded')).join('; ')+'. Applying this preview links them to the decision; their effects stay unstated until a person records them.'}]:[])]};
-}
+// rc44 wp2 S5 (design §e.1 row 9; the lead's ruling Q8): the guided comparison of a released concern is retired. Its
+// options are compared as a component selection in Chapter 3 (selection.* with kind option, adoption-selection.js, which
+// holds the one builder of the comparison). A task on a released concern that an older project
+// holds is read as before (applied, or set aside); it is not started, answered, prepared, re-read or applied again.
+export const CONCERN_RETIRED='Compare the released options of a concern as a selection in Chapter 3: the guided comparison of a released concern is retired.';
 
 export function previewArchitectureDesign(input,alternative,at=new Date().toISOString()){
   const saved=designTask(input,alternative.taskId);if(saved?.kind!=='architecture')throw Error('The source architecture comparison is unavailable.');
   if(saved.status==='applied')return {document:input,commands:[],changes:[],fields:[],items:[],findings:{introduced:[],resolved:[],existing:0},signals:[],conflicts:[],satisfied:[],appliedTask:true};
   if(saved.status==='dismissed')throw Error('This comparison was set aside.');
+  if(knowledgeConcern(saved))throw Error(CONCERN_RETIRED);
   const t={...saved,basis:alternative.designBasis,sourceReview:null,answers:alternative.designAnswers,architectureBasis:alternative.architectureBasis,methodReceipt:alternative.methodReceipt,governedKnowledge:alternative.governedKnowledge};
   if(!designBasisCurrent(input,t)||!interactionContextCurrent(input,t))throw Error('Design sources changed. Review them before generating a fresh model proposal.');
   const assessment=assessInteraction(input,t,alternative.design.approach);if(!assessment.ready)throw Error('This approach needs clarification: '+[...assessment.blockers,...assessment.unknown].map(c=>c.detail).join(' '));
-  if(knowledgeConcern(t))return {...previewReleasedConcern(input,alternative,t,assessment,at),stamp:architecturePreviewStamp(input,alternative)};
   if(extendedTopic(t))return {...previewComposition(input,alternative,t,at),stamp:architecturePreviewStamp(input,alternative)};
   if(t.topic==='persistence')return {...previewPersistenceDesign(input,alternative,t,at),stamp:architecturePreviewStamp(input,alternative)};
   if(t.topic==='reads')return {...previewReadDesign(input,alternative,t,at),stamp:architecturePreviewStamp(input,alternative)};

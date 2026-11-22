@@ -97,6 +97,9 @@ export function acceptanceSubject(a,p=null){
  const live=!a?.applied?.actor&&!named&&p?journalApplier(p,a):{actors:[],person:null},applier=a?.applied?.actor||named||live.person||null,seen=new Set(),history=[];
  const say=(actor,revision)=>{if(actor&&!seen.has(actor)){seen.add(actor);history.push({revision,actor});}};
  say(applier,1);for(const actor of live.actors)say(actor,1);
+ // (slice S5, ruling Q4: a profile adoption also names the persons whose word its selection rests on: the chooser and
+ // every judge of the chosen candidate's rows.)
+ if(a?.kind==='profile'&&p){const d=list(p.decisions?.records).find(x=>x.id===a.decisionId),c=d?.selection?.choice;if(c){say(c.actor,1);for(const j of list(d.selection.judgements))if(j?.alternativeId===c.alternativeId&&j.account==='person')say(j.actor,1);}}
  const journal=history.length;
  for(const x of from<0?h:h.slice(from))if(!x.identity&&(COVERED.has(x.event)||!applier&&x.event==='reassess'))say(x.actor,x.revision);
  return {id:a?.id,actor:applier||history[journal]?.actor||null,owner:typeof a?.owner==='string'?a.owner:'',history};
@@ -125,8 +128,9 @@ export function adoptionAccepted(p,a){
 // (architecture-obligation-basis.js). A built-in definition's own reading is its interpretation, as before. A
 // definition this build cannot identify (the upgrade wrote it under the id its receipt carries, authority
 // 'unrecognised') is never read as current: its interpretation was not evaluated.
+// (slice S5: a profile adoption's definition is the released claim itself, its receipt a claim receipt.)
 function definitionOf(p,a){
- const receipt=a?.definition?.receipt,claims=[...list(a?.legacy?.governedKnowledge),receipt?.governedConcern?.receipt].filter(r=>r&&r.claimId),reasons=[];
+ const receipt=a?.definition?.receipt,claims=[...list(a?.legacy?.governedKnowledge),receipt?.governedConcern?.receipt,receipt?.kind==='governed-claim'?receipt:null].filter(r=>r&&r.claimId),reasons=[];
  const sources=[...claims.flatMap(r=>[r.sourceId,r.claimId,r.releaseId]),receipt?.packId,receipt?.methodId,receipt?.sources?.method?.id,...list(receipt?.sources?.references).map(r=>r?.id),...(receipt?.sources?.method?.file||receipt?.sources?.file?['SA-PLAYBOOK',BRAIN_PLAYBOOK.id]:[])].filter(Boolean);
  if(claims.some(r=>!claimReceiptCurrent(p,r)))reasons.push('A reviewed source interpretation changed or is no longer eligible.');
  if(sources.length&&withdrawn(p,sources).length)reasons.push('A source supporting this definition was withdrawn.');

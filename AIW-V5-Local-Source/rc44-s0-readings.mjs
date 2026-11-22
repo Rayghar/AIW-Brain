@@ -18,6 +18,7 @@ import {arsMarkdown} from './public/ars-document.js';
 import {retiredRecords} from './public/record-lifecycle.js';
 import {eachRecord} from './public/provenance.js';
 import {instantiateTemplate} from './project-lifecycle.js';
+import {neutraliseImportedAuthority} from './recovery-service.js';
 
 export const AT = '2026-10-01T09:00:00.000Z';
 export const REFERENCES = ['bank-payment', 'clinic-appointments', 'parcel-lockers'];
@@ -235,6 +236,22 @@ export function assertTemplateCopyClearsSteps(p, records) {
   if (!records(source).some(r => Object.values(r || {}).some(step))) throw Error('assertTemplateCopyClearsSteps: the document holds no record with a step taken');
   for (const r of records(instantiateTemplate(source, 'template-copy', 'A copy', AT))) for (const [key, value] of Object.entries(r || {}))
     if (step(value)) throw Error('A step taken in a template is carried into a project copied from it: ' + (r.id || '(record)') + '.' + key + ' (keep a person\'s step under the record\'s key review, which the copy clears)');
+}
+
+// The counterpart of assertTemplateCopyClearsSteps for a recovery import (the lead's ruling Q6 of 2026-11-22): a step
+// taken on the workbench a recovery package came from is nobody's here. `records` reads the records that keep steps
+// from a document; after the import (recovery-service.js neutraliseImportedAuthority, as the server's import calls it)
+// no value of theirs, and no element of a list of theirs, may still be a step a named actor took ({actor, account} with
+// an actor), unless it is kept as history under a key that starts with "imported". It throws with the key and the
+// record named; it answers how many records it read.
+export function assertRecoveryClearsSteps(p, records) {
+  const step = v => !!v && typeof v === 'object' && !Array.isArray(v) && 'actor' in v && 'account' in v && v.actor != null;
+  const holds = v => step(v) || (Array.isArray(v) && v.some(step));
+  if (!records(p).some(r => Object.values(r || {}).some(holds))) throw Error('assertRecoveryClearsSteps: the document holds no record with a step taken');
+  const rows = records(neutraliseImportedAuthority(structuredClone(p), AT));
+  for (const r of rows) for (const [key, value] of Object.entries(r || {}))
+    if (!key.startsWith('imported') && holds(value)) throw Error('A step taken before a recovery import counts on this workbench: ' + (r.id || '(record)') + '.' + key + ' (move it aside under an imported key, as recovery-service.js neutraliseImportedAuthority does for the topology step)');
+  return rows.length;
 }
 
 // No person's and no second person's step moves a design stamp (the lead's ruling J3 of 2026-11-19): the design

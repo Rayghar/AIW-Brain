@@ -78,6 +78,14 @@ export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??
  // from. It is kept as history (runtime.topology.importedReview) and the step is nobody's here, whatever the package says
  // of itself or of its dates, until a person here takes it. A document with no step taken gains no key.
  {const t=p?.runtime?.topology;if(t&&typeof t==='object'&&t.review){t.importedReview=t.review;t.review=null;}}
+ // rc44 (wp2 S5; the lead's ruling Q6): a component selection's steps (who started it, each judgement, the choice, the
+ // second person's confirm, the instantiation) were taken on the workbench the package came from. They are kept as
+ // history (decision.selection.imported) and count as nobody's here; the candidates' outcomes go with the choice. A
+ // person here judges, chooses and confirms again. A document with no selection gains no key.
+ for(const d of Array.isArray(p?.decisions?.records)?p.decisions.records:[]){const s=d?.selection;if(!s||typeof s!=='object'||Array.isArray(s))continue;
+  s.imported={started:s.started??null,judgements:Array.isArray(s.judgements)?s.judgements:[],choice:s.choice??null,confirm:s.confirm??null,instantiated:s.instantiated??null,actor:s.actor??null};
+  s.started=null;s.judgements=[];s.choice=null;delete s.confirm;delete s.instantiated;s.actor=null;
+  for(const a of Array.isArray(d.alternatives)?d.alternatives:[])if(a?.candidate&&a.candidate.outcome){a.candidate.importedOutcome=a.candidate.outcome;delete a.candidate.outcome;}}
  const m=p.finalReview;if(!m||typeof m!=='object')return p;
  strip(m.intake);strip(m.checks);
  for(const r of m.reviews||[])strip(r);

@@ -33,7 +33,7 @@ export const DECISION_FIELDS=['impact','stakeholderNote','dependencies','licensi
 // The text a decision and an alternative keep (DM-09: a save that leaves one out keeps it; null clears it; past its
 // limit it is refused, never cut).
 export const DECISION_TEXT=['question','context','rationale','assumptions','assumptionEvidence','risks','mitigation','owner','source',...DECISION_FIELDS],ALTERNATIVE_TEXT=['title','summary','benefits','costs','consequences','pattern','antiPattern','rejectionReason','source'];
-const DECISION_NEW=['category',...DECISION_FIELDS,'requirementGroupIds','stakeholderIds','dependsOn','open','recommendation'],ALTERNATIVE_NEW=['rejectionReason','source','componentIds','requirementGroupIds','open'];
+const DECISION_NEW=['category',...DECISION_FIELDS,'requirementGroupIds','stakeholderIds','dependsOn','open','recommendation'],ALTERNATIVE_NEW=['rejectionReason','source','componentIds','requirementGroupIds','open','candidate'];
 // A category the person has not chosen is not stated (''), never a default.
 export const decisionCategory=d=>DECISION_CATEGORIES.find(c=>c.id===d?.category)?.id||'';
 export const chosen=d=>d?.alternatives.find(a=>a.id===d.selectedAlternativeId);
@@ -123,7 +123,7 @@ function decisionFindingsOf(p){const out=[],add=(code,d,title,detail,level='erro
   if(!a)add('choice',d.id,'Choose a working alternative','Preview and compare alternatives before recording a choice.');
   if(!d.rationale)add('rationale',d.id,'Explain the choice','State why this option is preferred and why the alternatives were not selected.');
   for(const o of d.alternatives){if(!o.summary||!o.consequences||!o.benefits||!o.costs)add('option-'+o.id,d.id,'Describe '+o.title,'Record the approach, benefits, costs, and consequences.','error',{alternativeId:o.id});if(!o.responsibilityIds.length||o.responsibilityIds.some(id=>!responsibilityIds.has(id))||o.relationships.some(e=>!o.responsibilityIds.includes(e.from)||!o.responsibilityIds.includes(e.to)))add('impact-'+o.id,d.id,'Connect the impact of '+o.title,'Identify affected responsibilities and repair relationship endpoints.','error',{alternativeId:o.id});}
-  if(a)for(const id of d.driverIds){const v=a.assessments[id];if(!v||v.effect==='unknown'||!v.reason||!v.evidence)add('support-'+id,d.id,'Support the choice against '+id,'Explain the effect and cite evidence or an explicit analytical basis for the selected alternative.','error',{alternativeId:a.id,driverId:id});}
+  if(a)for(const id of d.driverIds){const v=a.assessments[id];if((!v||v.effect==='unknown'||!v.reason||!v.evidence)&&!d.selection?.choice?.unproven?.includes(id))add('support-'+id,d.id,'Support the choice against '+id,'Explain the effect and cite evidence or an explicit analytical basis for the selected alternative.','error',{alternativeId:a.id,driverId:id});}
   // Round 25 (D-25-03, D-25-07): what the decision reading says of the working choice. Breaking a hard constraint is an
   // error, so the decision cannot be accepted or approved; another alternative dominating it is a warning to answer.
   if(a){const r=readDecision(p,d),c=r?.choice;
@@ -184,7 +184,8 @@ function normaliseOption(p,d,raw,old){
  const responsibilityIds=responsibilities.ids,rows=raw.relationships===undefined&&old?old.relationships:Array.isArray(raw.relationships)?raw.relationships:[];
  if(rows.length>DECISION_LIMITS.relationships)throw Error(`Propose at most ${DECISION_LIMITS.relationships} relationships for one alternative; ${rows.length} were sent.`);
  const relationships=rows.map(e=>({from:clean(e.from,60),to:clean(e.to,60),label:clean(e.label,160)}));if(relationships.some(e=>!responsibilityIds.includes(e.from)||!responsibilityIds.includes(e.to)||e.from===e.to||!e.label))throw Error('Every impact relationship needs two different affected responsibilities and a label.');
- const a={id:old?.id||'ALT-'+pad(++p.decisions.counters.alternative),strategy:old?.strategy||'custom_'+pad(p.decisions.counters.alternative),responsibilityIds,relationships,assessments:{}};
+ // rc44 wp2 S5: the candidate a selection compares (alternative.candidate, adoption-selection.js) stays with its alternative.
+ const a={id:old?.id||'ALT-'+pad(++p.decisions.counters.alternative),strategy:old?.strategy||'custom_'+pad(p.decisions.counters.alternative),responsibilityIds,relationships,assessments:{},candidate:old?.candidate};
  for(const key of ALTERNATIVE_TEXT)a[key]=patchText(raw,key,old,key==='title'?160:4000,'The '+fieldWords(key));if(!a.title)throw Error('Name the alternative.');
  a.componentIds=componentIds.ids;a.requirementGroupIds=groups.ids;a.open=raw.open===undefined?old?.open:cleanOpen(raw.open,ALTERNATIVE_TEXT);
  const given=raw.assessments===undefined&&old?old.assessments:raw.assessments;
@@ -195,16 +196,22 @@ function normaliseOption(p,d,raw,old){
  if(raw.assessments!==undefined)for(const id of d.driverIds){if(raw.assessments?.[id]?.effect==='violates'&&driverKind(driverOf(p,id))!=='constraint')throw Error('“Breaks it” is for a constraint. Record the effect of '+(clean(raw.title)||old?.title||'this alternative')+' on '+id+' as tension instead.');}
  for(const id of d.driverIds){const v=given?.[id]||{};a.assessments[id]={effect:EFFECTS.some(e=>e[0]===v.effect)?v.effect:'unknown',reason:clean(v.reason),evidence:clean(v.evidence),...(marked&&(solAssessed(v)||rulesAssessed(v))?{by:v.by}:{})};}
  return settle(a,old,ALTERNATIVE_NEW);}
+// rc44 wp2 S5 (ruling Q2): on a decision that holds a component selection, its choice, its candidates, their rejection
+// reasons and their effect on a hard constraint are the selection's: selection.* writes them through this handler as its
+// inner steps (SELECTION_STEP, a key no request can carry), and every other request for them is refused; so is a
+// decision.save that drops a hard constraint from its drivers (ruling U1).
+export const SELECTION_STEP=Symbol();
 export function applyDecisionCommand(input,command,at=new Date().toISOString()){
- const p=withDecisions(input),q=p.decisions,raw=command.payload||{};let selected=raw.id||null,mutated=true,created=null;
+ const p=withDecisions(input),q=p.decisions,raw=command.payload||{},own=d=>{if(d.selection&&!command[SELECTION_STEP])throw Error('Change '+d.id+' through its selection.')};let selected=raw.id||null,mutated=true,created=null;
  if(command.type==='decision.save'){
   const d=raw.id?findDecision(p,raw.id):null,prior=d&&clone(d),next={};
   for(const k of DECISION_TEXT)next[k]=patchText(raw,k,d,k==='question'?200:k==='owner'?180:4000,'The '+fieldWords(k));
   if(!next.question)throw Error('Frame a design question.');
   const category=raw.category===undefined?d?.category??'':raw.category??'';if(category&&!DECISION_CATEGORIES.some(c=>c.id===category))throw Error('Choose a decision category, or leave it not stated.');next.category=category;
-  Object.assign(next,validateRefs(p,raw,d));next.recommendation=recommendationOf(raw,d,next.driverIds);next.topic=raw.topic===undefined&&d?d.topic:knownTopic(p,raw.topic)?raw.topic:'custom';next.open=raw.open===undefined?d?.open:cleanOpen(raw.open,DECISION_TEXT);
+  Object.assign(next,validateRefs(p,raw,d));if(d?.selection&&readDecision(p,d,{priorities:{}}).hard.some(id=>!next.driverIds.includes(id)))own(d);next.recommendation=recommendationOf(raw,d,next.driverIds);next.topic=raw.topic===undefined&&d?d.topic:knownTopic(p,raw.topic)?raw.topic:'custom';next.open=raw.open===undefined?d?.open:cleanOpen(raw.open,DECISION_TEXT);
   // A confirmation not sent again holds only while what it confirmed is unchanged.
   next.assumptionsResolved=raw.assumptionsResolved!==undefined?raw.assumptionsResolved===true:!!d?.assumptionsResolved&&next.assumptions===d.assumptions&&next.assumptionEvidence===d.assumptionEvidence&&sameIds(next.assumptionIds,d.assumptionIds);
+  if(next.assumptionsResolved&&d?.selection?.choice?.unproven?.length)throw Error('A hard constraint is unproven: a second person judges it first.'); // rc44 wp2 S5 (ruling Q4)
   if(hasAssumptions(p,next)&&next.assumptionsResolved&&!next.assumptionEvidence)throw Error('Record evidence before confirming the assumptions'+(openAssumptionRecords(p,next).length?' (the linked assumption records '+openAssumptionRecords(p,next).map(a=>a.id).join(', ')+' are not confirmed in Chapter 1)':'')+'.');
   settle(next,prior,DECISION_NEW);
   // A save that changes nothing keeps the revision (DM-09), so nothing that reads the decision reads a change.
@@ -215,11 +222,11 @@ export function applyDecisionCommand(input,command,at=new Date().toISOString()){
    for(const a of r.alternatives)a.assessments=Object.fromEntries(r.driverIds.map(id=>[id,a.assessments?.[id]||{effect:'unknown',reason:'',evidence:''}]));
    r.sourceSnapshot=sourceSnapshot(p,r);selected=r.id;}
  }else if(command.type==='decision.alternative'){
-  const d=findDecision(p,raw.id),old=raw.alternativeId?d.alternatives.find(a=>a.id===raw.alternativeId):null;if(raw.alternativeId&&!old)throw Error('This alternative no longer exists.');if(!old&&d.alternatives.length>=DECISION_LIMITS.alternatives)throw Error(`Compare up to ${DECISION_LIMITS.alternatives} alternatives for one question.`);const a=normaliseOption(p,d,raw,old);
+  const d=findDecision(p,raw.id),old=raw.alternativeId?d.alternatives.find(a=>a.id===raw.alternativeId):null;if(raw.alternativeId&&!old)throw Error('This alternative no longer exists.');if(!old&&d.alternatives.length>=DECISION_LIMITS.alternatives)throw Error(`Compare up to ${DECISION_LIMITS.alternatives} alternatives for one question.`);const a=normaliseOption(p,d,raw,old);if(d.selection&&(!old||(a.rejectionReason||'')!==(old.rejectionReason||'')||readDecision(p,d,{priorities:{}}).hard.some(id=>sig(a.assessments[id])!==sig(old.assessments[id]))))own(d);
   if(old&&altAsSaved(old)===altAsSaved(a)&&!decisionSourceChanged(p,d)){mutated=false;selected=d.id;}else{revise(p,d,at);if(old)d.alternatives[d.alternatives.indexOf(old)]=a;else d.alternatives.push(a);}
  }else if(command.type==='decision.choose'){
-  const d=findDecision(p,raw.id);if(!d.alternatives.some(a=>a.id===raw.alternativeId))throw Error('Choose an existing alternative.');revise(p,d,at);d.selectedAlternativeId=raw.alternativeId;
- }else if(command.type==='decision.clear-choice'){const d=findDecision(p,raw.id);revise(p,d,at);d.selectedAlternativeId=null;
+  const d=findDecision(p,raw.id);own(d);if(!d.alternatives.some(a=>a.id===raw.alternativeId))throw Error('Choose an existing alternative.');revise(p,d,at);d.selectedAlternativeId=raw.alternativeId;
+ }else if(command.type==='decision.clear-choice'){const d=findDecision(p,raw.id);own(d);revise(p,d,at);d.selectedAlternativeId=null;
  }else if(command.type==='decision.record'){
   const d=findDecision(p,raw.id);if(d.status==='accepted'||d.status==='superseded')throw Error('Revise this decision before recording another choice.');if(!chosen(d)||!d.rationale||!d.owner||d.alternatives.length<2||!d.requirementIds.length&&!d.requirementGroupIds?.length||!d.driverIds.length||decisionSourceChanged(p,d))throw Error('Choose an alternative, compare at least two, link the current inputs, and record the owner and rationale.');d.status='recorded';remember(d,'Decision recorded',at);
  }else if(command.type==='decision.accept'){
@@ -227,7 +234,7 @@ export function applyDecisionCommand(input,command,at=new Date().toISOString()){
  }else if(command.type==='decision.apply-impact'){
   const d=findDecision(p,raw.id);if(!decisionCurrent(p,d))throw Error('Accept the current decision before applying its model impact.');if(raw.alternativeId!==d.selectedAlternativeId||raw.revision!==d.revision)throw Error('This preview is stale. Review the current selected alternative.');const a=chosen(d);if(!a.relationships.length)throw Error('Describe at least one proposed relationship before applying the impact.');d.appliedImpact={at,revision:d.revision,alternativeId:a.id,responsibilityIds:clone(a.responsibilityIds),relationships:clone(a.relationships)};remember(d,'Model impact applied',at);
  }else if(command.type==='decision.governance'){
-  const d=findDecision(p,raw.id);if(!decisionCurrent(p,d))throw Error('Architect acceptance of the current inputs is required before recording governance review.');if(!['pending','approved','changes_requested'].includes(raw.status))throw Error('Choose a governance review outcome.');if(!clean(raw.reviewer)||!clean(raw.evidence))throw Error('Record the reviewer and external review evidence.');if(raw.status==='approved'&&(decisionFindings(p).some(f=>f.decisionId===d.id&&f.level==='error')||(hasAssumptions(p,d)&&!d.assumptionsResolved)||openAssumptionRecords(p,d).length))throw Error('Resolve content gaps and decision assumptions before recording approval evidence'+(openAssumptionRecords(p,d).length?': the linked assumption records '+openAssumptionRecords(p,d).map(a=>a.id).join(', ')+' are not confirmed in Chapter 1':'')+'.');d.governance={status:raw.status,reviewer:clean(raw.reviewer,180),evidence:clean(raw.evidence),revision:d.revision,at};remember(d,'Governance evidence recorded',at);
+  const d=findDecision(p,raw.id);if(!decisionCurrent(p,d))throw Error('Architect acceptance of the current inputs is required before recording governance review.');if(!['pending','approved','changes_requested'].includes(raw.status))throw Error('Choose a governance review outcome.');if(!clean(raw.reviewer)||!clean(raw.evidence))throw Error('Record the reviewer and external review evidence.');if(raw.status==='approved'&&(decisionFindings(p).some(f=>f.decisionId===d.id&&f.level==='error')||(hasAssumptions(p,d)&&!d.assumptionsResolved)||openAssumptionRecords(p,d).length||d.selection?.choice?.unproven?.length))throw Error('Resolve content gaps and decision assumptions before recording approval evidence'+(openAssumptionRecords(p,d).length?': the linked assumption records '+openAssumptionRecords(p,d).map(a=>a.id).join(', ')+' are not confirmed in Chapter 1':'')+'.');d.governance={status:raw.status,reviewer:clean(raw.reviewer,180),evidence:clean(raw.evidence),revision:d.revision,at};remember(d,'Governance evidence recorded',at);
  }else if(command.type==='decision.conflict'){
   const decisionIds=ids(raw.decisionIds);if(decisionIds.length!==2||decisionIds.some(id=>!q.records.some(d=>d.id===id)))throw Error('Choose two different decisions.');const old=raw.conflictId?q.conflicts.find(c=>c.id===raw.conflictId):null;if(raw.conflictId&&!old)throw Error('This conflict no longer exists.');if(!old&&q.conflicts.some(c=>decisionIds.every(id=>c.decisionIds.includes(id))))throw Error('A conflict already links these decisions. Review that record.');const c={id:old?.id||'DC-'+pad(++q.counters.conflict),decisionIds,title:clean(raw.title,200),resolution:clean(raw.resolution),owner:clean(raw.owner,180),status:raw.status==='resolved'?'resolved':'open',revisions:Object.fromEntries(decisionIds.map(id=>[id,findDecision(p,id).revision]))};if(!c.title||(c.status==='resolved'&&(!c.resolution||!c.owner)))throw Error('Describe the conflict; a resolution also needs its rationale and owner.');if(old)q.conflicts[q.conflicts.indexOf(old)]=c;else q.conflicts.push(c);selected=decisionIds[0];created=c.id;
  }else if(command.type==='decision.supersede'){

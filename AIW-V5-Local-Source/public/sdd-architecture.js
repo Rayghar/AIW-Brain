@@ -666,7 +666,7 @@ function leanSentence(B, d, r, pick) {
 // stated, is printed instead of this.
 function alternativeReading(B, r, a) {
   const row = r?.rows.find(x => x.id === a.id), code = id => codeOf(B.p, id);
-  if (!row) return '';
+  if (!row || r.decision?.selection) return '';
   if (row.out) return 'ruled out, it breaks ' + andList(row.breaks.map(code));
   const unshown = row.unshown.length ? '; whether it meets ' + andList(row.unshown.map(code)) + ' is not stated' : '';
   if (row.dominated?.robust) return 'dominated by ' + row.dominated.by + unshown;
@@ -752,6 +752,9 @@ function decisionText(B, d) {
   if (pick && others.some(a => !whyNot(a))) O.add(3, 'decision', 'Why an alternative was not chosen', d.id, {words: 'why an alternative was not chosen'});
   const aiw = a => { const t = pick && !whyNot(a) ? alternativeReading(B, r, a) : ''; return t ? ' AIW’s reading: ' + t + '.' : ''; };
   if (others.length) out += '**Alternatives considered**:\n\n' + bullets(others.map(a => { const reading = aiw(a); return a.id + ' · ' + md(a.title) + (str(a.summary) ? ': ' + md(a.summary) : '') + (pick ? (whyNot(a) ? ' Not chosen: ' + whyNot(a) : F1 ? ' Not chosen: open: why not chosen' + (reading ? '.' : '') : '') : str(a.costs) ? ' Costs: ' + md(a.costs) : '') + reading; }), {rest: k => 'And ' + plural(k, 'more alternative') + ' (Chapter 3 · ' + d.id + ').'});
+  // rc44 wp2 S5 (ruling U5): the basis of a component selection is the package's reading, printed by the package in the
+  // trade-off analysis (S0's sections part: adoption-server.js); the record points there.
+  if (d.selection) out += '**Selection basis**: in “Selection basis”, in the trade-off analysis below.\n\n';
   const impact = O.field(d, 3, 'decision', 'impact', 'impact'), gains = pick ? (str(pick.benefits) ? ' Gains: ' + md(pick.benefits) : '') + (str(pick.costs) ? ' Costs: ' + md(pick.costs) : '') + (str(pick.consequences) ? ' Consequences: ' + md(pick.consequences) : '') : '';
   if (impact.stated || F1) out += '**Impact**: ' + sentence(impact.stated ? md(impact.text) : impact.text) + gains + '\n\n';
   else { opens.push(flagOf('impact', sentence(impact.text) + gains)); if (gains) out += '**Gains and costs of the choice**: ' + gains.trim() + '\n\n'; }
@@ -784,7 +787,8 @@ const EFFECT_MARKS = {supports: '+', tension: '−', neutral: '0', violates: 'br
 const DRAFT_MARKS = [[solAssessed, 'Sol’s assessment', 'Sol’s assessments'], [rulesAssessed, 'drafted by AIW’s rules from the SA Playbook', 'drafted by AIW’s rules from the SA Playbook']];
 const READ_ALONE = ['lead', 'firmness', 'left-out', 'missing'];
 function tradeoffs(B) {
-  const {p} = B, read = decisionOrder(p, list(p.decisions?.records)).filter(d => list(d.alternatives).length > 1).map(d => ({d, r: readingOf(p, d)})).filter(x => x.r?.drivers.length);
+  // rc44 wp2 S5 (ruling Q1): a selection is not weighed; its basis is the package's section at the end of this analysis (U5).
+  const {p} = B, read = decisionOrder(p, list(p.decisions?.records)).filter(d => list(d.alternatives).length > 1 && !d.selection).map(d => ({d, r: readingOf(p, d)})).filter(x => x.r?.drivers.length);
   const shown = read.filter(x => SPOKEN.includes(x.r.state)), unweighed = read.filter(x => x.r.state === 'unweighed'), unjudged = read.filter(x => x.r.state === 'unjudged');
   const waiting = (unweighed.length ? plural(unweighed.length, 'decision') + ' ' + (unweighed.length === 1 ? 'weighs' : 'weigh') + ' nothing yet: no driver ' + (unweighed.length === 1 ? 'it names' : 'they name') + ' has a stated priority (' + refList(unweighed.map(x => x.d.id)) + '; the priorities are set in Chapter 2 · Work).\n\n' : '')
     + (unjudged.length ? plural(unjudged.length, 'decision') + ' compare' + (unjudged.length === 1 ? 's' : '') + ' alternatives whose effect on a weighed driver is not stated yet: ' + refList(unjudged.map(x => x.d.id)) + ' (Chapter 3 · Model · Trade-offs).\n\n' : '');

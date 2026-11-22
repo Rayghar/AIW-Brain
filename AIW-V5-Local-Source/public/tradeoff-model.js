@@ -148,11 +148,12 @@ export function readingStanding(r, id, {alt = x => x, driver = x => x} = {}) {
   const row = r?.rows.find(x => x.id === id);
   if (!row) return null;
   const of = r.rows.filter(x => !x.out).length, dom = row.dominated;
-  const kind = row.out ? 'out' : dom ? 'dominated' : r.lead === id ? 'lead' : r.tied.includes(id) ? 'tied' : r.state === 'single' ? 'single' : 'below';
-  const label = {out: 'Ruled out', dominated: dom && `Dominated by ${alt(dom.by)}${dom.robust ? '' : ' as the effects stand'}`, lead: r.only ? '★ The only one that meets the hard constraints' : '★ Leads on the drivers', tied: kind === 'tied' && `Tied on the drivers with ${joinAnd(r.tied.filter(x => x !== id).map(alt))}`, below: `Ranks ${row.rank} of ${of} on the drivers`}[kind] || '';
+  // rc44 wp2 S5 (ruling Q1): a candidate of a selection is read against the hard constraints and never weighed.
+  const kind = row.out ? 'out' : r.decision?.selection ? 'selection' : dom ? 'dominated' : r.lead === id ? 'lead' : r.tied.includes(id) ? 'tied' : r.state === 'single' ? 'single' : 'below';
+  const label = {out: 'Ruled out', dominated: dom && `Dominated by ${alt(dom.by)}${dom.robust ? '' : ' as the effects stand'}`, lead: r.only ? '★ The only one that meets the hard constraints' : '★ Leads on the drivers', tied: kind === 'tied' && `Tied on the drivers with ${joinAnd(r.tied.filter(x => x !== id).map(alt))}`, below: `Ranks ${row.rank} of ${of} on the drivers`, selection: 'A candidate of a selection: read against the hard constraints, not weighed'}[kind] || '';
   const detail = [kind === 'out' ? 'breaks ' + joinAnd(row.breaks.map(driver)) : '', kind === 'lead' && r.firmness ? FIRM[r.firmness.level] : '', kind === 'lead' && r.unknowns?.couldChange ? 'unstated effects could change it' : '',
     row.unshown.length && !row.out ? 'not shown to meet ' + joinAnd(row.unshown.map(driver)) : ''].filter(Boolean).join(' · ');
-  return {kind, row, label, detail, line: [label, detail].filter(Boolean).join(' · '), foot: {out: 'ruled out', dominated: 'dominated', lead: '★ leads', tied: 'tied', below: `ranks ${row.rank} of ${of}`}[kind] || '',
+  return {kind, row, label, detail, line: [label, detail].filter(Boolean).join(' · '), foot: {out: 'ruled out', dominated: 'dominated', lead: '★ leads', tied: 'tied', below: `ranks ${row.rank} of ${of}`, selection: 'not weighed'}[kind] || '',
     total: signed(row.score), bounds: row.low === row.high ? '' : `between ${signed(row.low)} and ${signed(row.high)}`};
 }
 // The reading's sentences for a decision (decision-reading.js readingLines), its alternatives named by title.

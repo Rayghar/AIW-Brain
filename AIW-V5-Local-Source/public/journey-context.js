@@ -32,7 +32,9 @@ export function journeyIndex(p){
  for(const e of list(p.processModel?.claims)){const transition=processTransitions(p).find(t=>t.id===e.subjectId);add(e.id,transition?.from||e.subjectId,'asserts');}
  for(const e of list(p.processModel?.elements))for(const id of list(e.requirementIds))add(id,e.id,'motivates process');
  for(const q of list(p.quality?.drivers)){for(const id of list(q.requirementIds))add(id,q.id,'quality scenario');for(const id of list(q.responsibilityIds))add(q.id,id,'constrains');}
- for(const d of list(p.decisions?.records)){for(const id of list(d.requirementIds))add(id,d.id,'design question');for(const id of list(d.driverIds))add(id,d.id,'comparison criterion');}
+ // rc44 wp2 S5 (ruling U4): a selection's decision is a proposal until a person chooses (adoption-selection.js): its
+ // start and candidates say nothing to the design source, so it joins no requirement's or driver's journey before then.
+ for(const d of list(p.decisions?.records)){if(d.selection&&!d.selection.choice)continue;for(const id of list(d.requirementIds))add(id,d.id,'design question');for(const id of list(d.driverIds))add(id,d.id,'comparison criterion');}
  for(const r of list(p.logical?.responsibilities)){for(const id of list(r.requirementIds))add(id,r.id,'fulfilled by');for(const id of list(r.decisionIds))add(id,r.id,'informs boundary');}
  for(const r of list(p.logical?.responsibilities))if(r.groupId)add(r.groupId,r.id,'groups responsibility');
  for(const c of [...list(p.realisation?.components),...list(p.technology?.capabilities),...list(p.interfaces?.contracts),...list(p.security?.controls),...list(p.security?.threats)]){

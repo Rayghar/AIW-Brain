@@ -1,0 +1,281 @@
+{
+ "capturedFrom": "5cae40a (rc44/wp2-s5-selection start: public/ and the server unchanged)",
+ "at": "2026-10-01T09:00:00.000Z",
+ "registered": [
+  "p30-deployment",
+  "p40-adoption"
+ ],
+ "readings": {
+  "bank-payment": {
+   "graph": "5c0f2a7bfe514d8b275b071a3a4e48a00b67ace20bf9e7c8b0bd56f7642a6f1e",
+   "model": "a38df459e38651fa26828b512bc9d6ad03fda3ede81ddddd8e457404357a997f",
+   "trails": "82cca41a6c153a3928f54e278c3a97bfd92eda4add61eb1860ca4681e960b608",
+   "findings": "167bbfb6385efd3c455034b0da5e7a3a4f2f1c9dbf26da5b47a0b166c584c212",
+   "stamps": "305b905547112b71fc3b78af8f0e5d3015e029581319000a7ee630b0d198be8c",
+   "readiness": "5b14fbd75bee585aa0d4a22605be81865b5b9dc74f0d5fd1c61f4df7c474318f",
+   "provenance": "4a176e91be36037040d198c25727648574b7561d22f4aafad5c731e3f89ce3d7",
+   "registers": "6ec4085cddb66d5f2a29c85b8da05c3024b63db37f6fb74854591af2218fdde5",
+   "sdd": "7c66a1f9e5462824c92c3977456d2dc37a607b9cb58a645520aa7ccdeb3a6bce",
+   "ars": "6a5683b7f6af0144aca4f049df1863cc0c9f358efd0f900a93305da6023e5514"
+  },
+  "clinic-appointments": {
+   "graph": "caffe0de37e76e4efb4848fcb0dc5d9308a3199f3abb0a0b8bf80eddafd64ce8",
+   "model": "10278f8450cd7d190e3690ee5977e7030f1ddb881914d5ea4bb3685a4eec54b8",
+   "trails": "3c6e45a9d5a1d58619290c2475e87af4c664a74a0c2ffd0da495b05319dd394e",
+   "findings": "c52a0985361883c5fe8fd1779e6fad615fc614b1c412f3715bdd6513f872e70f",
+   "stamps": "c6c0c1a85d2b0a2804a44132bf7d78e31b34fb1dfb5bfa93be9a585ac4a8350e",
+   "readiness": "5d1a08776d3019810b856f6f76dd12164585b41635e9798a7ee54f7f2b8e7c5d",
+   "provenance": "86d84473d1e35afe0271f8af5175a7395bd218a219b5a34eebe585506efbadd3",
+   "registers": "54af64ce911f7af9d77a5dbfdb26749e5590b95741170f89d3d622cf4de26889",
+   "sdd": "5c5ab880824073b29540fe54db27f6723bebd92e0a6a48efffbbc39d8e244a0e",
+   "ars": "839f8b584a3ddfd4c295eac60f13552fed42a104d4273b830357e1bb1de3854f"
+  },
+  "parcel-lockers": {
+   "graph": "9f0a0d8b809545fb4d661279cb373c94b8e5f080751ef5ddb73c34bdcfd272cf",
+   "model": "eb1d1ef28d4362542d195b7bee08543b6e8f9b48dfc056df40fb375c7c80058e",
+   "trails": "8beb6b68d3c6b23150b57c47e1895544ea8464f7f1025892c7bca915a555d1ec",
+   "findings": "b0e8470218a4ee32ad6820f7f0d24af7aedeb7e7edc82bc33a420d22e6f295cd",
+   "stamps": "6ee19380c75836c8247fcb751e7036eda89e73959e22c0657573f46d605b3e9e",
+   "readiness": "3cc2a5ca204a101c8a9d8281834dbc186a203fdcc7925bb8a9d215921cad634c",
+   "provenance": "fd08de57a19d163c2157030bd25c312bad50c206e9e746af424296c50ff8c02c",
+   "registers": "4bd1965edac565fe33530c2632d9866c7f57b7f9a83b2c346567c27bdaaae2ea",
+   "sdd": "7ac081804c9f66615f24a88072042ad7e20e222c4afbfd5b5495846ce2035152",
+   "ars": "a4cfb0463f1ec273aaefd8910423b819832065a53ac356ca467635e64a333bfa"
+  }
+ },
+ "reviewList": {
+  "findings": [
+   "EVIDENCE:SF-001",
+   "EVIDENCE:SF-002"
+  ],
+  "readings": {
+   "graph": "5c0f2a7bfe514d8b275b071a3a4e48a00b67ace20bf9e7c8b0bd56f7642a6f1e",
+   "model": "a38df459e38651fa26828b512bc9d6ad03fda3ede81ddddd8e457404357a997f",
+   "trails": "82cca41a6c153a3928f54e278c3a97bfd92eda4add61eb1860ca4681e960b608",
+   "findings": "be69263336715178053c3fdf11cf4a95b5daf4db0cf7539600ac78950aaf34a7",
+   "stamps": "3590d9dca06adb653995acde7dbdad375ea7a8cad52abb02cb52884cc14e29aa",
+   "readiness": "549c265405f4d32614aa9eeadcc4aeff1eda3a4ccccf37f9065a79370a1db808",
+   "provenance": "4a176e91be36037040d198c25727648574b7561d22f4aafad5c731e3f89ce3d7",
+   "registers": "d9d6bc97679d161519ea7993232ee90f57d832b9bb322848ac745bda782f53aa",
+   "sdd": "6c084b39b10993f3ce4061d791e790b7c9cf1dabc6b7b0641c8c4f636fb5ba7c",
+   "ars": "6a5683b7f6af0144aca4f049df1863cc0c9f358efd0f900a93305da6023e5514"
+  }
+ },
+ "documents": {
+  "selectionProject": {
+   "graph": "06cfb034d41a979bdc7e35e0ec88d05fd8cf923ab4a60d119976729a43711bdd",
+   "model": "a7fa01e719bfbbd7741f7e41b9f5b94e1da4fc66fa0c2b52af96c4b8d230c0d6",
+   "trails": "95ff6d139716531a0510869d87380e516dc86ee29fd8ac18a85c27e5f40a11a5",
+   "findings": "d5559428ee9ae9961de69075278a9d1a9443fb64a9319a9aebd96bf418f2ba3a",
+   "stamps": "baa894a07bca55c41b07f08338286f85d22a224451c92558d1878f6502dcdee9",
+   "readiness": "c780b4654126c673ef0ee453c4d13970809c34d4d09b489a49a19e056e64b19d",
+   "provenance": "b06adc7c74a16588ed676cae9b954559f6c035c19c564ca0c8e6441c83153b8d",
+   "registers": "2127fcdcf470362869921961cebe933879898abfe9fa8391f63a1d5c7db1815f",
+   "sdd": "87e721971ebeeadf9c1ced11dd3f9585e83b154fdf19e182e44a350133ad8e6b",
+   "ars": "7afcdc534010dc0f3f55693545ce6ffdafb4752262559859ee28dbbe03833155"
+  },
+  "concernProject": {
+   "graph": "1821066a9c85c427f2b169affd9f6582c78ba1d150ae127656cdc9ba5509caab",
+   "model": "8f20293c33b73b888d9fd540a4ebf650a192fc801cfe550ee4da0e5cf6110456",
+   "trails": "297d5e1252228faf5d4a10a641d99623fb411e9c25ca9ac168ebfc7250e6ec4a",
+   "findings": "3c14e899b99567b7bc955a39f29f839bd82b1e45f33843a3ee4c87c2625028d5",
+   "stamps": "358249a0fbc2ce149073be082c8bf24184cbd0e6842985a77252d983db69cd24",
+   "readiness": "4b7acd3e2dc431ca33bc7d33b08589fad1ffaf3d5ea4cecf712cc395258d5897",
+   "provenance": "d296797c8940135469991da2357a0b5061f7e68bbe9a2d22d5e1316712aab0b5",
+   "registers": "b582fe2bd5fefd9a783b8fd5c084bbcaf6da43dd3e478cf03a6f9a34ecc0842e",
+   "sdd": "e2b3adc2e52b40ab4d8f6c69d645f56fea17a96edc66903523629b0f89b3cdd7",
+   "ars": "b9d407bd12717f26cceefae9925a7860fb5140b4a2a7662db7fcf0a88aca3c19"
+  }
+ },
+ "guided": {
+  "local": {
+   "question": "Where should the schedule live?",
+   "context": "Report an authoritative reservation outcome. Compare owning the schedule in one application with a separate service.",
+   "requirementIds": [
+    "REQ-001"
+   ],
+   "driverIds": [
+    "QD-001",
+    "QD-004",
+    "QD-003",
+    "QD-002"
+   ],
+   "owner": "Facilities architect",
+   "source": "Released design concern KC-0002 / KR-0003 · synthetic/schedule.txt @ 1 lines 2–2",
+   "rationale": "One application fits the present team.",
+   "assumptions": "For a schedule two teams change. The source makes no measured recovery claim.",
+   "risks": "The modules share one release boundary.",
+   "mitigation": "Verify the project-specific criteria and quality scenario before acceptance.",
+   "status": "draft",
+   "topic": "custom",
+   "chosen": "One application",
+   "alternatives": [
+    {
+     "title": "One application",
+     "summary": "Recovery: Restore one process and reconcile reservations. Operations: Facilities runs the rebuild.",
+     "benefits": "Fit to this project requires the architect’s criterion assessments.",
+     "costs": "The modules share one release boundary.",
+     "consequences": "Reconsider when the linked quality scenario, source conditions or project constraints change. As the released concern states: Recovery: One restore point covers both modules. Operations: One team runs the nightly rebuild. The evidence it needs: A restore rehearsal of the shared release.",
+     "pattern": "Released design concern · Schedule ownership",
+     "antiPattern": "Claiming an outcome without project evidence.",
+     "assessments": {
+      "QD-001": {
+       "effect": "unknown",
+       "reason": "Recovery: Restore one process and reconcile reservations. Released consequence: One restore point covers both modules. Operations: Facilities runs the rebuild.",
+       "evidence": "Released design concern KC-0002 / KR-0003 · synthetic/schedule.txt @ 1 lines 2–2"
+      },
+      "QD-004": {
+       "effect": "unknown",
+       "reason": "Recovery: Restore one process and reconcile reservations. Released consequence: One restore point covers both modules.",
+       "evidence": "Released design concern KC-0002 / KR-0003 · synthetic/schedule.txt @ 1 lines 2–2"
+      },
+      "QD-003": {
+       "effect": "unknown",
+       "reason": "Operations: Facilities runs the rebuild. Released consequence: One team runs the nightly rebuild.",
+       "evidence": "Released design concern KC-0002 / KR-0003 · synthetic/schedule.txt @ 1 lines 2–2"
+      },
+      "QD-002": {
+       "effect": "unknown",
+       "reason": "",
+       "evidence": ""
+      }
+     },
+     "rejectionReason": null,
+     "responsibilityIds": [],
+     "componentIds": null,
+     "relationships": []
+    },
+    {
+     "title": "Separate service",
+     "summary": "Recovery: Coordinate partial failure across services. Operations: A platform team runs the rebuild.",
+     "benefits": "Fit to this project requires the architect’s criterion assessments.",
+     "costs": "A network contract and recovery coordination are required.",
+     "consequences": "Reconsider when the linked quality scenario, source conditions or project constraints change. As the released concern states: Recovery: Each service restores on its own; reconcile across them. Operations: Two teams coordinate the nightly rebuild. The evidence it needs: A failover test across both services.",
+     "pattern": "Released design concern · Schedule ownership",
+     "antiPattern": "Claiming an outcome without project evidence.",
+     "assessments": {
+      "QD-001": {
+       "effect": "unknown",
+       "reason": "Recovery: Coordinate partial failure across services. Released consequence: Each service restores on its own; reconcile across them. Operations: A platform team runs the rebuild.",
+       "evidence": "Released design concern KC-0002 / KR-0003 · synthetic/schedule.txt @ 1 lines 2–2"
+      },
+      "QD-004": {
+       "effect": "unknown",
+       "reason": "Recovery: Coordinate partial failure across services. Released consequence: Each service restores on its own; reconcile across them.",
+       "evidence": "Released design concern KC-0002 / KR-0003 · synthetic/schedule.txt @ 1 lines 2–2"
+      },
+      "QD-003": {
+       "effect": "unknown",
+       "reason": "Operations: A platform team runs the rebuild. Released consequence: Two teams coordinate the nightly rebuild.",
+       "evidence": "Released design concern KC-0002 / KR-0003 · synthetic/schedule.txt @ 1 lines 2–2"
+      },
+      "QD-002": {
+       "effect": "unknown",
+       "reason": "",
+       "evidence": ""
+      }
+     },
+     "rejectionReason": "One application fits the present team.",
+     "responsibilityIds": [],
+     "componentIds": null,
+     "relationships": []
+    }
+   ]
+  },
+  "separate": {
+   "question": "Where should the schedule live?",
+   "context": "Report an authoritative reservation outcome. Compare owning the schedule in one application with a separate service.",
+   "requirementIds": [
+    "REQ-001"
+   ],
+   "driverIds": [
+    "QD-001",
+    "QD-004",
+    "QD-003",
+    "QD-002"
+   ],
+   "owner": "Facilities architect",
+   "source": "Released design concern KC-0002 / KR-0003 · synthetic/schedule.txt @ 1 lines 2–2",
+   "rationale": "One application fits the present team.",
+   "assumptions": "For a schedule two teams change. The source makes no measured recovery claim.",
+   "risks": "A network contract and recovery coordination are required.",
+   "mitigation": "Verify the project-specific criteria and quality scenario before acceptance.",
+   "status": "draft",
+   "topic": "custom",
+   "chosen": "Separate service",
+   "alternatives": [
+    {
+     "title": "One application",
+     "summary": "Recovery: Restore one process and reconcile reservations. Operations: Facilities runs the rebuild.",
+     "benefits": "Fit to this project requires the architect’s criterion assessments.",
+     "costs": "The modules share one release boundary.",
+     "consequences": "Reconsider when the linked quality scenario, source conditions or project constraints change. As the released concern states: Recovery: One restore point covers both modules. Operations: One team runs the nightly rebuild. The evidence it needs: A restore rehearsal of the shared release.",
+     "pattern": "Released design concern · Schedule ownership",
+     "antiPattern": "Claiming an outcome without project evidence.",
+     "assessments": {
+      "QD-001": {
+       "effect": "unknown",
+       "reason": "Recovery: Restore one process and reconcile reservations. Released consequence: One restore point covers both modules. Operations: Facilities runs the rebuild.",
+       "evidence": "Released design concern KC-0002 / KR-0003 · synthetic/schedule.txt @ 1 lines 2–2"
+      },
+      "QD-004": {
+       "effect": "unknown",
+       "reason": "Recovery: Restore one process and reconcile reservations. Released consequence: One restore point covers both modules.",
+       "evidence": "Released design concern KC-0002 / KR-0003 · synthetic/schedule.txt @ 1 lines 2–2"
+      },
+      "QD-003": {
+       "effect": "unknown",
+       "reason": "Operations: Facilities runs the rebuild. Released consequence: One team runs the nightly rebuild.",
+       "evidence": "Released design concern KC-0002 / KR-0003 · synthetic/schedule.txt @ 1 lines 2–2"
+      },
+      "QD-002": {
+       "effect": "unknown",
+       "reason": "",
+       "evidence": ""
+      }
+     },
+     "rejectionReason": "One application fits the present team.",
+     "responsibilityIds": [],
+     "componentIds": null,
+     "relationships": []
+    },
+    {
+     "title": "Separate service",
+     "summary": "Recovery: Coordinate partial failure across services. Operations: A platform team runs the rebuild.",
+     "benefits": "Fit to this project requires the architect’s criterion assessments.",
+     "costs": "A network contract and recovery coordination are required.",
+     "consequences": "Reconsider when the linked quality scenario, source conditions or project constraints change. As the released concern states: Recovery: Each service restores on its own; reconcile across them. Operations: Two teams coordinate the nightly rebuild. The evidence it needs: A failover test across both services.",
+     "pattern": "Released design concern · Schedule ownership",
+     "antiPattern": "Claiming an outcome without project evidence.",
+     "assessments": {
+      "QD-001": {
+       "effect": "unknown",
+       "reason": "Recovery: Coordinate partial failure across services. Released consequence: Each service restores on its own; reconcile across them. Operations: A platform team runs the rebuild.",
+       "evidence": "Released design concern KC-0002 / KR-0003 · synthetic/schedule.txt @ 1 lines 2–2"
+      },
+      "QD-004": {
+       "effect": "unknown",
+       "reason": "Recovery: Coordinate partial failure across services. Released consequence: Each service restores on its own; reconcile across them.",
+       "evidence": "Released design concern KC-0002 / KR-0003 · synthetic/schedule.txt @ 1 lines 2–2"
+      },
+      "QD-003": {
+       "effect": "unknown",
+       "reason": "Operations: A platform team runs the rebuild. Released consequence: Two teams coordinate the nightly rebuild.",
+       "evidence": "Released design concern KC-0002 / KR-0003 · synthetic/schedule.txt @ 1 lines 2–2"
+      },
+      "QD-002": {
+       "effect": "unknown",
+       "reason": "",
+       "evidence": ""
+      }
+     },
+     "rejectionReason": null,
+     "responsibilityIds": [],
+     "componentIds": null,
+     "relationships": []
+    }
+   ]
+  }
+ },
+ "concernProjectRecaptured": "The readings of concernProject were captured again on 5cae40a's product source (git archive of 5cae40a with this branch's test fixtures copied in; nothing else changed) once the fixture gave createProject its fixed time (ruling Q7): the first capture printed the day of capture in the SDD."
+}
