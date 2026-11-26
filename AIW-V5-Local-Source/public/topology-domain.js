@@ -125,9 +125,6 @@ function store(xs,old,next,raw,at,keys,fresh){
  return [old,true];
 }
 
-// (slices 2 and 3) The same for a record a second person's step reads (a declared failure, a location gate): who wrote
-// it is kept as its `actor`, and each earlier revision with its writer in `history`, never trimmed (verifierRefusal reads
-// every one: architecture-obligations.js); `recorded` says who saved what it now says, and when.
 // (fix-up, the review's must-fix 1 and 2) What a draft by Sol or an agent account may change of a record of slices 2 and 3:
 // its proposals only. A declared failure, a location gate or a data copy that stands is a person's to change, since a
 // reading of Chapter 10 rests on it; a draft sends its own as a proposal. The one rule of both parts' validate.
@@ -143,6 +140,9 @@ export const draftedIds=p=>remember(p,'topology:drafted','all',()=>{const out=ne
 // The records of ids a draft changed last, in their order, named; and the sentence that says so ('' for none).
 export const draftedOf=(p,ids)=>{const D=draftedIds(p);return D.size?[...new Set(ids)].filter(id=>D.has(id)).map(id=>D.get(id)):[];};
 export const draftedWords=xs=>xs.length?and(xs.map(r=>[r.ref||r.id,r.title].filter(Boolean).join(' ')))+(xs.length>1?' were':' was')+' last changed by a draft no person has reviewed':'';
+// (slices 2 and 3) The same for a record a second person's step reads (a declared failure, a location gate): who wrote
+// it is kept as its `actor`, and each earlier revision with its writer in `history`, never trimmed (verifierRefusal reads
+// every one: architecture-obligations.js); `recorded` says who saved what it now says, and when.
 export function storeWritten(xs,old,next,raw,at,actor,keys,fresh){
  if(old&&sameRecord(old,next,keys))return [old,false];
  const draft=raw.origin===DRAFT,who=actor||null;let r=old;

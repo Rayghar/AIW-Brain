@@ -153,7 +153,8 @@ function judge(g,at){
  return t===false||x===false?{state:'fail'}:t===null||x===null?{state:'unknown',why:net.ref+' '+net.title+' does not state its '+(t===null?'tier':'exposure')}:{state:'pass'};
 }
 export const gateEvidenceStamp=(p,g,nodeId)=>JSON.stringify([g?.id,g?.revision,nodeId,find(deploymentNodes(p),nodeId)?.revision??null]);
-export const gateReading=(p,id)=>remember(p,'topology:gate',id,()=>readGate(p,id));
+// (the fix-up's must-fix 6) one pass a reading, so that its rows share the document's indexes (what a draft changed, the copies the trail places)
+export const gateReading=(p,id)=>memoPass(p,()=>remember(p,'topology:gate',id,()=>readGate(p,id)));
 // (ruling L11 (d) read for a hard constraint; the fix-up's must-fix 2) A gate reads nothing as holding on a record a draft
 // by Sol, an import or an agent account changed last that no person has reviewed since (topology-domain.js draftedIds):
 // a row that reads one fails, naming it, and so does the gate for every other such record it reads (itself, the data it
