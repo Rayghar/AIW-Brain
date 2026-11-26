@@ -2007,6 +2007,76 @@ await block('S3.10 candidate knowledge reaches no failure or gate reading', () =
   pass('S3.10: an unreleased claim that speaks of the same records moves no verdict, gate reading, copy inventory or Chapter 10 finding of slices 2 and 3');
 });
 
+// ---------------------------------------------------------------- the fix-up (owner decision AA1; the review's must-fix and should-fix items)
+//   S3.11 (must-fix 2) through the server: a draft by Sol and an agent account lift no failing location gate: a gate's or a copy's change and a
+//         node's jurisdiction cleared are refused; a zone located or a placement moved by a draft is read as failing until a person reviews it.
+// The typed Tidewater project on a server, with Norway East (NO) and Sweden Central (SE), a Stockholm zone in SE, a residency gate permitting NO
+// on the booking record, its three copies recorded in Norway and an audit log recorded in Stockholm: the gate fails.
+async function stockholmServer() {
+  const I = F.ids(), h = await F.server(worker), d = () => withFinalReview(h.state.document), ok = (r, why) => assert.equal(r.status, 200, (why || 'accepted') + ': ' + JSON.stringify(r.body).slice(0, 300));
+  ok(await h.send('runtime.topology-start', {}));
+  const node = async payload => (await h.send('runtime.node', payload)).body.selected, fd = async payload => (await h.send('technology.domain', payload)).body.selected;
+  const region = await node({title: 'Norway East', kind: 'region', jurisdiction: 'NO'}), sweden = await node({title: 'Sweden Central', kind: 'region', jurisdiction: 'SE'});
+  const fdRegion = await fd({title: 'Norway East region', scope: 'region', cause: 'location'}), z1 = await fd({title: 'Bergen availability zone 1', scope: 'zone', cause: 'location', parentId: fdRegion}), z2 = await fd({title: 'Bergen availability zone 2', scope: 'zone', cause: 'location', parentId: fdRegion}), se = await fd({title: 'Sweden Central region', scope: 'region', cause: 'location'});
+  const stockholm = (await h.send('runtime.zone', {environmentId: I.production, title: 'Stockholm zone', kind: 'hosting', failureDomain: '', isolation: 'Another country (synthetic).', owner: 'Reservations team (synthetic)'})).body.selected;
+  for (const [zoneId, nodeId, domainIds] of [[I.zone1, region, [z1]], [I.zone2, region, [z2]], [I.zone3, sweden, [se]], [stockholm, sweden, [se]]]) ok(await h.send('runtime.locate', {zoneId, nodeId, domainIds}));
+  const lg = (await h.send('runtime.gate', {kind: 'residency', title: 'Booking records stay in Norway', environmentId: I.production, dataIds: [I.data], permitted: ['NO'], source: 'Tidewater data-handling policy, clause 4 (synthetic)'})).body.selected;
+  for (const [kind, zoneId] of [['primary', I.zone1], ['replica', I.zone2], ['backup', I.zone2]]) ok(await h.send('runtime.copy', {dataId: I.data, kind, planId: I.storePlan, zoneId, basis: 'Recorded (synthetic).'}));
+  const log = (await h.send('runtime.copy', {dataId: I.data, kind: 'log', zoneId: stockholm, basis: 'Audit log (synthetic).'})).body.selected;
+  return {h, d, ok, region, sweden, stockholm, lg, log};
+}
+
+await block('S3.11 a draft lifts no failing location gate, through the server', async () => {
+  need();
+  const I = F.ids(), {h, d, ok, region, sweden, stockholm, lg, log} = await stockholmServer();
+  const hard = () => { const f = findingOf(d(), 'location-gate:' + lg); return [GA.gateReading(d(), lg).state, f?.level, f?.hard]; }, failing = ['fail', 'error', true];
+  try {
+    assert.deepEqual(hard(), failing, 'the log in Stockholm (SE) fails the gate');
+    // fails on 10b97b7: each of these was taken (200) and the hard finding was gone afterwards
+    const gateWords = /^LG-001 is a location gate a person saved: a draft by Sol or an agent account changes no gate that stands\. It sends a gate of its own as a proposal \(origin: sol-draft\), and a person keeps it\.$/;
+    const copyWords = /^DCP-004 is a data copy a person saved: a draft by Sol or an agent account changes no copy that stands\. It sends a copy of its own as a proposal \(origin: sol-draft\), and a person keeps it\.$/;
+    const nodeWords = /^A jurisdiction is stated by a signed-in person: a draft by Sol or an agent account names none, and clears none a person stated\.$/;
+    for (const [account, extra, who] of [[B, SOL_EXTRA, 'a draft by Sol'], [AGENT, {}, 'an agent account']]) for (const [type, payload, words, what] of [
+      ['runtime.gate', {id: lg, permitted: [], open: {permitted: {state: 'open-question', question: 'Which countries?'}}}, gateWords, '(b) keeps the permitted list open'],
+      ['runtime.gate', {id: lg, dataIds: [], classifications: ['Restricted']}, gateWords, '(c) points the gate at no data'],
+      ['runtime.gate', {id: lg, environmentId: I.recovery}, gateWords, '(c2) moves the gate to another environment'],
+      ['runtime.gate', {id: lg, owner: 'Drafted owner.'}, gateWords, 'changes the gate\'s words'],
+      ['runtime.copy', {id: log, zoneId: I.zone1}, copyWords, '(d) moves the person\'s log copy to Norway'],
+      ['runtime.copy', {id: log, nodeId: region}, copyWords, '(d) moves it to the Norway node'],
+      ['runtime.node', {id: sweden, jurisdiction: ''}, nodeWords, '(e) clears Sweden Central\'s jurisdiction'],
+      ['runtime.node', {id: sweden, jurisdiction: null}, nodeWords, '(e) clears it with null']]) {
+      const x = await h.send(type, {...payload, origin: 'sol-draft'}, account, extra);
+      assert.equal(x.status, 400, who + ' ' + what + ': ' + JSON.stringify(x.body).slice(0, 200)); assert.match(x.error, words, who + ' ' + what);
+      assert.deepEqual(hard(), failing, who + ' ' + what + ': the hard finding stands');
+    }
+    // (f) and (f2): a zone a draft locates elsewhere is taken (slice 1, S1.8) and read as failing until a person reviews it
+    for (const [account, extra, who] of [[B, SOL_EXTRA, 'a draft by Sol'], [AGENT, {}, 'an agent account']]) {
+      ok(await h.send('runtime.locate', {zoneId: stockholm, nodeId: region}, account, extra), who + ' locates the Stockholm zone in Norway East');
+      assert.deepEqual(hard(), failing, who + ': the hard finding stands');
+      const row = GA.gateReading(d(), lg).rows.find(r => r.copyId === log);
+      assert.equal(row.state, 'fail'); assert.match(row.why, /^ZON-004 Stockholm zone was last changed by a draft no person has reviewed: DCP-004, the log of DAT-001 Passenger booking record, reads as failing until a person reviews it$/, row.why);
+      assert.match(findingOf(d(), 'location-gate:' + lg).detail, /ZON-004 Stockholm zone was last changed by a draft no person has reviewed/);
+      assert.ok(GA.failingGate(d(), I.production), 'the gate still blocks an acceptance of the environment\'s claims');
+      // a person's own location of it stands: the log rests in Norway
+      ok(await h.send('runtime.locate', {zoneId: stockholm, reason: 'Reviewed: it lies in Norway East (synthetic).'}, C), 'a person locates it');
+      assert.equal(GA.gateReading(d(), lg).state, 'pass', 'a person stands behind where it lies');
+      ok(await h.send('runtime.locate', {zoneId: stockholm, nodeId: sweden, reason: 'Back in Sweden (synthetic).'}, C)); assert.deepEqual(hard(), failing);
+    }
+    // a placement a draft moves (a built-in command) is read the same way: the standby moved into Stockholm by a person fails the gate, moved back by a draft it still fails
+    ok(await h.send('runtime.copy', {id: log, zoneId: I.zone1}, C), 'a person moves the log to Norway'); assert.equal(GA.gateReading(d(), lg).state, 'pass');
+    const standby = d().runtime.placements.find(l => l.planId === I.storePlan && l.role === 'standby');
+    ok(await h.send('runtime.placement', {id: standby.id, zoneId: stockholm}, C), 'a person moves the standby into Stockholm'); assert.deepEqual(hard(), failing, 'the replica the trail places in SE fails it');
+    for (const [account, extra, who] of [[B, SOL_EXTRA, 'a draft by Sol'], [AGENT, {}, 'an agent account']]) {
+      ok(await h.send('runtime.placement', {id: standby.id, zoneId: I.zone2}, account, extra), who + ' moves it back');
+      assert.deepEqual(hard(), failing, who + ': the hard finding stands');
+      assert.ok(GA.gateReading(d(), lg).rows.some(r => r.state === 'fail' && /last changed by a draft no person has reviewed/.test(r.why) && r.why.includes(standby.id)), 'the gate names the placement a draft moved');
+      ok(await h.send('runtime.placement', {id: standby.id, zoneId: stockholm}, C), 'a person moves it into Stockholm again');
+    }
+    ok(await h.send('runtime.placement', {id: standby.id, zoneId: I.zone2}, C), 'a person moves it back'); assert.equal(GA.gateReading(d(), lg).state, 'pass', 'a person\'s move stands');
+  } finally { h.close(); }
+  pass('S3.11: through the server, a draft by Sol and an agent account lift no failing location gate: a change of the gate (its permitted list, its data, its environment, its words) or of a copy, and a node\'s jurisdiction cleared, are refused in words; a zone a draft locates and a placement a draft moves are read as failing, the gate naming them, until a person locates or moves them; the hard finding stands throughout, and a person\'s own change stands');
+});
+
 // ================================================================ Slice 4: blueprint adoption glue, transitional populations
 // (design section g, Slice 4. Slice 4 adds its cases here, as blocks named 'S4.n …'.)
 

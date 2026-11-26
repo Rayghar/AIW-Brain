@@ -29,7 +29,7 @@ import {verifierRefusal} from './architecture-obligations.js';
 import {forwardTrace,traceGraph} from './trace-kernel.js';
 import {remember} from './document-memo.js';
 import {list} from './util.js';
-import {TRACKED,LABELS,JURISDICTIONS,NODE_TIERS,NODE_EXPOSURES,topologyTyped,deploymentNodes,parsePrefix,nodeUnder,requireTyped,storeWritten,DRAFT,pad,find,refOf,and,chainOf,patchBounded,authoredRecord,BOOKKEEPING} from './topology-domain.js';
+import {TRACKED,LABELS,JURISDICTIONS,NODE_TIERS,NODE_EXPOSURES,topologyTyped,deploymentNodes,parsePrefix,nodeUnder,requireTyped,storeWritten,standingOf,draftedIds,draftedOf,draftedWords,DRAFT,pad,find,refOf,and,chainOf,patchBounded,authoredRecord,BOOKKEEPING} from './topology-domain.js';
 
 export const GATE_KINDS=['residency','placement','required-service','quota','key-custody','identity'],COPY_KINDS=['primary','replica','backup','log','trace','export','crash-dump','key-material','cache','other'];
 // What one workspace keeps (rulings L8 and M9 (f): reached through the commands, the suite's case S3.9).
@@ -107,8 +107,8 @@ function derive(p){
   if(!d?.authorityId||isProposed(d))continue;const T=forwardTrace(p,d.authorityId,{graph:K});if(!T)continue;
   for(const plan of (T.layers.plan||[]).map(id=>T.record(id)?.record).filter(r=>r&&!isProposed(r)&&r.stateMode==='Stateful service')){
    const head=chainBack(T,plan.id);if(!head)continue;
-   const put=(kind,zoneId,via)=>{const k=[d.id,kind,plan.id,zoneId].join('|');if(!seen.has(k)){seen.add(k);out.push({dataId:d.id,kind,planId:plan.id,zoneId,environmentId:plan.environmentId,authorityId:d.authorityId,via});}};
-   for(const lid of T.layers.placement||[]){const l=T.record(lid)?.record,kind=KIND_OF[l?.role],a=(T.hops.get(lid)||[]).find(h=>h.from===plan.id),b=a&&(T.hops.get(l.zoneId)||[]).find(h=>h.from===lid);if(kind&&b)put(kind,l.zoneId,[...head,a.relation,b.relation]);}
+   const put=(kind,zoneId,via,placementId='')=>{const k=[d.id,kind,plan.id,zoneId].join('|');if(!seen.has(k)){seen.add(k);out.push({dataId:d.id,kind,planId:plan.id,placementId,zoneId,environmentId:plan.environmentId,authorityId:d.authorityId,via});}};
+   for(const lid of T.layers.placement||[]){const l=T.record(lid)?.record,kind=KIND_OF[l?.role],a=(T.hops.get(lid)||[]).find(h=>h.from===plan.id),b=a&&(T.hops.get(l.zoneId)||[]).find(h=>h.from===lid);if(kind&&b)put(kind,l.zoneId,[...head,a.relation,b.relation],lid);}
    const e=(K.G.outgoing.get(plan.id)||[]).find(x=>x.type==='backsUpTo'&&x.to===plan.backupZoneId);if(e)put('backup',e.to,[...head,e.id]);
   }
  }
@@ -154,29 +154,41 @@ function judge(g,at){
 }
 export const gateEvidenceStamp=(p,g,nodeId)=>JSON.stringify([g?.id,g?.revision,nodeId,find(deploymentNodes(p),nodeId)?.revision??null]);
 export const gateReading=(p,id)=>remember(p,'topology:gate',id,()=>readGate(p,id));
+// (ruling L11 (d) read for a hard constraint; the fix-up's must-fix 2) A gate reads nothing as holding on a record a draft
+// by Sol, an import or an agent account changed last that no person has reviewed since (topology-domain.js draftedIds):
+// a row that reads one fails, naming it, and so does the gate for every other such record it reads (itself, the data it
+// names, every definition where it names a classification or personal data, the copies of its data and their zones, and
+// each zone, placement and plan of the environments it applies to), until a person reviews it. So a draft never turns a
+// fail into unknown or pass, whatever command it came by.
+const reviews=(xs,what)=>draftedWords(xs)+': '+what+' reads as failing until a person reviews '+(xs.length>1?'them':'it');
 function readGate(p,id){
  const g=find(p?.runtime?.gates,id);if(!g||!topologyTyped(p))return null;
  const out={gateId:g.id,kind:g.kind,state:'unknown',rows:[],why:''},rows=out.rows,settle=()=>{out.state=rows.some(r=>r.state==='fail')?'fail':!rows.length||rows.some(r=>r.state==='unknown')?'unknown':'pass';return out;};
+ const named=new Set(),held=ids=>{const xs=draftedOf(p,ids);for(const r of xs)named.add(r.id);return xs;},rest=ids=>{const xs=draftedOf(p,ids).filter(r=>!named.has(r.id));if(xs.length)rows.push({copyId:null,dataId:'',kind:'',zoneId:'',nodeId:'',jurisdiction:'',state:'fail',drafted:xs.map(r=>r.id),why:reviews(xs,g.ref)});};
  if(!READ.includes(g.kind)){
-  if(!list(g.nodeIds).length){out.why=g.ref+' names no deployment node.';return out;}
-  for(const nodeId of list(g.nodeIds)){const n=find(deploymentNodes(p),nodeId),s=g.review?.evidence?.[nodeId],now=!!s&&s.account==='person'&&!verifierRefusal(g,s.actor,s.account)&&s.stamp===gateEvidenceStamp(p,g,nodeId);
-   rows.push({nodeId,state:now?s.state:'unknown',why:now?(refOf(n)||nodeId)+(s.state==='pass'?' meets':' does not meet')+' it: '+s.reference+' ('+s.actor+')':'no current evidence for '+(n?n.ref+' '+n.title:nodeId)+' (a second person records it)'});}
-  return settle();
+  if(!list(g.nodeIds).length)out.why=g.ref+' names no deployment node.';
+  for(const nodeId of list(g.nodeIds)){const n=find(deploymentNodes(p),nodeId),s=g.review?.evidence?.[nodeId],now=!!s&&s.account==='person'&&!verifierRefusal(g,s.actor,s.account)&&s.stamp===gateEvidenceStamp(p,g,nodeId),xs=held([nodeId]);
+   rows.push(xs.length?{nodeId,state:'fail',drafted:[nodeId],why:reviews(xs,'the evidence for it')}:{nodeId,state:now?s.state:'unknown',why:now?(refOf(n)||nodeId)+(s.state==='pass'?' meets':' does not meet')+' it: '+s.reference+' ('+s.actor+')':'no current evidence for '+(n?n.ref+' '+n.title:nodeId)+' (a second person records it)'});}
+  rest([g.id]);return settle();
  }
- const ds=within(p,g);if(!ds.length){out.why=g.ref+' names no data definition this project holds.';return out;}
- if(g.kind==='residency'&&!list(g.permitted).length){out.why='The permitted jurisdictions are not stated: '+g.ref+' reads unknown until they are.';return out;}
- const env=g.environmentId,mine=new Set(ds.map(d=>d.id)),recorded=copies(p).filter(c=>mine.has(c?.dataId)&&appliesTo(p,c,env));
- for(const c of recorded){
-  const of=c.ref+', the '+kindWords(c.kind)+' of '+dataName(p,c.dataId);
-  if(isProposed(c)){rows.push({copyId:c.id,dataId:c.dataId,kind:c.kind,zoneId:c.zoneId,nodeId:c.nodeId,jurisdiction:'',state:'unknown',why:c.ref+' is a proposal: a person keeps or dismisses it.'});continue;}
-  const at=restsAt(p,c),v=judge(g,at),where=(at.zoneId?' in '+refOf(find(p.runtime.zones,at.zoneId)):'')+(at.nodeId?' at '+at.chain[0].ref+' '+at.chain[0].title:'');
-  rows.push({copyId:c.id,dataId:c.dataId,kind:c.kind,zoneId:at.zoneId||c.zoneId,nodeId:at.nodeId||c.nodeId,jurisdiction:at.jurisdiction||'',state:v.state,why:v.state==='unknown'?of+': '+v.why+(v.why.endsWith('.')?'':'.'):of+', rests'+where+(at.jurisdiction?', in '+at.jurisdiction:'')});
+ const ds=within(p,g),env=g.environmentId,mine=new Set(ds.map(d=>d.id)),drafts=draftedIds(p).size>0;
+ if(!ds.length)out.why=g.ref+' names no data definition this project holds.';else if(g.kind==='residency'&&!list(g.permitted).length)out.why='The permitted jurisdictions are not stated: '+g.ref+' reads unknown until they are.';
+ else{
+  const recorded=copies(p).filter(c=>mine.has(c?.dataId)&&appliesTo(p,c,env));
+  for(const c of recorded){
+   const of=c.ref+', the '+kindWords(c.kind)+' of '+dataName(p,c.dataId);
+   if(isProposed(c)){rows.push({copyId:c.id,dataId:c.dataId,kind:c.kind,zoneId:c.zoneId,nodeId:c.nodeId,jurisdiction:'',state:'unknown',why:c.ref+' is a proposal: a person keeps or dismisses it.'});continue;}
+   const at=restsAt(p,c),v=judge(g,at),where=(at.zoneId?' in '+refOf(find(p.runtime.zones,at.zoneId)):'')+(at.nodeId?' at '+at.chain[0].ref+' '+at.chain[0].title:''),xs=drafts?held([c.id,c.zoneId,...list(at.chain).map(n=>n.id),c.planId]):[];
+   rows.push({copyId:c.id,dataId:c.dataId,kind:c.kind,zoneId:at.zoneId||c.zoneId,nodeId:at.nodeId||c.nodeId,jurisdiction:at.jurisdiction||'',...xs.length?{state:'fail',drafted:xs.map(r=>r.id),why:reviews(xs,of+',')}:{state:v.state,why:v.state==='unknown'?of+': '+v.why+(v.why.endsWith('.')?'':'.'):of+', rests'+where+(at.jurisdiction?', in '+at.jurisdiction:'')}});
+  }
+  for(const x of derivedCopies(p).filter(x=>mine.has(x.dataId)&&(!env||x.environmentId===env)&&!recorded.some(c=>sameCopy(c,x)))){
+   const z=find(p.runtime.zones,x.zoneId),at=restsAt(p,{zoneId:x.zoneId}),v=judge(g,at),of='the '+kindWords(x.kind)+' of '+dataName(p,x.dataId),xs=drafts?held([x.zoneId,...list(at.chain).map(n=>n.id),x.planId,x.placementId]):[];
+   rows.push({copyId:null,dataId:x.dataId,kind:x.kind,zoneId:x.zoneId,nodeId:at.nodeId||'',jurisdiction:at.jurisdiction||'',...xs.length?{state:'fail',drafted:xs.map(r=>r.id),why:reviews(xs,of+' the trail places in '+refOf(z))}:{state:v.state==='pass'?'unknown':v.state,why:v.state==='fail'?of+' the trail places in '+refOf(z)+' rests at '+at.chain[0].ref+' '+at.chain[0].title+(at.jurisdiction?', in '+at.jurisdiction:''):dataName(p,x.dataId)+': the trail places it in '+refOf(z)+' '+(z?.title||'')+' (the '+kindWords(x.kind)+' of '+refOf(find(p.runtime.plans,x.planId))+') and no copy records it'+(v.why?'; '+v.why:'')+'.'}});
+  }
+  for(const d of ds)if(!rows.some(r=>r.dataId===d.id))rows.push({copyId:null,dataId:d.id,kind:'',zoneId:'',nodeId:'',jurisdiction:'',state:'unknown',why:'No copy of '+dataName(p,d.id)+' is recorded, and the trail places it nowhere.'});
  }
- for(const x of derivedCopies(p).filter(x=>mine.has(x.dataId)&&(!env||x.environmentId===env)&&!recorded.some(c=>sameCopy(c,x)))){
-  const z=find(p.runtime.zones,x.zoneId),at=restsAt(p,{zoneId:x.zoneId}),v=judge(g,at),of='the '+kindWords(x.kind)+' of '+dataName(p,x.dataId);
-  rows.push({copyId:null,dataId:x.dataId,kind:x.kind,zoneId:x.zoneId,nodeId:at.nodeId||'',jurisdiction:at.jurisdiction||'',state:v.state==='pass'?'unknown':v.state,why:v.state==='fail'?of+' the trail places in '+refOf(z)+' rests at '+at.chain[0].ref+' '+at.chain[0].title+(at.jurisdiction?', in '+at.jurisdiction:''):dataName(p,x.dataId)+': the trail places it in '+refOf(z)+' '+(z?.title||'')+' (the '+kindWords(x.kind)+' of '+refOf(find(p.runtime.plans,x.planId))+') and no copy records it'+(v.why?'; '+v.why:'')+'.'});
- }
- for(const d of ds)if(!rows.some(r=>r.dataId===d.id))rows.push({copyId:null,dataId:d.id,kind:'',zoneId:'',nodeId:'',jurisdiction:'',state:'unknown',why:'No copy of '+dataName(p,d.id)+' is recorded, and the trail places it nowhere.'});
+ if(drafts){const m=p.runtime,inEnv=x=>!env||x?.environmentId===env,plans=list(m.plans).filter(inEnv),ids=new Set(plans.map(r=>r.id)),theirs=copies(p).filter(c=>mine.has(c?.dataId));
+  rest([g.id,...(list(g.classifications).length||g.personalData?data(p):ds).map(d=>d?.id),...theirs.flatMap(c=>[c.id,c.zoneId]),...list(m.zones).filter(inEnv).map(z=>z.id),...plans.map(r=>r.id),...list(m.placements).filter(l=>ids.has(l?.planId)).map(l=>l.id)]);}
  return settle();
 }
 // The gates that apply to an environment (its own and those of every environment), standing.
@@ -223,7 +235,7 @@ function gateFindings(p){
  const out=[];
  for(const g of gates(p))if(g?.id&&!isProposed(g)){
   const r=gateReading(p,g.id);if(!r)continue;
-  if(r.state==='fail')out.push({id:'location-gate:'+g.id,code:'location-gate',level:'error',hard:true,objectId:g.id,title:g.ref+' '+g.title+' fails',detail:r.rows.filter(x=>x.state==='fail').map(x=>x.why).join('; ')+'; '+terms(g)+'. A location gate is not traded off: '+(READ.includes(g.kind)?'change where the copy rests.':'change the design or where it runs.')});
+  if(r.state==='fail'){const bad=r.rows.filter(x=>x.state==='fail');out.push({id:'location-gate:'+g.id,code:'location-gate',level:'error',hard:true,objectId:g.id,title:g.ref+' '+g.title+' fails',detail:bad.map(x=>x.why).join('; ')+'; '+terms(g)+'. A location gate is not traded off: '+(bad.every(x=>x.drafted)?'a person reviews what a draft changed.':READ.includes(g.kind)?'change where the copy rests.':'change the design or where it runs.')});}
   else if(r.state==='unknown')out.push({id:'location-unknown:'+g.id,code:'location-unknown',level:'warning',objectId:g.id,title:'Whether '+g.ref+' '+g.title+' holds is not known',detail:[r.why,...r.rows.filter(x=>x.state==='unknown').map(x=>x.why)].filter(Boolean).join(' ')+' Unknown is never pass.'});
  }
  const ns=deploymentNodes(p).filter(n=>n?.id&&!isProposed(n)),nets=ns.map(n=>[n,n.address?parsePrefix(n.address):null]).filter(([,x])=>x);
@@ -249,7 +261,8 @@ function emitGates(p,add,rel,has){
 // ---------------------------------------------------------------- what the record saves refuse by who writes the commit
 function refuseDraft(p,command,{author}={}){
  if(!author||author.kind!==DRAFT&&author.account!=='agent')return;
- const raw=command?.payload||{};
+ const raw=command?.payload||{},gate=command.type==='runtime.gate';
+ {const old=standingOf(gate?gates(p):copies(p),raw);if(old)return refOf(old)+(gate?' is a location gate a person saved: a draft by Sol or an agent account changes no gate that stands. It sends a gate':' is a data copy a person saved: a draft by Sol or an agent account changes no copy that stands. It sends a copy')+' of its own as a proposal (origin: sol-draft), and a person keeps it.';}
  if(raw.origin!==DRAFT)return 'A draft by Sol or an agent account sends a location gate or a data copy as its proposal (origin: sol-draft); a person keeps it.';
  if(command.type==='runtime.gate'&&list(raw.permitted).length)return 'A draft by Sol or an agent account names no permitted jurisdiction: a person states where data may rest, from the obligation\'s source.';
 }

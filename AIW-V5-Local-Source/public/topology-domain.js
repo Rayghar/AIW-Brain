@@ -27,6 +27,7 @@ import {failureDomainKey,hostingZone,statedField} from './runtime-model.js';
 import {NOT_STATED,SEEDED,PROPOSED,authoredOrigin,authored,patchFields,patchLinks,patchOpen,sameRecord,retiredOf,fitText} from './technology-domain.js';
 import {isProposed} from './record-lifecycle.js';
 import {withChanges} from './changes-domain.js';
+import {judgementOf} from './provenance.js';
 import {remember} from './document-memo.js';
 import {list} from './util.js';
 
@@ -131,6 +132,17 @@ function store(xs,old,next,raw,at,keys,fresh){
 // its proposals only. A declared failure, a location gate or a data copy that stands is a person's to change, since a
 // reading of Chapter 10 rests on it; a draft sends its own as a proposal. The one rule of both parts' validate.
 export const standingOf=(xs,raw)=>{const old=raw?.id!=null?find(xs,raw.id):null;return old&&!isProposed(old)?old:null;};
+// (ruling L11 (d); the fix-up's must-fix 2 and 3) Whose words a reading of slices 2 and 3 does not stand on: a record that
+// a draft by Sol, an import or an agent account wrote last and no person has reviewed since (kept, confirmed or merged by
+// a person, or judged kept through the review plan). draftedIds answers each such record of what those readings read
+// (zones, placements, plans, environments, nodes, failure domains, data, claims, gates, copies), by id, once a document;
+// a document without one answers an empty map.
+const unreviewed=(p,r)=>{const v=r?.provenance;return !!v?.author&&v.author.kind!=='person'&&!v.reviewed&&judgementOf(p,r)?.outcome!=='kept';};
+const READ_PATHS=[['runtime','zones'],['runtime','placements'],['runtime','plans'],['runtime','environments'],['runtime','nodes'],['technology','domains'],['interfaces','data'],['runtime','failures'],['runtime','gates'],['runtime','copies']];
+export const draftedIds=p=>remember(p,'topology:drafted','all',()=>{const out=new Map();for(const [a,b] of READ_PATHS)for(const r of list(p?.[a]?.[b]))if(r?.id&&!isProposed(r)&&unreviewed(p,r))out.set(r.id,r);return out;});
+// The records of ids a draft changed last, in their order, named; and the sentence that says so ('' for none).
+export const draftedOf=(p,ids)=>{const D=draftedIds(p);return D.size?[...new Set(ids)].filter(id=>D.has(id)).map(id=>D.get(id)):[];};
+export const draftedWords=xs=>xs.length?and(xs.map(r=>[r.ref||r.id,r.title].filter(Boolean).join(' ')))+(xs.length>1?' were':' was')+' last changed by a draft no person has reviewed':'';
 export function storeWritten(xs,old,next,raw,at,actor,keys,fresh){
  if(old&&sameRecord(old,next,keys))return [old,false];
  const draft=raw.origin===DRAFT,who=actor||null;let r=old;
@@ -327,7 +339,8 @@ export function refuseDraft(p,command,{author}={}){
  if(!author||author.kind!==DRAFT&&author.account!=='agent')return;
  const raw=command?.payload||{};
  if(raw.origin!==DRAFT)return 'A draft by Sol or an agent account sends a deployment node or a failure domain as its proposal (origin: sol-draft); a person keeps it.';
- if(command.type==='runtime.node'&&raw.jurisdiction!=null&&raw.jurisdiction!=='')return 'A jurisdiction is stated by a signed-in person: a draft by Sol or an agent account names none.';
+ // (the fix-up's must-fix 2) nor clears one a person stated, which a location gate reads
+ if(command.type==='runtime.node'&&raw.jurisdiction!==undefined&&(raw.jurisdiction!=null&&raw.jurisdiction!==''||find(p?.runtime?.nodes,raw.id)?.jurisdiction))return 'A jurisdiction is stated by a signed-in person: a draft by Sol or an agent account names none, and clears none a person stated.';
 }
 
 // ---------------------------------------------------------------- the record graph
