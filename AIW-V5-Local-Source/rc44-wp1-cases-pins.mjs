@@ -375,37 +375,21 @@ add('S3.9 (SDD): Appendix E names each pinned concept, its version, its release,
 });
 
 // ------------------------------------------------------------------------------------------------ 10 (size)
-// Ruling A4: wp1 has 660 B of the chapters route; S1 used 65 B and S2 118 B, so S3 adds at most 477 B. The slice books its
-// own bytes in its evidence (an integer of at least 0), read through routeBookings with every other package's.
-add('S3.10 (size, rulings A4, M4, O1): the client build passes every gate with the caps unchanged; S3 adds at most 477 B to the chapters route, as its evidence books it; 148 script files; the under-10-KB bucket no higher than its base allows; no stylesheet rule; the evidence says what a document with pins opens with', async () => {
+// Ruling A4 gave wp1 660 B of the chapters route, booked per slice; the owner's decision AA2 of 2026-11-26 retired the
+// bookings and the allowances for one size check at each merge (rc44-s0-readings.mjs assertRouteWithinCap).
+add('S3.10 (size, rulings A4, M4, O1, and the owner\'s decision AA2): the client build passes every gate and the one size check (AA2); 148 script files at the slice; the under-10-KB bucket no higher than its base allows; no stylesheet rule; the evidence says what a document with pins opens with', async () => {
   const EVIDENCE = 'audit/rc44/evidence/wp1-s3-size.json', size = JSON.parse(readFileSync(EVIDENCE, 'utf8'));
   const {BUDGET} = await import('./client-bundle.mjs');
-  assert.ok(Number.isInteger(size.ownBytes) && size.ownBytes >= 0 && size.ownBytes <= 477, 'S3 books its own bytes: ' + size.ownBytes);
-  assert.equal(size.allowance.chapters, 477); assert.equal(size.base.commit, 'c709ae3'); assert.equal(size.base.chapters, 3230723);
-  const booked = R.routeBookings(EVIDENCE);
-  assert.equal(booked.others['audit/rc44/evidence/wp1-s2-size.json'], 118, 'the other packages\' evidence is read');
-  // (the fix-up, as ruling X4 rules for S2.12; old -> new. Was: the two equalities read every size file's bookings, so a
-  // booking filed after the slice's start (wp2 S5's, merged in item 0) broke them. Now they read the bookings recorded
-  // at the start commit c709ae3 in the slice's own evidence (bookingsAtStart), and each booking so recorded is asserted
-  // to be on the books still with its bytes; the head's build is checked against every booking below, and its record is
-  // atMerge.)
-  const start = size.bookingsAtStart, sum = o => Object.values(o).reduce((n, x) => n + x, 0);
-  assert.equal(start?.commit, size.base.commit, 'the bookings recorded at the start commit');
-  for (const [f, n] of Object.entries(start.others)) assert.equal(booked.others[f], n, f + ' books what it booked at the slice\'s start');
-  for (const [k, n] of Object.entries(start.pool)) assert.equal(booked.pool[k], n, k + ' is in the shared pool as at the slice\'s start');
-  assert.equal(3229840 + sum(start.others) + sum(start.pool), size.base.chapters, 'the start commit is the integrated base and what the other packages and the pool booked');
-  assert.equal(size.slice.chapters - 3229840 - sum(start.others) - sum(start.pool), size.ownBytes, 'the route at the slice\'s head, less the base and the others, is what S3 books');
-  // (slice S0-D12's fix-up, old -> new, as the lead's ruling X4 ruled for S2.12. Was: m.chapters - 3229840 - booked.othersTotal
-  // - booked.poolTotal === size.ownBytes, which held the route recorded at the head against every booking filed since, so a
-  // booking filed after wp1 S3's merge (the lead's mergeAuthorY3, rulings Y3 and Z1 to Z7) broke it. Now the record is held
-  // against the bookings recorded with it, atMerge.otherPackages and atMerge.sharedPool, each asserted to be on the books
-  // still with its bytes; the head's build is checked against every booking below (this build: S3 is ...) and by S0's O1.)
-  { const m = size.atMerge, others = m?.otherPackages || {}, items = m?.sharedPool?.items || {}, file = n => 'audit/rc44/evidence/' + n;
-    assert.ok(m && Object.keys(others).length >= 4 && Object.keys(items).length >= 1, 'the bookings recorded at the head');
-    for (const [f, n] of Object.entries(others)) assert.equal(booked.others[file(f)], n, f + ' books what it booked at the head');
-    for (const [k, n] of Object.entries(items)) assert.deepEqual(Object.entries(booked.pool).filter(([x]) => x.endsWith(':' + k)).map(([, b]) => b), [n], k + ' is in the shared pool as at the head');
-    assert.equal(sum(items), m.sharedPool.total);
-    assert.ok(m.chapters - 3229840 - sum(others) - m.sharedPool.total === size.ownBytes, 'at the head (atMerge), the route less the base and every booking is what S3 books'); assert.ok(m.chapters <= BUDGET.routes.chapters && m.scripts === 148); }
+  // (the owner's decision AA2 of 2026-11-26, old -> new. Was: S3's own bytes an integer in [0, 477] and its allowance 477 B;
+  // the bookings read through routeBookings (wp1 S2's 118 B among them), each booking recorded at the start commit
+  // (bookingsAtStart) and at the head (atMerge.otherPackages, atMerge.sharedPool) still on the books, and the route at the
+  // slice's head and at the merge, less the integrated base (3,229,840 B) and those bookings, equal to its own bytes, with
+  // the head's route within the cap and 148 script files there (rulings A4, M4, O1, X4). AA2 retires per-slice booking and
+  // the allowances for one size check at each merge: the slice's recorded measurement and the one recorded at the merge
+  // pass it against the slice's base, rc44-s0-readings.mjs assertRouteWithinCap, which reads every cap from
+  // client-bundle.mjs.)
+  assert.equal(size.base.commit, 'c709ae3'); assert.equal(size.base.chapters, 3230723);
+  await R.assertRouteWithinCap(size.slice, size.base); { const m = size.atMerge; assert.ok(m, 'the measurement recorded at the merge'); await R.assertRouteWithinCap(m, size.base); }
   assert.ok(size.slice.chapters <= BUDGET.routes.chapters); assert.deepEqual([size.slice.scripts, size.slice.css], [148, size.base.css]);
   R.assertUnder10kCeiling(size.slice, size.base, BUDGET.tiny);
   { const w = size['opens with records']; assert.ok(w && w.host === 'public/knowledge-workspace-ui.js' && w.total === w.route + w.added && w.route === size.slice.chapters && w.files >= 1, 'opens with records'); }
@@ -413,9 +397,13 @@ add('S3.10 (size, rulings A4, M4, O1): the client build passes every gate with t
     const report = JSON.parse(readFileSync('dist/client-size-report.json', 'utf8')), meta = JSON.parse(readFileSync('dist/client-metafile.json', 'utf8'));
     const measured = {chapters: report.routes.chapters.code, scripts: report.scripts, under10k: report.buckets.under10k, css: report.css};
     assert.deepEqual(report.violations || [], [], 'no gate is broken');
-    const mine = measured.chapters - 3229840 - booked.othersTotal - booked.poolTotal; assert.ok(mine <= 477, 'this build: S3 is ' + mine + ' B of its 477 B');
+    // (the owner's decision AA2 and ruling Y1, old -> new. Was: this build's route less the integrated base and every
+    // booking at most 477 B, 148 script files, and the bucket under 10 KB a ceiling. Now this build passes the one size
+    // check against the slice's base: the route within the cap, the script files at or under the gate Y1 moved, the bucket
+    // under 10 KB a ceiling (rulings P8 and R4), the stylesheet cap.)
+    await R.assertRouteWithinCap(report, size.base);
     for (const [f, o] of Object.entries(meta.outputs)) for (const server of ['public/knowledge-concepts.js', 'public/knowledge-concept-commands.js']) assert(!o.inputs?.[server], f + ' holds ' + server + ', which only the server reads');
-    assert.equal(measured.scripts, 148); R.assertUnder10kCeiling(measured, size.base, BUDGET.tiny); assert.equal(measured.css, size.base.css);
+    assert.equal(measured.css, size.base.css);
     const opens = R.opensWithRecords(meta, 'public/knowledge-workspace-ui.js', Object.keys(BUDGET.data)); assert.equal(opens.route, measured.chapters);
     // (the fix-up, old -> new: the measure mode compared the build with the slice's own tree before the merge, size.slice
     // and its 'opens with records'; at the head it compares the build with the record made at the head, atMerge.)

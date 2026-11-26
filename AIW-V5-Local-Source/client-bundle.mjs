@@ -227,7 +227,12 @@ const KB = 1024;
 // route for one line of the inspector; it now loads when such a record is first inspected (app.js foreignDossierHTML),
 // as the Model views already load it. That added three script files, and the glance's four engine requests became one
 // (glance-engine.js), which removed five: the route measures 3,228,667 B and the client 148 scripts.
-const CHAPTERS_ROUTE_BUDGET = 3158 * KB;
+// rc44 (2026-11-26, the owner's decision AA2 of 2026-11-26, audit/rc44/RULINGS-2026-11-18.md section AA): the cap rises
+// by 32 KB, from 3158 KB (3,233,792 B) to 3190 KB (3,266,560 B); it amends BUILD-PLAN section 2 item 2 and UPGRADE-PLAN
+// section 7 item 4. Per-slice byte booking is retired with it: one size check at each merge (rc44-s0-readings.mjs
+// assertRouteWithinCap) holds the route within this cap, the script files at or under the gate, the files-under-10-KB
+// bucket a ceiling and the stylesheet cap unchanged. Measured at the raise (4349bb6): 3,228,938 B.
+const CHAPTERS_ROUTE_BUDGET = 3190 * KB;
 export const BUDGET = {
   entry: 8 * KB,
   // Round 12 (D4, 2026-10-08): the shared domain chunk measured 377,002 B of hand-written code (353,094 B on the round

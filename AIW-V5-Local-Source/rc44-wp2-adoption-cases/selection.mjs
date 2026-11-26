@@ -56,7 +56,7 @@
 //   S5 size          the client build passes every gate; S5 books its gross additions, the lead the retirement's saving;
 //                    wp2's own bytes (S1 and S5) within 1,200 B; the bookings add up (rulings M4, O1, U2).
 import assert from 'node:assert/strict';
-import {readFileSync, existsSync, writeFileSync, mkdirSync} from 'node:fs';
+import {readFileSync, existsSync, writeFileSync, mkdirSync, readdirSync} from 'node:fs';
 import worker, {commandHandler, commandShape} from '../worker.js';
 import * as R from '../rc44-s0-readings.mjs';
 import {server, A, B, C, AGENT, SELECTION_AT, CONCERN_NOTES, CONCERN_ANSWERS, CONCERN_TAGS, concernProject, decisionSays, selectionProject, PROFILE_FACTS, ARCHETYPE, bankPaymentApplied, governedConcernApplied, otherKindApplied} from '../rc44-wp2-fixtures.mjs';
@@ -88,7 +88,7 @@ import {suggestEffects} from '../public/decision-suggestions.js';
 
 const list = v => (Array.isArray(v) ? v : []);
 const PACKAGE = 'p40-adoption', BASE = JSON.parse(readFileSync(new URL('../rc44-wp2-selection-baseline.json', import.meta.url), 'utf8'));
-const EVIDENCE = 'audit/rc44/evidence/wp2-s5-size.json', S1_EVIDENCE = 'audit/rc44/evidence/wp2-s1-size.json';
+const EVIDENCE = 'audit/rc44/evidence/wp2-s5-size.json';
 const AT = SELECTION_AT, person = id => ({kind: 'person', id, account: 'person'}), sol = id => ({kind: 'sol-draft', id, account: 'person'}), agent = id => ({kind: 'person', id, account: 'agent'});
 const decision = (p, id) => p.decisions.records.find(d => d.id === id), alt = (d, title) => d.alternatives.find(a => a.title === title);
 const FORBIDDEN = /^(score|scores|rank|ranks|ranking|weight|weights|weighted|total|lead)$/i;
@@ -1040,7 +1040,15 @@ export default async function ({block, pass, load}) {
     const src = f => readFileSync(new URL('../public/' + f + '.js', import.meta.url), 'utf8'), lib = src('component-library-ui'), host = src('architecture-task-ui');
     assert.match(lib, /await import\('\.\/architecture-task-ui\.js'\);window\.aiwSelection\?\.\(\{store:s,modal\}\)/, 'the library chooser loads the comparison tools\' entry by a dynamic import and opens the selection through the hook it sets');
     assert.ok(!/from '\.\/adoption-/.test(lib), 'it imports no adoption module statically (a second lazy chunk would split a shared one)');
-    assert.match(src('adoption-package'), /^import '\.\/adoption-ui\.js';/m, 'the package holds the view, so the comparison tools\' entry does (it imports the package)'); assert.ok(!/adoption-ui/.test(host), 'and no workbench module imports a module of the package but the package itself (S0 tells a package\'s modules by who imports them)');
+    // (ruling Y1, built by S0-D10; old -> new. Was: adoption-package.js imports adoption-ui.js, 'the package holds the view, so
+    // the comparison tools' entry does (it imports the package)', and the comparison tools' entry names no adoption-ui. The
+    // package's readers now load in the one shared first-draw entry, and each surface stays in its host entry: the comparison
+    // tools' entry imports the view, and the shared entry, for their registration and their surface alone (imports that take
+    // no name, so S0 still tells the package's modules by who imports them); the package's registration imports no surface;
+    // the server's list reaches the view as before (adoption-server.js); and no other module of the workbench imports it.)
+    assert.doesNotMatch(src('adoption-package'), /adoption-ui/, 'the package\'s registration holds no surface (ruling Y1)'); assert.match(host, /^import '\.\/adoption-ui\.js';/m, 'the comparison tools\' entry holds the view, by an import that takes no name'); assert.match(host, /^import '\.\/design-package-readers\.js';/m, 'and the shared first-draw entry, which registers the package');
+    assert.match(readFileSync(new URL('../adoption-server.js', import.meta.url), 'utf8'), /^import '\.\/public\/adoption-ui\.js';/m, 'the server\'s list reaches the view as before');
+    for (const f of readdirSync(new URL('../public/', import.meta.url)).filter(f => f.endsWith('.js') && !/^adoption-|^architecture-task-ui\.js$/.test(f))) assert.doesNotMatch(src(f.slice(0, -3)), /['"]\.\/adoption-ui\.js['"]/, f + ' imports no module of the package\'s surface');
     assert.match(src('adoption-ui'), /window\.aiwSelection=openSelection/);
     pass('S5 surface: the selection view names the constraints, the candidates in order and each row\'s state; the candidate profile is shown labelled with its Add disabled and the reason; nothing is weighed; the library chooser opens it through a dynamic import of the comparison tools\' entry, which holds it');
   });
@@ -1050,33 +1058,35 @@ export default async function ({block, pass, load}) {
     pkg();
     const {bundleClient, BUDGET} = await import('../client-bundle.mjs');
     const built = await bundleClient('.aiw-local/rc44-wp2-s5/client'), report = built.report, meta = JSON.parse(readFileSync(built.metafile, 'utf8'));
-    assert.deepEqual(report.violations, [], 'the client build passes every size gate'); assert.equal(BUDGET.routes.chapters, 3233792, 'the chapters route cap is the one it was'); assert.equal(BUDGET.scripts, 148); assert.equal(report.scripts, 148, '148 script files');
+    // (the owner's decision AA2 of 2026-11-26 and ruling Y1, old -> new. Was: the chapters route cap equal to 3233792, 'the
+    // chapters route cap is the one it was', the script gate equal to 148 and 148 script files. AA2 raises the cap by 32 KB
+    // and Y1 moves the script gate to the count S0-D10 measured: this build passes the one size check, rc44-s0-readings.mjs
+    // assertRouteWithinCap, which reads every cap from client-bundle.mjs, against the slice's start below.)
+    assert.deepEqual(report.violations, [], 'the client build passes every size gate');
     const HOST = 'public/architecture-task-ui.js', host = Object.keys(meta.outputs).find(f => meta.outputs[f].entryPoint === HOST), opens = R.opensWithRecords(meta, HOST, Object.keys(BUDGET.data));
-    const holds = Object.entries(meta.outputs).filter(([, o]) => Object.keys(o.inputs || {}).some(i => /public\/adoption-/.test(i))).map(([f]) => f);
-    assert.deepEqual(holds, [host], 'the package, the selection and its view are held in the lazy entry rooted at ' + HOST + ' and nowhere else (rulings A3, D7.6)');
+    // (ruling Y1, built by S0-D10; old -> new below) where the package loads: its first-draw readers in one script of the one
+    // shared lazy entry that every route stub loads (and that the comparison tools' entry reaches statically), off the route;
+    // its surface, the selection view, in the comparison tools' entry alone
+    const SHARED = 'public/design-package-readers.js', outOf = src => Object.keys(meta.outputs).find(f => meta.outputs[f].entryPoint === src), closureOf = start => { const seen = new Set(), walk = f => { if (seen.has(f) || !meta.outputs[f]) return; seen.add(f); for (const i of meta.outputs[f].imports || []) if (i.kind === 'import-statement') walk(i.path); }; walk(start); return seen; };
+    const onRoute = closureOf(outOf('public/entry.js')), holding = re => Object.entries(meta.outputs).filter(([, o]) => Object.keys(o.inputs || {}).some(i => re.test(i))).map(([f]) => f);
+    // (ruling Y1, old -> new. Was: every script holding an adoption module is the one rooted at HOST, 'the package, the
+    // selection and its view are held in the lazy entry rooted at HOST and nowhere else (rulings A3, D7.6)'. Now the readers
+    // and the selection are in one script that the shared entry and HOST both reach and the route does not, and the view is
+    // in HOST's script and nowhere else.)
+    { const readers = holding(/^public\/adoption-(domain|selection|package)\.js$/), view = holding(/^public\/adoption-ui\.js$/);
+      assert.equal(readers.length, 1, 'the package\'s readers and the selection are in one script: ' + readers.join(', ')); assert.ok(closureOf(outOf(SHARED)).has(readers[0]) && closureOf(host).has(readers[0]) && !onRoute.has(readers[0]), 'in the shared first-draw entry, which ' + HOST + ' reaches, off the route (ruling Y1)');
+      assert.deepEqual(view, [host], 'the selection view is held in the lazy entry rooted at ' + HOST + ' and nowhere else'); }
     const inClient = Object.values(meta.outputs).flatMap(o => Object.keys(o.inputs || {})).filter(i => /adoption-/.test(i)).sort();
     assert.deepEqual(inClient, ['public/adoption-domain.js', 'public/adoption-package.js', 'public/adoption-selection.js', 'public/adoption-ui.js'], 'the client holds the readers, the steps, the selection and its view, and no upgrade (ruling J12)');
     const libOut = Object.keys(meta.outputs).find(f => meta.outputs[f].entryPoint === 'public/component-library-ui.js'); assert.ok(!Object.keys(meta.outputs[libOut].inputs).some(i => /adoption-/.test(i)), 'the library chooser\'s entry holds no adoption module');
-    const START = 3230605, INTEGRATED = 3229840, ALLOWANCE = 1200, LEAD = 'audit/rc44/evidence/lead-bookings-size.json', ITEM = 'guidedConcernRetirementQ8', measured = {chapters: report.routes.chapters.code, projects: report.routes.projects.code, scripts: report.scripts, under10k: report.buckets.under10k, css: report.css};
-    // (the lead's ruling U2 of 2026-11-22; was (rulings O1, Q10): S5 booked max(0, the route's delta against the start),
-    // 0 once the retirement of row 9 shrank the route, within the 475 B wp2 had left of 800 B, and the saving was booked by
-    // nobody. Now the retirement's saving is the lead's, a negative pool item of the lead's file, measured exactly: the
-    // route with the guided path's code put back (withRetirementPutBack: node build.mjs on this tree with
-    // public/architecture-design.js and public/architecture-task-ui.js as at 082e06b, measured by hand, see the notes)
-    // less the route without it; S5 books its gross additions, the route with the retirement put back less the start, a
-    // positive integer; wp2's allowance is 1,200 B. The measured delta is kept beside them, and the bookings add up.)
-    if (process.argv.includes('--measure')) { const prior = existsSync(EVIDENCE) ? JSON.parse(readFileSync(EVIDENCE, 'utf8')) : null, back = prior?.withRetirementPutBack ?? null; assert.ok(Number.isInteger(back?.chapters), 'the route with the retirement put back is measured first (node build.mjs on the variant tree, recorded in withRetirementPutBack)'); mkdirSync('audit/rc44/evidence', {recursive: true}); writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v3', name: 'wp2 S5 component selection as a recorded decision', measuredWith: 'client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code, scripts, buckets)', allowance: {chapters: ALLOWANCE, of: 'all of wp2 (ruling U2: 600 B by ruling A4, 200 B by Q10 and 400 B of the retirement\'s saving; was 800 B): S1 books 325 B (ruling N1), so S5 may book at most 875 B', scripts: 148}, caps: {chapters: BUDGET.routes.chapters, scripts: BUDGET.scripts}, bases: {start: {commit: '5cae40a (wp9a slice 1 after its second fix-up, on rc44/integration a4c1690)', chapters: START, projects: 507338, scripts: 148, under10k: 53, css: 901873}, integrated: {commit: '9673661', chapters: INTEGRATED}}, slice: measured, withRetirementPutBack: back, ownBytes: back.chapters - START, ownBytesNote: 'S5\'s gross additions (ruling U2): the chapters route with the retirement of row 9 put back, less the start. The retirement\'s saving is no package\'s own figure: the lead books it in lead-bookings-size.json (' + ITEM + ').', routeDelta: measured.chapters - START, retirementSaving: back.chapters - measured.chapters, projectsDelta: measured.projects - 507338, headroomAfter: BUDGET.routes.chapters - measured.chapters,
+    const START = 3230605, measured = {chapters: report.routes.chapters.code, projects: report.routes.projects.code, scripts: report.scripts, under10k: report.buckets.under10k, css: report.css};
+    // (the owner's decision AA2 of 2026-11-26 retires per-slice booking: the measurement mode below records what it measures
+    // (the slice, the route with the retirement of row 9 put back, the saving) and books nothing; the mode that restated the
+    // books at a merge (--measure-merge, ruling V3) is retired with them. The evidence keeps the books it recorded before AA2.)
+    if (process.argv.includes('--measure')) { const prior = existsSync(EVIDENCE) ? JSON.parse(readFileSync(EVIDENCE, 'utf8')) : null, back = prior?.withRetirementPutBack ?? null; assert.ok(Number.isInteger(back?.chapters), 'the route with the retirement put back is measured first (node build.mjs on the variant tree, recorded in withRetirementPutBack)'); mkdirSync('audit/rc44/evidence', {recursive: true}); writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v3', name: 'wp2 S5 component selection as a recorded decision', measuredWith: 'client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code, scripts, buckets)', caps: {chapters: BUDGET.routes.chapters, scripts: BUDGET.scripts}, bases: {start: {commit: '5cae40a (wp9a slice 1 after its second fix-up, on rc44/integration a4c1690)', chapters: START, projects: 507338, scripts: 148, under10k: 53, css: 901873}, integrated: {commit: '9673661', chapters: INTEGRATED}}, slice: measured, withRetirementPutBack: back, routeDelta: measured.chapters - START, retirementSaving: back.chapters - measured.chapters, projectsDelta: measured.projects - 507338, headroomAfter: BUDGET.routes.chapters - measured.chapters,
       'opens with records': {gate: 'The chapters-route gate measures opening a document that holds no package records (ruling D10).', measuredOn: 'the tree --measure ran on: the slice\'s own tree, as slice (ruling W3; the merged build is restated in atMerge)', host: HOST, ...opens, holds: 'the adoption record\'s readers, steps and tracker (adoption-domain.js), the registration (adoption-package.js), the selection (adoption-selection.js) and its view (adoption-ui.js); not the upgrade, nor the SDD\'s selection basis (adoption-server.js: rulings J12, U5)'}, ...(prior?.putBack ? {putBack: prior.putBack} : {}), ...(prior?.atMerge ? {atMerge: prior.atMerge} : {})}, null, 1) + '\n'); }
-    // (the lead's ruling V3 of 2026-11-22) --measure-merge, run on the merged tree: restates the route, wp2's own bytes and the pool as this build
-    // and the books read them (atMerge); nothing else of the evidence moves (slice, the put-back and the saving are the slice's own tree's)
-    if (process.argv.includes('--measure-merge')) { const prior = JSON.parse(readFileSync(EVIDENCE, 'utf8')), s1m = JSON.parse(readFileSync(S1_EVIDENCE, 'utf8')), s1o = s1m.ownBytes ?? s1m.delta, all = R.routeBookings(null), name = f => f.split('/').pop();
-      const otherPackages = Object.fromEntries(Object.entries(all.own).filter(([f]) => !/\/wp2-/.test(f)).map(([f, b]) => [name(f), b])), items = Object.fromEntries(Object.entries(all.pool).map(([k, b]) => [k.slice(k.lastIndexOf(':') + 1), b]));
-      writeFileSync(EVIDENCE, JSON.stringify({...prior, atMerge: {merged: 'rc44/integration (c709ae3: wp9a slice 1 and wp1 S2, closed) merged into this slice, ruling V3', measuredWith: 'client-bundle.mjs bundleClient, as node build.mjs builds the client (routes.chapters.code, scripts, buckets), on the merged tree', chapters: measured.chapters, projects: measured.projects, scripts: measured.scripts, under10k: measured.under10k, css: measured.css, lessIntegrated: measured.chapters - INTEGRATED,
-        wp2: {own: s1o + prior.ownBytes, S1: s1o, S5: prior.ownBytes, of: ALLOWANCE, left: ALLOWANCE - s1o - prior.ownBytes}, otherPackages, sharedPool: {total: all.poolTotal, items}, headroomAfter: BUDGET.routes.chapters - measured.chapters, 'opens with records': {host: HOST, ...opens},
-        note: 'slice, withRetirementPutBack, ownBytes, routeDelta and retirementSaving are measured on the slice\'s own tree before the merge (abfdb56; no route module changed after 9df762c), where the put-back was built: S5 books its gross additions there, and the lead books the saving there. This block restates the merged build: its route less the integrated base is wp2\'s own bytes, the other packages\' own and the shared pool\'s, exactly (the lead\'s merge check, assertBookingsAddUp).'}}, null, 1) + '\n'); }
     assert.ok(existsSync(EVIDENCE), 'the slice\'s measurement is kept (node rc44-wp2-adoption-validate.mjs --measure)');
-    assert.ok(existsSync(LEAD), 'the lead\'s bookings are kept (' + LEAD + ')');
-    const size = JSON.parse(readFileSync(EVIDENCE, 'utf8')), s1 = JSON.parse(readFileSync(S1_EVIDENCE, 'utf8')), s1Own = s1.ownBytes ?? s1.delta, lead = JSON.parse(readFileSync(LEAD, 'utf8')), back = size.withRetirementPutBack;
+    const size = JSON.parse(readFileSync(EVIDENCE, 'utf8')), back = size.withRetirementPutBack;
     assert.ok(Number.isInteger(back?.chapters) && back.chapters > size.slice.chapters, 'the route with the guided path\'s code put back is measured: ' + back?.chapters);
     // (the lead's ruling V4 of 2026-11-22) the command that builds the tree with the guided path put back is recorded, so the lead can repeat the
     // measurement: an archive of a tree, the two files as at 082e06b, node build.mjs; on the slice's own tree it gives withRetirementPutBack, and on
@@ -1085,38 +1095,26 @@ export default async function ({block, pass, load}) {
       for (const part of [/git archive <tree> AIW-V5-Local-Source/, /git show 082e06b:AIW-V5-Local-Source\/public\/\$f/, /architecture-design\.js architecture-task-ui\.js/, /node build\.mjs/, /routes\.chapters\.code/]) assert.match(cmd, part, 'the put-back command is recorded: ' + part);
       assert.deepEqual([pb.sliceTree?.tree, pb.sliceTree?.chapters], ['abfdb56', back.chapters], 'on the slice\'s own tree it gives the figure S5 books from');
       assert.equal(pb.merged?.route, size.atMerge.chapters, 'on the merged tree'); assert.equal(pb.merged.chapters - pb.merged.route, size.retirementSaving, 'the saving is the same there: ' + (pb.merged.chapters - pb.merged.route)); }
-    assert.ok(Number.isInteger(size.ownBytes) && size.ownBytes > 0 && size.ownBytes === back.chapters - size.bases.start.chapters, 'S5 books its gross additions, the route with the retirement put back less the start, a positive integer: ' + size.ownBytes);
-    assert.ok(s1Own + size.ownBytes <= ALLOWANCE, 'S1\'s own bytes and S5\'s are within wp2\'s 1,200 B (ruling U2; was 800 B): ' + s1Own + ' + ' + size.ownBytes);
+    // (the owner's decision AA2 of 2026-11-26, old -> new. Was (rulings U2, Q10): S5's own bytes the route with the retirement
+    // put back less the start, a positive integer; S1's and S5's own bytes within wp2's 1,200 B; and the lead's file booking
+    // the retirement's saving, exactly, as a negative item of the shared pool. AA2 retires the bookings, the pool and the
+    // allowances: the measurements stand as recorded (the put-back, the delta, the saving), and the slice's measurement, the
+    // merged build's (atMerge) and this build pass the one size check against the slice's start.)
     assert.equal(size.routeDelta, size.slice.chapters - size.bases.start.chapters); assert.equal(size.retirementSaving, back.chapters - size.slice.chapters); assert.ok(size.retirementSaving > 0, 'the retirement saved route bytes');
-    assert.equal(lead.schema, 'aiw.rc44.slice-size.v3'); assert.equal(lead.ownBytes, 0, 'the lead\'s file books no bytes of its own'); assert.equal(lead.sharedPoolBytes?.[ITEM], -size.retirementSaving, 'the lead books the retirement\'s saving, exactly, as a negative pool item: ' + lead.sharedPoolBytes?.[ITEM]);
+    await R.assertRouteWithinCap(size.slice, size.bases.start); await R.assertRouteWithinCap(size.atMerge, size.bases.start);
     assert.equal(size.slice.scripts, 148); assert.equal(size.slice.css, 901873, 'no stylesheet rule'); assert.equal(size['opens with records'].route, size.slice.chapters);
     if (process.argv.includes('--measure')) assert.deepEqual(measured, size.slice);
-    // ruling M4: this build's growth over the integrated base, less every other package's own bytes and the shared pool's (the lead's saving among them), is wp2's (S1's and S5's own), exactly
-    const booked = R.routeBookings(EVIDENCE), notWp2 = Object.entries(booked.others).filter(([f]) => !/\/wp2-/.test(f)).reduce((n, [, b]) => n + b, 0), wp2 = measured.chapters - INTEGRATED - notWp2 - booked.poolTotal;
-    assert.equal(wp2, s1Own + size.ownBytes, 'wp2\'s bytes on this build are S1\'s own and S5\'s, exactly: ' + wp2 + ' (the route grew ' + (measured.chapters - INTEGRATED) + ' B over the integrated base; other packages\' own ' + notWp2 + ' B; the shared pool ' + booked.poolTotal + ' B)');
-    assert.ok(wp2 > 0 && wp2 <= ALLOWANCE, 'wp2\'s bytes on this build are within its 1,200 B (ruling U2; was 800 B by Q10): ' + wp2);
-    // ruling O1, the lead's merge check, held on this branch's size files (its block in S0's suite and assertBookingsAddUp are
-    // on wp9a's branch; the lead runs them at the merge): this build less the integrated base is every file's own bytes plus
-    // the shared pool's, exactly; every file's own figure is an integer of at least 0, the lead's is 0, a negative pool item
-    // is the lead's alone, and no item is booked by two files
-    { const all = R.routeBookings(null), items = Object.keys(all.pool).map(k => k.slice(k.lastIndexOf(':') + 1));
-      for (const [f, own] of Object.entries(all.others)) assert.ok(Number.isInteger(own) && own >= 0 && (f !== LEAD || own === 0), f + ' books ' + own + ' B of its own');
-      for (const [k, b] of Object.entries(all.pool)) assert.ok(Number.isInteger(b) && (b >= 0 || k.startsWith(LEAD + ':')), k + ' is ' + b + ' B: a negative pool item is the lead\'s alone');
-      assert.equal(new Set(items).size, items.length, 'one file books each pool item: ' + items.join(', '));
-      assert.equal(measured.chapters - INTEGRATED, all.othersTotal + all.poolTotal, 'the bookings add up: the route grew ' + (measured.chapters - INTEGRATED) + ' B against 9673661, and the size files book ' + JSON.stringify(all.others) + ' of their own and ' + JSON.stringify(all.pool) + ' in the pool'); }
-    // (the lead's ruling V3 of 2026-11-22) at the merge with rc44/integration (c709ae3) the evidence restates the route, wp2's own bytes and the
-    // pool as the merged build reads them (atMerge, written by --measure-merge on the merged tree), while slice, withRetirementPutBack, ownBytes and
-    // retirementSaving stay as measured on the slice's own tree before the merge (the put-back is that tree's); the restatement adds up, and on the
-    // build it names it is what the books hold now
-    { const at = size.atMerge, sum = o => Object.values(o || {}).reduce((n, b) => n + b, 0);
-      assert.ok(at && Number.isInteger(at.chapters) && /c709ae3/.test(at.merged || ''), 'the evidence restates the build at the merge with rc44/integration c709ae3 (atMerge): ' + JSON.stringify(at));
-      assert.equal(at.lessIntegrated, at.chapters - INTEGRATED, 'the merged route less the integrated base');
-      assert.deepEqual(at.wp2, {own: s1Own + size.ownBytes, S1: s1Own, S5: size.ownBytes, of: ALLOWANCE, left: ALLOWANCE - s1Own - size.ownBytes}, 'wp2\'s own bytes of its 1,200 B, restated');
-      assert.equal(at.sharedPool.total, sum(at.sharedPool.items), 'the pool\'s total is its items'); assert.equal(at.sharedPool.items[ITEM], lead.sharedPoolBytes[ITEM], 'the lead\'s saving is in the restated pool');
-      assert.equal(at.lessIntegrated, at.wp2.own + sum(at.otherPackages) + at.sharedPool.total, 'the restated figures add up: ' + at.lessIntegrated + ' = ' + at.wp2.own + ' + ' + JSON.stringify(at.otherPackages) + ' + ' + at.sharedPool.total);
-      if (measured.chapters === at.chapters) { const all = R.routeBookings(null), name = f => f.split('/').pop();
-        assert.deepEqual(at.otherPackages, Object.fromEntries(Object.entries(all.own).filter(([f]) => !/\/wp2-/.test(f)).map(([f, b]) => [name(f), b])), 'on the build it names, the other packages\' own bytes are the books\'');
-        assert.deepEqual(at.sharedPool.items, Object.fromEntries(Object.entries(all.pool).map(([k, b]) => [k.slice(k.lastIndexOf(':') + 1), b])), 'and the pool\'s items are the books\'');
+    // (the owner's decision AA2 of 2026-11-26, old -> new. Was (rulings M4, O1, U2, V3): this build's growth over the
+    // integrated base, less every other package's own bytes and the shared pool's, exactly wp2's own bytes and within its
+    // 1,200 B; the lead's merge check on this branch's size files (every own figure an integer of at least 0, the lead's 0,
+    // a negative pool item the lead's alone, no item booked twice, the bookings adding up); and the merged build's
+    // restatement of wp2's own bytes, the other packages' and the pool (atMerge) adding up and, on the build it names, the
+    // books'. AA2 retires per-slice booking, the pool and the allowances: this build passes the one size check against the
+    // slice's start, and on the build atMerge names, that build is this one.)
+    const held = await R.assertRouteWithinCap(report, size.bases.start);
+    { const at = size.atMerge;
+      assert.ok(at && Number.isInteger(at.chapters) && /c709ae3/.test(at.merged || ''), 'the evidence records the build at the merge with rc44/integration c709ae3 (atMerge): ' + JSON.stringify(at));
+      if (measured.chapters === at.chapters) {
         assert.deepEqual([at.projects, at.scripts, at.under10k, at.css], [measured.projects, measured.scripts, measured.under10k, measured.css], 'and the build is the one it names');
         // (the lead's ruling W3 of 2026-11-22) the pass line prints what opening a document with records costs at the merge: on the build
         // atMerge names, that figure is this build's, so a round that moves the lazy entry restates it (--measure-merge)
@@ -1124,7 +1122,7 @@ export default async function ({block, pass, load}) {
     // (ruling W3) the top-level 'opens with records' is measured on the slice's own tree, as slice is, and says so; the merge's is atMerge's
     assert.match(size['opens with records'].measuredOn || '', /the slice's own tree/, 'the top-level opens with records says which tree it measures: ' + size['opens with records'].measuredOn);
     assert.ok(measured.chapters <= BUDGET.routes.chapters);
-    pass('S5 size: every gate passes with the caps unchanged; 148 script files; the selection and its view are held in the lazy entry of ' + HOST + ' with the package, and the library chooser\'s entry holds none of it; S5 books its gross additions, ' + size.ownBytes + ' B (the route with the retirement of row 9 put back, ' + back.chapters + ' B, less the start ' + START + '); the lead books the retirement\'s saving, ' + lead.sharedPoolBytes[ITEM] + ' B, in the pool; the slice\'s own tree ' + size.slice.chapters + ' B (' + size.routeDelta + ' B against the start); this build ' + measured.chapters + ' B (atMerge, ruling V3: ' + size.atMerge.chapters + ' B, ' + size.atMerge.lessIntegrated + ' B against 9673661); wp2 ' + wp2 + ' B of 1,200 (S1 ' + s1Own + ' + S5 ' + size.ownBytes + ', rulings M4, O1, U2); the bookings add up; opens with records at the merge (atMerge, ruling W3): ' + size.atMerge['opens with records'].total + ' B (' + size.atMerge['opens with records'].added + ' B in ' + size.atMerge['opens with records'].files + ' scripts beside the route), on the slice\'s own tree before the third round ' + size['opens with records'].total + ' B');
+    pass('S5 size: every gate and the one size check pass (AA2: this build ' + held.route + ' B of ' + held.cap + ', ' + held.scripts + ' script files of ' + held.gate + '); the readers and the selection are held in the shared first-draw entry and the view in the lazy entry of ' + HOST + ' (ruling Y1), and the library chooser\'s entry holds none of it; the route with the retirement of row 9 put back ' + back.chapters + ' B, the slice\'s own tree ' + size.slice.chapters + ' B (' + size.routeDelta + ' B against the start ' + START + ', the saving ' + size.retirementSaving + ' B); at the merge (atMerge) ' + size.atMerge.chapters + ' B; opens with records at the merge (atMerge, ruling W3): ' + size.atMerge['opens with records'].total + ' B (' + size.atMerge['opens with records'].added + ' B in ' + size.atMerge['opens with records'].files + ' scripts beside the route), on the slice\'s own tree before the third round ' + size['opens with records'].total + ' B');
   });
   if (h) h.close();
 }

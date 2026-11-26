@@ -627,34 +627,29 @@ add('S2.11 (recovery import): a row\'s review, in the register and in a release,
 });
 
 // ------------------------------------------------------------------------------------------------ 12
-add('S2.12 (size, ruling A4 and M4): the client build passes every gate with the caps unchanged; the route grew by at most 250 B for S2 (wp1\'s 660 B less S1\'s 65 B, shared with S3), as the evidence books it; 148 script files, no new file under 10 KB, no stylesheet rule; the evidence says what a document with rows opens with', async () => {
+add('S2.12 (size, ruling A4 and M4, and the owner\'s decision AA2): the client build passes every gate and the one size check (AA2); 148 script files at the slice, no new file under 10 KB there, no stylesheet rule; the evidence says what a document with rows opens with', async () => {
   const EVIDENCE = 'audit/rc44/evidence/wp1-s2-size.json', size = JSON.parse(readFileSync(EVIDENCE, 'utf8'));
   const {BUDGET} = await import('./client-bundle.mjs');
-  assert.ok(Number.isInteger(size.ownBytes) && size.ownBytes >= 0 && size.ownBytes <= 250, 'S2 books its own bytes: ' + size.ownBytes);
-  assert.equal(size.allowance.chapters, 250); assert.equal(size.base.commit, '5cae40a'); assert.equal(size.base.chapters, 3230605);
-  const booked = R.routeBookings(EVIDENCE);
-  assert.equal(booked.others['audit/rc44/evidence/wp9a-s1-size.json'], 342, 'the other packages\' evidence is read');
-  // The integrated base of ruling M4 (S0 and wp1 S1, 3,229,840 B), the other packages' own bytes and the shared pool's: what is left is wp1 S2's.
-  // (the lead's ruling X4 of 2026-11-22, old -> new; it replaces the forms of rulings W2 and of wp1 S3's first build. Was:
-  // the two assertions below read every size file's bookings less a list of the bookings filed after wp1 S2's start
-  // (wp2 S5's, wp1 S3's, the lead's saving of row 9), a list each later merge had to edit. Now they read the bookings
-  // recorded at wp1 S2's start in its own evidence (bookingsAtStart, the start commit 5cae40a), and each booking so
-  // recorded is asserted to be on the books still, as it was: as strict as both forms, and no later merge edits it.)
-  const start = size.bookingsAtStart, sum = o => Object.values(o).reduce((n, x) => n + x, 0);
-  assert.equal(start?.commit, size.base.commit, 'the bookings recorded at wp1 S2\'s start commit');
-  for (const [f, n] of Object.entries(start.others)) assert.equal(booked.others[f], n, f + ' books what it booked at wp1 S2\'s start');
-  for (const [k, n] of Object.entries(start.pool)) assert.equal(booked.pool[k], n, k + ' is in the shared pool as at wp1 S2\'s start');
-  assert.equal(3229840 + sum(start.others) + sum(start.pool), size.base.chapters, 'the start commit is the integrated base and what the other packages and the pool booked at wp1 S2\'s start');
-  assert.equal(size.slice.chapters - 3229840 - sum(start.others) - sum(start.pool), size.ownBytes, 'the route at the slice\'s head, less the base and the others booked at its start, is what S2 books');
+  // (the owner's decision AA2 of 2026-11-26, old -> new. Was: S2's own bytes an integer in [0, 250] and its allowance 250 B;
+  // the bookings read through routeBookings (wp9a's 342 B among them), each booking recorded at wp1 S2's start
+  // (bookingsAtStart) still on the books, the start commit the integrated base (3,229,840 B) plus those bookings, and the
+  // slice's route less the base and those bookings equal to its own bytes (rulings A4, M4, W2, X4). AA2 retires per-slice
+  // booking and the allowances for one size check at each merge: the slice's recorded measurement passes it against the
+  // slice's base, rc44-s0-readings.mjs assertRouteWithinCap, which reads every cap from client-bundle.mjs.)
+  assert.equal(size.base.commit, '5cae40a'); assert.equal(size.base.chapters, 3230605); await R.assertRouteWithinCap(size.slice, size.base);
   assert.ok(size.slice.chapters <= BUDGET.routes.chapters); assert.deepEqual([size.slice.scripts, size.slice.css], [148, size.base.css]); assert.ok(size.slice.under10k <= size.base.under10k, 'no new file under 10 KB');
   { const w = size['opens with records']; assert.ok(w && w.host === 'public/knowledge-workspace-ui.js' && w.total === w.route + w.added && w.route === size.slice.chapters && w.files >= 1, 'opens with records'); }
   if (existsSync('dist/client-size-report.json') && existsSync('dist/client-metafile.json')) {
     const report = JSON.parse(readFileSync('dist/client-size-report.json', 'utf8')), meta = JSON.parse(readFileSync('dist/client-metafile.json', 'utf8'));
     const measured = {chapters: report.routes.chapters.code, scripts: report.scripts, under10k: report.buckets.under10k, css: report.css};
     assert.deepEqual(report.violations || [], [], 'no gate is broken');
-    const mine = measured.chapters - 3229840 - booked.othersTotal - booked.poolTotal; assert.ok(mine <= 250, 'this build: S2 is ' + mine + ' B of its 250 B');
+    // (the owner's decision AA2 and ruling Y1, old -> new. Was: this build's route less the integrated base and every
+    // booking at most 250 B, 148 script files, and no more files under 10 KB than the base's. Now this build passes the one
+    // size check against the slice's base: the route within the cap, the script files at or under the gate Y1 moved, the
+    // bucket under 10 KB a ceiling (the base's count plus the files the build adds, rulings P8 and R4), the stylesheet cap.)
+    await R.assertRouteWithinCap(report, size.base);
     for (const [f, o] of Object.entries(meta.outputs)) if (o.inputs?.['public/knowledge-crosswalk.js']) assert(!o.inputs['public/knowledge-concepts.js'], f + ' holds the server\'s concept readers');
-    assert.equal(measured.scripts, 148); assert.ok(measured.under10k <= size.base.under10k); assert.equal(measured.css, size.base.css); const opens = R.opensWithRecords(meta, 'public/knowledge-workspace-ui.js', Object.keys(BUDGET.data)); assert.equal(opens.route, measured.chapters);
+    assert.equal(measured.css, size.base.css); const opens = R.opensWithRecords(meta, 'public/knowledge-workspace-ui.js', Object.keys(BUDGET.data)); assert.equal(opens.route, measured.chapters);
     if (process.argv.includes('--measure') || process.env.AIW_RC44_WP1_MEASURE === '1') { assert.deepEqual({chapters: measured.chapters, scripts: measured.scripts, under10k: measured.under10k}, {chapters: size.slice.chapters, scripts: size.slice.scripts, under10k: size.slice.under10k}, 'at the slice\'s commit the build measures what the evidence says'); assert.deepEqual(opens, {route: size['opens with records'].route, added: size['opens with records'].added, total: size['opens with records'].total, files: size['opens with records'].files}); }
   }
 });
