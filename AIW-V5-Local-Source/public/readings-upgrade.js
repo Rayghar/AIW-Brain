@@ -217,12 +217,14 @@ function carry(q,before,after){
 // A recovery import moves every record stamp aside (the lead's ruling Z8: provenance.js keepImportedStamps, called by
 // recovery-service.js). The design fingerprint reads a built-in record's provenance, so the move changes the stamps of
 // the whole design though the design is as it was: they are carried over in the same pass (the fix-up of S0-w3-stamps,
-// must-fix 2), each taken before and after the move of the document as a read gives it, under the reading its stamps were taken at (its design
-// fingerprint, and a library's log as design when its log upgrade is still due). A document that keeps no stamp of the
-// design, or whose stamps cannot be taken, is moved as it is. Answers what `move` answers (how many records it moved).
+// must-fix 2), each taken before and after the move of the document as a read gives it (its upgrades on read made, as
+// the reader that took its stamps saw it), or, when its readings are of an earlier build, under the reading its stamps
+// were taken at (its design fingerprint, and a library's log as design when its log upgrade is still due). A document
+// that keeps no stamp of the design, or whose stamps cannot be taken, is moved as it is. Answers what `move` answers
+// (how many records it moved).
 export function keepingDesignStamps(p,move){
  const m=p?.finalReview;if(!plain(m)||!keepsDesignStamps(m))return move(p);
- const findingIds=treatedFindingIds(p),version=designFingerprintOf(p),log=libraryLogDue(p),take=()=>{try{const q=withFinalReview(p,{upgrade:false}),f=()=>withDesignFingerprint(version,()=>designStamps(q,findingIds));return log?withLibraryLogAsDesign(f):f();}catch{return null;}};
+ const findingIds=treatedFindingIds(p),version=designFingerprintOf(p),log=libraryLogDue(p),due=needsReadingsUpgrade(p),take=()=>{try{const q=withFinalReview(p,{upgrade:!due}),f=()=>withDesignFingerprint(version,()=>designStamps(q,findingIds));return log?withLibraryLogAsDesign(f):f();}catch{return null;}};
  const before=take(),moved=move(p),after=before&&moved?take():null;
  if(after)carry(p,before,after);
  return moved;

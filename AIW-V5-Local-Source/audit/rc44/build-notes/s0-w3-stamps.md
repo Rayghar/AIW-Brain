@@ -172,6 +172,12 @@ Part B (Z8):
    nothing a person here did; they are wp2's files, built beside this build, and were not edited — the lead or wp2's next
    build points them at `datedImport`; (c) a project imported before this build, for which every reader keeps the date
    (the known limit below).
+   **Corrected in the fix-up (must-fix 1):** the sentence "those steps are moved aside by the import already" was false for
+   an adoption's acceptance: `neutraliseImportedAuthority` moved a selection's steps aside (Q6) but left
+   `adoptions.records[].review` in place, so wp2's `here()` counted an acceptance dated after the import as the second
+   person's step (I8 red on `c72a0a2`). The import now moves it aside (`importedReview`, `review` null), so the date wp2's
+   `here()` reads decides nothing for an import of this build; for a project imported before this build it decides as
+   there (known limit 1). Pointing wp2's `here()` at `datedImport` stays wp2's or the lead's.
 
 ## Retirement list (J6)
 
@@ -222,16 +228,21 @@ One in a general suite, as ruling Z8 rules (the import's one new change to the d
    `needs`): a library that holds concepts but neither reads its concepts and topics as design in the browser until the
    package loads (S3's evidence keys); the log rule of this build does not depend on it. For S0-D10's shared entry
    (`s0-w3-bundle`) or the lead.
-5. wp2's `here()` readers (deviation 8 b).
-6. **An import moves the imported project's design stamp once, at the import**: the design fingerprint reads a built-in
-   record's provenance as it always did, so moving its stamps aside changes the fingerprint (and the stamps of findings
-   taken of the whole design). Measured on the Bank Payment reference with every requirement and decision stamped
-   (a probe not kept in the tree: the import as built against the same import with the stamps put back): graph, model,
-   trails, readiness, provenance, registers, SDD and ARS the same; findings the same but their stamps; only the stamps
-   move. Every step stamped against the design is moved aside by the import already, so no current step of this
-   workbench lapses; a baseline frozen elsewhere reads its stamped chapters as changed since it was frozen, where it read
-   them unchanged before (it was never current here: its architect review is imported). Carrying the import's stamps
-   over through the alias table, as `toLibraryLog` does for a library, is left to the lead.
+5. wp2's `here()` readers (deviation 8 b, corrected by the fix-up): an imported acceptance is moved aside, so they read a date only for a project imported before this build.
+6. **An import moves the imported project's design stamp once, at the import** (corrected in the fix-up, must-fix 2:
+   the first version of this limit was wrong). The design fingerprint reads a built-in record's provenance, so moving
+   its stamps aside changed the fingerprint and every chapter stamp of a stamped record; on `c72a0a2` a project with
+   stamped records and a frozen baseline read "Requirements, Decisions" as changed since the baseline, `baselineCurrent`
+   false and readiness back at "Freeze a reviewable baseline", where `4349bb6` read the baseline current (it was current
+   there: the claim "it was never current here" was wrong). The import now carries the stamps of the whole design over
+   its own move in the same pass (`readings-upgrade.js keepingDesignStamps`, called first in
+   `neutraliseImportedAuthority`): stored stamps that were current are taken again, the frozen baseline is answered
+   through the alias table (chapters, design, evidence). I9 holds the three references and a project through
+   `/api/recovery` against a golden of `4349bb6`. What remains: (a) an imported document whose readings definition is
+   older than this build's (the conversions `convertCopies` and `toReadings` write their own alias table without
+   chaining an earlier one), whose frozen baseline loses the import's aliases; (b) what the other steps of the import
+   change of the design (as on `4349bb6`: e.g. through `/api/recovery` the restored project reads "Review narrative,
+   traceability, findings, or delivery plan" there and here) still makes a stored stamp stale, as there.
 
 ## Suites (on this branch, each with env -u of the provider keys; the runner `.aiw-local/run-suites.sh`, two at a time)
 
@@ -282,7 +293,7 @@ One in a general suite, as ruling Z8 rules (the import's one new change to the d
 1. Deviation 1 (concepts as evidence) and deviation 6 (an imported record's kind) are readings; confirm or rule.
 2. The three replaced wp1 assertions turn S3's assertions around, as Y2 rules; the lead confirms the leave.
 3. wp2's `here()` readers: point them at `datedImport` in wp2's next build, or by the lead at the merge.
-4. Known limit 6: whether the import should carry its design stamps over for frozen baselines (the alias table).
+4. Known limit 6: closed by the fix-up (must-fix 2), save its two remaining cases (a) and (b).
 5. The six size cases that fail only by the unbooked +583 B (Measurements): retired by `s0-w3-bundle` (AA2).
 
 ## External dependencies
@@ -317,8 +328,79 @@ pass on `4349bb6` (run there): S0's block "O1 the bookings add up", wp1's S2.12 
 
 ## Fix-up (AA1: the one review, the one fix-up; branch `rc44/s0-w3-stamps-fix` from `c72a0a2`)
 
-State: **in progress**. Each must-fix item has a case seen to fail on `c72a0a2` first (the failure is quoted).
+State: **done** but for the lead's merge (see "Fix-up: suites and measurements" for what ran). Each must-fix item has
+a case seen to fail on `c72a0a2` first (the failure is quoted; a case run on `c72a0a2` ran in a `git archive` of it under
+`.aiw-local/head` with the fix-up's test files copied in). Goldens new in the fix-up were each captured on the unchanged
+start commit `4349bb6` (a `git archive` under `.aiw-local/base`, the fix-up's test files copied in), never recaptured.
 
 | Item | Outcome | Case (failure seen on `c72a0a2`) |
 |---|---|---|
-| must-fix 1: an adoption's acceptance kept in place by the import, decided by wp2's date | done: `recovery-service.js` moves `adoptions.records[].review` aside (`importedReview`, `review` null; no step, no key), before the early return, as M2 does for the topology step | I8 ("an acceptance taken where the package came from is no acceptance here, whatever its date") |
+| must-fix 1: an adoption's acceptance kept in place by the import, decided by wp2's date | done: `recovery-service.js` moves `adoptions.records[].review` aside (`importedReview`, `review` null; no step, no key), before the early return, as M2 does for the topology step; deviation 8(b), known limit 5 and the evidence corrected | I8 through `/api/recovery` with wp2's fixture server ("an acceptance taken where the package came from is no acceptance here, whatever its date") |
+| must-fix 2: a new import of a project with stamped records and a frozen baseline reads the baseline changed | done: `public/readings-upgrade.js keepingDesignStamps` takes the stamps of the whole design (design, chapters, evidence, treated findings) of the document as a read gives it before and after the stamp move and carries them over (`carry`, shared with `toLibraryLog`): a stored stamp that was current is taken again, a frozen baseline is answered through the alias table; `recovery-service.js` calls it as the import's first step; known limit 6 corrected | I9, golden `rc44-s0-import-baselines.json` (`--capture-baselines 4349bb6`): the three references in process and a project through `/api/recovery`, baselineChanges, baselineCurrent, readiness and what the findings say as on `4349bb6` ("bank-payment: the frozen baseline reads as on the start commit after the import: [["Requirements","Decisions"]]") |
+| must-fix 3: a stored library's first read says evidence was recorded since a frozen baseline | done: `carry` writes an `evidence` alias in `finalReview.readingsUpgrade` (chained; kept by `toDesignFingerprint`), `review-domain.js baselineChanges` reads it; the evidence's `libraryStampsMove` updated | B10.7 extended, golden `rc44-s0-b10-frozen.json` (`--capture-frozen 4349bb6`: the stored library with checks and a baseline taken there) ("a baseline frozen on the start commit reads as it read there: [["Evidence recorded since the baseline"]]") |
+| must-fix 4: the history panel loses the package's steps of a document stored before this build | done (the reviewer's preferred fix): `public/readings-upgrade.js` writes, at the first read, one line naming the package for each step the package's records keep (`packageSteps`: a row's proposals and edits, its review, a person's confirmation, its retirement; a pin, a repin, an unpin; a link and its unlink; a migration's proposals and edits and its confirmation), by time after the lines standing at its time, and moves the version by as many; in a library inside `toLibraryLog`'s carry (the log is evidence), in a design project alone (bookkeeping: no stamp moves) | B10.8, golden `rc44-s0-b10-panel.json` (`--capture-panel 4349bb6`: the panel `4349bb6` drew with the activity rows of the four steps), in the library and in the design project ("library: one line for each step the package's records keep, naming the package, with who took it") |
+| should-fix 1: recovery-size's expectation computed by `keepImportedStamps` | done: the suite moves the stamps itself (every object of a section whose provenance holds author or reviewed, knowledge included) and counts them; the review is compared character for character with the old expectation translated by the suite's own move, and the alias table with the one computed from it (old -> new below) | `test:recovery-size` |
+| should-fix 2: I7 matches source text only | done: I10 reads, by behaviour, an author stamp (the boundary's personBehind, the second person's step), a review plan judgement (historicalReview) and an architect review (localReview) dated before and after the import, for an import of this build and one of `4349bb6`; a guard (the behaviour is `c72a0a2`'s). The captured verification's date is not in it: carried | I10 |
+| should-fix 4: `provenance.draft.appliedBy` names a person from elsewhere | done: `public/provenance.js recordProvenance` reads the mark's applier as nobody on a record whose stamps an import kept (no date decides); a stamp written here still names its writer | I11 ("quality.drivers: the line names nobody from elsewhere: Drafted by Sol, not reviewed; applied by architect-a on 2099-01-01") |
+| should-fix 3, 5, 6, 7, 8, 9 and the five design concerns | carried (below) | |
+
+Replaced assertions in the fix-up (old -> new, each at least as strict; ruling Z8 with should-fix 1 and must-fix 2):
+1. `recovery-size-validate.mjs` "every other section restores exactly": the sections were compared with a copy moved by
+   the product's own walker (`keepImportedStamps`) -> with a copy the suite moves itself (every object whose provenance
+   holds author or reviewed, under `provenance.imported` with `earlier`), character for character; new beside it: "the
+   project carries record stamps, which the import moves aside".
+2. `recovery-size-validate.mjs` "the review, its baseline whole, with imported authority neutralised": the restored review
+   equalled `neutraliseImportedAuthority({finalReview})` with the product's count -> the restored review less its alias
+   table equals that expectation with the suite's own count and with the design stamp the suite's move changes
+   translated (before -> after), character for character, and the alias table equals, character for character, the one
+   computed from the suite's own move (each chapter it changes, the design, the evidence); new beside it: "the project kept
+   no alias table before the import", "the move changes the stamp of a chapter whose records carried stamps".
+3. `rc44-s0-b10-validate.mjs` B10.7 only gained assertions (a frozen baseline); no assertion of it changed.
+
+Found in the fix-up, not a review item (carried, for the lead): a record an import carries with `confirmed: true` cannot
+be confirmed here as it stands: the boundary stamps a confirmation only when the flag turns true (`provenance.js settle`),
+so a person's confirmation of it stamps nothing and nobody stands behind it until it changes or is unconfirmed first (I8
+records exactly this for an adoption: the confirmation stamps nothing, the accept is refused, and after a deviation and a
+confirmation a second person accepts). The same was true on `4349bb6` (its stamp was dated before the import). Owner:
+the lead (S0's settle), or wp2 for the adoption's step.
+
+### Carried forward (one line each: what, where, which later build)
+
+- should-fix 3: `/api/recovery` is open for a document naming a package this build lacks, the import walks only the
+  registered packages yet records `stamps`, so a later build's package collections would read their stamps as a person's
+  (`worker.js` MISSING_PACKAGE_OPEN, `recovery-service.js`) — record the walked package ids in `finalReview.imported`
+  and keep the date for the others, or refuse the import: the lead (S0), before the next package that adds collections.
+- should-fix 5: `libraryLogDue` fires once for a library created under this build (no marker yet) and rewrites the alias
+  table at that read (`readings-upgrade.js`) — mark a library at its creation or require a stamp of the old reading:
+  the lead (S0), with S0-D10's shared entry.
+- should-fix 6: the package's steps count against the family's history bound (2,000 / 6,000 lines); which bound a person
+  meets first is not measured (contract 48; `knowledge-governance.js`) — wp1 S4+S5, which measures its limits.
+- should-fix 7: B10.3 and B10.4 take the steps in process; server-route variants (`/api/commands`) — wp1 S4+S5 (its
+  suite's server harness), or the lead at the merge.
+- should-fix 8: `verifierRefusal` still refuses the writer elsewhere through the record's own actor and history, which
+  the import does not move, while the merger elsewhere is no longer refused (fails closed) — the lead's ruling; wp9b with
+  the shared sentences.
+- should-fix 9: the browser suites were not run; the panel's change and the retired activity fetch need the Releases
+  view in the browser — the lead's browser run that closes wave 3.
+- should-fix 2 (rest): the captured verification's date (`architecture-obligations.js`) has no behavioural case — the
+  lead, or the next build that touches the obligations.
+- design concern 1: with the log out of a library's design, a concept record edit moves no design stamp (deviation 1:
+  concepts stay evidence), so a library's narrative, review and baseline do not lapse on it — the lead rules Y2's list
+  against S3.14; until then stated here.
+- design concern 2: an imported record keeps the author kind of its kept stamp, which goes stale after a write by nobody
+  (an upgrade, a merge with no preparers, a tracker), and the SDD counts it as a person's (`provenance.js authorship`,
+  `sdd-architecture.js`) — the lead (S0), against contract 33.
+- design concern 3: `designOf` treats any line with a truthy `package` as bookkeeping in a design project and subtracts
+  one version per line (`review-domain.js`); a hand-edited line can hide a built-in change — restrict to registered ids
+  and `packageStep` types, or record the version each line moved: the lead (S0), or wp1 S4+S5.
+- design concern 4: the design fingerprint reads built-in records' provenance raw, so each stamp move needs an alias
+  table; a fingerprint version that reads no authorship, with its own upgrade (`review-domain.js reviewSource`) — the
+  lead, as a later S0 build.
+- design concern 5: a project imported before this build keeps the date reading until its next import (`datedImport`), a
+  long-lived second path with no upgrade retiring it — the lead (an upgrade that moves its stamps aside on read, with
+  its own case), or recorded as accepted.
+- limit of must-fix 4: a step its records do not keep writes no line: an earlier crosswalk review a later one replaced, a
+  confirmation whose stamp a later edit replaced, a step an import moved aside (`readings-upgrade.js packageSteps`) —
+  recorded; no owner needed unless the lead wants the activity rows read server-side.
+- limit of must-fix 2 (known limit 6 a, b): an imported document of an earlier readings definition loses the import's
+  aliases at its conversion; what the import's other steps change of the design stays stale as on `4349bb6` — the lead.
