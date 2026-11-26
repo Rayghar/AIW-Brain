@@ -17,6 +17,8 @@ architecture review not started, production acceptance authority not established
 - **In progress:** nothing.
 - **Next (for the lead):** the one review and fix-up (AA1); the open questions at the end; merging beside the parallel
   builds (wp2-s2s3 and wp9a-s2s3 edit the same suites' size blocks; s0-w3-stamps edits S0's suite elsewhere).
+- **Fix-up (AA1), 2026-11-26:** see "Fix-up" at the end: both must-fix items done with cases seen red on `629a005`
+  first, five small should-fix items done, the rest carried forward; the merge then is the lead's.
 
 ## Plan (as recorded at the start)
 
@@ -265,8 +267,142 @@ On `rc44/s0-w3-bundle-fix-c2`, from `629a005` (the build's head, as reviewed; an
 `rc44/s0-w3-bundle-fix` and committed nothing, so this one continues from it). The review's verdict: changes needed;
 two must-fix items, seven should-fix items, six design concerns.
 
-- **State:** in progress.
-- **Plan:** must-fix 1 (the p10 stub's `needs` holds for every key the package states), must-fix 2 (wp9a S1.10 reads
-  the package's own import and export lists in the script that holds it), each with a case seen to fail on `629a005`
-  first; the small should-fix items inside this build's files, each with its case; every other item carried forward
-  (below); then the suites, syntax, lint and `node build.mjs` before and after.
+- **State:** done (suites below). **In progress:** nothing. **Next:** the lead's merge (AA1), with the items under
+  "Carried forward" and "For the merge".
+- **Plan (as recorded at the start of the fix-up):** must-fix 1 (the p10 stub's `needs` holds for every key the package
+  states), must-fix 2 (wp9a S1.10 reads the package's own import and export lists in the script that holds it), each
+  with a case seen to fail on `629a005` first; the small should-fix items inside this build's files, each with its
+  case; every other item carried forward (below); then the suites, syntax, lint and `node build.mjs` before and after.
+
+### One line per item
+
+Must-fix (both confirmed; none disputed):
+1. **Done.** The p10 stub's `needs` held for `knowledge.crosswalk` and `knowledge.conceptPins` only; it now holds for
+   every key the package states (its design rows' keys and its `evidenceKeys`: crosswalk, conceptPins, conceptLinks,
+   conceptMigrations, concepts, topics, library, pinCurrency, organizationNotices), whatever the key holds
+   (`k in Object(p.knowledge)`, as `review-domain.js` `designOf` takes a key out whatever it holds). Cases, red on
+   `629a005` first: D10.6 now compares the suite's own knowledge library (taken before the design copy) and a project
+   only marked as a library, client against server (red: `library: findings`, `library: stamps`, `mark: findings`,
+   `mark: stamps`), and holds that the review checks the server ran on the library read current on the client (red:
+   server `true`, client `false`, the client registering no package); new D10.7, each stub's `needs` holds for a
+   document holding any one key its package states, p30's other keys beside its marker (ruling L11 a), and no stub
+   asks for anything for the three references (red: the seven p10 keys other than crosswalk and conceptPins). D10.3 and
+   the references still load nothing. wp1 S2.10 and S3.17 re-pointed old -> new (below), each red against `629a005`'s
+   stub line and green after. The U6 row of S0's contract states the rule (`s0-extensions.md`). The route grows 114 B.
+2. **Done.** wp9a S1.10 read the package's own import and export lists in the Model view's script, which since Y1
+   holds none of the package. It now reads them in the script that holds the package (`pkgOf`), against the same script
+   as the same build makes it without the package (`WITHOUT`: the client built again, live, with `bundleClient`'s new
+   `plugins` option taking `import './topology.js'` out of the shared entry, its only importer), held to the same
+   `LAZY_SHARE.lists` (168 B) and `LAZY_SHARE.total` (22,674 B); at this build the package's own lists are 126 B (759 B
+   of lists in the shared chunk, 633 B without the package) and its share 22,586 B. Case, red on `629a005`'s suite code
+   first: "the lists of the script that holds the package one byte past the measure fail it" (on `629a005` it did not:
+   the measure read the Model view's script). The self-tests now also hold that the Model view's own script moving by
+   24 B, and another package's readers joining the shared chunk with their own lists, do not move the share. Recorded
+   old -> new as at least as strict (below), naming R4 and Y1: it is the measure R4 set (what the package adds to the
+   lists of the script that holds it, against that script without the package), made at the script that holds the
+   package now, and no longer at one that does not.
+
+Should-fix:
+1. **Done.** D10.4 and D10.5 held the live build only under `AIW_D10_MEASURE=1`. The evidence now records the digest of
+   the client sources it was measured from (`after.sources`: every input of the build's metafile, by path and content;
+   the suite's `sourcesOf`), and while the build reads those sources the live build is held to the evidence without the
+   variable: the lead's run of `npm run test:rc44-s0-d10` at this branch's head sees a route or gate the fix-up moved.
+   At the merge commit, other builds' client modules change the digest, and the one size check (AA2) holds the route.
+   Case: D10.4 red until the evidence carried the digest.
+2. **Done.** Rule 51 had no case: new D10.8, every route stub's `load` is exactly the import of
+   `./design-package-readers.js`, and that entry imports the module that registers each package the server holds, one
+   line each naming its package, in id order; self-tests name a stub with an entry of its own (`p50-workload-route`
+   loading `./deploy-view.js`), a package missing, two lines out of order and a line whose module registers no such
+   package.
+3. **Done.** D10.2 now asserts the entries are exactly `['public/design-package-readers.js']` and 2 scripts beyond the
+   route, for every document it measures (the library and the marked project added).
+4. **Done.** The U6 row now names its exception: `selection.confirm` moves Chapter 3's design stamp, as
+   `decision.accept` does (contract part 5, U6; `wp2-s5-selection.md` l.732); `assertStepsMoveNoStamp` holds the steps
+   written in place, not that command.
+5. **Carried** (below): the Projects page's readiness computed in the browser without the stubs.
+6. **Done.** D10.1 keeps the base's registered packages as a lower bound on each side (`golden.registered[side][name]`
+   within what the side registers now), besides the client equal to the server.
+7. **Kept as recorded** (information only): wp1 S2.12's bucket `under10k <= size.base.under10k` -> the ceiling "base
+   plus the files added" (P8, R4), old -> new above.
+
+Design concerns: all six carried forward (below).
+
+### Measurements of the fix-up (`node build.mjs`, `dist/client-size-report.json`)
+
+| | 629a005 (the build, reviewed) | fix-up head |
+|---|---|---|
+| chapters route `routes.chapters.code` | 3,228,967 B (72 files) | 3,229,081 B (72 files), +114 B; +143 B for the part against 4349bb6 (at most 1 KB) |
+| chapters route cap | 3,266,560 B (AA2) | 3,266,560 B, unchanged |
+| projects route | 508,526 B | 508,640 B (+114 B, the stubs), cap 1,242,112 B unchanged |
+| script files (gate) | 150 (150) | 150 (150), unchanged |
+| buckets under 10 KB / 10 to 50 KB / over 50 KB | 53 / 51 / 46 | 53 / 51 / 46 (ceiling 54, gate 61) |
+| stylesheet (cap) | 901,873 B (902,144 B) | 901,873 B (902,144 B), unchanged |
+| opens with records (any package, all three, the library, a marked project) | +69,723 B in 2 | +69,723 B in 2 (`design-package-readers.js`) |
+| no package records | exactly the route | exactly the route |
+| violations | none | none |
+
+The evidence (`audit/rc44/evidence/s0-w3-bundle-size.json`) is this build's own: its `after` is the fix-up head, the
+build's head is kept as `atBuildHead`, and `after.sources` is the digest D10.4 reads. No other evidence or size file
+changed.
+
+### Replaced assertions in the fix-up (old -> new), each at least as strict
+
+- `rc44-wp1-cases-crosswalk.mjs` S2.10 (l.586) and `rc44-wp1-cases-pins.mjs` S3.17 (l.570), must-fix 1 (the stubs are
+  this build's leave): `assert.match(routes, /…'p10-knowledge-route',needs:p=>p\.knowledge\?\.crosswalk\|\|p\.knowledge\?\.conceptPins,load:…/)`
+  -> the same exact line with `needs:p=>['crosswalk','conceptPins','conceptLinks','conceptMigrations','concepts','topics','library','pinCurrency','organizationNotices'].some(k=>k in Object(p.knowledge))`;
+  the new `needs` holds for every document the old one held for.
+- `rc44-wp9a-deployment-validate.mjs` S1.10 `shareOf`, must-fix 2 (R4, Y1): the package's lists = the Model view's
+  script's bytes outside its modules less `ADOPTION_HOLDER.lists` -> the bytes outside its modules of the script that
+  holds the package (`pkgOf`) less those of the same script built without the package (`WITHOUT`, measured live); the
+  bounds (`LAZY_SHARE.lists`, `LAZY_SHARE.total`) and the module pins (`SHARED_MODULES`) as they were.
+- the same block, self-test: "its own import and export lists one byte past the measure fail it", with the bytes added
+  to the Model view's script -> with the bytes added to the script that holds the package; added: the Model view's own
+  script 24 B more does not move the share, nor do another package's readers joining the shared chunk with 40 B of
+  lists.
+- `rc44-s0-d10-validate.mjs` (this build's suite): only strengthened. D10.6's documents + library, mark, and the
+  checks' currency; D10.1 + the base's packages a lower bound on each side; D10.2 + the one entry and two scripts;
+  D10.4 + the evidence's sources digest, and D10.4 and D10.5 hold the live build without the variable while the
+  sources are this build's; D10.7 and D10.8 new. No assertion removed or loosened.
+
+### Carried forward (AA1: logged, not fixed now; what, where, who)
+
+- Should-fix 5: the Projects page computes a card's readiness in the browser without the route stubs when the server
+  gave none (`public/projects.js` l.100, `sddReadiness(data.document)`), so a card can miss a package's findings (the
+  selection's `selection-confirm`). Older than this build, outside the stubs' path. The lead's next S0 build (loading on
+  the client is S0's): load through `ensureExtensions` there, or read the server's readiness only; before wp3 S1 adds
+  readiness findings.
+- Design concern 1: each surface's host entry loads every package's readers (knowledge workspace +214,170 B, comparison
+  tools +158,991 B, Model view +902,275 B), and the cost grows with every package, on documents with none of that
+  package's records. The lead, when the 160 KB bound is ruled again (concern 5), with wp3 S1's measurement.
+- Design concern 2: the shared entry imports `review-domain.js` only to steer esbuild's split; a package whose readers
+  reach part of another route chunk can split the route again, caught only by the 150-file gate (D10.5) and the route
+  growth. The lead's next S0 build, or wp3 S1 when it joins the entry (measure the split, record it).
+- Design concern 3: `adoption-server.js` imports the browser's selection view (`public/adoption-ui.js`) so that S0's
+  `packageModules` still counts it as the package's; cleaner for `packageModules` to follow the bare imports of the
+  shared entry and the hosts. The lead's next S0 build (S0's suite and readings are S0's).
+- Design concern 4: one shared entry is one point of failure (a package whose registration throws stops every document
+  with any package's records), and `ensureExtensions` names the first stub whose needs held, not the package that
+  failed. The lead's next S0 build: name the package whose module threw, and decide whether one package's failure may
+  block the others' documents.
+- Design concern 5: the 160 KB bound per document against an entry that holds every package: 69,723 B now; wp3's
+  estimated 45 to 60 KB brings it to about 115 to 130 KB, and wp4 reaches it. The lead rules before wp3 S1 whether the
+  bound stays per document (the entry then splits, against the 150-file gate, the owner's decision) or is re-measured
+  per wave.
+- Design concern 6: parallel builds. wp2-s2s3 and wp9a-s2s3 edit the size blocks this build re-pointed (wp2's record
+  and selection size, wp9a S1.10, which the fix-up changed again); a booking assertion they bring turns S0's "AA2 one
+  size check" red, and wp9a-s2s3's S1.10 meets the fix-up's `shareOf` and `WITHOUT`. The lead, at those merges.
+- Also found: wp9a S1.10's `--measure` writer (slice 1's own tool) would now record the shared chunk as the slice's
+  holder; slice 1's evidence is historical and must not be re-measured with it. wp9a's next build, if it measures.
+
+### For the merge (the lead)
+
+- **s0-w3-stamps and D10.1.** Ruling Y2 (built there) makes the package's steps write lines into `knowledge.history`
+  naming the package (`knowledge-concept-commands.js`, `package:PACKAGE` in place of `quiet:true`). D10.1 builds its
+  knowledge document through `knowledge.concept-pin` and `knowledge.concept-link`, so after that merge the document is
+  no longer `4349bb6`'s byte for byte and D10.1 stops at its first assertion ("a fixture or a command changed, not a
+  reading"). This is a known, ruled change, not a reading that moved; the goldens are not to be recaptured. The lead
+  decides how D10.1 reads the knowledge document after Y2 (for example: as the base's with the package's log lines
+  taken out). D10.6 compares client with server, so Y2's change of a library's stamps (on both sides, in
+  `review-domain.js`) does not turn it red; the fix-up's library documents hold there.
+- **D10.4 and D10.5 at the merge.** At the merge commit the client sources are no longer this build's, so the two
+  cases hold the evidence and the one size check holds the live route; `AIW_D10_MEASURE=1` would fail there by design.
