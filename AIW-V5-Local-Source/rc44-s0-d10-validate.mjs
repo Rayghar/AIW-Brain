@@ -147,7 +147,9 @@ await block('D10.1 readings', async () => {
   for (const n of NAMES) { const server = readSide('server', file, n);
     for (const [which, now] of [['server', server], ['client', readSide('client', file, n)]]) { const was = golden.readings[which][n]; for (const k of Object.keys(was)) if (now.digests[k] !== was[k]) moved.push(which + ' ' + n + ': ' + k);
       // every package the server holds, once a document holds any package's records (the one shared entry), and none otherwise
-      if (which === 'client') assert.deepEqual(now.registered, n === 'none' ? [] : server.registered, 'the client registers ' + (n === 'none' ? 'no package for a document without package records' : 'every package the server holds for a document with ' + n + ' records (the one shared entry)') + ': ' + JSON.stringify(now.registered)); } }
+      if (which === 'client') assert.deepEqual(now.registered, n === 'none' ? [] : server.registered, 'the client registers ' + (n === 'none' ? 'no package for a document without package records' : 'every package the server holds for a document with ' + n + ' records (the one shared entry)') + ': ' + JSON.stringify(now.registered));
+      // (the fix-up, should-fix 6) and at least the packages it registered at the base, on each side, as the server's list is held below
+      assert.ok(golden.registered[which][n].every(id => now.registered.includes(id)), which + ' ' + n + ': at least the base\'s packages ' + JSON.stringify(golden.registered[which][n]) + ': ' + JSON.stringify(now.registered)); } }
   assert.ok(golden.registered.server.none.every(id => readSide('server', file, 'none').registered.includes(id)), 'the server holds at least the base\'s packages');
   assert.deepEqual(moved, [], 'every reading is the base\'s, on the client and on the server');
   pass('D10.1: the graph, model, trails, findings, stamps (the design fingerprint), readiness, provenance, registers, SDD and ARS of ' + NAMES.join(', ') + ' are byte for byte those of 4349bb6, on the client and on the server; the client registers every package once a document holds any package\'s records, and none for one that holds none');
@@ -189,6 +191,29 @@ await block('D10.7 a stub\'s needs and its package\'s keys', async () => {
   pass('D10.7: each stub\'s needs holds for a document that holds any one key its package states (' + held.length + ' keys: ' + held.join(', ') + '); for the references no stub asks for anything');
 });
 
+await block('D10.8 the one shared entry', async () => {
+  // (the fix-up, should-fix 2; contract rule 51, ruling Y1) every route stub loads the one shared lazy entry of the
+  // packages' first-draw readers, and that entry imports, by an import that takes no name, the module that registers each
+  // package the server holds, one line each, in id order, the line naming the package; a stub that loads an entry of its
+  // own, a package the entry does not import and a line out of order are each named
+  const ENTRY = 'design-package-readers.js', all = await stubs(), {EXTENSIONS} = await import('./public/design-extensions.js'), ids = EXTENSIONS.map(e => e.id).filter(id => !id.endsWith('-route')).sort();
+  const issues = (list, text) => { const out = [], lines = [...text.matchAll(/^import '\.\/([a-z0-9-]+\.js)'; \/\/ ([a-z][a-z0-9]*-[a-z0-9-]+)\b.*$/gm)].map(m => ({file: m[1], id: m[2]}));
+    for (const s of list) if (String(s.load).replace(/\s/g, '') !== "()=>import('./" + ENTRY + "')") out.push(s.id + ' loads ' + String(s.load));
+    if (JSON.stringify(lines.map(l => l.id)) !== JSON.stringify(ids)) out.push('the shared entry imports ' + JSON.stringify(lines.map(l => l.id)) + ', not every package in id order ' + JSON.stringify(ids));
+    for (const l of lines) { const src = existsSync('public/' + l.file) ? readFileSync('public/' + l.file, 'utf8') : ''; if (!src.includes('registerExtension(') || !src.includes("'" + l.id + "'")) out.push(l.file + ' does not register ' + l.id); }
+    return out; };
+  const text = readFileSync('public/' + ENTRY, 'utf8');
+  assert.deepEqual(issues(all, text), [], 'every stub loads the one shared entry, which registers every package in id order');
+  assert.deepEqual(all.map(s => s.id).sort(), ids.map(id => id + '-route'), 'one stub for each package');
+  // and refuses, each in its words: a stub with an entry of its own; a package missing; two lines out of order; a line whose module registers another package
+  const own = issues([...all, {id: 'p50-workload-route', load: () => import('./deploy-view.js')}], text), lines = text.split('\n'), at = i => lines.findIndex(l => l.includes(ids[i]));
+  assert.ok(own.some(x => /^p50-workload-route loads/.test(x)), 'a stub that loads an entry of its own is named: ' + own.join('; '));
+  assert.ok(issues(all, lines.filter((l, i) => i !== at(1)).join('\n')).some(x => /not every package in id order/.test(x)), 'a package the entry does not import is named');
+  { const swapped = [...lines]; [swapped[at(0)], swapped[at(1)]] = [swapped[at(1)], swapped[at(0)]]; assert.ok(issues(all, swapped.join('\n')).some(x => /not every package in id order/.test(x)), 'two lines out of order are named'); }
+  { const wrong = [...lines]; wrong[at(0)] = wrong[at(0)].replace(/'\.\/[a-z0-9-]+\.js'/, "'./review-domain.js'"); assert.ok(issues(all, wrong.join('\n')).some(x => /does not register/.test(x)), 'a line whose module does not register its package is named'); }
+  pass('D10.8 (rule 51): every route stub (' + all.map(s => s.id).join(', ') + ') loads the one shared entry, ' + ENTRY + ', which imports the module that registers each package, in id order (' + ids.join(', ') + '); a stub with an entry of its own, a package missing, a line out of order and a line whose module registers no such package are each named');
+});
+
 let built = null;
 const build = async () => built ??= await (async () => { const {bundleClient} = await import('./client-bundle.mjs'), b = await bundleClient(SCRATCH + '/client'); return {report: b.report, meta: JSON.parse(readFileSync(b.metafile, 'utf8'))}; })();
 const allThree = () => { const d = structuredClone(DOCS.adoption); d.knowledge = structuredClone(DOCS.knowledge.knowledge); d.runtime = structuredClone(DOCS.deployment.runtime); d.technology = structuredClone(DOCS.deployment.technology); return d; };
@@ -196,10 +221,12 @@ const allThree = () => { const d = structuredClone(DOCS.adoption); d.knowledge =
 await block('D10.2 opens with records', async () => {
   const {BUDGET} = await import('./client-bundle.mjs'), {report, meta} = await build(), route = report.routes.chapters.code, data = Object.keys(BUDGET.data);
   const rows = [];
-  for (const [n, d] of [['knowledge', DOCS.knowledge], ['adoption', DOCS.adoption], ['selection', DOCS.selection], ['chosen', CHOSEN], ['deployment', DOCS.deployment], ['all three', allThree()]]) {
+  for (const [n, d] of [['knowledge', DOCS.knowledge], ['adoption', DOCS.adoption], ['selection', DOCS.selection], ['chosen', CHOSEN], ['deployment', DOCS.deployment], ['all three', allThree()], ['library', LIBRARIES.library], ['marked library', LIBRARIES.mark]]) {
     const o = await opensWithDocument(meta, d, data); rows.push(n + ' ' + o.added + ' B in ' + o.files + ' (' + o.entries.join(', ') + ')');
     assert.equal(o.route, route, 'the helper counts the route as the gate does');
-    assert.ok(o.entries.length >= 1, n + ': its records load an entry'); assert.ok(o.added <= 160 * KB, n + ' opens with at most the route plus 160 KB (163,840 B): +' + o.added + ' B in ' + o.files + ' scripts (' + o.entries.join(', ') + ')');
+    // (the fix-up, should-fix 3) the one shared entry and nothing else, which adds two scripts: its facade and the readers' chunk
+    assert.deepEqual(o.entries, ['public/design-package-readers.js'], n + ': its records load the one shared entry'); assert.equal(o.files, 2, n + ': two scripts beyond the route');
+    assert.ok(o.added <= 160 * KB, n + ' opens with at most the route plus 160 KB (163,840 B): +' + o.added + ' B in ' + o.files + ' scripts (' + o.entries.join(', ') + ')');
   }
   pass('D10.2: a document with one package\'s records, and one with all three, opens with at most the route plus 160 KB: ' + rows.join('; '));
 });
@@ -213,15 +240,22 @@ await block('D10.3 no package records', async () => {
 // D10.4 and D10.5 are this part's own figures. The size evidence (audit/rc44/evidence/s0-w3-bundle-size.json, written
 // from node build.mjs at this build and at the base) is held to them always; the live build is held to the evidence at
 // this build's own commit (AIW_D10_MEASURE=1), since later builds move the route, which the one size check holds (AA2).
+// (the fix-up, should-fix 1) The evidence also records the digest of the client sources it was measured from (every input
+// of the build's metafile, by path and content: sourcesOf); while the build reads those sources, the live build is held to
+// the evidence without the variable, so that a run of this suite at this build's head (the lead's, before the merge) sees
+// a route or gate the build moved. Once a later build changes a client module, the one size check holds the route.
 const EVIDENCE = 'audit/rc44/evidence/s0-w3-bundle-size.json', AT_THIS_BUILD = process.env.AIW_D10_MEASURE === '1';
+const sourcesOf = meta => sha(JSON.stringify(Object.keys(meta.inputs).sort().map(f => [f, sha(readFileSync(f))])));
 const evidence = () => { assert.ok(existsSync(EVIDENCE), 'the size evidence of this build is kept (' + EVIDENCE + ')'); const e = JSON.parse(readFileSync(EVIDENCE, 'utf8'));
   assert.equal(e.before?.commit, '4349bb6', 'measured against 4349bb6'); assert.deepEqual([e.before.chapters, e.before.scripts, e.before.buckets?.under10k, e.before.css], [BASE.chapters, BASE.scripts, BASE.under10k, BASE.css], 'the evidence\'s base is the build the goldens were captured with'); assert.equal(e.productionAccepted, false); return e; };
 
 await block('D10.4 the route', async () => {
-  const e = evidence(), {report} = await build(), now = report.routes.chapters.code;
+  const e = evidence(), {report, meta} = await build(), now = report.routes.chapters.code;
   assert.equal(e.deltas.chapters, e.after.chapters - e.before.chapters); assert.ok(e.deltas.chapters <= KB, 'the route grows by at most 1 KB for this part: ' + e.before.chapters + ' -> ' + e.after.chapters + ' (' + e.deltas.chapters + ' B)');
-  if (AT_THIS_BUILD) assert.deepEqual([now, report.scripts, report.buckets, report.css], [e.after.chapters, e.after.scripts, e.after.buckets, e.after.css], 'at this build\'s commit the build measures what the evidence says');
-  pass('D10.4: the chapters route grew ' + e.deltas.chapters + ' B for this part (' + e.before.chapters + ' B at 4349bb6 -> ' + e.after.chapters + ' B), at most 1 KB; this build: ' + now + ' B' + (AT_THIS_BUILD ? ', as the evidence says' : ''));
+  assert.match(e.after.sources || '', /^[0-9a-f]{64}$/, 'the evidence records the digest of the client sources it was measured from');
+  const live = AT_THIS_BUILD || e.after.sources === sourcesOf(meta); if (AT_THIS_BUILD) assert.equal(sourcesOf(meta), e.after.sources, 'at this build\'s commit the build reads the sources the evidence was measured from');
+  if (live) assert.deepEqual([now, report.scripts, report.buckets, report.css], [e.after.chapters, e.after.scripts, e.after.buckets, e.after.css], 'at this build\'s sources the build measures what the evidence says');
+  pass('D10.4: the chapters route grew ' + e.deltas.chapters + ' B for this part (' + e.before.chapters + ' B at 4349bb6 -> ' + e.after.chapters + ' B), at most 1 KB; this build: ' + now + ' B' + (live ? ', as the evidence says (the client sources are this build\'s)' : ' (the client sources are a later build\'s: the one size check holds the route)'));
 });
 
 await block('D10.5 script files and gates', async () => {
@@ -233,7 +267,7 @@ await block('D10.5 script files and gates', async () => {
   // no other gate moves: the base's gates are the goldens', and this part moved the chapters cap (AA2) and the script gate (Y1) alone
   const was = golden.gates; assert.deepEqual(e.before.gates, {chapters: was.routes.chapters, projects: was.routes.projects, scripts: was.scripts, under10k: was.tiny, css: was.css}, 'the evidence\'s gates before are the base\'s');
   assert.deepEqual({...e.after.gates, chapters: e.before.gates.chapters, scripts: e.before.gates.scripts}, e.before.gates, 'no other gate moves');
-  if (AT_THIS_BUILD) { const now = gatesOf(BUDGET); assert.equal(BUDGET.scripts, report.scripts, 'at this build the gate is the measured count'); assert.deepEqual({...now, scripts: was.scripts, routes: {...now.routes, chapters: was.routes.chapters}}, was, 'and no other gate of client-bundle.mjs moved'); }
+  if (AT_THIS_BUILD || e.after.sources === sourcesOf((await build()).meta)) { const now = gatesOf(BUDGET); assert.equal(BUDGET.scripts, report.scripts, 'at this build the gate is the measured count'); assert.deepEqual({...now, scripts: was.scripts, routes: {...now.routes, chapters: was.routes.chapters}}, was, 'and no other gate of client-bundle.mjs moved'); }
   pass('D10.5: ' + e.after.scripts + ' script files for this part (' + e.before.scripts + ' at 4349bb6), the gate moved to ' + e.after.gates.scripts + ' with ruling Y1 named; no other gate moved; this build: ' + report.scripts + ' of ' + BUDGET.scripts);
 });
 
