@@ -38,6 +38,7 @@ import {readStoredProject, wholeProject} from './project-storage.js';
 import {RECOVERY_V2, ENTRY_CHARS, FILE_PART_BYTES, checkManifest, assemblePackage} from './recovery-package.js';
 import {SNAPSHOT_DELTA, applySnapshotDelta} from './intake-service.js';
 import {neutraliseImportedAuthority} from './recovery-service.js';
+import {keepImportedStamps} from './public/provenance.js';
 import {runRetention, retentionPolicy} from './retention.js';
 import {sha256, canonical} from './public/brain-integrity.js';
 import {documentSafetyProblems} from './shared/document-safety.js';
@@ -184,11 +185,17 @@ try {
   const crafted = {quality: {conflicts: [{effect: EFFECT, status: 'open"><b>'}]}, finalReview: {baselines: [{source: {quality: {conflicts: [{effect: EFFECT}]}}}]}, decisions: {records: [{effects: [{effect: 'supports"><b>'}]}]}};
   assert.deepEqual(documentSafetyProblems(crafted).map(p => p.split(' ')[0]), ['$.quality.conflicts[0].status', '$.decisions.records[0].effects[0].effect'], 'markup in an enumerated value is still refused');
   // Every section the restore does not change by its rules is the same, character for character.
-  const changedKeys = [...new Set([...Object.keys(original), ...Object.keys(restored)])].filter(k => JSON.stringify(original[k]) !== JSON.stringify(restored[k]));
+  // (rc44 build S0-w3-stamps, the lead's ruling Z8: the import keeps every record's stamps as history under
+  // provenance.imported, its one change to the design's sections. Old -> new: each other section equals the original's
+  // -> equals the original's with exactly that change made on a copy of it (keepImportedStamps), character for
+  // character; and the review's expected imported mark counts the records of the whole project, as the import does.)
+  const kept = structuredClone(original), moved = keepImportedStamps(kept);
+  const changedKeys = [...new Set([...Object.keys(kept), ...Object.keys(restored)])].filter(k => JSON.stringify(kept[k]) !== JSON.stringify(restored[k]));
   assert.deepEqual(changedKeys.filter(k => !['id', 'name', 'workspace', 'finalReview', 'knowledge', 'workbench'].includes(k)), [], 'every other section restores exactly');
   assert.equal(JSON.stringify(restored.changes.events), JSON.stringify(original.changes.events), 'the change journal, whole');
   // The review restores with its imported authority neutralised (recovery-service.js), and nothing else changed.
   const expected = neutraliseImportedAuthority({finalReview: structuredClone(original.finalReview)}, restored.finalReview.imported.at).finalReview;
+  expected.imported.stamps = moved;
   assert.equal(JSON.stringify(restored.finalReview), JSON.stringify(expected), 'the review, its baseline whole, with imported authority neutralised');
   assert.equal(JSON.stringify(without(restored.knowledge, ['pins', 'history', 'repositorySync', 'claims', 'releases'])), JSON.stringify(without(original.knowledge, ['pins', 'history', 'repositorySync', 'claims', 'releases'])));
   assert.equal(JSON.stringify(without(restored.workbench, ['catalogue', 'views'])), JSON.stringify(without(original.workbench, ['catalogue', 'views'])));

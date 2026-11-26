@@ -197,6 +197,16 @@ log again where wp1 routed around it", ruling Y2; the design stamp assertions of
    with their actor, asserted above).
 These turn S3's quiet step around as Y2 rules (as S3 turned S2.16 around under B10); each new assertion is exact.
 
+One in a general suite, as ruling Z8 rules (the import's one new change to the design's sections):
+4. `recovery-size-validate.mjs` (part A, the restored project): "every other section restores exactly" compared each
+   section with the original's -> compares it with the original's with exactly the import's record-stamp move made on a
+   copy (`keepImportedStamps`), character for character; and the review's expected imported mark
+   (`neutraliseImportedAuthority({finalReview})`) gets the count the import makes over the whole project
+   (`expected.imported.stamps = moved`). Seen red on this branch before the replacement: "every other section restores
+   exactly … + 'quality'" (the trade-off conflict the suite saves through the server carries an author stamp). Every
+   other assertion of the case (the journal whole, the review whole, the knowledge and workbench, the baseline parts by
+   their SHA-256) is unchanged.
+
 ## Known limits (after this build)
 
 1. **A project imported before this build** keeps its record stamps in place and is read with the import's date, as on
