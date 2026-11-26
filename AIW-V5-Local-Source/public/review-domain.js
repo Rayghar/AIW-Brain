@@ -15,7 +15,7 @@ import {architectureRegister,renderSDD} from './sdd-renderer.js';
 import {processMarkdown,withProcessModel} from './process-model.js';
 import {withChanges,changeSummary,changeCauses,fourEyesOn} from './changes-domain.js';
 // The grouped judgements of the review plan (round 12, GR-GOV-04): who reviewed which records, as they read then.
-import {recordJudgement,reviewOf,eachRecord,provenanceBlocksMarkdown} from './provenance.js';
+import {recordJudgement,reviewOf,eachRecord,provenanceBlocksMarkdown,datedImport} from './provenance.js';
 // What a review of a record reads of it (round 12, GR-GOV-05): its own fingerprint, not the whole design's.
 import {recordStamp} from './source-fingerprint.js';
 import {withRuntime,runtimeFindings,runtimeMilestones,runtimeHandoffCurrent,exportRuntimeMarkdown} from './runtime-domain.js';
@@ -110,7 +110,9 @@ const sourceCache=new WeakMap(),findingCache=new WeakMap(),summaryCache=new Weak
 export const designFingerprint=p=>reviewFingerprint(designSource(p));
 export function reviewSourceStamp(p){if(fingerprintVersion!==DESIGN_FINGERPRINT||!logRead)return remember(p,'review:stamp',fingerprintVersion+(logRead?'':':log'),()=>designFingerprint(p));if(!sourceCache.has(p))sourceCache.set(p,designFingerprint(p));return sourceCache.get(p);}
 export const reviewDesignStamp=p=>reviewSourceStamp(p)+':'+p.finalReview.version;
-const localReview=(p,r)=>!p.finalReview?.imported||!!(r?.actor&&!r?.importedActor&&r.at>p.finalReview.imported.at);
+// (an import moves each step's actor aside: what it carried names nobody here; the import's date is read only for a
+// project imported before this build, rc44 S0-w3-stamps, ruling Z8: provenance.js datedImport)
+const localReview=(p,r)=>!p.finalReview?.imported||!!(r?.actor&&!r?.importedActor&&(!datedImport(p)||r.at>p.finalReview.imported.at));
 export const narrativeCurrent=p=>p.finalReview.narrative.confirmed&&p.finalReview.narrative.sourceStamp===reviewSourceStamp(p)&&(!p.finalReview.imported||!!reviewOf(p,p.finalReview.narrative,11));
 // A recorded stamp is compared with the design's; with none recorded the answer is no without fingerprinting the whole
 // design (round 5, R5-G: at 500 records per chapter the fingerprint reads 12 MB of JSON).

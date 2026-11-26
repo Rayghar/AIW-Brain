@@ -86,7 +86,9 @@ const PERSON={kind:'person',from:null};
 const PROPOSERS=new Set(['sol-draft','seeded','guidance']);
 export function authorship(r){
  if(!plain(r))return PERSON;
- const pv=plain(r.provenance)?r.provenance:{},a=plain(pv.author)&&AUTHOR_KINDS.includes(pv.author.kind)?pv.author:null,mark=solDraftOf(r),journey=plain(pv.journey)?pv.journey:null;
+ // (rc44, S0-w3-stamps; ruling Z8) a stamp a recovery import kept as history (provenance.imported) still says what wrote
+ // the words (a person's, Sol's draft, an import, AIW's), never who: no person here is named, nothing is reviewed or kept.
+ const pv=plain(r.provenance)?r.provenance:{},was=!plain(pv.author)&&plain(pv.imported?.author)?{kind:pv.imported.author.kind,...(pv.imported.author.from?{from:pv.imported.author.from}:{})}:pv.author,a=plain(was)&&AUTHOR_KINDS.includes(was.kind)?was:null,mark=solDraftOf(r),journey=plain(pv.journey)?pv.journey:null;
  const sol=!!mark||r.origin==='sol-draft',kept=plain(pv.reviewed)&&pv.reviewed.how==='kept'?pv.reviewed:null;
  if(r.state==='proposed'){
   const proposer=sol||a?.kind==='sol-draft'?'sol-draft':'seeded';
@@ -124,7 +126,12 @@ export const JUDGEMENT_OUTCOMES=Object.freeze([['kept','Reviewed and kept as dra
 export const JUDGEMENT_LIMIT=6000;
 // A restored package keeps its earlier judgements as audit history. Only a judgement recorded by a signed-in person on
 // this workbench may close the review plan here (a package's importedActor is not that person).
-const historicalReview=(p,at)=>!!p?.finalReview?.imported?.at&&(!at||at<=p.finalReview.imported.at);
+// (rc44, S0-w3-stamps; ruling Z8) An import of this build moves every stamp a record carries aside (keepImportedStamps
+// below, which recovery-service.js calls) and says so (finalReview.imported.stamps): no date of it decides anything. A
+// project imported before this build keeps its stamps in place, and only for it is the import's date read, as before (a
+// known limit until its next import).
+export const datedImport=p=>!!p?.finalReview?.imported?.at&&!Number.isInteger(p.finalReview.imported.stamps);
+const historicalReview=(p,at)=>datedImport(p)&&(!at||at<=p.finalReview.imported.at);
 function judgementIndex(p){return remember(p,'provenance:judgements','',()=>{const m=new Map();for(const j of list(p?.finalReview?.judgements)){if(historicalReview(p,j?.at)||j?.importedActor||!j?.actor)continue;for(const x of list(j?.records))if(Array.isArray(x)){m.set(recordKey(x[0],x[1]),{j,stamp:x[2]});m.set(recordKey('*',x[1]),{j,stamp:x[2]});}}return m;});}
 export function judgementOf(p,r,chapter=null){
  const index=judgementIndex(p);if(!index.size)return null;
@@ -355,6 +362,19 @@ export function innerCommands(command){
  if(NESTED.has(command.type))return Array.isArray(payload.commands)?payload.commands.filter(plain):[];
  return [command];
 }
+// The stamps a recovery import carries (rc44, S0-w3-stamps; the lead's ruling Z8): every record of a collection the
+// server stamps (the paths above, every path the provenance reader reads, the Chapter 4 assets, and every collection a
+// design package states: lifecycle, provenance.records, provenance.paths) and of the retired store keeps its
+// provenance.author and provenance.reviewed (a merge's mergedBy and how 'merged' with them) as history under
+// provenance.imported, made only when there is something to keep (what an earlier import kept is kept under it as
+// `earlier`), and they name nobody here, whatever their dates. Answers how many records it moved them on.
+export function keepImportedStamps(p){
+ const paths=new Set([...RECORD_PATHS.map(([path])=>path),'logical.assets',...Object.values(PATHS_BY_PREFIX).flat(),...EXTENSIONS.flatMap(e=>Object.values(plain(e.provenance?.paths)?e.provenance.paths:{}).flat())]),seen=new Set();let n=0;
+ const move=r=>{const pv=r?.provenance;if(!plain(r)||seen.has(r)||!plain(pv)||!('author' in pv||'reviewed' in pv))return;seen.add(r);const {author,reviewed,imported,...rest}=pv;r.provenance={...rest,imported:{...(author!==undefined?{author}:{}),...(reviewed!==undefined?{reviewed}:{}),...(imported!==undefined?{earlier:imported}:{})}};n++;};
+ for(const path of paths)if(typeof path==='string')for(const r of listAt(p,path))move(r);
+ for(const x of list(p?.retired?.records))move(x?.record);
+ return n;
+}
 // With them, the collections a design package states for the type, or for its prefix (rc44, slice S0): added, never in place of these.
 function pathsOf(type){const t=String(type||''),prefix=t.split('.')[0];return [...PATHS_BY_PREFIX[t]||PATHS_BY_PREFIX[prefix]||[],...EXTENSIONS.flatMap(e=>{const x=e.provenance?.paths||{};return [x[t],x[prefix]].find(Array.isArray)||[];})];}
 // A command's collections: by its type, and for the lifecycle family's keep (record.keep {ids, chapter?}) those of its
@@ -383,7 +403,7 @@ export function tidyProvenance(pv){const out={};for(const k of Object.keys(pv))i
 // across a save that rebuilt it without them, as the Worker carries them for the spark's records (worker.js
 // carryJourney), and a person's change to Sol's draft is recorded on its mark (edited, the fields, when), the shape
 // carryJourney gives the journey's: the record is then the person's, and the stamp says who (round 12, GR-GOV-25).
-const MARKS=['draft','journey'];
+const MARKS=['draft','journey','imported'];
 function setOwned(now,author,reviewed,old=null,edited=null,at=null){
  const pv=plain(now.provenance)?{...now.provenance}:{};delete pv.author;delete pv.reviewed;
  if(author)pv.author=author;if(reviewed)pv.reviewed=reviewed;

@@ -209,7 +209,7 @@ add('I3 (ruling Z8): the import moves the stamps of every record path (the built
 });
 
 // ------------------------------------------------------------------------------------------------ I4 (Z8: the readers, whatever the dates)
-add('I4 (ruling Z8): the readers read a kept stamp as nobody\'s whatever its dates: reviewOf, confirmedByPerson, the boundary\'s personBehind, verifierRefusal, the label, the SDD\'s counts and people, the review plan; the kept stamp is no content to a reading and survives a later save', async () => {
+add('I4 (ruling Z8): the readers read a kept stamp as nobody\'s whatever its dates: reviewOf, confirmedByPerson, the boundary\'s personBehind, verifierRefusal, the label, the SDD\'s counts and people, the review plan; the kept stamp is no content to a reading (that it survives a later save, case I1)', async () => {
   const q = neutraliseImportedAuthority(stampedDocument(), IMPORT_AT, B), R1 = readers(q);
   for (const [path, id, kind, label, review, confirmed] of R1.records) { assert.equal(review, null, path + ' ' + id + ': no review'); assert.equal(confirmed, false); assert.deepEqual(names(label), [], path + ' ' + id + ': ' + label); assert.ok(kind, path + ' ' + id + ' has an author kind'); }
   assert.deepEqual([names(R1.summary.writers), names(R1.summary.reviewers)], [[], []]);

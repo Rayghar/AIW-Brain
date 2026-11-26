@@ -8,6 +8,7 @@ import {sha256} from './public/workbook-reader.js';
 import {assertDocumentSafe} from './shared/document-safety.js';
 import {RECOVERY_V2,packageLines,packageText,checkManifest,checkLine,assemblePackage,stagingKey} from './recovery-package.js';
 import {json} from './http.js';
+import {keepImportedStamps} from './public/provenance.js';
 // A request to this route stays within 12 MiB (server.js): a package larger than that arrives in entries (upload).
 const MAX=12*1024*1024;
 function decoded(s){if(typeof s!=='string'||s.length>MAX*1.4)throw Error('Invalid recovery file encoding.');return Uint8Array.from(atob(s),c=>c.charCodeAt(0));}
@@ -91,6 +92,12 @@ export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??
  // (importedAuthors) and names nobody here, whatever the package says of it or of its dates: an imported alternative merges
  // as one saved before this build, stamping what it writes as nobody's. An alternative that names nobody gains no key.
  for(const a of Array.isArray(p?.workbench?.alternatives)?p.workbench.alternatives:[])for(const x of a&&typeof a==='object'?[a,...(Array.isArray(a.history)?a.history:[])]:[])if(x&&typeof x==='object'&&'authors' in x){x.importedAuthors=x.authors;delete x.authors;}
+ // rc44 (S0-w3-stamps; the lead's ruling Z8): every stamp a record carries (who wrote it, who confirmed or kept it, who
+ // merged it) was made on the workbench the package came from. Each record keeps them as history (provenance.imported)
+ // and they name nobody here, whatever the package says of their dates (public/provenance.js keepImportedStamps, over
+ // every collection the server stamps, a package's included, and the retired store). The import says how many it moved
+ // (finalReview.imported.stamps), which is how a reader knows that no date of this import decides anything.
+ const stamps=keepImportedStamps(p);
  const m=p.finalReview;if(!m||typeof m!=='object')return p;
  strip(m.intake);strip(m.checks);
  for(const r of m.reviews||[])strip(r);
@@ -104,7 +111,7 @@ export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??
  for(const a of m.actions||[]){strip(a);for(const h of a.history||[])if(h?.actor!=null)strip(h);strip(a.verification);}
  if(m.capacity)strip(m.capacity);
  if(m.handoff){m.importedHandoff={...m.handoff,authority:IMPORTED_AUTHORITY};m.handoff=null;}
- m.imported={at,authority:IMPORTED_AUTHORITY,reviews:(m.reviews||[]).length,judgements:(m.judgements||[]).length,baselines:(m.baselines||[]).length,governance:(m.governance||[]).length};
+ m.imported={at,authority:IMPORTED_AUTHORITY,reviews:(m.reviews||[]).length,judgements:(m.judgements||[]).length,baselines:(m.baselines||[]).length,governance:(m.governance||[]).length,stamps};
  // Knowledge claims follow the same four-eyes rule (knowledgeEligibility: the verifier is not the author). An imported
  // verifier is a historical assertion too, so a claim, and its copy in a release, needs a verification recorded here
  // by a signed-in person before it is used: a released claim is immutable, so that means a successor release.
