@@ -276,14 +276,25 @@ function compareHosting(p,environmentId){
  const typed=zs.filter(z=>list(z.domainIds).length),named=zs.filter(z=>!list(z.domainIds).length&&statedField(z,'failureDomain'));
  if(typed.length&&named.length)issues.push({kind:'mixed',zones:[...typed,...named].map(z=>z.id),ids:[]});
  for(const a of typed)for(const b of typed){const da=standing(domains,a.domainIds[0]),db=standing(domains,b.domainIds[0]);if(a!==b&&da&&db&&da.id!==db.id&&above(domains,db).some(x=>x.id===da.id))issues.push({kind:'nested',zones:[a.id,b.id],ids:[da.id,db.id]});}
- const held=typed.filter(z=>standing(domains,z.domainIds[0])),fails=new Map(held.map(z=>[z.id,zoneFails(p,z)])),top=new Map(held.map(z=>[z.id,z.id])),root=id=>{while(top.get(id)!==id)id=top.get(id);return id;},causes=new Map();
+ const {groups,causes}=failGroups(p,typed);
+ return {comparable:!issues.length,zones:zs.map(z=>z.id),issues,groups,shared:[...causes].filter(([,xs])=>xs.length>1).map(([causeId,xs])=>({causeId,zones:xs}))};
+}
+// The one grouping of zones that fail together (ruling L2), over any set of zones: those of one environment
+// (hostingComparison) or of an environment and the recovery environments linked to it (zoneGroups, which H5 reads: the
+// fix-up's must-fix 5). Each zone that stands in a standing typed domain, keyed by the smallest first hosting domain of
+// its group; and each stated cause, with the zones that fail with it.
+function failGroups(p,zs){
+ const domains=failureDomains(p),held=zs.filter(z=>list(z.domainIds).length&&standing(domains,z.domainIds[0])),fails=new Map(held.map(z=>[z.id,zoneFails(p,z)])),top=new Map(held.map(z=>[z.id,z.id])),root=id=>{while(top.get(id)!==id)id=top.get(id);return id;},causes=new Map();
  for(const z of held)for(const d of fails.get(z.id))if(sharedCause(d)){let xs=causes.get(d.id);if(!xs)causes.set(d.id,xs=[]);xs.push(z.id);}
- const join=(a,b)=>top.set(root(b),root(a));
- for(const a of held)for(const b of held)if(a!==b&&fails.get(b.id).some(d=>d.id===a.domainIds[0]))join(a.id,b.id);
+ const join=(a,b)=>top.set(root(b),root(a)),first=new Map();
+ // (the fix-up's must-fix 6) a zone joins every zone whose first hosting domain it fails with, read through an index of first domains
+ for(const a of held){let xs=first.get(a.domainIds[0]);if(!xs)first.set(a.domainIds[0],xs=[]);xs.push(a.id);}
+ for(const b of held)for(const d of fails.get(b.id))for(const a of first.get(d.id)||[])if(a!==b.id)join(a,b.id);
  for(const xs of causes.values())for(const id of xs)join(xs[0],id);
  const keys=new Map();for(const z of held){const k=root(z.id),was=keys.get(k);if(!was||z.domainIds[0]<was)keys.set(k,z.domainIds[0]);}
- return {comparable:!issues.length,zones:zs.map(z=>z.id),issues,groups:Object.fromEntries(held.map(z=>[z.id,keys.get(root(z.id))])),shared:[...causes].filter(([,xs])=>xs.length>1).map(([causeId,xs])=>({causeId,zones:xs}))};
+ return {groups:Object.fromEntries(held.map(z=>[z.id,keys.get(root(z.id))])),causes};
 }
+export const zoneGroups=(p,envIds)=>remember(p,'topology:groups',envIds.join('+'),()=>failGroups(p,list(p?.runtime?.zones).filter(z=>envIds.includes(z?.environmentId)&&hostingZone(z)&&!isProposed(z))).groups);
 // (slice 2) The hosting key the checks compare (runtime-model.js zoneKey): a zone's group in a typed project, else none.
 export const groupKey=(p,z)=>topologyTyped(p)&&z?.domainIds?.length?hostingComparison(p,z.environmentId).groups?.[z.id]:undefined;
 // Chapter 10's finding for it: one error for each environment whose hosting zones cannot be compared, which no

@@ -31,7 +31,7 @@ import {verifierRefusal} from './architecture-obligations.js';
 import {valueFingerprint} from './source-fingerprint.js';
 import {remember} from './document-memo.js';
 import {list} from './util.js';
-import {TRACKED,LABELS,topologyTyped,failureDomains,deploymentNodes,hostingComparison,groupKey,zoneFails,requireTyped,storeWritten,standingOf,draftedIds,draftedOf,DRAFT,pad,find,refOf,and,sharedCause,standing,patchBounded,authoredRecord,put,BOOKKEEPING} from './topology-domain.js';
+import {TRACKED,LABELS,topologyTyped,failureDomains,deploymentNodes,hostingComparison,zoneGroups,groupKey,zoneFails,requireTyped,storeWritten,standingOf,draftedIds,draftedOf,DRAFT,pad,find,refOf,and,sharedCause,standing,patchBounded,authoredRecord,put,BOOKKEEPING} from './topology-domain.js';
 import {failingGate} from './topology-gates.js';
 
 export const FAILURE_SCOPES=['instance','zone','site','region','provider','shared-cause','correlated'],QUANTIFIERS=['any-one','named'];
@@ -218,19 +218,16 @@ function acceptFailure(p,raw,at,actor,options){
 }
 
 // ---------------------------------------------------------------- the hooks of built-in code (TOPOLOGY)
-// H5: a Failover plan's standby in a recovery design environment linked to the plan's, of the same asset, in a zone
-// that fails with nothing its active copies' zones fail with (and neither in the other's domain).
-function independent(p,a,b){
- if(!list(a?.domainIds).length||!list(b?.domainIds).length)return false;
- const fa=zoneFails(p,a),fb=zoneFails(p,b);if(!fa.length||!fb.length||fa[0].id===fb[0].id)return false;
- return !fa.some(d=>d.id===b.domainIds[0])&&!fb.some(d=>d.id===a.domainIds[0])&&!fa.some(d=>sharedCause(d)&&fb.some(x=>x.id===d.id));
-}
+// H5: a Failover plan's standby in a recovery design environment linked to the plan's, of the same asset, in a zone of
+// another group than every zone of its active copies, as the one grouping reads them across the link (topology-domain.js
+// zoneGroups: ruling L2, the fix-up's must-fix 5); a zone in no group is never read as independent.
 export function standbyElsewhere(p,r){
  if(!topologyTyped(p)||!r)return false;
- const zone=id=>find(p.runtime.zones,id),active=list(p.runtime.placements).filter(l=>l?.planId===r.id&&l.role==='active').map(l=>zone(l.zoneId)).filter(Boolean);
- if(!active.length)return false;
- for(const e of recoveringEnvironments(p,r.environmentId))for(const x of plansOf(p,e.id).filter(y=>y.assetId===r.assetId))
-  for(const l of list(p.runtime.placements).filter(l=>l?.planId===x.id&&l.role==='standby'&&num(l.replicas)>0)){const z=zone(l.zoneId);if(hostingZone(z)&&!isProposed(z)&&active.every(a=>independent(p,a,z)))return true;}
+ const envs=recoveringEnvironments(p,r.environmentId);if(!envs.length)return false;
+ const G=zoneGroups(p,[r.environmentId,...envs.map(e=>e.id)]),active=list(p.runtime.placements).filter(l=>l?.planId===r.id&&l.role==='active').map(l=>G[l.zoneId]);
+ if(!active.length||active.some(k=>!k))return false;
+ for(const e of envs)for(const x of plansOf(p,e.id).filter(y=>y.assetId===r.assetId))
+  for(const l of list(p.runtime.placements).filter(l=>l?.planId===x.id&&l.role==='standby'&&num(l.replicas)>0))if(G[l.zoneId]&&!active.includes(G[l.zoneId]))return true;
  return false;
 }
 // H4 at runtime.simulation: the walkthrough of one declared case loses what the case loses.

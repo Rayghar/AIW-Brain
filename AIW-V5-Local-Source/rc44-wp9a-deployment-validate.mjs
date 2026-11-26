@@ -1778,6 +1778,35 @@ await block('S2.14 a restore after a recovery import brings back no step', () =>
   pass('S2.14: a second person\'s acceptance of a declared failure and a second person\'s evidence for a gate, kept on retired records, are moved aside by a recovery import (importedReview) and a restore by a person or an agent account brings back neither: the claim reads not accepted and the gate unknown');
 });
 
+await block('S2.15 one reading of independence, across a recovery link', () => {
+  need();
+  const I = F.ids();
+  // zone 1 shares a power feed with zone 2, zone 2 a network path with the standby's zone: transitively one failure domain (ruling L2)
+  const world = where => {
+    let {p, made} = typedTidewater();
+    p = doc(p, 'technology.domain', {title: 'Power feed 1', scope: 'site', cause: 'power'}); const c1 = p.technology.domains.at(-1).id;
+    p = doc(p, 'technology.domain', {title: 'Network path 2', scope: 'site', cause: 'network-path'}); const c2 = p.technology.domains.at(-1).id;
+    let zs = I.zone3; if (where === 'production') { p = doc(p, 'runtime.zone', {environmentId: I.production, title: 'Third zone', kind: 'hosting', failureDomain: '', isolation: 'x', owner: 'x'}); zs = p.runtime.zones.at(-1).id; }
+    p = doc(doc(doc(p, 'runtime.locate', {zoneId: I.zone1, domainIds: [made.fdZone1, c1]}), 'runtime.locate', {zoneId: I.zone2, domainIds: [made.fdZone2, c1, c2]}), 'runtime.locate', {zoneId: zs, domainIds: [made.fdRecovery, c2]});
+    const standby = p.runtime.placements.find(l => l.planId === I.storePlan && l.role === 'standby');
+    if (where === 'production') p = doc(p, 'runtime.placement', {id: standby.id, zoneId: zs});
+    else p = doc(doc(doc(p, 'runtime.placement', {id: standby.id, zoneId: I.zone1}), 'runtime.environment-link', {id: I.recovery, recoversIds: [I.production]}), 'runtime.plan', {id: I.recoveryStorePlan, recoveryStrategy: 'Failover'});
+    return {p, made, c2};
+  };
+  const prod = world('production'), linked = world('recovery'), standby = q => findingOf(q, 'standby:' + I.storePlan)?.level;
+  assert.equal(standby(prod.p), 'error', 'in production: one group, no independent standby');
+  // fails on 10b97b7: H5's own pairwise reading took the recovery zone as independent (no standby error) where the groups read one failure domain
+  assert.equal(standby(linked.p), 'error', 'across the recovery link the same zones read the same: no independent standby');
+  assert.equal(FA.standbyElsewhere(linked.p, linked.p.runtime.plans.find(r => r.id === I.storePlan)), false);
+  // without the second shared cause the recovery zone stands apart, and H5 reads its standby as independent
+  { const q = doc(linked.p, 'runtime.locate', {zoneId: I.zone3, domainIds: [linked.made.fdRecovery]}); assert.equal(standby(q), undefined); assert.equal(FA.standbyElsewhere(q, q.runtime.plans.find(r => r.id === I.storePlan)), true); }
+  // the one reader: hostingComparison's groups over the environment and the recovery environment linked to it
+  assert.equal(typeof T.zoneGroups, 'function', 'topology-domain.js states the one grouping (zoneGroups)');
+  { const G = T.zoneGroups(linked.p, [I.production, I.recovery]); assert.deepEqual([G[I.zone1], G[I.zone2], G[I.zone3]].map(k => k === G[I.zone1]), [true, true, true], 'one group across the link: ' + JSON.stringify(G));
+    assert.deepEqual(T.zoneGroups(linked.p, [I.production]), T.hostingComparison(linked.p, I.production).groups, 'for one environment, the comparison\'s own groups'); }
+  pass('S2.15: H5 reads independence through the one grouping of hostingComparison (zoneGroups, over the environment and the recovery environments linked to it): zones joined by shared causes across the link read as one failure domain and raise the standby error as they do in one environment; a recovery zone that shares nothing stands apart');
+});
+
 // ================================================================ Slice 3: location gates and data copies
 // (design section g, Slice 3, its eight cases; ruling L8 carried; the build contract's rules 10 to 12, 14 to 17, 31 and
 // 54. The build notes are audit/rc44/build-notes/wp9a-s2s3.md.)
