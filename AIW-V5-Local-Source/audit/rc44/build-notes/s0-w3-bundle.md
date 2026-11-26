@@ -258,3 +258,15 @@ acceptance); the stub now also asks for a decision with a selection (case D10.6,
    check" fails (it scans the rc44 suites for a booking read or written).
 6. The external authorities stay as they are: counsel not engaged, approver not assigned, review not started,
    acceptance authority not established; the release number is unconfirmed.
+
+## Fix-up (AA1: the one review and the one fix-up)
+
+On `rc44/s0-w3-bundle-fix-c2`, from `629a005` (the build's head, as reviewed; an earlier fix-up session made the branch
+`rc44/s0-w3-bundle-fix` and committed nothing, so this one continues from it). The review's verdict: changes needed;
+two must-fix items, seven should-fix items, six design concerns.
+
+- **State:** in progress.
+- **Plan:** must-fix 1 (the p10 stub's `needs` holds for every key the package states), must-fix 2 (wp9a S1.10 reads
+  the package's own import and export lists in the script that holds it), each with a case seen to fail on `629a005`
+  first; the small should-fix items inside this build's files, each with its case; every other item carried forward
+  (below); then the suites, syntax, lint and `node build.mjs` before and after.
