@@ -14,8 +14,11 @@ files, by leave. Route bytes are reported, not booked (AA2).
   commit, B10.2 to B10.7 seen red (86bf8bb); part B's cases first, golden captured on the unchanged start commit, I1 to
   I7 seen red (8d14a8c); part A built, `rc44-s0-b10` green (e6c8366); wp1's S2.16, S3.14 and S3.27 turned around as
   Y2 rules (d23aee3); part B built, `rc44-s0-import` green (1fd716f).
-- **In progress:** the related suites, check-syntax, lint, the build and its size report (see "Suites" below).
-- **Next:** the final commit; the lead's review and merge (AA1).
+  Then: the SDD's count of an imported package record (I4, seen red first; e764cb9), I1's built-in requirement
+  (f512445), recovery-size's assertion replaced as Z8 rules (9e5af59, 5c094c1), notes (Suites, Measurements, limits).
+- **In progress:** nothing: the related suites, check-syntax, lint and the build ran on the final code (see "Suites"
+  and "Measurements"); the evidence is `audit/rc44/evidence/s0-w3-stamps-build-2026-11-26.json`.
+- **Next:** the lead's adversarial review, fix-up and merge (AA1); the open questions below.
 
 ## Plan
 
