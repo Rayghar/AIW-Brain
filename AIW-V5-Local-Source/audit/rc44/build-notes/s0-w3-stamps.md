@@ -86,7 +86,7 @@ imports the changed files; `node check-syntax.mjs`; `node scripts/lint.mjs --sum
 | B10.3 | through the commands, a concept's review and a restated library mark in a library: one line and one version each, no design stamp, the evidence stamp moves | "concept-review moves no design stamp of the library (the log is not design there)" |
 | B10.4 | the package's steps write one line each (type, record, actor, `package: 'p10-knowledge'`) and move the version; in a library the line moves no design stamp; a confirmation moves none at all, an unlink does (a design change) | "one line for each step of the package, naming it and who took it" |
 | B10.5 | the history panel draws the one trail from the log alone; the package's lines with who took them, the family's own as before; an activity handed to it is not read; the workspace fetches no `/api/activity` | "crosswalk is in the trail, with who took it" |
-| B10.6 | in a design project (no mark) a package's line and its version say nothing to the design fingerprint or the evidence stamp; the design source reads the family's own lines and the version they moved; a built-in line is design as before | "a package's line in a design project moves no design stamp" |
+| B10.6 | in a design project (no mark) a package's line and its version say nothing to the design fingerprint or the evidence stamp; the design source reads the family's own lines and the version they moved; a built-in line is design as before (through the commands in a real design project: wp1's S3.6, an agent's migration that now writes its line, still moves no design stamp; S3.1 and S3.27 too) | "a package's line in a design project moves no design stamp" |
 | B10.7 | a library stored on the start commit (a confirmed narrative among its stamps) reads with the same findings and readiness (what each says), its narrative still current; what moves at the first read is exactly the readings `findings` (the stamps of findings taken of the whole design) and `stamps`: design `3a96628f22dc413d` -> `7c8dba1839cb092c`, design version `…:2` -> `7c8dba1839cb092c:2`, evidence `ea35c2918f0148a5` -> `d86e38288b5a6b20`; once: the document the first read leaves reads the same at every later read | "the design stamp moves: the log leaves the library's design" (and, before the carry-over was built, "the same findings": the narrative went stale) |
 
 `rc44-s0-import-validate.mjs` (part B; golden `rc44-s0-import-baseline.json`, a project imported on the unchanged start
@@ -211,6 +211,20 @@ These turn S3's quiet step around as Y2 rules (as S3 turned S2.16 around under B
    (`s0-w3-bundle`) or the lead.
 5. wp2's `here()` readers (deviation 8 b).
 
+## What later builds must know
+
+- A recovery import leaves no `provenance.author` or `provenance.reviewed` on any record: they are under
+  `provenance.imported` and name nobody here. A package's own reader of a stamp (e.g. wp1's `rowOrigin`, wp2's
+  `a.provenance?.author?.kind`) reads such a record as one with no stamp, which fails closed; a reader that needs the
+  words' kind calls `authorship`/`authorOf`. `provenance.imported` is no content to a reading, and every save keeps it.
+- `datedImport(p)` (`public/provenance.js`) is the one statement of an import whose date is read; a new reader of the
+  import's date uses it.
+- A design package's step through the knowledge family (`applyKnowledgeCommand` with `forms.package`) writes a line
+  naming the package; outside a library such a line says nothing to the design fingerprint. Only the knowledge package
+  writes such lines today.
+- A library's `knowledge.history` is evidence and `knowledge.version` bookkeeping (`designOf`); a reading of a library's
+  design never reads them.
+
 ## Open questions (for the lead)
 
 1. Deviation 1 (concepts as evidence) and deviation 6 (an imported record's kind) are readings; confirm or rule.
@@ -224,5 +238,25 @@ review not started; production acceptance authority not established; release num
 
 ## Measurements
 
-`node build.mjs` at the start (`4349bb6`), `dist/client-size-report.json`: routes.chapters.code 3,228,938 B; 148 script
-files; buckets under 10 KB 52, 10 to 50 KB 51, over 50 KB 45.
+`node build.mjs` (env -u ANTHROPIC_BASE_URL -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN -u OPENAI_API_KEY), read from
+`dist/client-size-report.json`; the start measured in a `git archive` of `4349bb6` under `.aiw-local/` and in this
+worktree before any change (the same figures):
+
+| | start `4349bb6` | this branch | cap |
+|---|---|---|---|
+| routes.chapters.code | 3,228,938 B | 3,229,521 B (**+583 B**, booked nowhere: AA2) | 3,233,792 B now; 3,266,560 B once `s0-lead-w3` lands |
+| routes.projects.code | 508,466 B | 508,721 B (+255 B) | 1,242,112 B |
+| script files | 148 | 148 | 148 |
+| buckets (under 10 KB, 10 to 50 KB, over 50 KB) | 52, 51, 45 | 52, 51, 45 | under 10 KB at most the base's 52 |
+| violations | none | none | |
+| opens with records (`p10-knowledge`, entry `public/knowledge-workspace-ui.js`, `opensWithRecords` on `dist/client-metafile.json`) | route + 147,315 B in 2 scripts = 3,376,253 B | route + 146,691 B in 2 scripts = 3,376,212 B | |
+
+Where the +583 B are: `designOf`'s library rule and the old-reading switch (`review-domain.js`), `authorship`'s kept
+kind and `datedImport` (`provenance.js`), `source-fingerprint.js`'s kept key, `localReview` and the verification's date
+(`review-domain.js`, `architecture-obligations.js`). `keepImportedStamps`, `toLibraryLog` and the recovery code are in no
+client chunk (searched in `dist/client/assets`). The knowledge workspace's lazy entry is 624 B smaller (`stepsOf`
+retired). No stylesheet rule was added.
+
+Because nothing is booked (AA2), the size cases written for the bookings fail on this branch by exactly the +583 B, and
+pass on `4349bb6` (run there): S0's block "O1 the bookings add up", wp1's S2.12 and S3.10, wp2's blocks "size" and
+"S5 size", wp9a's S1.10. Build `s0-w3-bundle` retires them beside this build (AA2); listed for the lead.
