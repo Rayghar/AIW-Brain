@@ -4,9 +4,10 @@
 //
 // Slice 1 has no surface. What it puts in front of every project is the package's route stub
 // (public/design-package-routes.js), so that is what is held here, against the built client:
-//   S1.b1  a project without the marker runtime.topology opens without the lazy entry that holds the package (the
-//          Chapter 10 Model view), and with it, typed through the command route, the same project loads that entry
-//          before it is drawn and opens without an error, on Chapter 1 and on Chapter 10.
+//   S1.b1  a project without the marker runtime.topology opens without the lazy entry that holds the package (since
+//          ruling Y1, built by S0-D10, the one shared entry of the packages' first-draw readers; before it, the Chapter 10
+//          Model view), and with it, typed through the command route, the same project loads that entry, and not the
+//          Model view's, before it is drawn and opens without an error, on Chapter 1 and on Chapter 10.
 // Needs Playwright and Chromium (AIW_PLAYWRIGHT_MODULE, default 'playwright'; AIW_BROWSER_EXECUTABLE) and the built
 // client (node build.mjs). Starts an isolated local server on a free port from 4100. Run:
 // npm run test:rc44-wp9a-deployment-browser
@@ -34,7 +35,10 @@ try {
   const ctx = await browser.newContext({viewport: {width: 1440, height: 900}});
   // A page, with the scripts it asked for by file name.
   const open = async url => { const page = await ctx.newPage(), scripts = []; page.on('pageerror', e => errors.push(e.message)); page.on('request', r => { if (/\.js(\?|$)/.test(r.url())) scripts.push(r.url().split('/').pop().split('?')[0]); }); await page.goto(base + url, {waitUntil: 'networkidle'}); return {page, scripts, text: await page.evaluate(() => document.body.innerText)}; };
-  const lazy = scripts => scripts.filter(f => /^deploy-view\b/.test(f)), refused = text => /did not load|could not be opened/.test(text);
+  // (ruling Y1, built by S0-D10; old -> new. Was: lazy() the Chapter 10 Model view's entry (deploy-view), the entry the stub
+  // loaded. Now the stub loads the shared first-draw entry (first()); the Model view's entry is held to load before no
+  // first draw of Chapter 1, as it did at the base for a project with the marker.)
+  const lazy = scripts => scripts.filter(f => /^deploy-view\b/.test(f)), first = scripts => scripts.filter(f => /^design-package-readers\b/.test(f)), refused = text => /did not load|could not be opened/.test(text);
 
   // ================================================================ Slice 1: the route stub
   {
@@ -44,18 +48,18 @@ try {
     // without the marker
     const plain = await open('/?project=' + id + '&chapter=1');
     assert.ok(plain.scripts.length > 20 && !refused(plain.text), 'the project opens: ' + plain.text.slice(0, 200));
-    assert.deepEqual(lazy(plain.scripts), [], 'a project without the marker opens without the lazy entry of the Chapter 10 Model view');
+    assert.deepEqual(lazy(plain.scripts), [], 'a project without the marker opens without the lazy entry of the Chapter 10 Model view'); assert.deepEqual(first(plain.scripts), [], 'and without the shared first-draw entry');
     await plain.page.close();
     // typed through the command route (no surface offers the step before slice 6): the marker, a failure domain, a node, a located zone
     for (const [type, payload] of [['runtime.topology-start', {}], ['technology.domain', {title: 'Primary site', scope: 'site', cause: 'location'}], ['runtime.node', {title: 'Primary site', kind: 'site', jurisdiction: 'NO', domainId: 'fd-001'}], ['runtime.locate', {zoneId: 'zone-a', nodeId: 'dn-001', domainIds: ['fd-001']}]]) { const r = await send(type, payload); assert.equal(r.status, 200, type + ': ' + JSON.stringify(r.body).slice(0, 300)); }
     const typed = await open('/?project=' + id + '&chapter=1');
-    assert.equal(lazy(typed.scripts).length, 1, 'a project that holds the marker loads the lazy entry that holds the package: ' + JSON.stringify(lazy(typed.scripts)));
+    assert.equal(first(typed.scripts).length, 1, 'a project that holds the marker loads the lazy entry that holds the package, the shared first-draw entry: ' + JSON.stringify(first(typed.scripts))); assert.deepEqual(lazy(typed.scripts), [], 'and not the Chapter 10 Model view\'s before Chapter 1 is drawn');
     assert.ok(!refused(typed.text), 'and opens: ' + typed.text.slice(0, 200)); assert.deepEqual(errors, [], 'with no page error');
     await typed.page.close();
     const ten = await open('/?project=' + id + '&chapter=10');
     assert.ok(/Application zone/.test(ten.text) && !refused(ten.text), 'Chapter 10 draws the located zone\'s page: ' + ten.text.slice(0, 200)); assert.deepEqual(errors, [], 'with no page error');
-    assert.equal(lazy(ten.scripts).length, 1, 'the entry is asked for once');
-    pass('S1.b1: a project without the marker opens without the lazy entry of the Chapter 10 Model view (' + plain.scripts.length + ' scripts); typed through the command route it loads that entry before it is drawn and opens on Chapter 1 and Chapter 10 without an error');
+    assert.equal(first(ten.scripts).length, 1, 'the entry is asked for once');
+    pass('S1.b1: a project without the marker opens without the shared first-draw entry and without the Chapter 10 Model view\'s (' + plain.scripts.length + ' scripts); typed through the command route it loads the shared entry, not the Model view\'s, before it is drawn and opens on Chapter 1 and Chapter 10 without an error');
   }
 
   // ================================================================ Slice 6: the surface

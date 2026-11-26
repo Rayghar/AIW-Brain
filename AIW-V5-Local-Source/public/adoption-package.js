@@ -1,8 +1,9 @@
 // The design package of applied mechanisms (rc44, wp2 slice S1; audit/rc44/design/wp2-adoption.md): what it adds to
 // the shared machinery, stated once at the registration point (design-extensions.js; the contract is in
-// audit/rc44/build-notes/s0-extensions.md). Its id is the lead's (ruling D8). The browser registers it when the lazy
-// entry that holds it arrives (architecture-task-ui.js, ruling D7.6), which its route stub loads before a document that
-// holds adoptions is first drawn (design-package-routes.js). The server registers the same object with its read
+// audit/rc44/build-notes/s0-extensions.md). Its id is the lead's (ruling D8). The browser registers it when the shared
+// lazy entry of the packages' first-draw readers arrives (design-package-readers.js, ruling Y1; was architecture-task-ui.js,
+// ruling D7.6), which its route stub loads before a document that holds adoptions or a selection is first drawn
+// (design-package-routes.js); its surface, the selection view (adoption-ui.js), stays in the comparison tools' entry. The server registers the same object with its read
 // upgrade (adoption-server.js, the line of design-packages.js): the browser upgrades no document, so the upgrade and
 // the built-in skeletons it reads stay out of the browser's entry (ruling J12).
 //   prefixes  ADP, the id prefix the package mints for the built-in type `pattern` (ruling J10);
@@ -27,7 +28,6 @@
 import {registerExtension} from './design-extensions.js';
 import {applyAdoptionCommand,acceptanceOf,adoptionFindings,adoptionDesign,emitAdoptions,adoptionRelation,trackAdoptionChange} from './adoption-domain.js';
 import {applySelectionCommand,selectionFindings,confirmOf} from './adoption-selection.js';
-import './adoption-ui.js'; // the selection's surface, held in the same lazy entry; it opens through window.aiwSelection
 const step={apply:applyAdoptionCommand,person:true},propose={apply:applySelectionCommand},choose={apply:applySelectionCommand,person:true};
 export const ADOPTION_PACKAGE={
  id:'p40-adoption',

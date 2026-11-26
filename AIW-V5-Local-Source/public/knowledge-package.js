@@ -3,9 +3,9 @@
 // audit/rc44/build-notes/s0-extensions.md). Its id is the lead's (rulings D8 and E5 of 2026-11-18): the concept register
 // itself stays the built-in knowledge family's, and the package holds what it adds through the contract. Slice S2 adds
 // the crosswalk (knowledge.crosswalk[], KA); slice S3 the concept pins, their type, their finding and their section.
-// The browser registers it when the knowledge workspace's lazy entry arrives (knowledge-workspace-ui.js, the host the
-// design names, ruling D7.6), which its route stub loads before a document that holds crosswalk rows or concept pins is
-// first drawn (design-package-routes.js). The server registers the same object with the commands, the collections they
+// The browser registers it when the one shared lazy entry of the packages' first-draw readers arrives
+// (design-package-readers.js; ruling Y1, was the knowledge workspace's entry by D7.6), which its route stub loads before
+// a document that holds crosswalk rows or concept pins is first drawn (design-package-routes.js). The server registers the same object with the commands, the collections they
 // write and the SDD's section (knowledge-package-server.js, the line of design-packages.js): the browser sends those
 // commands and applies none, so the command module stays out of every client bundle.
 //   objectTypes, records  a pin is an object of type `concept` (Chapter 11), and each link through a pin a relation
@@ -31,7 +31,7 @@ export const KNOWLEDGE_PACKAGE={id:'p10-knowledge',
  design:{[key('crosswalk')]:crosswalkDesign,[key('conceptPins')]:pinsDesign,[key('conceptLinks')]:linksDesign,[key('conceptMigrations')]:migrationsDesign},
  evidenceKeys:['concepts','topics','library','pinCurrency','organizationNotices'].map(key)};
 registerExtension(KNOWLEDGE_PACKAGE);
-// The package's command types are quiet: they write no line into knowledge.history (rulings B10 and P5 b), and the
-// boundary's activity row records each. The knowledge workspace's history panel reads them from that row beside the log
-// (the fix-up, ruling X4), so a person sees one trail. Whether a command type is one of them:
+// The package's steps write their lines into knowledge.history, each naming the package (the lead's ruling Y2, which
+// turns back S3's quiet step): one trail holds every step, and the knowledge workspace's history panel draws it from the
+// log alone, a line of the package's with who took it (rulings X4 and Y2). Whether a command type is one of them:
 export const packageStep=type=>/^knowledge\.(crosswalk|concept-(pin|link|unlink|unpin|repin|migration))\b/.test(type||'');

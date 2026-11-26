@@ -5,7 +5,7 @@
 // reads the baseline tree: `node rc44-s0-readings.mjs --capture` prints the SHA-256 of each reading per reference
 // (rc44-s0-extensions-baseline.json was captured so from an unchanged checkout of 94dbd4f).
 import {createHash} from 'node:crypto';
-import {readdirSync, readFileSync} from 'node:fs';
+import {readFileSync} from 'node:fs';
 import {createProject} from './shared/projects-domain.js';
 import {withFinalReview, reviewRequirements, inheritedFindings, finalFindings, chapterSummaries, reviewSourceStamp, reviewDesignStamp, evidenceStamp, traceStamp, assembleSDD, reviewBlockerCount, CHAPTERS} from './public/review-domain.js';
 import {recordGraph} from './public/record-graph.js';
@@ -156,51 +156,15 @@ export function assertFindingIdsUnique(p) {
 
 // "Opens with records" (the lead's ruling D10 of 2026-11-18). The chapters-route gate (client-bundle.mjs sizeReport,
 // routes.chapters.code) measures opening a document that holds no package records. A document that holds a package's
-// records also loads, before it is first drawn, the lazy entry that holds the package (ruling A3). Each package
+// records also loads, before it is first drawn, the lazy entry its route stub loads: since ruling Y1 (built by S0-D10)
+// the one shared entry of the packages' first-draw readers, design-package-readers.js, for every package. Each build
 // reports that figure in its notes and its size evidence: the code of the chapters route and of the lazy entry's own
 // static closure together, each script counted once. opensWithRecords(metafile, entry, dataNames) reads it from the
-// build's metafile (bundleClient(...).metafile, parsed): `entry` is the source of the lazy entry the package's route
-// stub loads ('public/architecture-task-ui.js'), `dataNames` the data modules the gate sets apart from code
-// (Object.keys(BUDGET.data) of client-bundle.mjs). It answers {route, added, total, files}: the route as the gate
-// counts it, what the lazy entry adds to it, their sum, and how many scripts the entry adds.
-// routeBookings(ownFile) (the lead's rulings K6, M4 and O1 of 2026-11-21): the chapters-route bytes the rc44 size
-// evidence books, read from every audit/rc44/evidence/*-size.json: each package's own, as its evidence records it at its
-// own head (ownBytes, or the delta of a file that books the whole of its growth to its package), an integer of at least
-// 0 (a slice that adds nothing to the route books 0), and the shared pool's (sharedPoolBytes, {item: bytes}, in
-// whichever file records the change), each item an integer that one file books. A negative pool item is the lead's
-// alone, in the lead's own file (LEAD_BOOKINGS, which books nothing of its own: ownBytes 0), for what merging packages
-// adds or saves together (ruling N1: stub bytes are not additive). A package's size case holds that the route's growth
-// against the integrated base, less every other package's own bytes and less the shared pool's, is inside its
-// allowance. Answers {own: {file: bytes} of every file, others: {file: bytes} but ownFile's, pool: {file:item: bytes},
-// othersTotal, poolTotal}; refuses, naming the file, what it cannot trust.
-export const LEAD_BOOKINGS = 'lead-bookings-size.json';
-export function routeBookings(ownFile, dir = 'audit/rc44/evidence') {
-  const out = {own: {}, others: {}, pool: {}, othersTotal: 0, poolTotal: 0}, booked = new Map();
-  for (const name of readdirSync(dir).filter(f => /-size\.json$/.test(f)).sort()) {
-    // (the lead's ruling R3 of 2026-11-22) a file it cannot read is refused with its path, as every refusal below names its file
-    const file = dir + '/' + name, e = (() => { let v; try { v = JSON.parse(readFileSync(file, 'utf8')); } catch (x) { throw Error(file + ' is no size file this check can read: it is not valid JSON (' + x.message + ').'); } if (!v || typeof v !== 'object' || Array.isArray(v)) throw Error(file + ' is no size file this check can read: a size file is a JSON object.'); return v; })(), own = e.ownBytes ?? e.delta, lead = name === LEAD_BOOKINGS;
-    if (!Number.isInteger(own) || own < 0) throw Error(file + ' states no route bytes of its own (ownBytes, or delta): an integer of at least 0, not ' + JSON.stringify(own) + '.');
-    if (lead && own !== 0) throw Error(file + ' is the lead\'s: it books the shared pool only (ownBytes 0), not ' + own + '.');
-    out.own[file] = own; if (file !== ownFile) { out.others[file] = own; out.othersTotal += own; }
-    if (e.sharedPoolBytes !== undefined && !(e.sharedPoolBytes && typeof e.sharedPoolBytes === 'object' && !Array.isArray(e.sharedPoolBytes))) throw Error(file + ': the shared pool\'s bytes are {item: bytes}.');
-    for (const [item, bytes] of Object.entries(e.sharedPoolBytes || {})) {
-      if (!Number.isInteger(bytes)) throw Error(file + ': the shared pool\'s ' + item + ' is no count of bytes.');
-      if (bytes < 0 && !lead) throw Error(file + ': the shared pool\'s ' + item + ' is ' + bytes + ' B: a negative pool item is the lead\'s alone, in ' + LEAD_BOOKINGS + '.');
-      if (booked.has(item)) throw Error('The shared pool\'s ' + item + ' is booked twice: by ' + booked.get(item) + ' and by ' + file + '. One file books each item.');
-      booked.set(item, file); out.pool[file + ':' + item] = bytes; out.poolTotal += bytes;
-    }
-  }
-  return out;
-}
-// assertBookingsAddUp(route, base, dir) (the lead's merge check, ruling O1): on a build, the chapters route
-// (routes.chapters.code) less the integrated base ({commit, chapters}) is every size file's own bytes plus the shared
-// pool's, exactly. A stale, foreign or mistyped file fails it, and the failure names each file's figure. Answers
-// {grew, own, pool}.
-export function assertBookingsAddUp(route, base, dir = 'audit/rc44/evidence') {
-  const b = routeBookings(null, dir), own = Object.values(b.own).reduce((n, x) => n + x, 0), grew = route - base.chapters;
-  if (grew !== own + b.poolTotal) throw Error('The bookings do not add up: the chapters route grew ' + grew + ' B against ' + base.commit + ' (' + route + ' - ' + base.chapters + '), and the size files book ' + (own + b.poolTotal) + ' B: ' + Object.entries(b.own).map(([f, n]) => f.split('/').pop() + ' ' + n + ' B of its own').join(', ') + '; the shared pool ' + b.poolTotal + ' B (' + (Object.entries(b.pool).map(([k, n]) => k.split('/').pop() + ' ' + n + ' B').join(', ') || 'no item') + '). A size file is stale, foreign or mistyped: measure it again at its own head.');
-  return {grew, own, pool: b.poolTotal};
-}
+// build's metafile (bundleClient(...).metafile, parsed): `entry` is the source of the lazy entry
+// ('public/design-package-readers.js'), or a list of them, which are counted together (each script once; an empty list
+// is the route alone), `dataNames` the data modules the gate sets apart from code (Object.keys(BUDGET.data) of
+// client-bundle.mjs). It answers {route, added, total, files}: the route as the gate counts it, what the entries add to
+// it, their sum, and how many scripts they add.
 // assertUnder10kCeiling(slice, base, gate) (the lead's rulings P8 and R4 of 2026-11-22): a size case reads the
 // files-under-10-KB bucket as a ceiling, as client-bundle.mjs does: at most the gate (BUDGET.tiny), and at most the
 // base's count plus the script files the slice adds (slice and base: {scripts, under10k}). A slice may leave fewer
@@ -210,16 +174,41 @@ export function assertUnder10kCeiling(slice, base, gate) {
   if (!(Number.isInteger(slice.under10k) && slice.under10k <= ceiling)) throw Error(slice.under10k + ' script files under 10 KB: at most ' + ceiling + ' (the gate ' + gate + ', and the base\'s ' + base.under10k + ' plus the ' + added + ' script file' + (added === 1 ? '' : 's') + ' the slice adds).');
   return ceiling;
 }
+// assertRouteWithinCap(measured, base) (the owner's decision AA2 of 2026-11-26, which retired per-slice byte booking:
+// the allowances, the shared pool, lead-bookings-size.json's books, routeBookings, assertBookingsAddUp and S0's block
+// "O1 the bookings add up"): the one size check of a build, at each merge. `measured` is a build's size report
+// (client-bundle.mjs bundleClient(...).report, or dist/client-size-report.json) or a measurement {chapters, scripts,
+// under10k, css}; `base` is {scripts, under10k} of the build's base. Every cap is read from client-bundle.mjs (BUDGET),
+// none is written here: the chapters route within its cap; the script files at or under the gate, and the gate at or
+// under the plan's 150 (beyond 150 is the owner's decision); the files-under-10-KB bucket a ceiling (assertUnder10kCeiling:
+// at most the gate, and at most the base's count plus the script files the build adds; rulings P8 and R4); and the
+// stylesheet within its cap, the cap unchanged from the one rc44 started with (audit/rc44/build-notes/s0-size.json
+// caps.css: new surfaces reuse existing classes, plan 2.4). Throws in words; answers {route, cap, headroom, scripts,
+// gate, under10k, ceiling, css, cssCap}, so that a build reports its route bytes before and after.
+const PLAN_SCRIPTS = 150;
+export async function assertRouteWithinCap(measured, base) {
+  const {BUDGET} = await import('./client-bundle.mjs'), r = measured || {}, m = r.routes ? {chapters: r.routes.chapters?.code, scripts: r.scripts, under10k: r.buckets?.under10k, css: r.css} : r;
+  for (const k of ['chapters', 'scripts', 'under10k', 'css']) if (!Number.isInteger(m[k])) throw Error('assertRouteWithinCap: the measurement states no ' + k + ' (' + JSON.stringify(m[k]) + ').');
+  if (!Number.isInteger(base?.scripts) || !Number.isInteger(base?.under10k)) throw Error('assertRouteWithinCap: the base states its script files and its files under 10 KB ({scripts, under10k}).');
+  const cap = BUDGET.routes.chapters, gate = BUDGET.scripts, cssCap = BUDGET.css, started = JSON.parse(readFileSync(new URL('./audit/rc44/build-notes/s0-size.json', import.meta.url), 'utf8')).caps.css;
+  if (m.chapters > cap) throw Error('The chapters route is ' + m.chapters + ' B, over its cap of ' + cap + ' B (client-bundle.mjs).');
+  if (gate > PLAN_SCRIPTS) throw Error('The script-file gate is ' + gate + ', beyond the plan\'s ' + PLAN_SCRIPTS + ': going beyond ' + PLAN_SCRIPTS + ' is the owner\'s decision.');
+  if (m.scripts > gate) throw Error(m.scripts + ' script files, over the gate of ' + gate + ' (client-bundle.mjs).');
+  const ceiling = assertUnder10kCeiling(m, base, BUDGET.tiny);
+  if (cssCap !== started) throw Error('The stylesheet cap is ' + cssCap + ' B: it stays ' + started + ' B, the cap rc44 started with (new surfaces reuse existing classes).');
+  if (m.css > cssCap) throw Error('The stylesheet is ' + m.css + ' B, over its cap of ' + cssCap + ' B (client-bundle.mjs).');
+  return {route: m.chapters, cap, headroom: cap - m.chapters, scripts: m.scripts, gate, under10k: m.under10k, ceiling, css: m.css, cssCap};
+}
 export function opensWithRecords(metafile, entry, dataNames = []) {
   const outputs = metafile.outputs, scripts = Object.keys(outputs).filter(f => f.endsWith('.js'));
   const isData = input => dataNames.some(name => input.endsWith('public/' + name + '.js'));
   const code = f => (outputs[f]?.bytes || 0) - Object.entries(outputs[f]?.inputs || {}).reduce((n, [i, x]) => n + (isData(i) ? x.bytesInOutput : 0), 0);
   const closure = starts => { const seen = new Set(), walk = f => { if (seen.has(f) || !outputs[f]) return; seen.add(f); for (const i of outputs[f].imports || []) if (!i.external && i.kind === 'import-statement') walk(i.path); }; starts.forEach(walk); return seen; };
-  const main = scripts.find(f => outputs[f].entryPoint === 'public/entry.js'), held = scripts.find(f => outputs[f].entryPoint === entry);
-  if (!main || !held) throw Error('The build holds no ' + (main ? 'lazy entry ' + entry : 'entry script') + '.');
+  const main = scripts.find(f => outputs[f].entryPoint === 'public/entry.js'), entries = Array.isArray(entry) ? entry : [entry], held = entries.map(e => scripts.find(f => outputs[f].entryPoint === e)), missing = entries.find((e, i) => !held[i]);
+  if (!main || missing !== undefined) throw Error('The build holds no ' + (main ? 'lazy entry ' + missing : 'entry script') + '.');
   // The chapters route as the gate reads it: the entry script and every dynamic import of it but the Projects page.
   const route = closure([main, ...(outputs[main].imports || []).filter(i => i.kind === 'dynamic-import' && outputs[i.path]?.entryPoint !== 'public/projects.js').map(i => i.path)]);
-  const more = [...closure([held])].filter(f => !route.has(f)), sum = files => [...files].reduce((n, f) => n + code(f), 0);
+  const more = [...closure(held)].filter(f => !route.has(f)), sum = files => [...files].reduce((n, f) => n + code(f), 0);
   return {route: sum(route), added: sum(more), total: sum(route) + sum(more), files: more.length};
 }
 

@@ -21,7 +21,7 @@
 // the command types of the four designs that will register here are free, and every built-in one is taken.
 // Run: npm run test:rc44-s0-extensions
 import assert from 'node:assert/strict';
-import {readFileSync, existsSync, writeFileSync, mkdirSync, readdirSync, rmSync} from 'node:fs';
+import {readFileSync, existsSync, writeFileSync, mkdirSync, readdirSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import * as R from './rc44-s0-readings.mjs';
@@ -1887,7 +1887,13 @@ await block('8 client build', async () => {
   const {bundleClient, BUDGET} = await import('./client-bundle.mjs');
   const out = '.aiw-local/rc44-s0/client', built = clientBuilt = await bundleClient(out), report = built.report;
   assert.deepEqual(report.violations, [], 'the client build passes every size gate');
-  assert.equal(BUDGET.routes.chapters, 3233792, 'the chapters route cap is the one it was'); assert.equal(BUDGET.routes.projects, 1213 * 1024); assert.equal(BUDGET.scripts, 148); assert.equal(BUDGET.tiny, 61); assert.equal(BUDGET.css, 881 * 1024);
+  // (the owner's decision AA2 of 2026-11-26 and ruling Y1, old -> new. Was: BUDGET.routes.chapters equal to 3233792, 'the
+  // chapters route cap is the one it was', and BUDGET.scripts equal to 148. AA2 raises the cap by 32 KB and retires
+  // per-slice booking for one size check at each merge, and Y1 moves the script gate to the count S0-D10 measured; the
+  // one check, rc44-s0-readings.mjs assertRouteWithinCap, reads both from client-bundle.mjs: the route within the cap, the
+  // script files at or under the gate (the gate at most the plan's 150), the bucket under 10 KB a ceiling, the stylesheet
+  // cap unchanged. The other gates are held as they were.)
+  const held = await R.assertRouteWithinCap(report, BASELINE); assert.equal(BUDGET.routes.projects, 1213 * 1024); assert.equal(BUDGET.tiny, 61); assert.equal(BUDGET.css, 881 * 1024);
   const meta = JSON.parse(readFileSync(built.metafile, 'utf8')), on = Object.values(meta.outputs).flatMap(o => Object.entries(o.inputs || {})).filter(([i]) => i === 'public/design-extensions.js');
   // (was "at most 300 B" before the fix-up: the registry now also holds the check of ruling D2 and the wording of a package that does not load; the gate is the route's)
   // (ruling J11; was: on[0][1].bytesInOutput <= 420, measured when no route stub existed and the bundler left registerExtension out of the
@@ -1906,7 +1912,7 @@ await block('8 client build', async () => {
   const HOST = 'public/architecture-task-ui.js', opens = opensWithRecords(meta, HOST, Object.keys(BUDGET.data));
   assert.equal(opens.route, report.routes.chapters.code, 'the helper counts the chapters route as the gate does'); assert.ok(opens.added > 0 && opens.total === opens.route + opens.added && opens.files > 0, 'and what the lazy entry adds to it: ' + JSON.stringify(opens));
   assert.throws(() => opensWithRecords(meta, 'public/no-such-entry.js'), /holds no lazy entry/);
-  if (process.argv.includes('--measure')) { mkdirSync('audit/rc44/build-notes', {recursive: true}); writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v1', name: 'S0 shared registration', measuredWith: 'client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)', allowance: {chapters: 915, scripts: 148, ruling: 'F7 of 2026-11-19 (was 900 B by D9, 700 B before)'}, caps: {chapters: BUDGET.routes.chapters, projects: BUDGET.routes.projects, scripts: BUDGET.scripts, under10k: BUDGET.tiny, css: BUDGET.css}, baseline: BASELINE, slice: measured, delta: measured.chapters - BASELINE.chapters, projectsDelta: measured.projects - BASELINE.projects, headroomAfter: BUDGET.routes.chapters - measured.chapters,
+  if (process.argv.includes('--measure')) { mkdirSync('audit/rc44/build-notes', {recursive: true}); writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v1', name: 'S0 shared registration', measuredWith: 'client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)', caps: {chapters: BUDGET.routes.chapters, projects: BUDGET.routes.projects, scripts: BUDGET.scripts, under10k: BUDGET.tiny, css: BUDGET.css}, baseline: BASELINE, slice: measured, delta: measured.chapters - BASELINE.chapters, projectsDelta: measured.projects - BASELINE.projects, headroomAfter: BUDGET.routes.chapters - measured.chapters,
     'opens with records': {gate: 'The chapters-route gate is unchanged and measures opening a document that holds no package records (ruling D10 of 2026-11-18).', S0: 'No package exists at S0, so no document holds package records: every document opens as measured above.', how: 'A package reports, in its notes and in its size evidence under this field: the code of the chapters route and of the static closure of the lazy entry its route stub loads, each script counted once, as rc44-s0-readings.mjs opensWithRecords(metafile, entry, Object.keys(BUDGET.data)) answers it from the metafile of the same build: {route, added, total, files}.', hosts: {[HOST]: {...opens, note: 'the lazy entry wp2\'s design names for its surface, as it is before any package is held in it'}}}}, null, 1) + '\n'); }
   assert.ok(existsSync(EVIDENCE), 'the slice\'s measurement is kept (node rc44-s0-extensions-validate.mjs --measure)');
   const size = JSON.parse(readFileSync(EVIDENCE, 'utf8'));
@@ -1917,70 +1923,52 @@ await block('8 client build', async () => {
     const run = () => assertUnder10kCeiling(slice, BASELINE, BUDGET.tiny);
     if (ok) assert.doesNotThrow(run, JSON.stringify(slice)); else assert.throws(run, /^Error: \d+ script files under 10 KB: at most \d+ \(the gate \d+, and the base's \d+ plus the \d+ script files? the slice adds\)\.$/, JSON.stringify(slice)); }
   assert.deepEqual(size.baseline, BASELINE, 'against the build of 94dbd4f'); assert.equal(size.slice.scripts, 148, '148 script files'); assertUnder10kCeiling(size.slice, BASELINE, BUDGET.tiny); assert.ok(measured.under10k <= BUDGET.tiny, 'this build: ' + measured.under10k + ' files under 10 KB'); assert.equal(size.slice.css, BASELINE.css, 'no stylesheet rule');
-  // (was "at most 700 B", then 900 B by ruling D9 of 2026-11-18; ruling F7 of 2026-11-19 sets S0's allowance to 915 B
-  // in all: the 14 B that give a Chapter 1 record its rc.10.73.42 place on the layer of its type back)
-  assert.equal(size.allowance.chapters, 915); assert.equal(size.delta, size.slice.chapters - size.baseline.chapters); assert.ok(size.delta > 0 && size.delta <= 915, 'the route delta measured at the slice is at most 915 B: ' + size.delta);
+  // (the owner's decision AA2 of 2026-11-26, old -> new. Was: the allowance in the evidence equal to 915 B and size.delta in (0, 915]
+  // ("at most 700 B", then 900 B by ruling D9, then 915 B by ruling F7). AA2 retires the allowances: the slice's recorded
+  // measurement passes the one size check, and its delta is what it records.)
+  assert.equal(size.delta, size.slice.chapters - size.baseline.chapters); await R.assertRouteWithinCap(size.slice, BASELINE);
   assert.ok(size.slice.chapters <= BUDGET.routes.chapters);
   { const w = size['opens with records']; assert.ok(w && /holds no package records/.test(w.gate) && /opensWithRecords/.test(w.how) && w.hosts?.[HOST]?.total === w.hosts[HOST].route + w.hosts[HOST].added, 'the size file says what the gate measures and how a package measures what a document with its records opens with'); }
-  // (the lead's ruling U2 of 2026-11-22; was: measured >= the slice's route - 700 B. A later slice may retire an old path, whose saving the lead
-  // books as a negative item of the shared pool in the lead's own file: the lower bound is the slice's route less 700 B, less the savings the
-  // lead books there, each an integer, and no more.)
-  const LEAD = 'audit/rc44/evidence/lead-bookings-size.json', saved = existsSync(LEAD) ? -Object.values(JSON.parse(readFileSync(LEAD, 'utf8')).sharedPoolBytes || {}).filter(b => { assert.ok(Number.isInteger(b), 'the lead\'s pool items are counts of bytes'); return b < 0; }).reduce((n, b) => n + b, 0) : 0;
-  assert.ok(measured.chapters >= size.slice.chapters - 700 - saved, 'the route as built now is the slice\'s or a later one\'s: ' + measured.chapters + ' (the lower bound ' + (size.slice.chapters - 700 - saved) + ': the slice\'s ' + size.slice.chapters + ' B less 700 B, less the ' + saved + ' B the lead books as saved)');
+  // (the owner's decision AA2 of 2026-11-26, old -> new. Was (ruling U2): measured >= the slice's route less 700 B, less the
+  // savings the lead booked as negative items of the shared pool in lead-bookings-size.json. AA2 retires the bookings and
+  // the pool: this build passes the one size check (held above, against the build of 94dbd4f).)
   if (process.env.AIW_S0_MEASURE || process.argv.includes('--measure')) assert.deepEqual(measured, size.slice, 'at the slice\'s commit the build measures what the evidence says');
-  pass('8: the client build passes every gate with the caps unchanged; S0 measured ' + size.delta + ' B on the chapters route (' + size.baseline.chapters + ' → ' + size.slice.chapters + ' of ' + BUDGET.routes.chapters + '), 148 script files; the registry is ' + on[0][1].bytesInOutput + ' B; this build: ' + measured.chapters + ' B');
+  pass('8: the client build passes every gate and the one size check (AA2); S0 measured ' + size.delta + ' B on the chapters route (' + size.baseline.chapters + ' → ' + size.slice.chapters + '), 148 script files; the registry is ' + on[0][1].bytesInOutput + ' B; this build: ' + held.route + ' B of ' + held.cap + ', ' + held.scripts + ' script files of ' + held.gate);
 });
 
-// ---------------------------------------------------------------- O1. the bookings are checked, not trusted
-// (the lead's ruling O1 of 2026-11-21; new problem 1 of the second verifier of wp9a slice 1) Every rc44 size file
-// (audit/rc44/evidence/*-size.json) books route bytes: a package's own (ownBytes, or delta), an integer of at least 0
-// (a slice that adds nothing to the route books 0), and the shared pool's items (sharedPoolBytes), each an integer that
-// one file books. A negative pool item is the lead's alone, in the lead's own file (lead-bookings-size.json, ownBytes
-// 0), which books what merging packages adds or saves together (ruling N1: stub bytes are not additive) and S0's rows
-// a package's slice needed. The lead's merge check, beside the build: on this build the chapters route less the
-// integrated base (3,229,840 B at 9673661) is every file's own bytes plus the pool's, exactly, so a stale, foreign or
-// mistyped file fails loudly, naming each file's figure (rc44-s0-readings.mjs routeBookings, assertBookingsAddUp).
-const INTEGRATED = {commit: '9673661', chapters: 3229840}, BOOKINGS = 'audit/rc44/evidence', LEAD_FILE = BOOKINGS + '/lead-bookings-size.json';
-await block('O1 the bookings add up', async () => {
-  // hostile evidence, each in a scratch copy of the evidence directory: every one is refused, in its own words
-  const scratch = (name, files) => { const dir = '.aiw-local/rc44-s0/bookings/' + name; rmSync(dir, {recursive: true, force: true}); mkdirSync(dir, {recursive: true});
-    for (const f of readdirSync(BOOKINGS).filter(f => /-size\.json$/.test(f))) writeFileSync(dir + '/' + f, readFileSync(BOOKINGS + '/' + f, 'utf8'));
-    for (const [f, edit] of Object.entries(files)) { const at = dir + '/' + f, was = existsSync(at) ? JSON.parse(readFileSync(at, 'utf8')) : {schema: 'aiw.rc44.slice-size.v3', name: 'a file of no package of this build'}; writeFileSync(at, JSON.stringify(edit(was), null, 1) + '\n'); }
-    return dir; };
-  const misses = [], refused = (why, dir, words) => { try { R.routeBookings(null, dir); misses.push(why + ': accepted'); } catch (e) { if (!words.test(e.message)) misses.push(why + ': refused in other words: ' + e.message); } };
-  refused('a negative own figure', scratch('negative-own', {'zz-foreign-size.json': e => ({...e, ownBytes: -300})}), /zz-foreign-size\.json states no route bytes of its own \(ownBytes, or delta\): an integer of at least 0, not -300\./);
-  refused('an own figure that is no integer', scratch('fraction-own', {'zz-foreign-size.json': e => ({...e, ownBytes: 1.5})}), /zz-foreign-size\.json states no route bytes of its own \(ownBytes, or delta\): an integer of at least 0, not 1\.5\./);
-  refused('an own figure written as text', scratch('text-own', {'wp9a-s1-size.json': e => ({...e, ownBytes: String(e.ownBytes)})}), /wp9a-s1-size\.json states no route bytes of its own \(ownBytes, or delta\): an integer of at least 0, not "342"\./);
-  refused('a pool item two files book', scratch('twice', {'zz-foreign-size.json': e => ({...e, ownBytes: 0, sharedPoolBytes: {baselineDefectFmtL10: 34}})}), /The shared pool's baselineDefectFmtL10 is booked twice: by \S+wp9a-s1-size\.json and by \S+zz-foreign-size\.json\. One file books each item\./);
-  refused('a negative pool item in a package\'s file', scratch('foreign-negative', {'zz-foreign-size.json': e => ({...e, ownBytes: 0, sharedPoolBytes: {sharedOnce: -46}})}), /zz-foreign-size\.json: the shared pool's sharedOnce is -46 B: a negative pool item is the lead's alone, in lead-bookings-size\.json\./);
-  refused('a pool item that is no count of bytes', scratch('pool-text', {'zz-foreign-size.json': e => ({...e, ownBytes: 0, sharedPoolBytes: {sharedOnce: '46'}})}), /zz-foreign-size\.json: the shared pool's sharedOnce is no count of bytes\./);
-  refused('the lead\'s file stating bytes of its own', scratch('lead-own', {'lead-bookings-size.json': e => ({...e, ownBytes: 5})}), /lead-bookings-size\.json is the lead's: it books the shared pool only \(ownBytes 0\), not 5\./);
-  // (ruling R3) a size file it cannot read is refused with its path, as every other refusal names its file: one that is not valid JSON, and one that is no object
-  for (const [name, text, words] of [['zz-broken-size.json', '{"ownBytes": 0, sharedPoolBytes: {}}\n', 'it is not valid JSON \\('], ['zz-null-size.json', 'null\n', 'a size file is a JSON object\\.$']]) {
-    const dir = scratch('unreadable-' + name.replace(/\.json$/, ''), {}); writeFileSync(dir + '/' + name, text);
-    refused('a size file it cannot read (' + name + ')', dir, new RegExp('^' + dir.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '/' + name.replace('.', '\\.') + ' is no size file this check can read: ' + words)); }
-  assert.deepEqual(misses, [], 'routeBookings refuses each: ' + misses.join(' | '));
-  // the lead's own file may book a negative pool item, which the merge check then holds to the build like any other
-  { const dir = scratch('lead-negative', {'lead-bookings-size.json': e => ({...e, sharedPoolBytes: {...e.sharedPoolBytes, sharedOnceN1: -46}})}); assert.equal(R.routeBookings(null, dir).pool[dir + '/lead-bookings-size.json:sharedOnceN1'], -46, 'a negative pool item in the lead\'s own file is read'); }
-  // the lead's merge check, on this build
-  const {assertBookingsAddUp} = R; assert.equal(typeof assertBookingsAddUp, 'function', 'rc44-s0-readings.mjs states the lead\'s merge check (assertBookingsAddUp)');
-  const route = (clientBuilt || await (await import('./client-bundle.mjs')).bundleClient('.aiw-local/rc44-s0/client')).report.routes.chapters.code;
-  assert.ok(existsSync(LEAD_FILE), 'the lead\'s own file exists (' + LEAD_FILE + ')'); const lead = JSON.parse(readFileSync(LEAD_FILE, 'utf8'));
-  assert.deepEqual([lead.schema, lead.ownBytes, lead.productionAccepted, typeof lead.name, typeof lead.whatWasMeasured, lead.bases?.integrated?.commit, lead.bases?.integrated?.chapters], ['aiw.rc44.slice-size.v3', 0, false, 'string', 'string', INTEGRATED.commit, INTEGRATED.chapters], 'the lead\'s file is a size file like the others, with no bytes of its own');
-  const real = assertBookingsAddUp(route, INTEGRATED);
-  assert.equal(real.grew, route - INTEGRATED.chapters); assert.equal(real.grew, real.own + real.pool, 'the route\'s growth is every file\'s own bytes plus the pool\'s');
-  // a stale figure: each file's own figure changed by one byte, in turn, fails, naming each file's figure
-  const own = R.routeBookings(null, BOOKINGS).own; assert.ok(Object.keys(own).length >= 3, 'the files of the build\'s packages and the lead\'s: ' + JSON.stringify(own));
-  // (the lead's own figure is 0 by rule: a changed one is refused above)
-  // (the lead's ruling V3 of 2026-11-22; was: /the chapters route grew \d+ B … and the size files book \d+ B: /) the growth, and the
-  // bookings it is held to, are signed numbers: a retirement's saving (U2) makes both negative, so each reads -?\d+; the message shape and
-  // every file's figure are still required
-  for (const file of Object.keys(own).filter(f => !f.endsWith('/lead-bookings-size.json'))) { const name = file.split('/').pop(), key = name === 'wp2-s1-size.json' && !('ownBytes' in JSON.parse(readFileSync(file, 'utf8'))) ? 'delta' : 'ownBytes', dir = scratch('stale-' + name.replace(/\.json$/, ''), {[name]: e => ({...e, [key]: e[key] + 1})});
-    assert.throws(() => assertBookingsAddUp(route, INTEGRATED, dir), e => { assert.match(e.message, /^The bookings do not add up: the chapters route grew -?\d+ B against 9673661 \(\d+ - 3229840\), and the size files book -?\d+ B: /, name + ' stale: ' + e.message); for (const [f, n] of Object.entries(own)) assert.ok(e.message.includes(f.split('/').pop() + ' ' + (f === file ? n + 1 : n) + ' B of its own'), name + ' stale: the failure names ' + f + '\'s figure: ' + e.message); return true; }, name + ' changed by one byte'); }
-  // a foreign file that books bytes, and one that books a pool item, fail the check too
-  for (const [why, files] of [['a foreign file with bytes of its own', {'zz-foreign-size.json': e => ({...e, ownBytes: 300})}], ['a foreign pool item', {'zz-foreign-size.json': e => ({...e, ownBytes: 0, sharedPoolBytes: {strayItem: 12}})}], ['the lead\'s negative pool item that no build shows', {'lead-bookings-size.json': e => ({...e, sharedPoolBytes: {...e.sharedPoolBytes, sharedOnceN1: -46}})}]])
-    assert.throws(() => assertBookingsAddUp(route, INTEGRATED, scratch('add-' + why.replace(/\W+/g, '-'), files)), /^Error: The bookings do not add up: /, why);
-  pass('O1, R3: routeBookings refuses an own figure that is no integer of at least 0, a pool item two files book, a negative pool item outside the lead\'s own file, bytes of the lead\'s own and, with its path, a size file it cannot read; the lead\'s merge check holds on this build (the chapters route ' + route + ' B less the integrated base ' + INTEGRATED.chapters + ' B: ' + real.grew + ' B = ' + Object.entries(own).map(([f, n]) => f.split('/').pop() + ' ' + n).join(' + ') + ' + the shared pool ' + real.pool + '), and a stale figure (each file\'s own changed by one byte), a foreign file and a foreign pool item each fail it, naming each file\'s figure');
+// ---------------------------------------------------------------- AA2. one size check, at each merge
+// (the owner's decision AA2 of 2026-11-26, old -> new. Was block "O1 the bookings add up" (the lead's ruling O1 of
+// 2026-11-21, with R3 and V3): every rc44 size file booked route bytes, a package's own and the shared pool's, which
+// routeBookings read and refused when untrustworthy, and the lead's merge check assertBookingsAddUp held that the route
+// less the integrated base was every file's own bytes plus the pool's, exactly. AA2 retires per-slice byte booking (the
+// allowances, the shared pool, lead-bookings-size.json's books, routeBookings, assertBookingsAddUp and this block) for
+// one size check at each merge: rc44-s0-readings.mjs assertRouteWithinCap, which reads every cap from client-bundle.mjs.)
+// The block holds that the books are gone (one path: no booking reader remains, and no rc44 suite reads the books), that
+// the lead's file says so, that the cap is the one AA2 states, and that the one check holds on this build and refuses,
+// in its words, a route over the cap, script files over the gate, a gate beyond 150, a bucket under 10 KB beyond its
+// ceiling and a stylesheet over its cap.
+const LEAD_FILE = 'audit/rc44/evidence/lead-bookings-size.json';
+await block('AA2 one size check', async () => {
+  for (const name of ['routeBookings', 'assertBookingsAddUp', 'LEAD_BOOKINGS']) assert.equal(R[name], undefined, 'rc44-s0-readings.mjs no longer states ' + name + ' (retired by AA2)');
+  // a booking read or written in code: a call of either reader, a read of the books' fields, a books' field written (a comment that names them is history)
+  const reader = new RegExp(['\\broute' + 'Bookings\\(', '\\bassert' + 'BookingsAddUp\\(', '\\.shared' + 'PoolBytes\\b', '\\bshared' + 'PoolBytes:', '\\.bookings' + 'AtStart\\b', '\\.allow' + 'ance\\.chapters\\b'].join('|')), suites = [...readdirSync('.').filter(f => /^rc44-.*\.mjs$/.test(f)), ...readdirSync('.').filter(f => /^rc44-.*-cases$/.test(f)).flatMap(d => readdirSync(d).filter(f => f.endsWith('.mjs')).map(f => d + '/' + f))];
+  assert.ok(suites.length >= 10, 'the rc44 suites are read: ' + suites.length); for (const f of suites) assert.doesNotMatch(readFileSync(f, 'utf8'), reader, f + ' reads no booking (AA2)');
+  const lead = JSON.parse(readFileSync(LEAD_FILE, 'utf8')); assert.match(lead.retired || '', /^Per-slice byte booking was retired by the owner's decision AA2 of 2026-11-26 at build s0-w3-bundle/, 'the lead\'s file says that booking was retired (one line)');
+  const {BUDGET} = await import('./client-bundle.mjs'), report = (clientBuilt || await (await import('./client-bundle.mjs')).bundleClient('.aiw-local/rc44-s0/client')).report;
+  assert.equal(BUDGET.routes.chapters, lead.caps.chapters + 32 * 1024, 'the chapters route cap is the one the books held, raised by 32 KB (AA2)');
+  const held = await R.assertRouteWithinCap(report, BASELINE); assert.deepEqual([held.cap, held.gate, held.cssCap, held.route, held.scripts], [BUDGET.routes.chapters, BUDGET.scripts, BUDGET.css, report.routes.chapters.code, report.scripts], 'it reads the caps from client-bundle.mjs and the build from its report');
+  const m = {chapters: report.routes.chapters.code, scripts: report.scripts, under10k: report.buckets.under10k, css: report.css}, misses = [];
+  const refused = async (why, measured, words, base = BASELINE) => { try { await R.assertRouteWithinCap(measured, base); misses.push(why + ': accepted'); } catch (e) { if (!words.test(e.message)) misses.push(why + ': refused in other words: ' + e.message); } };
+  await refused('a route one byte over the cap', {...m, chapters: BUDGET.routes.chapters + 1}, /^The chapters route is \d+ B, over its cap of \d+ B \(client-bundle\.mjs\)\.$/);
+  await refused('a script file over the gate', {...m, scripts: BUDGET.scripts + 1}, /^\d+ script files, over the gate of \d+ \(client-bundle\.mjs\)\.$/);
+  await refused('a small file beyond the ceiling', {...m, under10k: BASELINE.under10k + Math.max(0, m.scripts - BASELINE.scripts) + 1}, /^\d+ script files under 10 KB: at most \d+ /);
+  await refused('a stylesheet over its cap', {...m, css: BUDGET.css + 1}, /^The stylesheet is \d+ B, over its cap of \d+ B/);
+  await refused('a measurement with no route', {...m, chapters: undefined}, /^assertRouteWithinCap: the measurement states no chapters/);
+  await refused('no base', m, /^assertRouteWithinCap: the base states/, null);
+  { const was = BUDGET.scripts; BUDGET.scripts = 151; try { await refused('a gate beyond 150', m, /^The script-file gate is 151, beyond the plan's 150: going beyond 150 is the owner's decision\.$/); } finally { BUDGET.scripts = was; } }
+  { const was = BUDGET.css; BUDGET.css = was + 1024; try { await refused('a stylesheet cap that moved', m, /^The stylesheet cap is \d+ B: it stays \d+ B, the cap rc44 started with/); } finally { BUDGET.css = was; } }
+  assert.deepEqual(misses, [], 'the one size check refuses each: ' + misses.join(' | '));
+  pass('AA2: per-slice booking is retired (no booking reader in rc44-s0-readings.mjs, none in ' + suites.length + ' rc44 suite files; the lead\'s file says so); the cap is ' + BUDGET.routes.chapters + ' B (+32 KB); the one size check holds on this build (route ' + held.route + ' B, headroom ' + held.headroom + ' B; ' + held.scripts + ' of ' + held.gate + ' script files; ' + held.under10k + ' under 10 KB of ' + held.ceiling + '; stylesheet ' + held.css + ' of ' + held.cssCap + ' B) and refuses a route over the cap, a script file over the gate, a gate beyond 150, a small file beyond the ceiling, a stylesheet over its cap or with its cap moved, and a measurement or base it cannot read');
 });
 
 // ---------------------------------------------------------------- L1. keeping a proposal is a signed-in person's step

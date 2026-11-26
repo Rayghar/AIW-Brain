@@ -17,9 +17,12 @@ import {modal} from './workbench-ui.js';
 import {copy} from './util.js';
 import {arcField as field,arcSelect as select,recordOptions as options} from './studio-kit.js';
 import {timeHTML} from './format.js';
-// The design package of applied mechanisms is held in this lazy entry (rc44, wp2 slice S1; the lead's ruling D7.6):
-// it registers when this module arrives, and its route stub loads this entry for a document that holds adoptions.
-import './adoption-package.js';
+// The design packages' first-draw readers, the applied mechanisms' among them, are held in the one shared lazy entry
+// that every route stub loads (rc44, the lead's ruling Y1, built by S0-D10; was this entry, by ruling D7.6); this entry
+// holds the package's surface, the selection view (it opens through window.aiwSelection), and imports the shared entry
+// so that the surface finds the package registered.
+import './design-package-readers.js';
+import './adoption-ui.js';
 
 const B=(action,label,cls='',attrs='')=>`<button type="button" class="btn ${cls}" data-arc-action="${action}" ${attrs}>${label}</button>`;
 let projectId='',taskId='',answers={},revision=0,mode='conditions',optionId='request-reply',dirty=false,busy=false,error='',reqId='',driverId='',hooks=null,pending=null,sourceReviewer='',sourceReason='',sourceConfirmed=false;let entryTopic='interaction',entrySelection='',readCase='normal',measurementDraft={},measurementDirty=false;

@@ -375,37 +375,21 @@ add('S3.9 (SDD): Appendix E names each pinned concept, its version, its release,
 });
 
 // ------------------------------------------------------------------------------------------------ 10 (size)
-// Ruling A4: wp1 has 660 B of the chapters route; S1 used 65 B and S2 118 B, so S3 adds at most 477 B. The slice books its
-// own bytes in its evidence (an integer of at least 0), read through routeBookings with every other package's.
-add('S3.10 (size, rulings A4, M4, O1): the client build passes every gate with the caps unchanged; S3 adds at most 477 B to the chapters route, as its evidence books it; 148 script files; the under-10-KB bucket no higher than its base allows; no stylesheet rule; the evidence says what a document with pins opens with', async () => {
+// Ruling A4 gave wp1 660 B of the chapters route, booked per slice; the owner's decision AA2 of 2026-11-26 retired the
+// bookings and the allowances for one size check at each merge (rc44-s0-readings.mjs assertRouteWithinCap).
+add('S3.10 (size, rulings A4, M4, O1, and the owner\'s decision AA2): the client build passes every gate and the one size check (AA2); 148 script files at the slice; the under-10-KB bucket no higher than its base allows; no stylesheet rule; the evidence says what a document with pins opens with', async () => {
   const EVIDENCE = 'audit/rc44/evidence/wp1-s3-size.json', size = JSON.parse(readFileSync(EVIDENCE, 'utf8'));
   const {BUDGET} = await import('./client-bundle.mjs');
-  assert.ok(Number.isInteger(size.ownBytes) && size.ownBytes >= 0 && size.ownBytes <= 477, 'S3 books its own bytes: ' + size.ownBytes);
-  assert.equal(size.allowance.chapters, 477); assert.equal(size.base.commit, 'c709ae3'); assert.equal(size.base.chapters, 3230723);
-  const booked = R.routeBookings(EVIDENCE);
-  assert.equal(booked.others['audit/rc44/evidence/wp1-s2-size.json'], 118, 'the other packages\' evidence is read');
-  // (the fix-up, as ruling X4 rules for S2.12; old -> new. Was: the two equalities read every size file's bookings, so a
-  // booking filed after the slice's start (wp2 S5's, merged in item 0) broke them. Now they read the bookings recorded
-  // at the start commit c709ae3 in the slice's own evidence (bookingsAtStart), and each booking so recorded is asserted
-  // to be on the books still with its bytes; the head's build is checked against every booking below, and its record is
-  // atMerge.)
-  const start = size.bookingsAtStart, sum = o => Object.values(o).reduce((n, x) => n + x, 0);
-  assert.equal(start?.commit, size.base.commit, 'the bookings recorded at the start commit');
-  for (const [f, n] of Object.entries(start.others)) assert.equal(booked.others[f], n, f + ' books what it booked at the slice\'s start');
-  for (const [k, n] of Object.entries(start.pool)) assert.equal(booked.pool[k], n, k + ' is in the shared pool as at the slice\'s start');
-  assert.equal(3229840 + sum(start.others) + sum(start.pool), size.base.chapters, 'the start commit is the integrated base and what the other packages and the pool booked');
-  assert.equal(size.slice.chapters - 3229840 - sum(start.others) - sum(start.pool), size.ownBytes, 'the route at the slice\'s head, less the base and the others, is what S3 books');
-  // (slice S0-D12's fix-up, old -> new, as the lead's ruling X4 ruled for S2.12. Was: m.chapters - 3229840 - booked.othersTotal
-  // - booked.poolTotal === size.ownBytes, which held the route recorded at the head against every booking filed since, so a
-  // booking filed after wp1 S3's merge (the lead's mergeAuthorY3, rulings Y3 and Z1 to Z7) broke it. Now the record is held
-  // against the bookings recorded with it, atMerge.otherPackages and atMerge.sharedPool, each asserted to be on the books
-  // still with its bytes; the head's build is checked against every booking below (this build: S3 is ...) and by S0's O1.)
-  { const m = size.atMerge, others = m?.otherPackages || {}, items = m?.sharedPool?.items || {}, file = n => 'audit/rc44/evidence/' + n;
-    assert.ok(m && Object.keys(others).length >= 4 && Object.keys(items).length >= 1, 'the bookings recorded at the head');
-    for (const [f, n] of Object.entries(others)) assert.equal(booked.others[file(f)], n, f + ' books what it booked at the head');
-    for (const [k, n] of Object.entries(items)) assert.deepEqual(Object.entries(booked.pool).filter(([x]) => x.endsWith(':' + k)).map(([, b]) => b), [n], k + ' is in the shared pool as at the head');
-    assert.equal(sum(items), m.sharedPool.total);
-    assert.ok(m.chapters - 3229840 - sum(others) - m.sharedPool.total === size.ownBytes, 'at the head (atMerge), the route less the base and every booking is what S3 books'); assert.ok(m.chapters <= BUDGET.routes.chapters && m.scripts === 148); }
+  // (the owner's decision AA2 of 2026-11-26, old -> new. Was: S3's own bytes an integer in [0, 477] and its allowance 477 B;
+  // the bookings read through routeBookings (wp1 S2's 118 B among them), each booking recorded at the start commit
+  // (bookingsAtStart) and at the head (atMerge.otherPackages, atMerge.sharedPool) still on the books, and the route at the
+  // slice's head and at the merge, less the integrated base (3,229,840 B) and those bookings, equal to its own bytes, with
+  // the head's route within the cap and 148 script files there (rulings A4, M4, O1, X4). AA2 retires per-slice booking and
+  // the allowances for one size check at each merge: the slice's recorded measurement and the one recorded at the merge
+  // pass it against the slice's base, rc44-s0-readings.mjs assertRouteWithinCap, which reads every cap from
+  // client-bundle.mjs.)
+  assert.equal(size.base.commit, 'c709ae3'); assert.equal(size.base.chapters, 3230723);
+  await R.assertRouteWithinCap(size.slice, size.base); { const m = size.atMerge; assert.ok(m, 'the measurement recorded at the merge'); await R.assertRouteWithinCap(m, size.base); }
   assert.ok(size.slice.chapters <= BUDGET.routes.chapters); assert.deepEqual([size.slice.scripts, size.slice.css], [148, size.base.css]);
   R.assertUnder10kCeiling(size.slice, size.base, BUDGET.tiny);
   { const w = size['opens with records']; assert.ok(w && w.host === 'public/knowledge-workspace-ui.js' && w.total === w.route + w.added && w.route === size.slice.chapters && w.files >= 1, 'opens with records'); }
@@ -413,9 +397,13 @@ add('S3.10 (size, rulings A4, M4, O1): the client build passes every gate with t
     const report = JSON.parse(readFileSync('dist/client-size-report.json', 'utf8')), meta = JSON.parse(readFileSync('dist/client-metafile.json', 'utf8'));
     const measured = {chapters: report.routes.chapters.code, scripts: report.scripts, under10k: report.buckets.under10k, css: report.css};
     assert.deepEqual(report.violations || [], [], 'no gate is broken');
-    const mine = measured.chapters - 3229840 - booked.othersTotal - booked.poolTotal; assert.ok(mine <= 477, 'this build: S3 is ' + mine + ' B of its 477 B');
+    // (the owner's decision AA2 and ruling Y1, old -> new. Was: this build's route less the integrated base and every
+    // booking at most 477 B, 148 script files, and the bucket under 10 KB a ceiling. Now this build passes the one size
+    // check against the slice's base: the route within the cap, the script files at or under the gate Y1 moved, the bucket
+    // under 10 KB a ceiling (rulings P8 and R4), the stylesheet cap.)
+    await R.assertRouteWithinCap(report, size.base);
     for (const [f, o] of Object.entries(meta.outputs)) for (const server of ['public/knowledge-concepts.js', 'public/knowledge-concept-commands.js']) assert(!o.inputs?.[server], f + ' holds ' + server + ', which only the server reads');
-    assert.equal(measured.scripts, 148); R.assertUnder10kCeiling(measured, size.base, BUDGET.tiny); assert.equal(measured.css, size.base.css);
+    assert.equal(measured.css, size.base.css);
     const opens = R.opensWithRecords(meta, 'public/knowledge-workspace-ui.js', Object.keys(BUDGET.data)); assert.equal(opens.route, measured.chapters);
     // (the fix-up, old -> new: the measure mode compared the build with the slice's own tree before the merge, size.slice
     // and its 'opens with records'; at the head it compares the build with the record made at the head, atMerge.)
@@ -498,7 +486,12 @@ add('S3.13 (ruling P1, organisation releases): the administrator who publishes a
 // notices are bookkeeping, and the package's own collections say to the design fingerprint what their records say,
 // never their steps; a migration, a proposal, says nothing. The package's own commands write no line into the knowledge
 // family's log, which the design fingerprint reads (the boundary's activity row records each).
-add('S3.14 (rulings B10 and P5 b): the knowledge keys are stated through S0: a library\'s concepts, topics and mark leave its design stamp; the currency and the notices are bookkeeping; pins and links say what they say, not their steps; a migration says nothing', async () => {
+// The lead's ruling Y2 (rc44 build S0-w3-stamps) completes B10: in a library the log is not design, so the package's
+// steps write it again. Old -> new (S0-w3-stamps, ruling Y2): "no line in knowledge.history" (history length equal) and
+// "knowledge.version does not move" (version equal) -> exactly the pin's and the link's lines after the lines the library
+// had (type, record, who took it, the package named), the version moved by two, and the design stamp of the library with
+// those two lines and the version put back the same as with them: the lines say nothing to the design; the pin still does.
+add('S3.14 (rulings B10 and P5 b; completed by ruling Y2): the knowledge keys are stated through S0: a library\'s concepts, topics and mark leave its design stamp; the currency and the notices are bookkeeping; pins and links say what they say, not their steps; a migration says nothing', async () => {
   const {KP} = await mods(), X = await import('./public/design-extensions.js'); await import('./worker.js');
   const mine = X.EXTENSIONS.find(e => e.id === PACKAGE);
   assert.deepEqual(Object.keys(mine.design).sort(), ['knowledge.conceptLinks', 'knowledge.conceptMigrations', 'knowledge.conceptPins', 'knowledge.crosswalk']);
@@ -511,8 +504,13 @@ add('S3.14 (rulings B10 and P5 b): the knowledge keys are stated through S0: a l
   let d = (await packaged(p, 'knowledge.concept-pin', {conceptId: 'SYN-P001', releaseId: L.releaseId, ...STEP}, 'architect')).document; d = (await packaged(d, 'knowledge.concept-link', {pinId: pins(d)[0].id, objectId: 'REQ-001', ...STEP}, 'architect')).document;
   assert.equal(R.assertStepsMoveNoStamp(d, x => [...pins(x), ...links(x)]), 2);
   { const q = clone(d); q.knowledge.conceptMigrations = [{id: 'KM-0099', pinId: pins(d)[0].id, toReleaseId: 'KR-0099', reason: 'A proposal.'}]; assert.equal(stamp(q), stamp(d), 'a migration, a proposal, says nothing to the design fingerprint (ruling L6)'); }
-  // A pin is design: pinning moves the stamp; and the package's commands write no line into the knowledge family's log.
-  assert.notEqual(stamp(d), stamp(p)); assert.equal(d.knowledge.history.length, p.knowledge.history.length, 'no line in knowledge.history'); assert.equal(d.knowledge.version, p.knowledge.version, 'knowledge.version does not move');
+  // A pin is design: pinning moves the stamp; and the package's commands write their lines into the family's log, which
+  // is not the library's design.
+  assert.notEqual(stamp(d), stamp(p));
+  assert.deepEqual(d.knowledge.history.slice(0, p.knowledge.history.length), p.knowledge.history, 'the lines the library had stand');
+  assert.deepEqual(d.knowledge.history.slice(p.knowledge.history.length).map(h => [h.type, h.id, h.actor, h.package]), [['knowledge.concept-pin', pins(d)[0].id, 'architect', PACKAGE], ['knowledge.concept-link', links(d)[0].id, 'architect', PACKAGE]], 'one line in knowledge.history for each step, naming it');
+  assert.equal(d.knowledge.version, p.knowledge.version + 2, 'knowledge.version moves by one for each');
+  { const q = clone(d); q.knowledge.history = clone(p.knowledge.history); q.knowledge.version = p.knowledge.version; assert.equal(stamp(q), stamp(d), 'the lines and the version say nothing to the library\'s design'); }
   assert.equal(typeof KP.conceptLinkFindings, 'function');
 });
 
@@ -578,7 +576,8 @@ add('S3.17 (old documents and S0\'s helpers): with ' + PACKAGE + ' registered as
   // (S1.8 run here, with the package registered as S3 states it: the bank reference and the legacy knowledge document, their
   // findings, stamps, fingerprint, SDD text and release checksums, as at 94dbd4f.)
   { const forms = await import('./rc44-wp1-cases-forms.mjs'), s18 = forms.cases.find(c => c.name.startsWith('S1.8:')); assert(s18, 'S1.8 exists'); await s18.run(); }
-  const routes = readFileSync('public/design-package-routes.js', 'utf8'); assert.match(routes, /registerExtension\(\{id:'p10-knowledge-route',needs:p=>p\.knowledge\?\.crosswalk\|\|p\.knowledge\?\.conceptPins,load:\(\)=>import\('\.\/knowledge-workspace-ui\.js'\)\}\);/);
+  // (ruling Y1, built by S0-D10; old -> new. Was: the stub's load imports './knowledge-workspace-ui.js'. Now it loads the one shared entry of the packages' first-draw readers.)
+  const routes = readFileSync('public/design-package-routes.js', 'utf8'); assert.match(routes, /registerExtension\(\{id:'p10-knowledge-route',needs:p=>\['crosswalk','conceptPins','conceptLinks','conceptMigrations','concepts','topics','library','pinCurrency','organizationNotices'\]\.some\(k=>k in Object\(p\.knowledge\)\),load:\(\)=>import\('\.\/design-package-readers\.js'\)\}\);/); // (S0-D10's fix-up, must-fix 1, old -> new: needs:p=>p.knowledge?.crosswalk||p.knowledge?.conceptPins -> it holds for every key the package states, its design rows' and its evidence keys, whatever the key holds; every document the old needs held for, and a library's mark, concepts and topics, which the package's evidence keys read: rc44-s0-d10 D10.6, D10.7)
   const W = await world();
   try {
     const lib = await worldLibrary(W), OR1 = await lib.publish(lib.v1, 'Synthetic integration concepts 1'), D = await W.project('architect', 'bank-payment', 'Northquay booking design', ['second-architect']);
@@ -825,21 +824,31 @@ add('S3.26 (ruling X4, B10): the concept reading takes a released concept\'s ide
 // The design package's steps write no line into knowledge.history (they are quiet: rulings B10 and P5 b): the boundary's
 // activity row records each, faithfully. The knowledge workspace's history panel reads them from that row beside the
 // family's log, so a person sees one trail; without the activity the panel reads as before.
-add('S3.27 (ruling X4): the knowledge workspace\'s history panel shows the design package\'s steps, read from the project activity, beside knowledge.history, as one trail; the package\'s command types are the ones it reads, and no built-in knowledge type is', async () => {
+// The lead's ruling Y2 (rc44 build S0-w3-stamps) retires the join: the package's steps write their lines into the log, so
+// the log is the one trail and the panel reads no activity. Old -> new (S0-w3-stamps, rulings Y2 and X4): "with it: the
+// log and the package's two steps" (the panel handed the activity counts the log plus 2) and each step "in the trail,
+// with who took it" in the panel handed the activity -> the log itself holds exactly the pin's and the link's lines after
+// the family's own (type, record, who took it, the package named), the panel drawn from the document alone counts that
+// log and draws each of the two with who took it, and the panel handed the activity is the panel without it; "of the log
+// is still in it" -> each of the family's own lines is drawn as before (no actor), in the panel drawn from the document.
+add('S3.27 (ruling X4; completed by ruling Y2): the knowledge workspace\'s history panel shows the design package\'s steps, which write their lines into knowledge.history, as one trail drawn from the document alone; the package\'s command types are the ones it reads, and no built-in knowledge type is', async () => {
   const KW = await import('./public/knowledge-workspace-ui.js'), KG = await import('./public/knowledge-package.js'), X = await import('./public/design-extensions.js'), W = await world();
   try {
     const lib = await worldLibrary(W), OR1 = await lib.publish(lib.v1, 'Synthetic integration concepts 1'), {D, pinId, linkId} = await worldDesign(W, OR1);
     const doc = await D.read(), events = (await W.api('/api/activity?project=' + D.id, null, 'architect')).data.events;
     assert.ok(events.some(e => e.command === 'knowledge.concept-pin' && e.objectId === pinId) && events.some(e => e.command === 'knowledge.concept-link' && e.objectId === linkId), 'the activity records the steps');
     const panel = html => html.slice(html.indexOf('Recorded knowledge history'));
-    const plain = panel(KW.renderKnowledgeReleases(doc)), both = panel(KW.renderKnowledgeReleases(doc, events));
-    assert.match(plain, new RegExp('^Recorded knowledge history · ' + doc.knowledge.history.length + '<'), 'without the activity: the family\'s log alone');
-    assert.match(both, new RegExp('^Recorded knowledge history · ' + (doc.knowledge.history.length + 2) + '<'), 'with it: the log and the package\'s two steps');
-    for (const [type, id] of [['concept-pin', pinId], ['concept-link', linkId]]) assert.match(both, new RegExp(' · ' + type + ' · ' + id + ' · architect<'), type + ' is in the trail, with who took it');
-    for (const h of doc.knowledge.history) assert.ok(both.includes(' · ' + h.type.replace('knowledge.', '') + ' · ' + h.id + '<br>'), h.type + ' of the log is still in it, as it read before the slice (no actor on the family\'s own lines)');
+    const plain = panel(KW.renderKnowledgeReleases(doc)), both = panel(KW.renderKnowledgeReleases(doc, events)), own = doc.knowledge.history.filter(h => !h.package);
+    assert.deepEqual(doc.knowledge.history.filter(h => h.package).map(h => [h.type, h.id, h.actor, h.package]), [['knowledge.concept-pin', pinId, 'architect', PACKAGE], ['knowledge.concept-link', linkId, 'architect', PACKAGE]], 'the log holds the package\'s two steps');
+    assert.equal(doc.knowledge.history.length, own.length + 2);
+    assert.match(plain, new RegExp('^Recorded knowledge history · ' + doc.knowledge.history.length + '<'), 'the panel counts the family\'s log, which holds every step');
+    assert.equal(both, plain, 'the panel handed the activity reads no activity');
+    for (const [type, id] of [['concept-pin', pinId], ['concept-link', linkId]]) assert.match(plain, new RegExp(' · ' + type + ' · ' + id + ' · architect<'), type + ' is in the trail, with who took it');
+    for (const h of own) assert.ok(plain.includes(' · ' + h.type.replace('knowledge.', '') + ' · ' + h.id + '<br>'), h.type + ' of the log is still in it, as it read before the slice (no actor on the family\'s own lines)');
     // (the lead's follow-up after the verifier) the family's own lines read as before: no actor is printed on them, with or
     // without the activity, and an activity that holds no package step draws the panel exactly as no activity does
-    for (const h of doc.knowledge.history.filter(h => h.actor)) assert.ok(!plain.includes(' · ' + h.id + ' · ' + h.actor + '<'), h.type + ' ' + h.id + ' is drawn without its actor, as before');
+    // (old -> new, ruling Y2: the lines of the whole log -> the family's own lines; the package's lines are drawn with their actor, above)
+    for (const h of own.filter(h => h.actor)) assert.ok(!plain.includes(' · ' + h.id + ' · ' + h.actor + '<'), h.type + ' ' + h.id + ' is drawn without its actor, as before');
     assert.equal(KW.renderKnowledgeReleases(doc, events.filter(e => !KG.packageStep(e.command))), KW.renderKnowledgeReleases(doc), 'an activity with no package step changes nothing');
     assert.ok(!events.filter(e => !KG.packageStep(e.command)).some(e => e.command && both.includes(' · ' + e.command + ' ')), 'no other activity is listed');
     const mine = Object.keys(X.EXTENSIONS.find(e => e.id === PACKAGE).commands);

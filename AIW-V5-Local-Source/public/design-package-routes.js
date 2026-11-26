@@ -3,21 +3,25 @@
 // whether a document holds the package's records (needs) and how the browser loads the package (load), so that the
 // project store has it loaded before such a document is first drawn (design-extensions.js ensureExtensions). The stub
 // has an id of its own, apart from the package's (which the lazily loaded module registers when it arrives):
-//   registerExtension({id: 'example-route', needs: p => !!p.example, load: () => import(<the package's lazy entry>)});
-// with registerExtension imported from design-extensions.js above the first such line. The line is on the route: it is
-// the package's own route bytes. `needs` reads only the document and is cheap (it is asked at every read and every
-// save); `load` is the one dynamic import of the lazy entry that holds the package: an existing lazy entry that imports
-// the package statically (measured at S0: about 0.2 KB on the route for the first package, no new script file), or an
-// entry of its own (measured: 0.8 to 1.2 KB on the route in chunk glue and two more script files, because the shared
-// chunks split again). project-store.js imports this file and nothing else does: it must stay out of the entry script
-// (entry.js), whose own dynamic imports are measured as the route (client-bundle.mjs sizeReport), or the package
-// would be counted there.
+//   registerExtension({id: 'example-route', needs: p => !!p.example, load: () => import(<the shared entry>)});
+// with registerExtension imported from design-extensions.js above the first such line. The line is on the route.
+// `needs` reads only the document and is cheap (it is asked at every read and every save); it holds for a document with
+// any of the package's records, a step the package keeps on a built-in record among them (ruling U6: wp2's selection on
+// a Chapter 3 decision), and for one that holds any key the package states (its design rows, designKeys, evidenceKeys),
+// whatever the key holds: the package's rows read each such key, so without the package the browser would read the
+// design's stamps as no server does (the fix-up of S0-D10; a package that marks its records with a key of its own asks
+// for the marker, beside which its commands write its other keys: p30). `load` is the one dynamic import of the one
+// shared lazy entry of the packages' first-draw readers, design-package-readers.js, which registers every package (the
+// lead's ruling Y1, built by S0-D10: before it, each stub loaded the lazy entry of its package's surface, so that a
+// document with deployment records loaded the Chapter 10 Model view, 855 KB, before its first draw). project-store.js
+// imports this file and nothing else does: it must stay out of the entry script (entry.js), whose own dynamic imports
+// are measured as the route (client-bundle.mjs sizeReport), or the packages would be counted there.
 //
-// A slice that adds a package adds its line below, and nothing else in the shared machinery.
+// A slice that adds a package adds its line below and its line in design-packages.js and design-package-readers.js.
 import {registerExtension} from './design-extensions.js';
-// p30-deployment (wp9a): held in the lazy entry of the Chapter 10 Model view (ruling A3), which imports topology.js.
-registerExtension({id:'p30-deployment-route',needs:p=>p.runtime?.topology,load:()=>import('./deploy-view.js')});
-// p40-adoption (wp2): held in the lazy entry of the comparison tools (ruling D7.6), which imports adoption-package.js.
-registerExtension({id:'p40-adoption-route',needs:p=>p.adoptions,load:()=>import('./architecture-task-ui.js')});
-// p10-knowledge (wp1): held in the lazy entry of the knowledge workspace (ruling D7.6), which imports knowledge-package.js.
-registerExtension({id:'p10-knowledge-route',needs:p=>p.knowledge?.crosswalk||p.knowledge?.conceptPins,load:()=>import('./knowledge-workspace-ui.js')});
+// p30-deployment (wp9a): its surface in the lazy entry of the Chapter 10 Model view.
+registerExtension({id:'p30-deployment-route',needs:p=>p.runtime?.topology,load:()=>import('./design-package-readers.js')});
+// p40-adoption (wp2): its surface in the lazy entry of the comparison tools; a selection is its step on a Chapter 3 decision (U6).
+registerExtension({id:'p40-adoption-route',needs:p=>p.adoptions||p.decisions?.records?.some?.(d=>d?.selection),load:()=>import('./design-package-readers.js')});
+// p10-knowledge (wp1): its surface in the lazy entry of the knowledge workspace; a library's mark, concepts and topics are its evidence keys.
+registerExtension({id:'p10-knowledge-route',needs:p=>['crosswalk','conceptPins','conceptLinks','conceptMigrations','concepts','topics','library','pinCurrency','organizationNotices'].some(k=>k in Object(p.knowledge)),load:()=>import('./design-package-readers.js')});

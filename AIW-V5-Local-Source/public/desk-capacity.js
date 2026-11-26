@@ -17,7 +17,7 @@ import {productMechanisms} from './product-applicability.js';
 import {productsAvailable} from './model-knowledge.js';
 import {list, str, num, uniq} from './util.js';
 import {REFERENCE_PROJECTS} from './reference-projects.js';
-import {failureDomainKey, hostingZone} from './runtime-model.js';
+import {zoneKey, hostingZone} from './runtime-model.js';
 
 export function fmtN(n, digits = 0) {
   if (n == null || !Number.isFinite(n)) return '—';
@@ -142,7 +142,7 @@ export function capacityPlan(R, objective) {
   // rc.10.73.42 (D8, C10-21): what a zone loss must be survived over is the distinct hosting failure domains, not the zone
   // records: an access zone hosts nothing, zones that share a failure domain fail together, and a zone that states no
   // failure domain shows no independence (failureDomainKey, as Chapter 10 reads it).
-  const Z = Math.max(1, uniq(zones.filter(hostingZone).map(failureDomainKey).filter(Boolean)).length);
+  const Z = Math.max(1, uniq(zones.filter(hostingZone).map(z => zoneKey(R.p, z)).filter(Boolean)).length);
   // No load stated (GR-RUN-04): no arrival rate, no part's demand, no cluster; the synchronous hops stay, which the
   // latency reading counts whatever the load.
   if (O.value == null) {

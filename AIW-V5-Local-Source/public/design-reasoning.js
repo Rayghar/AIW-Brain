@@ -20,7 +20,7 @@ import {readDecision} from './decision-reading.js';
 import {driverScope, driverScopeIndex, driverTraceSeeds} from './driver-scope.js';
 import {seededTrace, traceRecords, hopsFrom, traceGraph} from './trace-kernel.js';
 import {toMs, toMinutes} from './target-units.js';
-import {failureDomainKey, hostingZone, statedField} from './runtime-model.js';
+import {zoneKey, hostingZone, statedField} from './runtime-model.js';
 
 const fmt = n => n == null ? '—' : Math.abs(n) >= 100 ? String(Math.round(n)) : String(Math.round(n * 10) / 10);
 
@@ -163,8 +163,9 @@ export function planFacts(R, plan) {
   const zonesActive = uniq(active.map(x => x.zoneId)), zonesAll = uniq(pl.map(x => x.zoneId));
   // rc.10.73.42 (D8, C10-21): the active copies by hosting failure domain, read as Chapter 10 reads it (failureDomainKey):
   // an access zone hosts nothing, and a zone that states no failure domain is a domain of its own, unknown (' ' + zone).
+  // rc44 (wp9a slice 2, ruling L2): zones that share a stated cause, or lie in one another's domain, are one (zoneKey).
   const domains = {};
-  for (const x of active) { const z = R.zones.get(x.zoneId); if (hostingZone(z)) { const k = failureDomainKey(z) || ' ' + z.id; domains[k] = (domains[k] || 0) + (num(x.replicas) || 0); } }
+  for (const x of active) { const z = R.zones.get(x.zoneId); if (hostingZone(z)) { const k = zoneKey(R.p, z) || ' ' + z.id; domains[k] = (domains[k] || 0) + (num(x.replicas) || 0); } }
   const asset = R.comps.get(plan.assetId) || R.reals.get(plan.assetId) || null;
   return {plan, asset, assetKind: R.comps.has(plan.assetId) ? 'component' : R.reals.has(plan.assetId) ? 'realisation' : 'other',
     product: R.reals.has(plan.assetId) ? productOf(R.reals.get(plan.assetId)) : null,

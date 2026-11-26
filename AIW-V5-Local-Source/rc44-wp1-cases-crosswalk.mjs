@@ -579,9 +579,13 @@ add('S2.10 (old documents and S0\'s helpers): with ' + PACKAGE + ' registered, t
   }
   { const listed = R.reviewListDocument(), now = R.digests(listed); for (const k of Object.keys(golden.reviewList.readings)) assert.equal(now[k], golden.reviewList.readings[k], 'a document with a review list: ' + k); }
   // The browser can open a document that names the package: its route stub is registered under <id>-route.
-  const routes = readFileSync('public/design-package-routes.js', 'utf8'); assert.match(routes, /registerExtension\(\{id:'p10-knowledge-route',needs:p=>p\.knowledge\?\.crosswalk\|\|p\.knowledge\?\.conceptPins,load:\(\)=>import\('\.\/knowledge-workspace-ui\.js'\)\}\);/); // (S3, old -> new: needs reads the concept pins as well)
+  // (ruling Y1, built by S0-D10; old -> new. Was: the stub's load imports './knowledge-workspace-ui.js', and the host entry
+  // imports './knowledge-package.js' for the registration, 'the host entry registers the package in the browser'. Now the
+  // stub loads the one shared entry of the packages' first-draw readers, which registers the package, and the host entry
+  // imports that entry, so that its surface finds the package registered.)
+  const routes = readFileSync('public/design-package-routes.js', 'utf8'); assert.match(routes, /registerExtension\(\{id:'p10-knowledge-route',needs:p=>\['crosswalk','conceptPins','conceptLinks','conceptMigrations','concepts','topics','library','pinCurrency','organizationNotices'\]\.some\(k=>k in Object\(p\.knowledge\)\),load:\(\)=>import\('\.\/design-package-readers\.js'\)\}\);/); // (S3, old -> new: needs reads the concept pins as well) (S0-D10's fix-up, must-fix 1, old -> new: needs:p=>p.knowledge?.crosswalk||p.knowledge?.conceptPins -> it holds for every key the package states, its design rows' and its evidence keys, whatever the key holds; every document the old needs held for, and a library's mark, concepts and topics, which the package's evidence keys read: rc44-s0-d10 D10.6, D10.7)
   assert.match(readFileSync('design-packages.js', 'utf8'), /^import '\.\/knowledge-package-server\.js'; \/\/ p10-knowledge/m);
-  assert.match(readFileSync('public/knowledge-workspace-ui.js', 'utf8'), /import '\.\/knowledge-package\.js';/, 'the host entry registers the package in the browser');
+  assert.match(readFileSync('public/design-package-readers.js', 'utf8'), /^import '\.\/knowledge-package\.js';/m, 'the shared first-draw entry registers the package in the browser'); assert.match(readFileSync('public/knowledge-workspace-ui.js', 'utf8'), /^import '\.\/design-package-readers\.js';/m, 'and the host entry imports it');
   const {S} = await strangler();
   try {
     assert.equal(S.document.workspace.packages, undefined, 'a library whose knowledge holds no row names no package');
@@ -627,34 +631,29 @@ add('S2.11 (recovery import): a row\'s review, in the register and in a release,
 });
 
 // ------------------------------------------------------------------------------------------------ 12
-add('S2.12 (size, ruling A4 and M4): the client build passes every gate with the caps unchanged; the route grew by at most 250 B for S2 (wp1\'s 660 B less S1\'s 65 B, shared with S3), as the evidence books it; 148 script files, no new file under 10 KB, no stylesheet rule; the evidence says what a document with rows opens with', async () => {
+add('S2.12 (size, ruling A4 and M4, and the owner\'s decision AA2): the client build passes every gate and the one size check (AA2); 148 script files at the slice, no new file under 10 KB there, no stylesheet rule; the evidence says what a document with rows opens with', async () => {
   const EVIDENCE = 'audit/rc44/evidence/wp1-s2-size.json', size = JSON.parse(readFileSync(EVIDENCE, 'utf8'));
   const {BUDGET} = await import('./client-bundle.mjs');
-  assert.ok(Number.isInteger(size.ownBytes) && size.ownBytes >= 0 && size.ownBytes <= 250, 'S2 books its own bytes: ' + size.ownBytes);
-  assert.equal(size.allowance.chapters, 250); assert.equal(size.base.commit, '5cae40a'); assert.equal(size.base.chapters, 3230605);
-  const booked = R.routeBookings(EVIDENCE);
-  assert.equal(booked.others['audit/rc44/evidence/wp9a-s1-size.json'], 342, 'the other packages\' evidence is read');
-  // The integrated base of ruling M4 (S0 and wp1 S1, 3,229,840 B), the other packages' own bytes and the shared pool's: what is left is wp1 S2's.
-  // (the lead's ruling X4 of 2026-11-22, old -> new; it replaces the forms of rulings W2 and of wp1 S3's first build. Was:
-  // the two assertions below read every size file's bookings less a list of the bookings filed after wp1 S2's start
-  // (wp2 S5's, wp1 S3's, the lead's saving of row 9), a list each later merge had to edit. Now they read the bookings
-  // recorded at wp1 S2's start in its own evidence (bookingsAtStart, the start commit 5cae40a), and each booking so
-  // recorded is asserted to be on the books still, as it was: as strict as both forms, and no later merge edits it.)
-  const start = size.bookingsAtStart, sum = o => Object.values(o).reduce((n, x) => n + x, 0);
-  assert.equal(start?.commit, size.base.commit, 'the bookings recorded at wp1 S2\'s start commit');
-  for (const [f, n] of Object.entries(start.others)) assert.equal(booked.others[f], n, f + ' books what it booked at wp1 S2\'s start');
-  for (const [k, n] of Object.entries(start.pool)) assert.equal(booked.pool[k], n, k + ' is in the shared pool as at wp1 S2\'s start');
-  assert.equal(3229840 + sum(start.others) + sum(start.pool), size.base.chapters, 'the start commit is the integrated base and what the other packages and the pool booked at wp1 S2\'s start');
-  assert.equal(size.slice.chapters - 3229840 - sum(start.others) - sum(start.pool), size.ownBytes, 'the route at the slice\'s head, less the base and the others booked at its start, is what S2 books');
+  // (the owner's decision AA2 of 2026-11-26, old -> new. Was: S2's own bytes an integer in [0, 250] and its allowance 250 B;
+  // the bookings read through routeBookings (wp9a's 342 B among them), each booking recorded at wp1 S2's start
+  // (bookingsAtStart) still on the books, the start commit the integrated base (3,229,840 B) plus those bookings, and the
+  // slice's route less the base and those bookings equal to its own bytes (rulings A4, M4, W2, X4). AA2 retires per-slice
+  // booking and the allowances for one size check at each merge: the slice's recorded measurement passes it against the
+  // slice's base, rc44-s0-readings.mjs assertRouteWithinCap, which reads every cap from client-bundle.mjs.)
+  assert.equal(size.base.commit, '5cae40a'); assert.equal(size.base.chapters, 3230605); await R.assertRouteWithinCap(size.slice, size.base);
   assert.ok(size.slice.chapters <= BUDGET.routes.chapters); assert.deepEqual([size.slice.scripts, size.slice.css], [148, size.base.css]); assert.ok(size.slice.under10k <= size.base.under10k, 'no new file under 10 KB');
   { const w = size['opens with records']; assert.ok(w && w.host === 'public/knowledge-workspace-ui.js' && w.total === w.route + w.added && w.route === size.slice.chapters && w.files >= 1, 'opens with records'); }
   if (existsSync('dist/client-size-report.json') && existsSync('dist/client-metafile.json')) {
     const report = JSON.parse(readFileSync('dist/client-size-report.json', 'utf8')), meta = JSON.parse(readFileSync('dist/client-metafile.json', 'utf8'));
     const measured = {chapters: report.routes.chapters.code, scripts: report.scripts, under10k: report.buckets.under10k, css: report.css};
     assert.deepEqual(report.violations || [], [], 'no gate is broken');
-    const mine = measured.chapters - 3229840 - booked.othersTotal - booked.poolTotal; assert.ok(mine <= 250, 'this build: S2 is ' + mine + ' B of its 250 B');
+    // (the owner's decision AA2 and ruling Y1, old -> new. Was: this build's route less the integrated base and every
+    // booking at most 250 B, 148 script files, and no more files under 10 KB than the base's. Now this build passes the one
+    // size check against the slice's base: the route within the cap, the script files at or under the gate Y1 moved, the
+    // bucket under 10 KB a ceiling (the base's count plus the files the build adds, rulings P8 and R4), the stylesheet cap.)
+    await R.assertRouteWithinCap(report, size.base);
     for (const [f, o] of Object.entries(meta.outputs)) if (o.inputs?.['public/knowledge-crosswalk.js']) assert(!o.inputs['public/knowledge-concepts.js'], f + ' holds the server\'s concept readers');
-    assert.equal(measured.scripts, 148); assert.ok(measured.under10k <= size.base.under10k); assert.equal(measured.css, size.base.css); const opens = R.opensWithRecords(meta, 'public/knowledge-workspace-ui.js', Object.keys(BUDGET.data)); assert.equal(opens.route, measured.chapters);
+    assert.equal(measured.css, size.base.css); const opens = R.opensWithRecords(meta, 'public/knowledge-workspace-ui.js', Object.keys(BUDGET.data)); assert.equal(opens.route, measured.chapters);
     if (process.argv.includes('--measure') || process.env.AIW_RC44_WP1_MEASURE === '1') { assert.deepEqual({chapters: measured.chapters, scripts: measured.scripts, under10k: measured.under10k}, {chapters: size.slice.chapters, scripts: size.slice.scripts, under10k: size.slice.under10k}, 'at the slice\'s commit the build measures what the evidence says'); assert.deepEqual(opens, {route: size['opens with records'].route, added: size['opens with records'].added, total: size['opens with records'].total, files: size['opens with records'].files}); }
   }
 });
@@ -779,7 +778,13 @@ add('S2.15 (ruling P5 a): a released row whose register row no longer has the re
 // what they say, never their steps (S2.10). Old -> new (rc44 wp1 S3): "moves the library's design stamp (the known
 // limit)", history + 1, version moved, and the stamp back with the log put back -> the stamp does not move, the history
 // and the version do not move, the row keeps who took the step, and the boundary's activity row names it.
-add('S2.16 (ruling P5 b, turned around by S3 with the knowledge keys, ruling B10): through the commands, a person\'s confirmation and a second person\'s review of a row move no design stamp of the library: the package\'s step writes no line into knowledge.history and moves no knowledge.version, and the row and the activity keep who took it', async () => {
+// The lead's ruling Y2 (rc44 build S0-w3-stamps) completes B10: in a library knowledge.history and knowledge.version are
+// the family's log, not design, so the package's steps write the log again and the stamp still does not move. Old -> new
+// (S0-w3-stamps, ruling Y2): "writes no line into knowledge.history" (history length equal) and "moves no
+// knowledge.version" (version equal) -> exactly one line after the lines it had, the step's (its type, the row, who took
+// it, the package named), and the version moved by one; the design stamp does not move, and the row and the activity keep
+// who took the step, as before.
+add('S2.16 (ruling P5 b, turned around by S3 with the knowledge keys, ruling B10; completed by ruling Y2): through the commands, a person\'s confirmation and a second person\'s review of a row move no design stamp of the library: the package\'s step writes its one line into the family\'s log, which is not the library\'s design, and the row and the activity keep who took it', async () => {
   const {S} = await strangler();
   const stamp = d => { const q = rv.withFinalReview(clone(d), {upgrade: false}); return rv.reviewSourceStamp(q) + ' ' + rv.reviewDesignStamp(q); };
   try {
@@ -787,7 +792,9 @@ add('S2.16 (ruling P5 b, turned around by S3 with the knowledge keys, ruling B10
     for (const [type, payload, as] of [['knowledge.crosswalk-confirm', {...PERSON_STEP, id}, 'steward'], ['knowledge.crosswalk-review', {...ROW_REVIEW, id}, 'reviewer']]) {
       const before = clone(S.document); await S.ok(type, payload, as);
       assert.equal(stamp(S.document), stamp(before), type + ' moves no design stamp of the library');
-      assert.equal(S.document.knowledge.history.length, before.knowledge.history.length, type + ' writes no line into knowledge.history'); assert.equal(S.document.knowledge.version, before.knowledge.version, type + ' moves no knowledge.version');
+      assert.deepEqual(S.document.knowledge.history.slice(0, -1), before.knowledge.history, type + ' writes one line into knowledge.history, after the lines it had');
+      assert.deepEqual([S.document.knowledge.history.length, ...['type', 'id', 'actor', 'package'].map(k => S.document.knowledge.history.at(-1)[k])], [before.knowledge.history.length + 1, type, id, as, 'p10-knowledge'], type + ': the line is the step\'s, naming who took it and the package');
+      assert.equal(S.document.knowledge.version, before.knowledge.version + 1, type + ' moves knowledge.version by one');
       const r = row(S.document, id); assert.ok(type.endsWith('-confirm') ? r.confirmed === true && r.provenance?.reviewed?.by === 'steward' : r.review?.actor === 'reviewer' && r.review.account === 'person', type + ': the row keeps who took the step');
       const activity = await S.api('/api/activity?project=' + S.projectId, null, 'importer');
       assert.equal(activity.status, 200, JSON.stringify(activity.data).slice(0, 200)); assert.ok(JSON.stringify(activity.data).includes(type), type + ': the boundary\'s activity row names the step');

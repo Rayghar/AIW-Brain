@@ -4,9 +4,9 @@
 // adoption and workload packages, which bind and read its records). This module assembles the parts of the package
 // into the one registration the shared machinery reads (design-extensions.js; the contract is in
 // audit/rc44/build-notes/s0-extensions.md), and nothing else registers them. The server imports it from
-// design-packages.js; the browser from the lazy entry of the Chapter 10 Model view (deploy-view.js), which the
-// package's route stub loads before a document that holds the marker runtime.topology is first drawn
-// (design-package-routes.js).
+// design-packages.js; the browser from the one shared lazy entry of the packages' first-draw readers
+// (design-package-readers.js; ruling Y1, was the Chapter 10 Model view's entry), which the package's route stub loads
+// before a document that holds the marker runtime.topology is first drawn (design-package-routes.js).
 // A part is a module of its own that states what it adds, in the shape of a registration without an id: a slice fills
 // its own part and edits no other. Two parts never state the same row: the assembly refuses that when the package loads.
 import {registerExtension} from './design-extensions.js';

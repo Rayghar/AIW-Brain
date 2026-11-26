@@ -227,7 +227,12 @@ const KB = 1024;
 // route for one line of the inspector; it now loads when such a record is first inspected (app.js foreignDossierHTML),
 // as the Model views already load it. That added three script files, and the glance's four engine requests became one
 // (glance-engine.js), which removed five: the route measures 3,228,667 B and the client 148 scripts.
-const CHAPTERS_ROUTE_BUDGET = 3158 * KB;
+// rc44 (2026-11-26, the owner's decision AA2 of 2026-11-26, audit/rc44/RULINGS-2026-11-18.md section AA): the cap rises
+// by 32 KB, from 3158 KB (3,233,792 B) to 3190 KB (3,266,560 B); it amends BUILD-PLAN section 2 item 2 and UPGRADE-PLAN
+// section 7 item 4. Per-slice byte booking is retired with it: one size check at each merge (rc44-s0-readings.mjs
+// assertRouteWithinCap) holds the route within this cap, the script files at or under the gate, the files-under-10-KB
+// bucket a ceiling and the stylesheet cap unchanged. Measured at the raise (4349bb6): 3,228,938 B.
+const CHAPTERS_ROUTE_BUDGET = 3190 * KB;
 export const BUDGET = {
   entry: 8 * KB,
   // Round 12 (D4, 2026-10-08): the shared domain chunk measured 377,002 B of hand-written code (353,094 B on the round
@@ -291,7 +296,7 @@ export const BUDGET = {
   // 1,170,523 B: 1144 KB. With K merged (the round branch at cdb9884: 1,174,973 B) it measures 1,189,201 B (+14,228 B,
   // F's share as above): 1162 KB, for the lead to settle.
   data: {'brain-catalogue': 1540 * KB, 'review-font': 1064 * KB, 'vendor-docx': 420 * KB, 'brain-playbook': 120 * KB, 'brain-tradeoffs': 43 * KB /* measured 41,373 B, round 6 */},
-  scripts: 148, // rc42 (lead): 148 measured (see the chapters route above); was 150. // rc40 (lead): 150 measured — the round's own chunks (arrange-panel, component-sheet, component-spec-view, specification-reading, work-glance, work-records) less the retired spec-view; exact count gate, no spare allowance. (Combined tab refinement measured 146.)
+  scripts: 150, // rc44 (lead, S0-D10, the lead's ruling Y1 of 2026-11-22): 150 measured, +2 for the one shared lazy entry of the design packages' first-draw readers (design-package-readers.js, a facade under 1 KB, and the chunk that holds the readers, which the surfaces' entries reach too); the plan's 150 (BUILD-PLAN section 2 item 3), beyond which is the owner's decision. // rc42 (lead): 148 measured (see the chapters route above); was 150. // rc40 (lead): 150 measured — the round's own chunks (arrange-panel, component-sheet, component-spec-view, specification-reading, work-glance, work-records) less the retired spec-view; exact count gate, no spare allowance. (Combined tab refinement measured 146.)
   tiny: 61, // Round 29 adds the shared record-card facade (4,858 B) for canonical inspection; exact count gate.
 };
 // entry.js has two routes: the Projects page imports one page module; every chapter imports the store, the
@@ -339,7 +344,9 @@ export function sizeReport(metafile, outdir) {
   return {entry: entry?.bytes || 0, routes, data: dataModules, total: rows.reduce((n, r) => n + r.bytes, 0), scripts: rows.length, buckets, largest: rows.slice(0, 12), facades: tiny.filter((r) => r.source && r.bytes < KB).map((r) => r.source), violations};
 }
 
-export async function bundleClient(outdir = 'dist/client', {sourcemap = 'linked', budget = true} = {}) {
+// `plugins` (esbuild plugins, none by default) lets a suite build the same client with one source read otherwise, e.g. a
+// package's line taken out of the shared entry to measure what the package adds (rc44 S0-D10's fix-up; build.mjs passes none).
+export async function bundleClient(outdir = 'dist/client', {sourcemap = 'linked', budget = true, plugins = []} = {}) {
   await rm(outdir, {recursive: true, force: true});
   await mkdir(path.join(outdir, 'assets'), {recursive: true});
   const html = await readFile('public/index.html', 'utf8');
@@ -355,6 +362,7 @@ export async function bundleClient(outdir = 'dist/client', {sourcemap = 'linked'
     outdir: path.join(outdir, 'assets'), entryNames: '[name]-[hash]', chunkNames: 'chunks/[name]-[hash]',
     legalComments: 'eof', metafile: true, logLevel: 'error',
     sourcemap, // 'linked': <script>.js.map beside each script and a sourceMappingURL comment; false ships none
+    plugins,
   });
   const [entryFile] = Object.entries(result.metafile.outputs).find(([, output]) => output.entryPoint === 'public/entry.js');
   const entry = '/' + rel(outdir, entryFile);

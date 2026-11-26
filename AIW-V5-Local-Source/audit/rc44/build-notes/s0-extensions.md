@@ -375,12 +375,21 @@ binds, measures or reads comes first, because a hop may come only from a layer o
 
 ### The three things a package adds outside its own modules
 
+(Amended by the lead's build S0-D10, rc44/s0-w3-bundle, 2026-11-26, ruling Y1: four things. The route stub's `load`
+imports the one shared lazy entry of the packages' first-draw readers, `./design-package-readers.js`, and the package
+adds one line to that entry, `import '<its registration module>';`, in id order: item 2a below.)
+
 1. **`design-packages.js`** (server): one line, an import of the module that registers the package. The server
    registers every package when it starts and then checks each one (`assertExtensions`). A package that does not
    conform stops the server, with every problem named in words.
 2. **`public/design-package-routes.js`** (browser): one line, the route stub:
    `registerExtension({id: '<id>-route', needs: p => …, load: () => import(<the lazy entry that holds the package>)});`
-   It is on the route and counts against the package's own route bytes.
+   It is on the route and counts against the package's own route bytes. (Since S0-D10 the lazy entry is the shared one
+   for every package, and the route's bytes are held by the one size check at each merge, AA2.)
+2a. **`public/design-package-readers.js`** (browser, since S0-D10): one line, an import that takes no name of the module
+   that registers the package (its rows, readers, checks and design rows; no surface). A lazy entry that hosts the
+   package's surface imports `./design-package-readers.js` the same way, so that the surface finds the package
+   registered and the readers stay in one script; it imports no reader module for registration alone.
 3. **Its suite**, registered as `test:rc44-…` in `package.json`.
 
 Nothing else in the shared machinery is edited to register a package. Edits of built-in behaviour are a different
@@ -414,6 +423,7 @@ Every part is optional.
 | `upgrade`, `upgradeNote` | `p => p`, one sentence | `readings-upgrade.js`, `storage-upgrade.js` (server) |
 | `sections` | `[{document, after, markdown(p)}]` | the export routes of `worker.js`, `sdd-architecture.js` (server) |
 | `needs`, `load` | `p => boolean`, `() => Promise` | `project-store.js` through `ensureExtensions` |
+| steps kept on built-in records (a contract row, no registered part: ruling U6, the lead's build S0-D10) | a package's person's or second person's step kept on a record of a built-in collection, under one key of that record that the package's design names (wp2: a component selection's start, judgements, choice, confirm and instantiation on its Chapter 3 decision, `decisions.records[].selection`; the candidates' outcomes on the decision's alternatives) | the package's own edits of built-in code, made in its build: the recovery import moves the key's steps aside under `imported…` keys (`recovery-service.js` `neutraliseImportedAuthority`), a template copy clears the key (`project-lifecycle.js` `instantiateTemplate`), the design row leaves the steps out of the design fingerprint (one exception, a known limit of contract part 5 under U6 and of `audit/rc44/build-notes/wp2-s5-selection.md`: `selection.confirm` moves Chapter 3's design stamp, as `decision.accept` does, so `assertStepsMoveNoStamp` holds the selection's steps written in place, not that command; no owner named), and the route stub's `needs` holds for a document with such a key, so that the browser loads the package before the first draw as it does for the package's own collections (case D10.6 of `rc44-s0-d10-validate.mjs`); held by `assertRecoveryClearsSteps`, `assertTemplateCopyClearsSteps` and `assertStepsMoveNoStamp` with `records` reading those built-in records. (S0-D10's fix-up, 2026-11-26: a stub's `needs` also holds for a document that holds any key the package states, its design rows', `designKeys` and `evidenceKeys`, whatever the key holds, since the package's rows read each such key; p10's stub asked for the crosswalk and the pins only, so a knowledge library with no crosswalk row or pin was read in the browser with other design and evidence stamps than on the server. A package that marks its records with a key of its own asks for the marker, beside which its commands write its other keys: p30, ruling L11 a. Case D10.7.) |
 
 ### The parts, one by one
 
@@ -759,7 +769,9 @@ never another's anchor. A heading inside a code fence is text. A package places 
 built-in text. Documents are assembled on the server only.
 
 **`needs(p)`, `load()`.** Stated together, by the route stub. `needs` says whether a document holds the package's
-records; it is asked at every read and every save and reads only the document. `load` loads the package. The project
+records; it is asked at every read and every save and reads only the document. (S0-D10's fix-up, 2026-11-26: it also
+holds for a document that holds any key the package states, its design rows', `designKeys` and `evidenceKeys`,
+whatever the key holds, as the U6 row above says; case D10.7.) `load` loads the package. The project
 store awaits `ensureExtensions(project)` where it reads a project and where a save answers, before the document is
 settled and drawn; `ensureExtensions` takes the project as read (`{document, …}`) and answers it. The packages are
 loaded one after another, so the package a failure names is the one that failed.
@@ -791,7 +803,26 @@ gate's own figure. S0's size file carries the field: no package exists, so every
 measures; for reference, the entry wp2's design names adds 79,189 B in 2 scripts today, before any package is in it.
 At the close of wave 2 the lead decides whether the packages' readers move into one shared lazy entry.
 
+**The shared first-draw entry (ruling Y1, built by S0-D10, rc44/s0-w3-bundle, 2026-11-26).** The lead decided it at the
+close of wave 2: the packages' first-draw readers (registration rows, readers, checks, design rows; no surface) live in
+one shared lazy entry, `public/design-package-readers.js`, which every route stub loads, and each surface stays in its
+host entry (the knowledge workspace, the comparison tools, the Chapter 10 Model view), which imports the shared entry
+by an import that takes no name. Measured with `node build.mjs` (dist/client-size-report.json, dist/client-metafile.json
+and `opensWithRecords`): at `4349bb6` a document with knowledge records opened with the route +147,315 B in 2 scripts,
+one with adoptions +133,719 B in 2, one with a typed topology +855,804 B in 12; at S0-D10 every document with any
+package's records opens with the route +69,723 B in 2 scripts (the shared entry's facade and the chunk of the readers),
+and one with none with exactly the route. The route grew by 29 B (3,228,938 B to 3,228,967 B), the script files by 2
+(148 to 150, the gate moved to 150 with ruling Y1 named). Held by `rc44-s0-d10-validate.mjs` (D10.2: at most the route
+plus 160 KB). A package now reports, under "opens with records", `opensWithRecords(metafile,
+'public/design-package-readers.js', Object.keys(BUDGET.data))`, which takes a list of entries too.
+
 ### Route allowances (ruling A4 as amended by D9)
+
+(Retired by the owner's decision AA2 of 2026-11-26, at the lead's build s0-w3-bundle: the chapters route cap is
+3,266,560 B, the allowances and the shared pool are gone, and one size check at each merge holds the route within the
+cap, the script files at or under the gate, the files-under-10-KB bucket a ceiling and the stylesheet cap unchanged
+(`rc44-s0-readings.mjs` `assertRouteWithinCap`, which reads every cap from `client-bundle.mjs`). The table below is
+kept as the record of what was allotted.)
 
 The cap of the chapters route is unchanged: 3,233,792 B. No gate is raised.
 
@@ -875,11 +906,14 @@ listed field changed (rulings R2 and T1; the helper states `TRACKED_STANDING` an
 imports only modules of the baseline, and S0's suite holds both equal to the boundary's). It answers `{cases, changed:
 {path: cases whose call changed it}, journalled}`, so the suite can assert that its cases reach the mend.
 
-A package's size case reads the bookings of every size file with `routeBookings(ownFile)` (rulings M4 and O1): an own
-figure (`ownBytes`, or `delta`) is an integer of at least 0, a shared-pool item an integer that one file books, a
-negative pool item only in the lead's file `audit/rc44/evidence/lead-bookings-size.json` (own figure 0). The lead's
-merge check `assertBookingsAddUp(route, base)` runs in S0's block "O1 the bookings add up": the chapters route less
-the integrated base (3,229,840 B at `9673661`) is every file's own bytes plus the pool's, exactly.
+A package's size case calls `assertRouteWithinCap(report, base)` (`rc44-s0-readings.mjs`; the owner's decision AA2 of
+2026-11-26), with the build's size report (or a measurement `{chapters, scripts, under10k, css}`) and its base
+`{scripts, under10k}`: the chapters route within the cap, the script files at or under the gate (the gate at most 150),
+the files-under-10-KB bucket a ceiling (rulings P8, R4) and the stylesheet cap unchanged, every cap read from
+`client-bundle.mjs`; it answers the figures, so the build reports its route bytes before and after. (Was, until AA2:
+the bookings of every size file read with `routeBookings(ownFile)` and the lead's merge check `assertBookingsAddUp` in
+S0's block "O1 the bookings add up"; both are retired, and S0's block "AA2 one size check" holds that no rc44 suite reads
+a booking.)
 
 ### A minimal worked example
 

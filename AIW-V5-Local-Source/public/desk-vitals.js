@@ -15,7 +15,7 @@ import {capacityObjective, capacityPlan, fmtN, NO_LOAD, EXAMPLE_LABEL} from './d
 import {fact} from './product-facts.js';
 import {productsAvailable} from './model-knowledge.js';
 import {list, str, num, uniq} from './util.js';
-import {failureDomainKey, hostingZone} from './runtime-model.js';
+import {zoneKey, hostingZone} from './runtime-model.js';
 
 const OP = {'At least': '≥', 'At most': '≤', Exactly: '='};
 
@@ -96,7 +96,7 @@ function quorumLoss(R, row, f) {
   if (!qf || f.active < 2) return null;
   const need = Math.floor(f.active / 2) + 1, [k, n] = Object.entries(f.domains).sort((a, b) => b[1] - a[1])[0] || [], zs = f.zonesActive.length;
   if (k == null || f.active - n >= need) return null;
-  const refs = f.zonesActive.map(id => R.zones.get(id)).filter(z => hostingZone(z) && (failureDomainKey(z) || ' ' + z.id) === k).map(z => z.ref);
+  const refs = f.zonesActive.map(id => R.zones.get(id)).filter(z => hostingZone(z) && (zoneKey(R.p, z) || ' ' + z.id) === k).map(z => z.ref);
   return `It works while a majority of its nodes agree: ${f.active} nodes in ${zs} zone${zs === 1 ? '' : 's'}, and losing ${refs.join(' and ')} (${refs.length > 1 ? 'one failure domain, ' : ''}${n} of them) leaves ${f.active - n}, short of a majority of ${need}. A third failure domain keeps the majority.`;
 }
 

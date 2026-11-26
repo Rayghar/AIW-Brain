@@ -7,6 +7,7 @@ import {architectureModel,normalizeExploration} from './architecture-model.js';
 import {workingBasis,libraryCurrent,comparisonStamp} from './guidance-record.js';
 import {COMPONENT_LIBRARY_KIND,readComponentSnapshot,snapshotText,SNAPSHOT_LIMIT} from './component-library.js';
 import {documentCopy,handOver} from './document-memo.js';
+import {TOPOLOGY} from './runtime-model.js';
 // Moved to guidance-record.js (F2-08); importers of workbench-domain.js keep reading them here.
 export {workingBasis,libraryCurrent,scenarioProjection,scenarioComparisonCurrent} from './guidance-record.js';
 const text=(v,n=4000)=>typeof v==='string'?v.trim().slice(0,n):'';
@@ -186,7 +187,8 @@ export function applyWorkbenchCommand(input,command,at,actor,{diagramNodes=null,
   const a=m.alternatives.find(a=>a.id===raw.id);if(!a||a.status!=='draft')throw Error('Choose a draft alternative.');const r=rebaseWorkingAlternative(p,a);if(raw.stamp!==r.stamp)throw Error('The alternative or current design changed. Compare again.');
   for(const f of r.conflicts){const choice=raw.resolutions?.[f.index+':'+f.field];if(!['current','proposed'].includes(choice)||f.field==='record')throw Error('Resolve every changed field explicitly. Removed records require a new alternative.');if(choice==='current')setChangeField(r.commands[f.index].payload,f.field,f.current);}
   if(raw.reviewed!==true||!text(raw.reason))throw Error('Review the merge and record its rationale.');
-  r.commands.forEach((c,i)=>{const q=applyCanonical(p,c,at,merged?.by?.(i)||actor);p=q.document;merged?.(q,c,i);});const saved=p.workbench.alternatives.find(x=>x.id===a.id);saved.status='accepted';saved.revision++;saved.accepted={at,actor,reason:text(raw.reason),commands:r.commands,basis:workingBasis(input),resolutions:raw.resolutions||{}};
+  // rc44 (wp9a slice 3, design hook H11): a merge that would newly fail a location gate is refused, the gate named
+  r.commands.forEach((c,i)=>{const q=applyCanonical(p,c,at,merged?.by?.(i)||actor);p=q.document;merged?.(q,c,i);});TOPOLOGY.refuseMerge?.(input,p);const saved=p.workbench.alternatives.find(x=>x.id===a.id);saved.status='accepted';saved.revision++;saved.accepted={at,actor,reason:text(raw.reason),commands:r.commands,basis:workingBasis(input),resolutions:raw.resolutions||{}};
  }else if(command.type==='workspace.set-aside'){
   const a=m.alternatives.find(a=>a.id===raw.id);if(!a||a.status!=='draft'||!text(raw.reason))throw Error('Choose a draft alternative and explain why it is not selected.');a.status='not selected';a.revision++;a.disposition={at,actor,reason:text(raw.reason)};
  }else if(command.type==='workspace.analysis'){

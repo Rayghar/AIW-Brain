@@ -1,0 +1,26 @@
+{
+ "capturedFrom": "4349bb6",
+ "at": "2026-11-19T10:00:00.000Z",
+ "digests": {
+  "bank-payment": {
+   "walkthroughs": 4,
+   "sha": "95054045e5602838207846d7cf433e25b9abad8526518b1cf89002e3acd01c13"
+  },
+  "clinic-appointments": {
+   "walkthroughs": 2,
+   "sha": "082b7f3eed7026cdc3724dd5fab91633175caf9aa33f051c8595be04ad5589fa"
+  },
+  "parcel-lockers": {
+   "walkthroughs": 2,
+   "sha": "178d7f9f2d602983019d6cd965beda8676b55c3541704c7661c15d7d2c60eefb"
+  },
+  "tidewater": {
+   "walkthroughs": 6,
+   "sha": "c5dd7dedc72a450f8e13c153b9c7fe2f8c70023e41fb81be043537cf6c76db4c"
+  },
+  "tidewater-typed": {
+   "walkthroughs": 6,
+   "sha": "c5dd7dedc72a450f8e13c153b9c7fe2f8c70023e41fb81be043537cf6c76db4c"
+  }
+ }
+}

@@ -13,6 +13,47 @@ e retirement and migration · f shared contracts · g slices · h proof scenario
 
 ---
 
+## Revision by ruling Y1 (the lead's build S0-D10, rc44/s0-w3-bundle, 2026-11-26): where wp3's readers load
+
+This revision stands over every passage of this design that gives wp3 a lazy entry of its own (0 item 3, L2, d.1's rows
+for `workload-hook.js` and `workload-engine.js`, d.2's row for `client-bundle.mjs`, d.3, d.4's `workload-hook.js` row,
+f.1 P-1, S1's ownership, i.3 risk 2). Those passages are marked "superseded by Y1" where they stand; the rest of the
+design is unchanged. The package is `p50-workload` (ruling D8: after `p30-deployment`, whose topology it reads).
+
+- **No entry of its own.** wp3 adds no lazy entry and no script file. The design packages' first-draw readers live in
+  the one shared lazy entry `public/design-package-readers.js`, which every route stub loads before a document that
+  holds any package's records is first drawn (rulings D10 and Y1; build contract rules 50 to 52). The script gate stays
+  where S0-D10 moved it (150, `client-bundle.mjs`); going beyond 150 is the owner's decision.
+- **What joins the shared entry** (its first-draw readers: registration rows, readers, checks, design rows; no surface):
+  the module that registers the package (`public/workload-package.js`, `registerExtension({id: 'p50-workload', …})`,
+  one line in `design-package-readers.js`: `import './workload-package.js';`) and what it imports: the records' model and
+  normalisers (`workload-model.js`), the derivation (`workload-derive.js`), the calculation cards (`workload-cards.js`),
+  the bindings' readers (`workload-bindings.js`) and the checks. They are read through S0's registry (`EXTENSIONS`:
+  `objectTypes`, `records`, `layers`/`hops`, `checks`, `commands` with `staged`, `lifecycle`, `provenance`, `design`,
+  `designKeys`/`evidenceKeys`, `sections`), not through an accessor of the package's own: the registry is the "one
+  registration point on the route" this design asked for (L1, N-1).
+- **The route stub** `p50-workload-route` in `public/design-package-routes.js`: `needs` is what d.3 states for
+  `needsWorkloadEngine(p)` (any of the four collections, or `workloadMigration` as d.3 says), and `load` imports
+  `./design-package-readers.js`, like every stub. `project-store.js` already awaits `ensureExtensions` where it reads a
+  project and where a save answers, so there is never a frame in which a recorded workload is drawn without its
+  readings; the accessor `workload-hook.js` with its own `import('./workload-engine.js')` is not built.
+- **On the server** the package registers from its line of `design-packages.js` (a server module may add what only the
+  server runs, as `adoption-server.js` and `knowledge-package-server.js` do); `worker.js` imports no workload module of
+  its own.
+- **Each surface stays in its host entry**: the Workload view in the Chapter 2 utility view's entry, the Envelopes
+  section in the Chapter 10 Model view's, the desk's "What it takes" in the Chapter 11 desk's, the bindings in the
+  design-task surface and the alternative editor (d.2, d.5). A host entry that needs the package registered for its
+  surface imports `./design-package-readers.js` by an import that takes no name, as the three hosts of S0-D10 do; it
+  imports no reader module of its own for registration alone (that would split the shared chunk and add script files).
+- **Size.** The route bytes of the stub and the registry rows count against the chapters route cap (3,266,560 B, the
+  owner's decision AA2; one size check at each merge, no per-slice booking). What a document with any package's records
+  opens with is the route plus the shared entry's static closure (`rc44-s0-readings.mjs opensWithRecords(metafile,
+  'public/design-package-readers.js', …)`): 69,723 B at S0-D10 for the three packages there, held to at most 160 KB
+  (163,840 B) by `rc44-s0-d10-validate.mjs` (D10.2). wp3's readers are estimated at 45 to 60 KB (d.3), which would bring
+  the shared entry to about 115 to 130 KB: each wp3 build measures and reports it, and a build that would take a
+  document with records past the route plus 160 KB names it to the lead before it merges.
+- **Fallback** (d.3's, folding the engine into `desk-view.js`) is withdrawn: it would load the desk before a first draw.
+
 ## 0. The design in one page, and what the lead must settle
 
 **The design.**
@@ -29,7 +70,8 @@ e retirement and migration · f shared contracts · g slices · h proof scenario
 3. **One arithmetic.** The formulas that exist today in three files are moved, unchanged, into one small kernel
    (`public/demand-kernel.js`, on the route, byte-neutral because it is moved code). Every consumer calls it. The
    recorded model, the named conditions, the new calculations and the new checks live in **one lazily loaded entry**
-   (`public/workload-engine.js`), installed synchronously on the server.
+   (`public/workload-engine.js`), installed synchronously on the server. (Superseded by Y1: they join the one shared
+   first-draw entry, `public/design-package-readers.js`, and wp3 adds no entry of its own; see the revision above.)
 4. **One input authority per scope.** A recorded workload is the only input the calculations read for its scope. A
    document that records none is read through one adapter (`legacyWorkload`) that presents today's inputs (the saved
    review objective, the drivers' target text, the desk's planning assumptions) in the workload shape, labelled
@@ -48,7 +90,8 @@ e retirement and migration · f shared contracts · g slices · h proof scenario
   3,233,792 B). I need ONE shared registration point on the route from the lead (or wp7, which owns the trace reading).
   With it this package's own route cost is an estimated **0.4 to 0.6 KB**. Section d.4 gives both tables.
 - **L2. Script count.** The gate is exact (148 of 148, `client-bundle.mjs:294`). This package asks for the ONE new lazy
-  entry the frame allows: `workload-engine.js` (149). The justification and the fallback are in d.3.
+  entry the frame allows: `workload-engine.js` (149). The justification and the fallback are in d.3. (Superseded by Y1:
+  settled. wp3 adds no script file; the gate is 150 since S0-D10, which the shared entry took.)
 - **L3. Stylesheet.** `css` measures 901,873 B of 902,144 B (271 B spare). The workload surface adds **no** stylesheet
   rules; it reuses the classes of the views that host it. Any package that needs CSS needs a decision from the lead.
 - **L4. The legacy adapter retires one release later** (rc.10.73.45), not in rc44, because existing suites feed
@@ -386,8 +429,8 @@ accept a source that is not in `TARGET_LISTS` (`public/changes-domain.js:153`, `
 | Path | Loaded | Purity | Exports (what an engineer writes) |
 |---|---|---|---|
 | `public/demand-kernel.js` | On the route (moved code, byte-neutral; it takes the place of the lines it replaces) | Pure, no document access | `demandFlow(F, ids, entries, factor)` — the one propagation, moved from `public/desk-capacity.js:166-171` and `:491-497`; `replicasFor(rate, perInstance, utilisation)` — from `:214` and `:509`; `storeDemand(rate, {opsPerUnit, readShare, miss, cached})` — from `:270`; `poolCapacity(instances, perInstance, efficiency, downstream)` — from `public/quality-analysis.js:37` and `public/architecture-analysis.js:51`; `backlogDrain(backlog, service, arrival)` — from `public/quality-analysis.js:41`; `perSecond(v, unit)` — the table at `public/desk-capacity.js:387`; `KERNEL_VERSION = 'demand-kernel-1'` |
-| `public/workload-hook.js` | On the route (about 0.4 KB) | Pure accessor | `workloadEngine()`, `installWorkloadEngine(api)`, `needsWorkloadEngine(p)`, `loadWorkloadEngine()` (the one `import('./workload-engine.js')`), `workloadReady(p)`, `workloadChecks(p, chapter)` (the engine's findings, or `[]` when the document needs no engine) |
-| `public/workload-engine.js` | **The one new lazy entry**; imported statically by `worker.js` (server) and by the rc44 suites | Assembles the parts; at the end calls `installWorkloadEngine({…})` | Re-exports the API of section f.1 |
+| `public/workload-hook.js` (superseded by Y1: not built; the route stub and S0's registry take its place) | On the route (about 0.4 KB) | Pure accessor | `workloadEngine()`, `installWorkloadEngine(api)`, `needsWorkloadEngine(p)`, `loadWorkloadEngine()` (the one `import('./workload-engine.js')`), `workloadReady(p)`, `workloadChecks(p, chapter)` (the engine's findings, or `[]` when the document needs no engine) |
+| `public/workload-engine.js` (superseded by Y1: no entry of its own; `workload-package.js` registers the package and joins `design-package-readers.js`) | **The one new lazy entry**; imported statically by `worker.js` (server) and by the rc44 suites | Assembles the parts; at the end calls `installWorkloadEngine({…})` | Re-exports the API of section f.1 |
 | `public/workload-model.js` | In the engine chunk | Pure | `WORKLOAD_ENGINE = 'workload-1'`, `UNITS`, `LIMITS`, `quantity(raw, spec)`, `normaliseWorkload/Service/Objective/Limit(p, raw, old)`, `workloads(p)`, `effectiveWorkload(p, {envId, profile})`, `legacyWorkload(p, profile)`, `conditionOf(W, id)`, `resolve(p, {workloadId, ref, conditionId})`, `workloadStamp(p, scope)` |
 | `public/workload-derive.js` | In the engine chunk | Pure, deterministic, bounded | `deriveDemand(p, {conditionId, envId, workloadId?}) → Demand` (f.1); `deskObjective(R, p, cond)` — the recorded model projected onto the objective shape `capacityPlan` already takes |
 | `public/workload-cards.js` | In the engine chunk | Pure | `CARDS` (the calculation registry: the six existing schemas referenced by topic, plus `demand`, `fleet-envelope`, `burst-backlog`, `outage-backlog`, `survivor-capacity`, `cache-fallback`, `human-capacity`; later files add theirs with `registerCard`), `registerCard(card)`, `evaluate(cardId, inputs) → Result`, `sensitivity(cardId, inputs)` |
@@ -437,9 +480,12 @@ accept a source that is not in `TARGET_LISTS` (`public/changes-domain.js:153`, `
 | `public/quality-analysis-ui.js` (in the lazy design-task surface) | "Bind to the workload" on each input the workload can state |
 | `public/alternative-editor.js` (lazy) | The same binding for a comparison's demand |
 | `package.json` | `test:rc44-wp3-workload`, `test:rc44-wp3-workload-browser` |
-| `client-bundle.mjs:294` | `scripts: 149` with the dated note (lead's decision L2) |
+| `client-bundle.mjs:294` (superseded by Y1: not touched; the gate is 150 since S0-D10) | `scripts: 149` with the dated note (lead's decision L2) |
 
 ### d.3 The lazy boundary, and why one new entry
+
+(Superseded by Y1, see the revision at the top: the "needs" predicate below becomes the `needs` of the route stub
+`p50-workload-route`, and "what loads on demand" is the shared first-draw entry, not an entry of wp3's own.)
 
 - **What is on the route:** the kernel (moved code), the accessor, and the hooks of d.2. No validation, no card, no
   check, no editor, no document builder.
@@ -462,6 +508,10 @@ accept a source that is not in `TARGET_LISTS` (`public/changes-domain.js:153`, `
   the desk for every project that records a workload. I do not recommend it.
 
 ### d.4 Estimated bytes on the route (to be measured in S1, S2 and S6)
+
+(Y1 and AA2: the `workload-hook.js` row is not built, its place taken by one route stub of about 0.1 KB; the "shared
+registration point" column is the one that applies; the bytes count against the chapters route cap of 3,266,560 B in the
+one size check at each merge, with no allotment per package.)
 
 | Hook | Static rows (fallback) | With a shared registration point (L1) |
 |---|---|---|
@@ -603,7 +653,8 @@ Until then the adapter's existence is itself visible: every reading it feeds say
 ### f.1 What this package PROVIDES
 
 **P-1 The engine API** (`workloadEngine()` from `public/workload-hook.js`; `null` only in a browser that holds no
-document needing it):
+document needing it; superseded by Y1 for where it loads: the API is exported by the package's modules, which the shared
+first-draw entry holds, and the browser reaches the package through S0's registry, not through an accessor of its own):
 
 ```
 deriveDemand(p, {conditionId, envId?, workloadId?}) → Demand
@@ -751,7 +802,9 @@ S1 ──► S2 ──► S3 ─┐
 ### S1 — Records, commands, registration, the engine shell
 
 - **Depends on:** nothing.
-- **Owns:** `public/workload-hook.js`, `public/workload-engine.js` (it imports every part by name from the start;
+- **Owns** (superseded by Y1 for the first two files: S1 owns `public/workload-package.js`, its line in
+  `public/design-package-readers.js`, its route stub and its line of `design-packages.js` instead; see the revision at
+  the top): `public/workload-hook.js`, `public/workload-engine.js` (it imports every part by name from the start;
   parts not yet written are stubs that refuse with "not available yet", so no later slice edits it),
   `public/workload-model.js`, `public/workload-domain.js` (the four record commands and the dispatch table), the hooks in
   `worker.js:101`/`:106`, `authorship.js:39`, `public/canonical-command.js`, `public/record-lifecycle.js:50`,
@@ -924,7 +977,8 @@ external party; one production environment with three zones in three failure dom
 
 1. **Route bytes** (L1): about 1.8 KB with static rows against "a few hundred". Needs the lead's shared registration
    point or an explicit allotment.
-2. **Script count and CSS** (L2, L3): exact gates with no headroom.
+2. **Script count and CSS** (L2, L3): exact gates with no headroom. (Y1: wp3 adds no script file, so the script gate
+   is no risk of wp3's; the stylesheet cap stays as it is, AA2.)
 3. **Exact finding lists in existing suites.** Mitigated by raising nothing on a document without the new records or
    the migration record; the upgrade runs only on the server. A suite that reads a stored, upgraded fixture and asserts
    an exact list would see `workload-migration`; S2 searches for such a suite before merging and reports it rather
