@@ -79,6 +79,10 @@ export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??
  // from. It is kept as history (runtime.topology.importedReview) and the step is nobody's here, whatever the package says
  // of itself or of its dates, until a person here takes it. A document with no step taken gains no key.
  {const t=p?.runtime?.topology;if(t&&typeof t==='object'&&t.review){t.importedReview=t.review;t.review=null;}}
+ // rc44 (S0-w3-stamps fix-up; rulings Z2 and Z8): an adoption's acceptance (wp2: adoptions.records[].review) is a second
+ // person's step taken on the workbench the package came from. It is kept as history (importedReview) and is nobody's
+ // here, whatever its dates, until a second person here accepts again. An adoption with no step gains no key.
+ for(const a of Array.isArray(p?.adoptions?.records)?p.adoptions.records:[])if(a&&typeof a==='object'&&a.review){a.importedReview=a.review;a.review=null;}
  // rc44 (wp2 S5; the lead's ruling Q6): a component selection's steps (who started it, each judgement, the choice, the
  // second person's confirm, the instantiation) were taken on the workbench the package came from. They are kept as
  // history (decision.selection.imported) and count as nobody's here; the candidates' outcomes go with the choice. A

@@ -271,6 +271,42 @@ add('I7 (ruling Z8): the date comparison is retired as the import\'s guard: the 
   assert.ok(b.includes('p?.workspace?.templateOrigin?.at'), 'the template copy keeps its date (ruling F3)');
 });
 
+// ------------------------------------------------------------------------------------------------ I8 (the fix-up, must-fix 1: an adoption's acceptance)
+// wp2's acceptance of an adoption (adoptions.records[].review) is a second person's step taken on the workbench the
+// package came from: the import moves it aside before any early return (recovery-service.js, as M2 does for the
+// topology step), so no date decides it; the date readers of wp2 (adoption-domain.js here()) are left to wp2 or the lead.
+add('I8 (ruling Z8, Z2; the fix-up, must-fix 1): through /api/recovery an adoption\'s acceptance is moved aside whatever its date: one by a person this workbench does not know, dated after the import, reads as not accepted and names nobody; a person here confirms the adoption, a second person accepts it and is the one named; assertRecoveryClearsSteps over the adoptions', async () => {
+  const W = await import('./rc44-wp2-fixtures.mjs'), D = await import('./public/adoption-domain.js'), {architectureSourceStamp} = await import('./public/architecture-design.js'), s = await W.server(worker), id = 'ADP-001';
+  try {
+    await s.apply(); await s.read(B); const adp = d => d.adoptions.records.find(a => a.id === id);
+    const refresh = async (h, as) => { const d = rv.withFinalReview(clone(h.d ? h.d() : h.doc())), t = d.coauthoring.designTasks.find(x => x.id === 'DES-001'); return h.ok('architecture.refresh', {id: t.id, taskRevision: t.revision, reviewed: true, reviewer: 'Synthetic architect', reason: 'Reviewed the current sources of DES-001.', stamp: architectureSourceStamp(d, t)}, as); };
+    await s.ok('adoption.reassess', {id, revision: adp(s.doc()).revision, reviewed: true, reason: 'Read against the model.'}, A); await refresh(s, A);
+    await s.ok('adoption.accept', {id, revision: adp(s.doc()).revision, deviationIds: [], note: 'Read against the model.'}, B);
+    assert.equal(D.adoptionAccepted(s.doc(), adp(s.doc())), true, 'accepted where the package comes from');
+    // the package, hand-edited: the acceptance names a person this workbench does not know, dated after the import
+    const pack = clone(s.doc()); Object.assign(adp(pack).review, {actor: 'architect-x', at: FUTURE});
+    const rid = await restore(s, pack, B, 'Restored with an acceptance'), r = await projectOf(s, B, [A, C], rid); await r.read(C);
+    const now = adp(r.d()), g = D.adoptionReading(r.d(), now);
+    assert.equal(D.adoptionAccepted(r.d(), now), false, 'an acceptance taken where the package came from is no acceptance here, whatever its date');
+    assert.deepEqual([g.accepted, g.acceptance.by, g.label], [false, null, 'applied · not accepted by a second person'], 'the reading names nobody');
+    assert.deepEqual([now.review ?? null, now.importedReview?.actor, now.importedReview?.at], [null, 'architect-x', FUTURE], 'the acceptance is kept as history (importedReview)');
+    R.assertRecoveryClearsSteps(pack, d => list(d.adoptions?.records));
+    if (D.adoptionReading(r.d(), adp(r.d())).basis.state !== 'current') await refresh(r, A);
+    // (a known limit, recorded, not this fix-up's: the adoption came confirmed, so a person's confirmation of it as it
+    // stands changes no flag and the boundary stamps nothing; nobody stands behind it here until it changes)
+    await r.ok('adoption.reassess', {id, revision: adp(r.d()).revision, reviewed: true, reason: 'Read against the model here.'}, A);
+    assert.deepEqual([adp(r.d()).confirmed, adp(r.d()).provenance?.reviewed ?? null], [true, null], 'a confirmation of a record that came confirmed stamps nothing');
+    { const x = await r.send('adoption.accept', {id, revision: adp(r.d()).revision, deviationIds: [], note: 'Read here.'}, C); assert.equal(x.status, 400); assert.match(x.error, NO_PERSON(id)); }
+    // a person here changes it (a deviation), another confirms it as it stands, and a second person accepts it and is the one named
+    await r.ok('adoption.deviation', {id, revision: adp(r.d()).revision, target: {kind: 'role', id: 'relay'}, statement: 'The relay runs inside the Payment service process.', reason: 'One deployment unit is all the team operates.'}, C);
+    await r.ok('adoption.reassess', {id, revision: adp(r.d()).revision, reviewed: true, reason: 'Read against the model here.'}, A);
+    assert.equal(adp(r.d()).provenance.reviewed.by, A, 'the person here who confirmed it is named');
+    await r.ok('adoption.accept', {id, revision: adp(r.d()).revision, deviationIds: list(adp(r.d()).deviations).filter(d => !d.withdrawn).map(d => d.id), note: 'Read here.'}, B);
+    const then = D.adoptionReading(r.d(), adp(r.d()));
+    assert.deepEqual([then.accepted, then.acceptance.by, then.label, adp(r.d()).importedReview.actor], [true, B, 'applied · accepted by ' + B, 'architect-x'], 'the second person here is named; the history is kept');
+  } finally { s.close(); }
+});
+
 // ------------------------------------------------------------------------------------------------ the runner
 const only = process.argv.includes('--only') ? process.argv[process.argv.indexOf('--only') + 1] : '';
 const passed = [], failed = [];

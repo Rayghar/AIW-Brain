@@ -314,3 +314,11 @@ retired). No stylesheet rule was added.
 Because nothing is booked (AA2), the size cases written for the bookings fail on this branch by exactly the +583 B, and
 pass on `4349bb6` (run there): S0's block "O1 the bookings add up", wp1's S2.12 and S3.10, wp2's blocks "size" and
 "S5 size", wp9a's S1.10. Build `s0-w3-bundle` retires them beside this build (AA2); listed for the lead.
+
+## Fix-up (AA1: the one review, the one fix-up; branch `rc44/s0-w3-stamps-fix` from `c72a0a2`)
+
+State: **in progress**. Each must-fix item has a case seen to fail on `c72a0a2` first (the failure is quoted).
+
+| Item | Outcome | Case (failure seen on `c72a0a2`) |
+|---|---|---|
+| must-fix 1: an adoption's acceptance kept in place by the import, decided by wp2's date | done: `recovery-service.js` moves `adoptions.records[].review` aside (`importedReview`, `review` null; no step, no key), before the early return, as M2 does for the topology step | I8 ("an acceptance taken where the package came from is no acceptance here, whatever its date") |
