@@ -1,0 +1,418 @@
+{
+  "schema": "aiw.rc44.merge-evidence.v1",
+  "release": "AIW v0.10.0-rc.10.73.44 (working number, not confirmed by the owner)",
+  "date": "2026-11-26",
+  "what": "Merge of wave 3, first part, into the development line: the lead's S0 builds s0-w3-bundle (owner decision AA2; rulings D10, Y1, U6) and s0-w3-stamps (rulings Y2 with B10; Z8), and wp9a slices 2 and 3 (declared failures, location gates, data copies)",
+  "mergeCommit": "76da9ba",
+  "integrationCommit": "d955bf1",
+  "slices": [
+    {
+      "id": "s0-w3-bundle",
+      "branch": "rc44/s0-w3-bundle then rc44/s0-w3-bundle-fix-c2",
+      "head": "7d914d9",
+      "suites": [
+        "rc44-s0-d10-validate.mjs (new)",
+        "rc44-s0-extensions-validate.mjs (block O1 replaced by AA2 one size check)"
+      ],
+      "reviews": "one adversarial review (changes-needed: 2 must-fix: the p10 stub missed a library with no crosswalk or pin; wp9a S1.10 read the lists of a script that no longer held the package) and one fix-up that fixed both and 6 should-fix items (AA1)"
+    },
+    {
+      "id": "wp9a-s2s3",
+      "branch": "rc44/wp9a-s2s3 then rc44/wp9a-s2s3-fix",
+      "head": "a0726b6",
+      "suites": [
+        "rc44-wp9a-deployment-validate.mjs (blocks S2, S3)",
+        "rc44-wp9a-deployment-browser-validate.mjs"
+      ],
+      "reviews": "one adversarial review (changes-needed: 6 must-fix: draft and agent edits of standing claims, gates and copies; L11(d) over zones and placements; retired steps restored after an import; a second independence comparison (L2); the evaluation bound) and one fix-up that fixed all six (AA1)"
+    },
+    {
+      "id": "s0-w3-stamps",
+      "branch": "rc44/s0-w3-stamps then rc44/s0-w3-stamps-fix",
+      "head": "3ee3768",
+      "suites": [
+        "rc44-s0-b10-validate.mjs (new)",
+        "rc44-s0-import-validate.mjs (new)",
+        "recovery-size-validate.mjs (expectation now computed by the suite, stricter)"
+      ],
+      "reviews": "one adversarial review (changes-needed: 4 must-fix: an imported adoption acceptance decided by date; a frozen baseline read as changed after an import; a stored library's evidence alias; package steps missing from the history panel of a stored document) and one fix-up that fixed all four (AA1)"
+    }
+  ],
+  "mergeResolutions": [
+    "rc44/m-wp9a 7716361 + ed1140e: rc44-wp9a-deployment-validate.mjs S1.10, the shared entry's reading with slices 2 and 3 in the package: MERGE_SHARE pins each module exactly as measured in the shared entry's script at the merge, lists 275 B against the build without the package, total 66,792 B (was SHARED_MODULES with LAZY_SHARE 168/22,674 B on S0-D10's branch, BUILD_SHARE 271/66,865 B on the build's branch); the build's evidence check reads 148 script files as its own record (the gate is 150 since Y1); SHARED_MODULES read as the package's module set (lint)",
+    "rc44/m-stamps bf84fba: package.json (both suites' registrations) and recovery-service.js neutraliseImportedAuthority (both blocks: wp9a's declared-failure and gate steps, live and retired, and the stamps fix-up's adoption acceptance); no assertion changed",
+    "d955bf1: rc44-s0-d10-validate.mjs D10.1 reads the two ruled changes exactly, the goldens not recaptured: the knowledge document holds exactly two lines naming p10-knowledge (Y2) and with them out is the base's byte for byte; the deployment graph and model hold exactly one backsUpTo relation from the plan's backup zone (wp9a slice 3) and without it are the base's byte for byte"
+  ],
+  "rulings": [
+    "AA1",
+    "AA2",
+    "D10",
+    "Y1",
+    "U6",
+    "Y2",
+    "B10",
+    "X4",
+    "X5(b)",
+    "Z2",
+    "Z5",
+    "Z8",
+    "Z9",
+    "L2",
+    "L3",
+    "L8",
+    "L11(d)",
+    "M9(f)",
+    "R4"
+  ],
+  "size": {
+    "chaptersRoute": 3230200,
+    "from4349bb6": 1262,
+    "cap": 3266560,
+    "capRaisedBy": "AA2 (32 KB)",
+    "scriptFiles": 150,
+    "scriptGate": 150,
+    "scriptGateMovedBy": "Y1",
+    "buckets": {
+      "under10k": 53,
+      "from10to50k": 51,
+      "over50k": 46
+    },
+    "css": 901873,
+    "projectsRoute": 509039,
+    "violations": [],
+    "opensWithRecords": "route + 113,979 B in 2 scripts (the one shared entry) for every document with package records; exactly the route for none (D10.2, D10.3)",
+    "booking": "retired by AA2"
+  },
+  "syntax": "passed (950 modules)",
+  "lint": {
+    "problems": 162,
+    "baseline": 162,
+    "new": 0
+  },
+  "suites": {
+    "scope": "the related suites of the three builds and S0's suites on rc44/m-stamps d955bf1, two at a time, browser suites included; the 44 of the first two merges also on ed1140e (43 passed; D10.1 then red, fixed in d955bf1)",
+    "passed": 74,
+    "failed": 0,
+    "list": [
+      {
+        "suite": "action-undo",
+        "status": "passed"
+      },
+      {
+        "suite": "architecture-obligations",
+        "status": "passed"
+      },
+      {
+        "suite": "architecture-verification",
+        "status": "passed"
+      },
+      {
+        "suite": "architecture-whatif-browser",
+        "status": "passed"
+      },
+      {
+        "suite": "brain",
+        "status": "passed"
+      },
+      {
+        "suite": "brain-governance-ui",
+        "status": "passed"
+      },
+      {
+        "suite": "candidate-import",
+        "status": "passed"
+      },
+      {
+        "suite": "canvas-draft-browser",
+        "status": "passed"
+      },
+      {
+        "suite": "changes",
+        "status": "passed"
+      },
+      {
+        "suite": "connected-architecture-ui",
+        "status": "passed"
+      },
+      {
+        "suite": "deploy",
+        "status": "passed"
+      },
+      {
+        "suite": "design-records",
+        "status": "passed"
+      },
+      {
+        "suite": "design-task-ui",
+        "status": "passed"
+      },
+      {
+        "suite": "desk",
+        "status": "passed"
+      },
+      {
+        "suite": "desk-fixes",
+        "status": "passed"
+      },
+      {
+        "suite": "drafter-groups",
+        "status": "passed"
+      },
+      {
+        "suite": "driver-knowledge-ui",
+        "status": "passed"
+      },
+      {
+        "suite": "evidence",
+        "status": "passed"
+      },
+      {
+        "suite": "exchange-task-ui",
+        "status": "passed"
+      },
+      {
+        "suite": "field-kit-browser",
+        "status": "passed"
+      },
+      {
+        "suite": "fingerprint",
+        "status": "passed"
+      },
+      {
+        "suite": "hosted-knowledge",
+        "status": "passed"
+      },
+      {
+        "suite": "intake",
+        "status": "passed"
+      },
+      {
+        "suite": "journal-archive",
+        "status": "passed"
+      },
+      {
+        "suite": "knowledge-boundaries",
+        "status": "passed"
+      },
+      {
+        "suite": "knowledge-coverage",
+        "status": "passed"
+      },
+      {
+        "suite": "knowledge-design",
+        "status": "passed"
+      },
+      {
+        "suite": "knowledge-repository",
+        "status": "passed"
+      },
+      {
+        "suite": "knowledge-repository-browser",
+        "status": "passed"
+      },
+      {
+        "suite": "knowledge-retrieval",
+        "status": "passed"
+      },
+      {
+        "suite": "knowledge-structure",
+        "status": "passed"
+      },
+      {
+        "suite": "local-accounts",
+        "status": "passed"
+      },
+      {
+        "suite": "model-alternatives",
+        "status": "passed"
+      },
+      {
+        "suite": "model-alternatives-ui",
+        "status": "passed"
+      },
+      {
+        "suite": "model-views-browser",
+        "status": "passed"
+      },
+      {
+        "suite": "module-scope-browser",
+        "status": "passed"
+      },
+      {
+        "suite": "operations",
+        "status": "passed"
+      },
+      {
+        "suite": "provenance",
+        "status": "passed"
+      },
+      {
+        "suite": "rc42-g2-library",
+        "status": "passed"
+      },
+      {
+        "suite": "rc42-g3a-risk-and-limits",
+        "status": "passed"
+      },
+      {
+        "suite": "rc42-g3b-trace-and-delivery",
+        "status": "passed"
+      },
+      {
+        "suite": "rc42-g3c-evidence-fingerprint",
+        "status": "passed"
+      },
+      {
+        "suite": "rc42-g4-trace-kernel",
+        "status": "passed"
+      },
+      {
+        "suite": "rc42-g5-runtime",
+        "status": "passed"
+      },
+      {
+        "suite": "rc42-lazy-dossier-browser",
+        "status": "passed"
+      },
+      {
+        "suite": "rc44-s0-b10",
+        "status": "passed"
+      },
+      {
+        "suite": "rc44-s0-d10",
+        "status": "passed"
+      },
+      {
+        "suite": "rc44-s0-extensions",
+        "status": "passed"
+      },
+      {
+        "suite": "rc44-s0-import",
+        "status": "passed"
+      },
+      {
+        "suite": "rc44-wp1-knowledge",
+        "status": "passed"
+      },
+      {
+        "suite": "rc44-wp2-adoption",
+        "status": "passed"
+      },
+      {
+        "suite": "rc44-wp9a-deployment",
+        "status": "passed"
+      },
+      {
+        "suite": "rc44-wp9a-deployment-browser",
+        "status": "passed"
+      },
+      {
+        "suite": "recovery-authority",
+        "status": "passed"
+      },
+      {
+        "suite": "recovery-size",
+        "status": "passed"
+      },
+      {
+        "suite": "repository-sync",
+        "status": "passed"
+      },
+      {
+        "suite": "repository-transfer",
+        "status": "passed"
+      },
+      {
+        "suite": "repository-transfer-browser",
+        "status": "passed"
+      },
+      {
+        "suite": "requirements-browser",
+        "status": "passed"
+      },
+      {
+        "suite": "review-plan",
+        "status": "passed"
+      },
+      {
+        "suite": "runtime",
+        "status": "passed"
+      },
+      {
+        "suite": "sdd-architecture",
+        "status": "passed"
+      },
+      {
+        "suite": "sdd-content",
+        "status": "passed"
+      },
+      {
+        "suite": "sdd-modules",
+        "status": "passed"
+      },
+      {
+        "suite": "seeded-proposals",
+        "status": "passed"
+      },
+      {
+        "suite": "service-routes",
+        "status": "passed"
+      },
+      {
+        "suite": "sol-sdd",
+        "status": "passed"
+      },
+      {
+        "suite": "stewardship-browser",
+        "status": "passed"
+      },
+      {
+        "suite": "technology",
+        "status": "passed"
+      },
+      {
+        "suite": "technology-choice-browser",
+        "status": "passed"
+      },
+      {
+        "suite": "technology-selection-ux-browser",
+        "status": "passed"
+      },
+      {
+        "suite": "tradeoff-browser",
+        "status": "passed"
+      },
+      {
+        "suite": "ui-modules",
+        "status": "passed"
+      },
+      {
+        "suite": "workspace",
+        "status": "passed"
+      }
+    ]
+  },
+  "regression": "not run at this merge (AA1); the full regression runs at the close of wave 3",
+  "leadDecisions": [
+    "L3 assumed NO: no package lifecycle rule on built-in collections; the mend and the finding stand",
+    "rule 11: node-address-overlap, node-data-exposure and domain-shared stand on typed documents (only rc44-typed documents carry them; no document of a released build moves)",
+    "the S1.10 package share re-pinned from measurement at the merge (R4), each module exact"
+  ],
+  "knownLimits": [
+    "a project imported before this build keeps the date reading (datedImport) until its next import (Z8)",
+    "wp2's here() readers still read the import date for projects imported before this build; an imported acceptance is moved aside",
+    "a record an import carries with confirmed:true cannot be re-confirmed here until it changes or is unconfirmed (provenance.js settle; as on 4349bb6)",
+    "a stamp of the whole design goes stale at any restore through /api/recovery (id, name, template are design-source reads; as on 4349bb6)",
+    "the Projects page computes a card's readiness in the browser without the route stubs (as on 4349bb6)",
+    "a harmless draft of any record a gate reads raises the hard location-gate error until a person reviews it (fail closed; surfaced by wp9a slice 6)",
+    "the findings held back under rule 11 until wp9a slice 6 (failure-acceptance, failure-set, failure-minimum-service, domain-scope, domain-evidence, copy-unlocated, node-shared-account, environment-recovers)",
+    "the eight design-task paths still stand beside the adoption path until wp2-s2s3 is merged"
+  ],
+  "productionAccepted": false,
+  "externalAuthorities": {
+    "licenceCounsel": "not engaged",
+    "fourEyesKnowledgeApprover": "not assigned",
+    "independentArchitectureReview": "not started",
+    "productionAcceptanceAuthority": "none"
+  }
+}
