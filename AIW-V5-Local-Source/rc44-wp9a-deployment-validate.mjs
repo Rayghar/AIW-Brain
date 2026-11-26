@@ -1277,10 +1277,16 @@ await block('S1.10 the client build', async () => {
   // (ruling Y1) what a document with the package's records loads before it is first drawn is the shared entry: at most the route plus 160 KB
   { const first = R.opensWithRecords(meta, SHARED, Object.keys(BUDGET.data)); assert.ok(first.route === measured.chapters && first.added > 0 && first.added <= 160 * 1024, 'a document with the package\'s records opens with at most the route plus 160 KB: +' + first.added + ' B in ' + first.files + ' scripts'); }
   // (ruling R4) the package's share of its lazy entry, read from a build's metafile: its own modules, each pinned, and its own import and export lists,
-  // the bytes of the script that holds it outside its modules, against the same script at the adoption record (ADOPTION_HOLDER); not the entry's whole
-  // growth, so that a shared chunk another package moves does not move it. withinShare answers what is past the measure.
+  // the bytes of the script that holds it outside its modules, against the same script without the package; not the entry's whole growth, so that a
+  // shared chunk another package moves does not move it. withinShare answers what is past the measure.
   // (ruling Y1, old -> new. Was: the modules read from the script of HOST, which held them. The modules are read from the script
-  // that holds them now, the shared entry's (pkgOf), each pinned as before; the lists are read from the script of HOST as before.)
+  // that holds them now, the shared entry's (pkgOf), each pinned as before.)
+  // (S0-D10's fix-up, must-fix 2; rulings R4 and Y1, old -> new. Was: the lists read from the script of HOST against the same script
+  // at the adoption record (ADOPTION_HOLDER), as before Y1; since Y1 that script holds no module of the package, so its lists were
+  // no longer the package's and the measure could not fail when the package's own lists grew. Now the lists are read from the
+  // script that holds the package (pkgOf), against the same script as this build makes it without the package (WITHOUT, measured
+  // live below): what the package adds to the lists of the script that holds it, as ADOPTION_HOLDER measured it before Y1, held to
+  // the same LAZY_SHARE.lists and LAZY_SHARE.total, whatever other package's readers join that script.)
   const holderOf = m => Object.keys(m.outputs).find(f => f.endsWith('.js') && Object.keys(m.outputs[f].inputs || {}).includes(HOST));
   const pkgOf = m => Object.keys(m.outputs).find(f => f.endsWith('.js') && Object.keys(m.outputs[f].inputs || {}).includes('public/topology.js'));
   // (S0-D10's fix-up, must-fix 2; rulings R4 and Y1) the script that holds the package, as the same build makes it without
@@ -1294,23 +1300,25 @@ await block('S1.10 the client build', async () => {
     const f = Object.keys(w.outputs).find(f => f.endsWith('.js') && mates.some(i => Object.keys(w.outputs[f].inputs || {}).includes(i))), o = f && w.outputs[f];
     const modules = o ? Object.values(o.inputs).reduce((n, x) => n + x.bytesInOutput, 0) : 0; return {bytes: o?.bytes || 0, modules, lists: (o?.bytes || 0) - modules, script: f || null};
   })();
-  const shareOf = m => { const o = m.outputs[holderOf(m)], inputs = Object.entries(o.inputs), modules = Object.fromEntries(Object.entries(m.outputs[pkgOf(m)].inputs).filter(([i]) => /^public\/topology(-[a-z]+)?\.js$/.test(i)).map(([i, x]) => [i, x.bytesInOutput]).sort(([a], [b]) => a < b ? -1 : 1));
+  const shareOf = (m, without = WITHOUT) => { const o = m.outputs[pkgOf(m)], inputs = Object.entries(o.inputs), modules = Object.fromEntries(inputs.filter(([i]) => /^public\/topology(-[a-z]+)?\.js$/.test(i)).map(([i, x]) => [i, x.bytesInOutput]).sort(([a], [b]) => a < b ? -1 : 1));
     const script = {bytes: o.bytes, modules: inputs.reduce((n, [, x]) => n + x.bytesInOutput, 0)}; script.lists = script.bytes - script.modules;
-    const lists = script.lists - ADOPTION_HOLDER.lists; return {modules, lists, total: Object.values(modules).reduce((n, x) => n + x, 0) + lists, script}; };
-  const withinShare = m => { const s = shareOf(m), out = [];
+    const lists = script.lists - without.lists; return {modules, lists, total: Object.values(modules).reduce((n, x) => n + x, 0) + lists, script}; };
+  const withinShare = (m, without) => { const s = shareOf(m, without), out = [];
     if (JSON.stringify(s.modules) !== JSON.stringify(SHARED_MODULES)) out.push('the modules are ' + JSON.stringify(s.modules)); if (s.lists > LAZY_SHARE.lists) out.push('its import and export lists grew ' + s.lists + ' B, more than ' + LAZY_SHARE.lists); if (s.total > LAZY_SHARE.total) out.push('the share is ' + s.total + ' B, more than ' + LAZY_SHARE.total); return out; };
-  // a script of the entry's closure beside the route and the holder that another package moves by 24 B does not move the package's share; its own
-  // import and export lists one byte past the measure, and a module one byte past its pin, do
-  { const held = holderOf(meta), others = (meta.outputs[held].imports || []).filter(i => i.kind === 'import-statement' && i.path !== held).map(i => i.path);
+  // a script of the entry's closure beside the route and the holder that another package moves by 24 B does not move the package's share, nor does
+  // the Model view's own script (it holds no module of the package since Y1), nor another package's readers joining the script that holds the package
+  // (with the lists they bring, which the same build without the package holds too); its own import and export lists one byte past the measure, and a
+  // module one byte past its pin, do
+  // (S0-D10's fix-up, must-fix 2, old -> new. Was: 'its own import and export lists one byte past the measure fail it', with the bytes added to the
+  // script of HOST, which since Y1 holds none of the package. Now the bytes are added to the script that holds the package, which the share reads.)
+  { const held = holderOf(meta), pkg = pkgOf(meta), others = [held, ...(meta.outputs[held].imports || []).filter(i => i.kind === 'import-statement' && i.path !== held).map(i => i.path)].filter(f => f !== pkg);
     const shifted = others.map(f => { const m = structuredClone(meta); m.outputs[f].bytes += 24; return m; }).find(m => R.opensWithRecords(m, HOST, Object.keys(BUDGET.data)).added === opens.added + 24);
     assert.ok(shifted, 'a script of the entry\'s closure beside the route and the script that holds the package: ' + others.join(', '));
     assert.deepEqual(withinShare(shifted), [], 'a shared chunk another package moves by 24 B does not move the package\'s share');
-    const past = structuredClone(meta); past.outputs[held].bytes += LAZY_SHARE.lists - shareOf(meta).lists + 1; assert.ok(withinShare(past).some(x => /^its import and export lists grew/.test(x)), 'its own import and export lists one byte past the measure fail it');
-    const grown = structuredClone(meta), pkg = pkgOf(meta); grown.outputs[pkg].inputs['public/topology.js'].bytesInOutput += 1; grown.outputs[pkg].bytes += 1; assert.ok(withinShare(grown).some(x => /^the modules are/.test(x)), 'a module one byte past its pin fails it');
-    // (S0-D10's fix-up, must-fix 2; rulings R4 and Y1) the package's own lists are read in the script that holds it: that
-    // script's lists one byte past the measure fail it, and so does its share past the total
-    const own = (() => { const o = meta.outputs[pkg]; return o.bytes - Object.values(o.inputs).reduce((n, x) => n + x.bytesInOutput, 0) - WITHOUT.lists; })();
-    const over = structuredClone(meta); over.outputs[pkg].bytes += LAZY_SHARE.lists - own + 1; assert.ok(withinShare(over).some(x => /^its import and export lists grew/.test(x)), 'the lists of the script that holds the package one byte past the measure fail it (own lists ' + own + ' B, the measure ' + LAZY_SHARE.lists + ' B)'); }
+    { const m = structuredClone(meta); m.outputs[held].bytes += 24; assert.ok(held !== pkg && R.opensWithRecords(m, HOST, Object.keys(BUDGET.data)).added === opens.added + 24); assert.deepEqual(withinShare(m), [], 'the Model view\'s own script, 24 B more, does not move the package\'s share'); }
+    { const m = structuredClone(meta); m.outputs[pkg].inputs['public/another-package.js'] = {bytesInOutput: 1000}; m.outputs[pkg].bytes += 1000 + 40; assert.deepEqual(withinShare(m, {...WITHOUT, lists: WITHOUT.lists + 40}), [], 'another package\'s readers joining the script that holds the package, with 40 B of lists, do not move the package\'s share'); }
+    const past = structuredClone(meta); past.outputs[pkg].bytes += LAZY_SHARE.lists - shareOf(meta).lists + 1; assert.ok(withinShare(past).some(x => /^its import and export lists grew/.test(x)), 'its own import and export lists, in the script that holds the package, one byte past the measure fail it (own lists ' + shareOf(meta).lists + ' B, the measure ' + LAZY_SHARE.lists + ' B)');
+    const grown = structuredClone(meta); grown.outputs[pkg].inputs['public/topology.js'].bytesInOutput += 1; grown.outputs[pkg].bytes += 1; assert.ok(withinShare(grown).some(x => /^the modules are/.test(x)), 'a module one byte past its pin fails it'); }
   // (ruling Y1, old -> new. Was: the stub's load imports './deploy-view.js', 'the route stub loads the host entry'. Now it imports the one shared first-draw entry.)
   const stub = readFileSync('public/design-package-routes.js', 'utf8'); assert.match(stub, /registerExtension\(\{id:'p30-deployment-route',needs:[^\n]+load:\(\)=>import\('\.\/design-package-readers\.js'\)\}\);/, 'the route stub loads the shared first-draw entry (ruling Y1)');
   if (process.argv.includes('--measure')) { mkdirSync('audit/rc44/evidence', {recursive: true}); const fromAdoption = measured.chapters - ADOPTION.chapters; writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v3', name: 'wp9a slice 1 after its fifth fix-up: typed failure domains, nodes and registration (p30-deployment)',
@@ -1353,7 +1361,7 @@ await block('S1.10 the client build', async () => {
     // (ruling R4; was: opens.added - ADOPTION_OPENS.added <= LAZY_SHARE.total, the entry's whole growth) this build: its own modules and its own lists
     assert.deepEqual(withinShare(meta), [], 'this build: the package is ' + share.total + ' B of its lazy entry (its lists ' + share.lists + ' B), at most ' + LAZY_SHARE.total); }
   if (process.argv.includes('--measure')) assert.deepEqual(measured, size.slice, 'at the slice\'s commit the build measures what the evidence says');
-  pass('S1.10: the client build passes every gate and the one size check (AA2); the chapters route at the slice is ' + size.slice.chapters + ' B (+' + size.fromIntegrated + ' B against ' + BASE.commit + ', +' + size.fromAdoption + ' B against the adoption record ' + ADOPTION.commit + ', itemised); 148 script files at the slice, ' + size.slice.under10k + ' under 10 KB; opens with records: ' + size['opens with records'].total + ' B (' + size['opens with records'].added + ' B in ' + size['opens with records'].files + ' more scripts), of which the package\'s share is its modules, each pinned, and its own import and export lists (' + LAZY_SHARE.total + ' B, the lists ' + LAZY_SHARE.lists + ' B; ruling R4), which a shared chunk another package moves does not move; this build: ' + measured.chapters + ' B');
+  pass('S1.10: the client build passes every gate and the one size check (AA2); the chapters route at the slice is ' + size.slice.chapters + ' B (+' + size.fromIntegrated + ' B against ' + BASE.commit + ', +' + size.fromAdoption + ' B against the adoption record ' + ADOPTION.commit + ', itemised); 148 script files at the slice, ' + size.slice.under10k + ' under 10 KB; opens with records: ' + size['opens with records'].total + ' B (' + size['opens with records'].added + ' B in ' + size['opens with records'].files + ' more scripts), of which the package\'s share is its modules, each pinned, and its own import and export lists (' + LAZY_SHARE.total + ' B, the lists ' + LAZY_SHARE.lists + ' B; ruling R4), which a shared chunk another package moves does not move; this build: ' + measured.chapters + ' B, the package\'s share ' + shareOf(meta).total + ' B in the script that holds it (its own lists ' + shareOf(meta).lists + ' B, against the same script without the package, ' + WITHOUT.lists + ' B of lists)');
 });
 
 // ================================================================ Slice 2: declared failure set, evaluation, acceptance

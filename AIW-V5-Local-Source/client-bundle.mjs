@@ -344,7 +344,9 @@ export function sizeReport(metafile, outdir) {
   return {entry: entry?.bytes || 0, routes, data: dataModules, total: rows.reduce((n, r) => n + r.bytes, 0), scripts: rows.length, buckets, largest: rows.slice(0, 12), facades: tiny.filter((r) => r.source && r.bytes < KB).map((r) => r.source), violations};
 }
 
-export async function bundleClient(outdir = 'dist/client', {sourcemap = 'linked', budget = true} = {}) {
+// `plugins` (esbuild plugins, none by default) lets a suite build the same client with one source read otherwise, e.g. a
+// package's line taken out of the shared entry to measure what the package adds (rc44 S0-D10's fix-up; build.mjs passes none).
+export async function bundleClient(outdir = 'dist/client', {sourcemap = 'linked', budget = true, plugins = []} = {}) {
   await rm(outdir, {recursive: true, force: true});
   await mkdir(path.join(outdir, 'assets'), {recursive: true});
   const html = await readFile('public/index.html', 'utf8');
@@ -360,6 +362,7 @@ export async function bundleClient(outdir = 'dist/client', {sourcemap = 'linked'
     outdir: path.join(outdir, 'assets'), entryNames: '[name]-[hash]', chunkNames: 'chunks/[name]-[hash]',
     legalComments: 'eof', metafile: true, logLevel: 'error',
     sourcemap, // 'linked': <script>.js.map beside each script and a sourceMappingURL comment; false ships none
+    plugins,
   });
   const [entryFile] = Object.entries(result.metafile.outputs).find(([, output]) => output.entryPoint === 'public/entry.js');
   const entry = '/' + rel(outdir, entryFile);
