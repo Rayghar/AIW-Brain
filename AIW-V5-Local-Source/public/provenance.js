@@ -165,7 +165,9 @@ export function recordProvenance(p,r,chapter){
  const {kind,from:came}=authorship(r),a=stampOf(r),reviewed=reviewOf(p,r,chapter),from=kind==='person'&&came&&came!=='person'?came:null,merged=!reviewed&&r?.provenance?.reviewed?.how==='merged'?r.provenance.reviewed.by:null;
  // Who applied Sol's draft and when (GR-GOV-25): the commit's stamp, else the mark workstream E's drafter leaves
  // (provenance.draft {appliedBy, appliedAt}), on the draft and on the person's record it became.
- const draft=solDraftOf(r),stampedDraft=a?.kind==='sol-draft';
+ // (rc44 S0-w3-stamps fix-up; ruling Z8: on a record whose stamps an import kept, the mark was left where the package came
+ // from, and no date says otherwise: it names nobody here)
+ const mark=solDraftOf(r),draft=mark&&plain(r?.provenance?.imported)?{...mark,appliedBy:null,appliedAt:null}:mark,stampedDraft=a?.kind==='sol-draft';
  const applied=kind==='sol-draft'?{by:(stampedDraft?a.by:draft?.appliedBy)||null,at:(stampedDraft?a.at:draft?.appliedAt)||null}:from==='sol-draft'&&draft&&(draft.appliedBy||draft.appliedAt)?{by:draft.appliedBy||null,at:draft.appliedAt||null}:null;
  // A person's own write (their commit's stamp) names them, and, when it changed another's words (Sol's draft, AIW's
 // proposal, an import), says when they edited them; a record they kept as it stood names them as its keeper.

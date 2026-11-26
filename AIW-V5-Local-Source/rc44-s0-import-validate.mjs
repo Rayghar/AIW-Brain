@@ -369,6 +369,34 @@ add('I9 (ruling Z8; the fix-up, must-fix 2): the import moves the stamps aside a
   assert.deepEqual([S.restored.changes, S.restored.current, S.restored.steps], [G.server.restored.changes, G.server.restored.current, G.server.restored.steps], 'through /api/recovery the restored project reads its baseline as on the start commit: ' + JSON.stringify(S.restored.changes));
 });
 
+// ------------------------------------------------------------------------------------------------ I10 (the fix-up, should-fix 2: the date, read by behaviour)
+add('I10 (ruling Z8; the fix-up, should-fix 2): by behaviour, not the source text: a step taken here after an import of this build counts whatever its date, and after an import of 4349bb6 the import\'s date decides as there: a person\'s author stamp (the boundary\'s personBehind, the second person\'s step), a review plan judgement that kept the record (historicalReview, reviewOf) and an architect review (localReview, latestDesignReview), each dated before and after the import', async () => {
+  const now = neutraliseImportedAuthority(stampedDocument(), IMPORT_AT, B), was = clone(now); delete was.finalReview.imported.stamps;
+  assert.deepEqual([PV.datedImport(now), PV.datedImport(was)], [false, true], 'an import of this build records the stamps it moved; one of 4349bb6 recorded none');
+  const said = [];
+  for (const [build, p] of [['this build', now], ['4349bb6', was]]) for (const [when, stamp] of [['before', PAST], ['after', FUTURE]]) {
+    const q = rv.withFinalReview(clone(p), {upgrade: false}), r = at(q, 'stampsyn.records', 'STS-001');
+    r.provenance = {...r.provenance, author: {kind: 'person', by: A, at: stamp}};
+    (q.finalReview.judgements ||= []).push({id: 'RJ-901', at: stamp, actor: D, outcome: 'kept', records: [[3, 'STS-001', (await import('./public/source-fingerprint.js')).recordStamp(q, r)]]});
+    const behind = await secondStep(q, 'STS-001', C), j = PV.reviewOf(q, r, 3);
+    const d = rv.withFinalReview(clone(q), {upgrade: false}); d.finalReview.reviews.push({id: 'AR-901', at: stamp, actor: A, outcome: 'Approved', stamp: rv.reviewDesignStamp(d)});
+    said.push([build, when, behind === 'taken' ? 'a person stands behind it' : 'nobody', j?.by ?? null, rv.latestDesignReview(d)?.id ?? null]);
+  }
+  assert.deepEqual(said, [['this build', 'before', 'a person stands behind it', D, 'AR-901'], ['this build', 'after', 'a person stands behind it', D, 'AR-901'], ['4349bb6', 'before', 'nobody', null, null], ['4349bb6', 'after', 'a person stands behind it', D, 'AR-901']], 'what each reader says: ' + JSON.stringify(said));
+});
+
+// ------------------------------------------------------------------------------------------------ I11 (the fix-up, should-fix 4: the draft mark's applier)
+add('I11 (ruling Z8; the fix-up, should-fix 4): the mark Sol\'s drafter leaves (provenance.draft appliedBy, appliedAt) on an imported record names nobody here, in the label and in the line (record cards, the component sheet), whatever its date; the record still reads as Sol\'s draft; a record never imported reads its mark as before', () => {
+  const p = stampedDocument(), mark = {by: 'sol', engine: 'rules', appliedBy: A, appliedAt: FUTURE};
+  for (const d of [p.quality.drivers[0], p.realisation.components[0]]) d.provenance = {...d.provenance, draft: mark};
+  const was = PV.recordProvenance(rv.withFinalReview(clone(p), {upgrade: false}), p.quality.drivers[0], 2);
+  assert.match(was.line, /applied by architect-a/, 'before the import the mark names who applied the draft: ' + was.line);
+  const q = rv.withFinalReview(neutraliseImportedAuthority(clone(p), IMPORT_AT, B), {upgrade: false});
+  for (const [chapter, path] of [[2, 'quality.drivers'], [5, 'realisation.components']]) { const r = PV.listAt(q, path)[0], rp = PV.recordProvenance(q, r, chapter);
+    assert.deepEqual([names(rp.line), names(rp.label), rp.applied?.by ?? null], [[], [], null], path + ': the line names nobody from elsewhere: ' + rp.line); }
+  assert.equal(PV.authorOf(PV.listAt(q, 'quality.drivers')[0]), 'sol-draft', 'still disclosed as Sol\'s draft');
+});
+
 // ------------------------------------------------------------------------------------------------ the runner
 const only = process.argv.includes('--only') ? process.argv[process.argv.indexOf('--only') + 1] : '';
 const passed = [], failed = [];
