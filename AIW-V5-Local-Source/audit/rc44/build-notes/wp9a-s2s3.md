@@ -16,7 +16,8 @@ a gate's evidence are steps of signed-in persons of a project, which this build 
   `public/topology-gates.js`); the hooks H4, H5, H11 and the slot; ruling L2's retirement of the shared-cause reading
   (S1.13's marked case flipped); recovery import; slice 1's placeholder assertions replaced (old -> new below); the size
   evidence; the suites (below).
-- **Next:** the adversarial review and its fix-up (AA1); the lead's merge with `s0-w3-bundle`, which retires the
+- **Fix-up:** the adversarial review (changes needed) and its one fix-up (AA1) are done: section "Fix-up" at the end.
+- **Next:** the lead's merge with `s0-w3-bundle`, which retires the
   booking cases that fail here as AA2 expects (S0's "O1", wp1's S2.12 and S3.10, wp2's "size" and "S5 size": see
   "Suites").
 
@@ -116,7 +117,9 @@ code with the new suite.
     a warning, for a claim in scope; `domain-shared:<fd id>`, `location-unknown:<lg id>`, `node-address-overlap:<dn id>`
     (each overlapping pair once, under the earlier node; a node inside the other is no overlap; parsed parts compared,
     ruling L8) warnings; `node-data-exposure:<dn id>` an error. Each arises only in a typed document after a person
-    acted on this build (the exception of rule 11).
+    acted on this build (the exception of rule 11). (Corrected in the fix-up, should-fix 4: not so for
+    `node-address-overlap`, `node-data-exposure` and `domain-shared`, which a slice-1-typed document gains at its first
+    read: "Which documents change, and why" below.)
 
 ## Deviations from the design, the task and the contract
 
@@ -161,6 +164,8 @@ code with the new suite.
 | ~~Two zones that share a stated cause read as independent in the built-in checks, planFacts and the desk~~ | `runtime-domain.js`, `design-reasoning.js`, `desk-*.js` | **retired here** (L2): `zoneKey` over `hostingComparison`'s groups; S1.13's marked case flipped (old -> new below) |
 | ~~A zone in a domain inside another zone's hosting domain is not compared~~ | `topology-domain.js hostingComparison` | **compared here** (the two read as one failure domain); the error `topology-incomparable` (`nested`) still stands, which is stricter; whether it may go is the lead's call (open question 3) |
 | The Chapter 10 Model view groups zones by `failureDomainKey` | `deploy-model.js` | slice 6 (H15, R1) |
+| `simulateRuntime`'s "lose a failure domain" mode loses zones by `failureDomainKey` equality (a zone in a domain inside the lost one, or sharing a stated cause, keeps running) | `runtime-domain.js` | slice 6, with R5 (the fix-up's should-fix 5) |
+| H5's own pairwise reading of independence | `topology-failures.js independent()` | **retired in the fix-up** (must-fix 5): H5 reads `zoneGroups`, the one grouping |
 | The Model view's second propagation and scenario list; the desk's region guess; Chapter 6's string comparisons; the register's typed location | as slice 1's list | slices 5 and 6, unchanged |
 
 ## Held back until their surface exists (contract rule 11)
@@ -269,17 +274,123 @@ wp2 45 checks, run in the archive of `4349bb6`):
 ## Fix-up (owner decision AA1: one review, one fix-up)
 
 Branch `rc44/wp9a-s2s3-fix`, from `10b97b7` (the build's head). The review's verdict was "changes needed": six must-fix
-items, nine should-fix items, nine design concerns. Each must-fix item gets a case seen to fail on `10b97b7` first, then
+items, nine should-fix items, nine design concerns. Each must-fix item got a case seen to fail on `10b97b7` first, then
 the fix; each small should-fix item inside the build's files is fixed with its case; every other should-fix item and every
-design concern is carried (below, "Carried forward"). Logs under `.aiw-local/fixup/` (git-ignored).
+design concern is carried ("Carried forward" below). Logs under `.aiw-local/fixup/` (git-ignored): `before-10b97b7.log` is
+every new case run on an archive of `10b97b7`'s tree (node_modules linked) with the new suite; `mf*-before.log` and
+`sf*-before.log` the same, case by case, on this branch before each fix.
 
-- **State:** in progress. Done: the plan; must-fix 1 to 5 (each case seen to fail first, then green). Next: must-fix 6, then the small should-fix items, the notes, the suites.
+- **State:** done. Every item below is done with its case or carried; none is disputed. Suites: "Fix-up suites" below.
+- **The rule chosen for must-fix 1 and 2 (rule 39), in two parts, each one function.** (a) At the door, `standingOf`
+  (topology-domain.js), asked by both parts' `validate`: a draft by Sol or an agent account changes only its own
+  proposals; a declared failure, a location gate or a data copy that stands is a person's to change, in any field
+  (stricter than the review asked: its words too). A node's jurisdiction is not cleared by a draft either (slice 1's
+  `refuseDraft`, extended). (b) In the reading, `draftedIds`/`draftedOf` (topology-domain.js, ruling L11 (d)): a record
+  that a draft by Sol, an import or an agent account changed last and no person has reviewed since (a person's save,
+  keep, confirmation or merge, or a judgement "kept" through the review plan) is named by the readings that read it. A
+  claim's verdict still reads (S2.10 holds that) and its acceptance is refused; a location gate, a hard constraint, fails
+  closed: each row that reads such a record fails naming it, and so does the gate for every other such record it reads
+  (itself, its data, every definition where it names a classification or personal data, the copies of its data and their
+  zones, and each zone, placement and plan of the environments it applies to). So no draft turns a fail into unknown or
+  pass, whichever command it came by, built-in ones included (S3.11: a placement an agent moved by a built-in command).
+  The review's option (i) alone could not hold slice 1's S1.8 and S1.15, which take a draft's `runtime.locate`.
 
-| Item | What | State |
+| Item | What | State, with its case |
 |---|---|---|
-| must-fix 1 | a draft or agent account takes a person's claim out of scope, empties what must survive, clears its minutes | done: S2.12 |
-| must-fix 2 | a draft or agent account lifts a failing location gate (gate, copy, zone, node) | done: S3.11 |
-| must-fix 3 | L11 (d): zones and placements a draft changed are not named, and the acceptance is taken | done: S2.13 |
-| must-fix 4 | a restore after a recovery import brings back an acceptance and a gate's evidence | done: S2.14 |
-| must-fix 5 | H5 compares independence pairwise beside hostingComparison's groups (L2, rule 39) | done: S2.15 |
-| must-fix 6 | Chapter 10's checks with declared failures cost O(placements x zones) per case | next |
+| must-fix 1 | a draft or agent account takes a person's claim out of scope, empties what must survive, clears its minutes | done: S2.12 (server, Sol and agent, alone and in a drafted batch; the error stands); seen to fail on 10b97b7: 200 !== 400 |
+| must-fix 2 | a draft or agent account lifts a failing location gate (gate, copy, zone, node) | done: S3.11 (server, Sol and agent: (b), (c), (c2), the gate's words, (d) twice and (e) twice refused in words; (f), (f2) and a placement moved read as failing, naming the record, until a person locates or moves it; the hard finding stands throughout); seen to fail on 10b97b7: 200 !== 400 |
+| must-fix 3 | L11 (d): zones and placements a draft changed are not named, and the acceptance is taken | done: S2.13 (server: Sol and agent relocate zone 2 out of the region, an agent changes a placement; refused naming ZON-002 and the placement; a person's own location then accepted); `drafted` reads the claim, its environment and the linked recovery environments, their hosting zones, plans and placements, the domains and nodes those stand in, and what each case loses; the copies a gate reads reach it through the failing gate (S3.5); seen to fail on 10b97b7: drafted `[]` |
+| must-fix 4 | a restore after a recovery import brings back an acceptance and a gate's evidence | done: S2.14 (retired claim and gate, import, restore by a person and by an agent: not accepted, unknown); recovery-service.js moves `review` aside on `retired.records[].record` of `runtime.failures` and `runtime.gates` too; seen to fail on 10b97b7: the retired records kept `review` |
+| must-fix 5 | H5 compares independence pairwise beside hostingComparison's groups (L2, rule 39) | done: S2.15 (the transitive chain across the link reads one group: the standby error as in one environment; a recovery zone sharing nothing stands apart); `failGroups` is the one grouping, `hostingComparison` and `zoneGroups` read it, `independent()` is deleted; seen to fail on 10b97b7: no standby error |
+| must-fix 6 | Chapter 10's checks with declared failures cost O(placements x zones) per case | done: S2.16 (2,000 zones, 2,000 placements, 60 domains, 24 in-scope claims of 58 cases: at most 3 times the same document's checks without the claims; 409 ms against 338 ms here); `failIndex` (what each zone and placement fails with, once a pass), `losing` and the walk of a case remembered once a pass (a case two claims share is walked once), each evaluation and each check one pass, and the comparison's nested test read through an index; seen to fail on 10b97b7: 30,441 ms against 2,768 ms |
+| should-fix 1 | rule 38: a case per caller of zoneKey | in part: S2.19 (the isolate proposal and backup-domain, each also read with the old key, which answers otherwise); the desk's Z, the quorum vital and the desk fixes' zone choice are carried |
+| should-fix 2 | H11 compares the gate's state, not its failing rows | done: S3.12 (server: a merge that adds a failing row to a gate failing already is refused naming the row; one adding none merges); seen to fail on 10b97b7: 200 |
+| should-fix 3 | an acceptance does not lapse when a gate of its environment starts failing | done: S3.13 (`failureAccepted` reads `failingGate`); seen to fail on 10b97b7: true !== false |
+| should-fix 4 | the notes' rule-11 sentence is wrong for three findings; backsUpTo in every typed document | done in the notes ("Which documents change", below); whether to hold the three findings back is carried to the lead |
+| should-fix 5 | simulateRuntime's "lose a failure domain" mode still reads failureDomainKey | done in the notes: added to the retirement list (slice 6, with R5) |
+| should-fix 6 | the bound is tested at 67 cases only | done: S2.17 (64 evaluated, 65 unknown with the bound named); passes on 10b97b7, which bounds correctly: coverage only |
+| should-fix 7 | the design statement keeps importedReview | done: S3.14 (`DESIGN_OFF` of both parts leaves it out); seen to fail on 10b97b7 |
+| should-fix 8 | derive() reads backsUpTo from the graph's adjacency, not through the trace | carried (below) |
+| should-fix 9 | lossCases counts a zone that holds only a proposed placement | done: S2.18 (proposed placements filtered, as plansOf does); seen to fail on 10b97b7 |
+
+### Which documents change, and why (should-fix 4; contract rules 4 and 11)
+
+The build's decision 10 said each finding arises only in a typed document after a person acted on this build. That is
+wrong for three findings, as the review measured: a document typed with slice-1 commands only gains
+`node-address-overlap` (a warning) where two networks' prefixes overlap, `node-data-exposure` (an error) where a data-tier
+subnet is public, and `domain-shared` (a warning) where two hosting zones share a stated cause, at its first read after
+this build; its readiness, registers and SDD digests change with them. Its built-in checks read zones that share a stated
+cause as one failure domain (ruling L2, the retirement this build was asked to make), so `single-domain`, `standby` and
+`backup-domain` may change for such a document too. Every typed document whose plan names a backup zone also gains one
+`backsUpTo` relation in its record graph and model; its findings, stamps and SDD are unchanged by it. Documents that are
+not typed (no `runtime.topology`) read byte for byte as at 94dbd4f (S1.3) and walk as at 4349bb6 (S2.6). For the merge
+evidence (rule 4): "slice-1-typed documents: the three findings above where their records say so, the L2 grouping in the
+built-in checks, and one backsUpTo relation for each plan with a backup zone". Whether the three findings wait for a
+record of this build in the document is the lead's call (carried).
+
+### Fix-up deviations
+
+1. Must-fix 1 and 2 are met by refusing every change a draft or agent account makes to a standing claim, gate or copy,
+   words included, and by failing a gate closed on every record a draft changed that it reads (above); a benign draft of
+   a record a gate reads therefore raises the hard finding until a person reviews it (carried below).
+2. S1.10's share (ruling R4) is re-measured and pinned as the build pinned it (owner decision AA2, read as the build
+   read it): each module exact as before; the lists at most 254 B -> at most 271 B and the share at most 62,956 B -> at
+   most 66,855 B. A larger bound is no stricter assertion: it is recorded under AA2's exception for size cases, as the
+   build recorded 168 -> 254 B, and is for the lead to confirm.
+3. S2.17 and S2.19 pass on 10b97b7 (should-fix 6 and 1 ask for coverage of what the build already reads); S2.19 holds its
+   own failing reading (the old key, with the slot's zoneKey unset, answers otherwise).
+4. The jurisdiction refusal's sentence gains ", and clears none a person stated" (its existing matches in S1.8 read the
+   sentence's start, unchanged).
+
+### Carried forward (one line each: what, where, which build)
+
+- Should-fix 1 (rest): a shared-cause case for the desk's Z (`desk-capacity.js` capacityPlan), the quorum vital
+  (`desk-vitals.js` quorumLoss) and the desk fixes' zone choice (`desk-fixes.js` domainZones) — wp9a S4+S5+S6.
+- Should-fix 4: whether `node-address-overlap`, `node-data-exposure` and `domain-shared` wait for a record of this build
+  in the document (rule 11) — the lead, at the merge (the merge evidence states the change either way).
+- Should-fix 5: `simulateRuntime`'s "lose a failure domain" mode loses zones by `failureDomainKey` equality, so a zone in
+  a zone domain inside the lost region domain, or sharing a stated cause, keeps running — wp9a S6 with R5 (retirement list).
+- Should-fix 8: `derive()` reads the `backsUpTo` edge from the kernel's adjacency; `linkedVia` answers no relation id
+  (which `derivedFrom.via` records) and a hop onto the built-in zone layer is refused (rule 9) — wp9a S6, or the trace
+  kernel's owner with an edge reader that answers relation ids.
+- Design concern 1: a claim whose verdict is unknown (past the bound, environment not standing, zones not comparable) can
+  be accepted; design c.4 refuses only does-not-survive — the lead (refuse or label it), with wp9a S6's surface.
+- Design concern 2: gate evidence of a fail needs a second person, so the gate's author cannot record a known fail, and an
+  unknown gate blocks nothing — the lead (S0's `second` row reading the payload), or wp9b's hard gates.
+- Design concern 3: acceptance reads the gates of the claim's own environment and every-environment gates, not those of a
+  linked recovery environment a recovers-conditionally verdict rests on — wp9a S4+S5+S6.
+- Design concern 4: the 64-case bound sits above the 60 domains a workspace keeps (open question 1); a total budget per
+  document reading — the lead (S2.16 now measures the checks at the limits).
+- Design concern 5: the transitive grouping (A~B by c1, B~C by c2 reads all three as one) errs towards no independence;
+  L2 does not require it, and H5 now reads the same grouping — the lead's ruling.
+- Design concern 6: H11 is server-only and covers workspace.merge; a reviewed batch or a single command that makes a gate
+  fail is not refused (the build's deviation 9) — wp9b's hard gates, or wp9a S6.
+- Design concern 7: the package's worst case is about 4.22 M of 8 M characters and claim and gate histories are never
+  trimmed (open question 2) — the lead.
+- Design concern 8: a dismissed copy proposal does not silence the location the trail derives (open question 5) — the lead.
+- Design concern 9: L3 assumed NO and recorded (open question 4); a link to an environment that has gone recovers
+  nothing, no mend — the lead.
+- From the fix-up: a gate fails closed on a benign draft of a record it reads until a person reviews it (a save, a keep,
+  a confirmation, a merge, or a judgement "kept" through the review plan) — the lead; wp9a S6 surfaces the review.
+- From the fix-up: a draft's change by a built-in command that takes a record out of everything a gate reads (a placement
+  moved to a plan of another environment) is not seen; a zone moved to another environment is (its copies' zones are
+  read), and so is a data definition reclassified (every definition is read for a classification gate) — wp9b, the
+  lifecycle and governance family, with L11 (b).
+- From the fix-up: `hostingComparison`'s nested test is still a pair loop over the typed zones (through an index now,
+  about 350 ms at 2,000 zones, near the base's cost of the document without claims) — wp9a S6 or the lead's S0 work.
+
+### Fix-up size (owner decision AA2; no booking)
+
+Measured with `node build.mjs` in an archive of `10b97b7` and in the fix-up's tree (`dist/client-size-report.json`):
+chapters route 3,229,341 B -> 3,229,350 B (+9 B: the route script that holds provenance.js exports `judgementOf`, which
+the lazy entry now reads), projects route 508,530 B -> 508,539 B, script files 148 -> 148, buckets 52/51/45 -> 52/51/45,
+stylesheet 901,873 B -> 901,873 B, no violation. Against 4349bb6: +412 B. Cap 3,233,792 B on this base (3,266,560 B once
+`s0-lead-w3` lands). Opens with records (rule 52): 4,125,495 B -> 4,129,423 B (the package's share 62,946 B -> 66,855 B).
+Evidence: `audit/rc44/evidence/wp9a-s2s3-route.json` (`after` and `fixUp`).
+
+### Replaced assertions in the fix-up (old -> new)
+
+- rc44-wp9a-deployment-validate.mjs S1.10 (`BUILD_SHARE`, owner decision AA2 as the build read it): topology-domain.js
+  22,697 B, topology-failures.js 19,382 B, topology-gates.js 19,064 B (exact), lists at most 254 B, share at most
+  62,956 B -> 24,498 B, 19,695 B, 20,842 B (exact), lists at most 271 B, share at most 66,855 B; the route evidence's
+  `packageShare` deep-equal to it, as before. No other assertion of the start commit is changed.
