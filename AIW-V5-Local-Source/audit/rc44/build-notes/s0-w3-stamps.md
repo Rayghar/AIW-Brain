@@ -18,7 +18,11 @@ files, by leave. Route bytes are reported, not booked (AA2).
   (f512445), recovery-size's assertion replaced as Z8 rules (9e5af59, 5c094c1), notes (Suites, Measurements, limits).
 - **In progress:** nothing: the related suites, check-syntax, lint and the build ran on the final code (see "Suites"
   and "Measurements"); the evidence is `audit/rc44/evidence/s0-w3-stamps-build-2026-11-26.json`.
-- **Next:** the lead's adversarial review, fix-up and merge (AA1); the open questions below.
+- **Review and fix-up (AA1):** the adversarial review asked for changes (four must-fix items); the one fix-up is on
+  `rc44/s0-w3-stamps-fix` (section "Fix-up" at the end: each item with its case, the carried items, the suites and the
+  measurements).
+- **Next:** the lead's merge (AA1), with the rebuild, the related suites, S0's suite and the browser run of wave 3; the
+  open questions below and those of the fix-up.
 
 ## Plan
 
@@ -404,3 +408,61 @@ the lead (S0's settle), or wp2 for the adoption's step.
   recorded; no owner needed unless the lead wants the activity rows read server-side.
 - limit of must-fix 2 (known limit 6 a, b): an imported document of an earlier readings definition loses the import's
   aliases at its conversion; what the import's other steps change of the design stays stale as on `4349bb6` — the lead.
+- a re-confirmation of a record that came confirmed stamps nothing (above, I8) — the lead (S0's settle) or wp2.
+
+### Fix-up: what the code does now, readings for later builds
+
+- `neutraliseImportedAuthority` moves the record stamps first (`keepingDesignStamps(p, keepImportedStamps)`), then an
+  adoption's acceptance aside with the other steps. The stamps of the whole design are taken of the document as a read
+  gives it (with its read upgrades when no readings upgrade is due), so a stamp of the origin's read is matched. The
+  restore names the project 'imported' (`workspace.template`), and gives it its id and name, before the import's steps;
+  the design source reads all three, so a stamp of the whole design (a check, a narrative, a baseline's design stamp)
+  goes stale at a restore through `/api/recovery` there and here alike, while each chapter's stamp is carried (I9 and
+  `test:recovery-size`: "Review narrative, traceability, findings, or delivery plan" on both commits).
+- `finalReview.readingsUpgrade` may hold `evidence: {now: then}`; `baselineChanges` reads it. A later upgrade that
+  rewrites the table keeps or chains it (`toDesignFingerprint` keeps it; `carry` chains it).
+- A document with the knowledge package's records and no line naming the package is upgraded at its read
+  (`needsReadingsUpgrade`); the server stores it with the readings upgrade (J8's known limit: whichever request first
+  stores the row).
+
+### Fix-up: suites and measurements
+
+Every run with `env -u ANTHROPIC_BASE_URL -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN -u OPENAI_API_KEY`, two at a time
+(`.aiw-local/run-suites.sh`), on the fix-up's final code; no server started on a port (the suites use the in-process
+Worker).
+- This build's: `test:rc44-s0-b10` 8/8 (B10.8 new), `test:rc44-s0-import` 11/11 (I8 to I11 new).
+- `test:rc44-wp1-knowledge` (all of it): 87 passed, 2 pending, 0 failed (S2.12 and S3.10 pass on this run).
+- `test:rc44-s0-extensions`: 35 of 36 blocks; only "O1 the bookings add up" fails, by unbooked route bytes (AA2: book
+  nothing; retired by `s0-w3-bundle`).
+- `test:rc44-wp2-adoption`: all but "size" and "S5 size"; `test:rc44-wp9a-deployment`: 24 of 25 but S1.10. Each fails by
+  exactly the unbooked bytes of this build and its fix-up, 727 B (583 + 144: wp2 1052 - 325 and 1916 - 1189, wp9a
+  1069 - 342), as on `c72a0a2` by 583 B; they pass on `4349bb6` (the build's run there).
+- `test:recovery-size`: green (its two assertions replaced, above; timings inside their bounds).
+- Green, importing or exercising the changed files: recovery-authority, rc42-g2-library, provenance, review-plan,
+  sdd-architecture, fingerprint, rc42-g3c-evidence-fingerprint, evidence, knowledge-boundaries, ui-modules,
+  repository-transfer, knowledge-design, knowledge-structure, knowledge-repository, knowledge-coverage, repository-sync,
+  hosted-knowledge, candidate-import, seeded-proposals, journal-archive, architecture-obligation,
+  architecture-verification, sdd-content, sdd-modules, sol-sdd, workspace, model-alternatives, design-records,
+  action-undo, changes, brain, rc42-g3a-risk-and-limits, rc42-g3b-trace-and-delivery, intake, service-routes,
+  local-accounts, drafter-groups.
+- Not run: the browser suites (they start servers on ports the OS chooses, outside 4100-4999; the lead's browser run
+  closes the wave), the full regression (the lead's), and the suites of the build's list not named above (not touched
+  by the fix-up's changes beyond those named).
+- `node check-syntax.mjs`: 947 modules, passed. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, new 0.
+
+`node build.mjs` (same env), `dist/client-size-report.json`; before is the fix-up's start commit `c72a0a2` (built in a
+`git archive` of it under `.aiw-local/head`), after is this branch; the start of the build, `4349bb6`, as measured by the
+build:
+
+| | `4349bb6` | `c72a0a2` (before) | this branch (after) | cap |
+|---|---|---|---|---|
+| routes.chapters.code | 3,228,938 B | 3,229,521 B | 3,229,665 B (+144 B on `c72a0a2`, +727 B on `4349bb6`, booked nowhere: AA2) | 3,233,792 B now; 3,266,560 B once `s0-lead-w3` lands |
+| routes.projects.code | 508,466 B | 508,721 B | 508,792 B | 1,242,112 B |
+| script files | 148 | 148 | 148 | 148 |
+| buckets (under 10 KB, 10 to 50 KB, over 50 KB) | 52, 51, 45 | 52, 51, 45 | 52, 51, 45 | under 10 KB at most 52 |
+| violations | none | none | none | |
+| opens with records (`p10-knowledge`, `opensWithRecords` on `dist/client-metafile.json`) | 3,376,253 B | route + 146,691 B in 2 scripts = 3,376,212 B | route + 146,691 B in 2 scripts = 3,376,356 B | |
+
+Where the +144 B are: `baselineChanges`' evidence alias (`review-domain.js`) and `recordProvenance`'s reading of the
+draft mark on an imported record (`provenance.js`). The carry-over, the package lines and the import's moves are in no
+client chunk (`readings-upgrade.js` and `recovery-service.js` are server-only). No stylesheet rule was added.

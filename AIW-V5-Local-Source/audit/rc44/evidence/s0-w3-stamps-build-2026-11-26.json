@@ -66,7 +66,7 @@
   "rc44-s0-import-baseline.json": "node rc44-s0-import-validate.mjs --capture 4349bb6, on the unchanged start commit"
  },
  "libraryStampsMove": {
-  "what": "a knowledge library stored before this build (B10.7): at its first read its stored stamps of the whole design are carried over once (readings-upgrade.js toLibraryLog, finalReview.libraryLogUpgrade) and it reads with the same findings; the readings that move are 'findings' (the stamps of findings taken of the whole design) and 'stamps'",
+  "what": "a knowledge library stored before this build (B10.7, B10.8): at its first read the package's steps its records keep are written into its log (one line each, naming the package) and its stored stamps of the whole design are carried over once in the same pass (readings-upgrade.js toLibraryLog, finalReview.libraryLogUpgrade); it reads with the same findings and readiness; the readings that move are 'findings' (the stamps of findings taken of the whole design) and 'stamps' (design and evidence); a baseline frozen there reads as there (no evidence recorded since, current), answered through finalReview.readingsUpgrade (design, chapters, evidence)",
   "design": [
    "3a96628f22dc413d",
    "7c8dba1839cb092c"
@@ -77,11 +77,12 @@
   ],
   "evidence": [
    "ea35c2918f0148a5",
-   "d86e38288b5a6b20"
+   "9fd7d0c17fc522b9"
   ],
+  "evidenceBeforeTheFixUp": "d86e38288b5a6b20 (c72a0a2: the log joined the evidence without the package lines; the fix-up writes them, B10.8)",
   "documents": "rc44 development documents with the library mark only; no released document holds one"
  },
- "importedProjects": "a project imported before this build keeps its record stamps in place and is read with the import's date, exactly as on 4349bb6 (I5), until its next import: a known limit, recorded",
+ "importedProjects": "a project imported before this build keeps its record stamps in place and is read with the import's date, exactly as on 4349bb6 (I5), until its next import: a known limit, recorded. An import of this build moves every record stamp aside and an adoption's acceptance too (I8), and carries the stamps of the whole design over its stamp move (I9: a frozen baseline reads as on 4349bb6)",
  "checkSyntax": "node check-syntax.mjs: 947 modules, passed",
  "lint": "node scripts/lint.mjs --summary: 162 problems, baseline 162, new 0",
  "browserSuites": "not run by this build: the browser suites start their own servers on ports the OS chooses, outside the 4100-4999 range the brief allows; the panel's change is held by the node cases B10.5 and wp1's S3.27; the browser run closes the wave (the lead)",
@@ -397,5 +398,135 @@
    "exit": 0,
    "seconds": 0
   }
- ]
+ ],
+ "designProjectsWithPackageRecords": "a design project stored before this build that holds the package's records (crosswalk rows, pins, links, migrations) gains, at its first read, one line naming the package for each step its records keep, and knowledge.version moves by as many; no stamp and no reading moves (B10.8: every S0 reading of the golden 'library-unmarked' byte-identical)",
+ "fixUp": {
+  "branch": "rc44/s0-w3-stamps-fix",
+  "from": "c72a0a266f2a4c827aa39a3bfce093f0186678fc",
+  "mustFix": {
+   "1 adoption acceptance kept by the import": "done; I8 (red on c72a0a2: an acceptance taken where the package came from is no acceptance here, whatever its date)",
+   "2 frozen baseline read as changed after an import": "done; I9 against rc44-s0-import-baselines.json (captured on 4349bb6; red on c72a0a2: [[\"Requirements\",\"Decisions\"]])",
+   "3 library first read: evidence recorded since a frozen baseline": "done; B10.7 extended against rc44-s0-b10-frozen.json (captured on 4349bb6; red on c72a0a2: [[\"Evidence recorded since the baseline\"]])",
+   "4 history panel loses the package steps of a stored document": "done (the reviewer's preferred fix); B10.8 against rc44-s0-b10-panel.json (captured on 4349bb6; red on c72a0a2: one line for each step the package's records keep)"
+  },
+  "shouldFix": {
+   "done": [
+    "1 recovery-size derived independently",
+    "2 I10 behavioural date case (guard)",
+    "4 I11 draft mark applier"
+   ],
+   "carried": [
+    "3",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "2 (the captured verification)"
+   ]
+  },
+  "goldens": {
+   "rc44-s0-import-baselines.json": "node rc44-s0-import-validate.mjs --capture-baselines 4349bb6, in a git archive of the unchanged start commit with the fix-up test file copied in",
+   "rc44-s0-b10-frozen.json": "node rc44-s0-b10-validate.mjs --capture-frozen 4349bb6, likewise",
+   "rc44-s0-b10-panel.json": "node rc44-s0-b10-validate.mjs --capture-panel 4349bb6, likewise"
+  },
+  "replacedAssertions": [
+   "recovery-size-validate.mjs 'every other section restores exactly': compared with a copy moved by keepImportedStamps -> with a copy the suite moves itself",
+   "recovery-size-validate.mjs 'the review, its baseline whole, with imported authority neutralised': restored review === neutralise({finalReview}) with the product's count -> the restored review less its alias table === that expectation with the suite's own count and the design stamp translated by the suite's own move, and the alias table === the one computed from the suite's own move"
+  ],
+  "size": {
+   "command": "node build.mjs (env -u ANTHROPIC_BASE_URL -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN -u OPENAI_API_KEY), dist/client-size-report.json; before: a git archive of c72a0a2 under .aiw-local/head; after: this branch",
+   "before": {
+    "commit": "c72a0a2",
+    "chaptersCode": 3229521,
+    "projectsCode": 508721,
+    "scripts": 148,
+    "buckets": {
+     "under10k": 52,
+     "from10to50k": 51,
+     "over50k": 45
+    },
+    "violations": []
+   },
+   "after": {
+    "chaptersCode": 3229665,
+    "projectsCode": 508792,
+    "scripts": 148,
+    "buckets": {
+     "under10k": 52,
+     "from10to50k": 51,
+     "over50k": 45
+    },
+    "violations": []
+   },
+   "routeDelta": {
+    "onC72a0a2": 144,
+    "on4349bb6": 727
+   },
+   "booked": "nothing (AA2)",
+   "opensWithRecords": {
+    "before": {
+     "route": 3229521,
+     "added": 146691,
+     "total": 3376212,
+     "files": 2
+    },
+    "after": {
+     "route": 3229665,
+     "added": 146691,
+     "total": 3376356,
+     "files": 2
+    }
+   }
+  },
+  "checkSyntax": "947 modules, passed",
+  "lint": {
+   "problems": 162,
+   "baseline": 162,
+   "new": 0
+  },
+  "suites": [
+   {
+    "suite": "test:rc44-s0-b10",
+    "exit": 0,
+    "note": "8 of 8 (B10.8 new; B10.7 extended)"
+   },
+   {
+    "suite": "test:rc44-s0-import",
+    "exit": 0,
+    "note": "11 of 11 (I8 to I11 new)"
+   },
+   {
+    "suite": "test:rc44-wp1-knowledge",
+    "exit": 0,
+    "note": "87 passed, 2 pending"
+   },
+   {
+    "suite": "test:rc44-s0-extensions",
+    "exit": 1,
+    "note": "35 of 36 blocks; only 'O1 the bookings add up' (unbooked route bytes, AA2; retired by s0-w3-bundle)"
+   },
+   {
+    "suite": "test:rc44-wp2-adoption",
+    "exit": 1,
+    "note": "all blocks but 'size' and 'S5 size', each failing by exactly the unbooked 727 B (583 build + 144 fix-up)"
+   },
+   {
+    "suite": "test:rc44-wp9a-deployment",
+    "exit": 1,
+    "note": "24 of 25; S1.10 fails by exactly the unbooked 727 B"
+   },
+   {
+    "suite": "test:recovery-size",
+    "exit": 0,
+    "note": "two assertions replaced (old -> new in the notes)"
+   },
+   {
+    "suite": "green",
+    "exit": 0,
+    "note": "recovery-authority, rc42-g2-library, provenance, review-plan, sdd-architecture, fingerprint, rc42-g3c-evidence-fingerprint, evidence, knowledge-boundaries, ui-modules, repository-transfer, knowledge-design, knowledge-structure, knowledge-repository, knowledge-coverage, repository-sync, hosted-knowledge, candidate-import, seeded-proposals, journal-archive, architecture-obligation, architecture-verification, sdd-content, sdd-modules, sol-sdd, workspace, model-alternatives, design-records, action-undo, changes, brain, rc42-g3a-risk-and-limits, rc42-g3b-trace-and-delivery, intake, service-routes, local-accounts, drafter-groups"
+   }
+  ],
+  "browserSuites": "not run (they start servers on ports the OS chooses, outside 4100-4999); the lead's browser run closes the wave"
+ }
 }
