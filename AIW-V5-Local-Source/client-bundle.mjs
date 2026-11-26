@@ -296,7 +296,7 @@ export const BUDGET = {
   // 1,170,523 B: 1144 KB. With K merged (the round branch at cdb9884: 1,174,973 B) it measures 1,189,201 B (+14,228 B,
   // F's share as above): 1162 KB, for the lead to settle.
   data: {'brain-catalogue': 1540 * KB, 'review-font': 1064 * KB, 'vendor-docx': 420 * KB, 'brain-playbook': 120 * KB, 'brain-tradeoffs': 43 * KB /* measured 41,373 B, round 6 */},
-  scripts: 148, // rc42 (lead): 148 measured (see the chapters route above); was 150. // rc40 (lead): 150 measured — the round's own chunks (arrange-panel, component-sheet, component-spec-view, specification-reading, work-glance, work-records) less the retired spec-view; exact count gate, no spare allowance. (Combined tab refinement measured 146.)
+  scripts: 150, // rc44 (lead, S0-D10, the lead's ruling Y1 of 2026-11-22): 150 measured, +2 for the one shared lazy entry of the design packages' first-draw readers (design-package-readers.js, a facade under 1 KB, and the chunk that holds the readers, which the surfaces' entries reach too); the plan's 150 (BUILD-PLAN section 2 item 3), beyond which is the owner's decision. // rc42 (lead): 148 measured (see the chapters route above); was 150. // rc40 (lead): 150 measured — the round's own chunks (arrange-panel, component-sheet, component-spec-view, specification-reading, work-glance, work-records) less the retired spec-view; exact count gate, no spare allowance. (Combined tab refinement measured 146.)
   tiny: 61, // Round 29 adds the shared record-card facade (4,858 B) for canonical inspection; exact count gate.
 };
 // entry.js has two routes: the Projects page imports one page module; every chapter imports the store, the

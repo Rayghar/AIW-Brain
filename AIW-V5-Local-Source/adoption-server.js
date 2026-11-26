@@ -7,6 +7,10 @@
 // Slice S5 (the lead's ruling U5) adds the SDD's selection basis here, as the package's section of the architecture
 // edition (S0's sections part), for the same reason: only the server prints an SDD.
 import {ADOPTION_PACKAGE} from './public/adoption-package.js';
+// The selection's surface, which the package's registration no longer imports (ruling Y1: the registration loads in the
+// browser's shared first-draw entry, the surface in the comparison tools' entry): the server's list reaches it as before,
+// so that S0 tells the package's modules from the workbench's by who imports them.
+import './public/adoption-ui.js';
 import {upgradeAdoptions} from './public/adoption-upgrade.js';
 import {selectionReading} from './public/adoption-selection.js';
 import {md, bullets, plural, decisionOrder} from './public/sdd-architecture.js';

@@ -21,8 +21,10 @@ import {architectureUnitEditor,architectureUnitPayload,architectureUnitReviewHTM
 import {timeHTML} from './format.js';
 import {solRecord} from './brain-reasoning-ui.js';
 import {catalogue,catalogueLoaded,loadCatalogue} from './catalogue-store.js';
-// The design package of the knowledge register (rc44, wp1): this entry holds it in the browser (its route stub loads it).
-import './knowledge-package.js';
+// The design packages' first-draw readers, the knowledge register's among them, are held in the one shared lazy entry
+// that every route stub loads (rc44, the lead's ruling Y1, built by S0-D10; was this entry): this surface imports it so
+// that it finds the package registered.
+import './design-package-readers.js';
 import {packageStep} from './knowledge-package.js';
 let wantView=null,wantProduct='',wantReference='',referenceSourceId='',context=null,hooks=null,projectId='',productCompare='',query='',discoveryQuery='',graphQuery='',graphFocus='',conceptId='',compareId='',view='explore',form='',fields={},selectedLeads=new Set(),repositorySelected=new Set(),repositoryPreview=null,transferPreview=null,transferScope=null,transferConfirmed=false,dirty=false,pending=null,busy=false,error='',notice='';
 const field=(key,label,multiline=false,value=fields[key]||'',attrs='')=>`<label class="brain-field"><span>${label}</span>${multiline?`<textarea data-k-field="${key}" rows="3" maxlength="${key==='body'?60000:2000}">${esc(value)}</textarea>`:`<input data-k-field="${key}" value="${esc(value)}" maxlength="${key==='path'?500:2000}" ${attrs}>`}</label>`;

@@ -156,13 +156,15 @@ export function assertFindingIdsUnique(p) {
 
 // "Opens with records" (the lead's ruling D10 of 2026-11-18). The chapters-route gate (client-bundle.mjs sizeReport,
 // routes.chapters.code) measures opening a document that holds no package records. A document that holds a package's
-// records also loads, before it is first drawn, the lazy entry that holds the package (ruling A3). Each package
+// records also loads, before it is first drawn, the lazy entry its route stub loads: since ruling Y1 (built by S0-D10)
+// the one shared entry of the packages' first-draw readers, design-package-readers.js, for every package. Each build
 // reports that figure in its notes and its size evidence: the code of the chapters route and of the lazy entry's own
 // static closure together, each script counted once. opensWithRecords(metafile, entry, dataNames) reads it from the
-// build's metafile (bundleClient(...).metafile, parsed): `entry` is the source of the lazy entry the package's route
-// stub loads ('public/architecture-task-ui.js'), `dataNames` the data modules the gate sets apart from code
-// (Object.keys(BUDGET.data) of client-bundle.mjs). It answers {route, added, total, files}: the route as the gate
-// counts it, what the lazy entry adds to it, their sum, and how many scripts the entry adds.
+// build's metafile (bundleClient(...).metafile, parsed): `entry` is the source of the lazy entry
+// ('public/design-package-readers.js'), or a list of them, which are counted together (each script once; an empty list
+// is the route alone), `dataNames` the data modules the gate sets apart from code (Object.keys(BUDGET.data) of
+// client-bundle.mjs). It answers {route, added, total, files}: the route as the gate counts it, what the entries add to
+// it, their sum, and how many scripts they add.
 // assertUnder10kCeiling(slice, base, gate) (the lead's rulings P8 and R4 of 2026-11-22): a size case reads the
 // files-under-10-KB bucket as a ceiling, as client-bundle.mjs does: at most the gate (BUDGET.tiny), and at most the
 // base's count plus the script files the slice adds (slice and base: {scripts, under10k}). A slice may leave fewer
@@ -202,11 +204,11 @@ export function opensWithRecords(metafile, entry, dataNames = []) {
   const isData = input => dataNames.some(name => input.endsWith('public/' + name + '.js'));
   const code = f => (outputs[f]?.bytes || 0) - Object.entries(outputs[f]?.inputs || {}).reduce((n, [i, x]) => n + (isData(i) ? x.bytesInOutput : 0), 0);
   const closure = starts => { const seen = new Set(), walk = f => { if (seen.has(f) || !outputs[f]) return; seen.add(f); for (const i of outputs[f].imports || []) if (!i.external && i.kind === 'import-statement') walk(i.path); }; starts.forEach(walk); return seen; };
-  const main = scripts.find(f => outputs[f].entryPoint === 'public/entry.js'), held = scripts.find(f => outputs[f].entryPoint === entry);
-  if (!main || !held) throw Error('The build holds no ' + (main ? 'lazy entry ' + entry : 'entry script') + '.');
+  const main = scripts.find(f => outputs[f].entryPoint === 'public/entry.js'), entries = Array.isArray(entry) ? entry : [entry], held = entries.map(e => scripts.find(f => outputs[f].entryPoint === e)), missing = entries.find((e, i) => !held[i]);
+  if (!main || missing !== undefined) throw Error('The build holds no ' + (main ? 'lazy entry ' + missing : 'entry script') + '.');
   // The chapters route as the gate reads it: the entry script and every dynamic import of it but the Projects page.
   const route = closure([main, ...(outputs[main].imports || []).filter(i => i.kind === 'dynamic-import' && outputs[i.path]?.entryPoint !== 'public/projects.js').map(i => i.path)]);
-  const more = [...closure([held])].filter(f => !route.has(f)), sum = files => [...files].reduce((n, f) => n + code(f), 0);
+  const more = [...closure(held)].filter(f => !route.has(f)), sum = files => [...files].reduce((n, f) => n + code(f), 0);
   return {route: sum(route), added: sum(more), total: sum(route) + sum(more), files: more.length};
 }
 
