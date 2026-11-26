@@ -212,6 +212,11 @@ add('I4 (ruling Z8): the readers read a kept stamp as nobody\'s whatever its dat
   const q = neutraliseImportedAuthority(stampedDocument(), IMPORT_AT, B), R1 = readers(q);
   for (const [path, id, kind, label, review, confirmed] of R1.records) { assert.equal(review, null, path + ' ' + id + ': no review'); assert.equal(confirmed, false); assert.deepEqual(names(label), [], path + ' ' + id + ': ' + label); assert.ok(kind, path + ' ' + id + ' has an author kind'); }
   assert.deepEqual([names(R1.summary.writers), names(R1.summary.reviewers)], [[], []]);
+  // the SDD's architecture edition counts a package's imported record by the words it kept (a person's), not on the line
+  // of records an upgrade or a merge with no preparer wrote; it names nobody from elsewhere as a merger
+  { const {provenanceReading} = await import('./public/sdd-architecture.js'), was = provenanceReading(rv.withFinalReview(stampedDocument())), now = provenanceReading(rv.withFinalReview(clone(q)));
+    assert.equal(now.by.upgrade || 0, was.by.upgrade || 0, 'no imported record is counted as written by an upgrade'); assert.equal(now.by.person, was.by.person, 'a person\'s words stay a person\'s');
+    assert.equal(now.confirmed, 0, 'nothing is confirmed by a person here'); assert.equal(now.merged, undefined, 'no merger from elsewhere is printed'); }
   assert.equal(R1.summary.reviewed['sol-draft'], 0, 'the draft by Sol confirmed elsewhere is counted as not reviewed');
   assert.ok((R1.plan || []).length > 0, 'the review plan lists what nobody here reviewed');
   assert.match(await secondStep(q, 'STS-001', C), NO_PERSON('STS-001'), 'nobody stands behind the record here');

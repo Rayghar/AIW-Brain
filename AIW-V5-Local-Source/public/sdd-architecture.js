@@ -172,7 +172,8 @@ export function provenanceReading(p) {
     const engines = {model: 0, assisted: 0, rules: 0}, models = new Map();
     let total = 0, confirmed = 0, merged = 0; const mergers = new Set();
     for (const [chapter, , read, packaged] of collections()) for (const r of read(p)) {
-      const stated = sddAuthor(r), a = packaged && stated === 'person' && !r?.provenance?.author ? 'upgrade' : stated, ok = confirmedByPerson(p, r, chapter); total++; by[a] = (by[a] || 0) + 1; if (ok) { confirmed++; reviewed[a] = (reviewed[a] || 0) + 1; }
+      // (a package's record whose author stamp an import kept as history is counted by the words it kept: rc44 S0-w3-stamps, ruling Z8)
+      const stated = sddAuthor(r), a = packaged && stated === 'person' && !r?.provenance?.author && !r?.provenance?.imported?.author ? 'upgrade' : stated, ok = confirmedByPerson(p, r, chapter); total++; by[a] = (by[a] || 0) + 1; if (ok) { confirmed++; reviewed[a] = (reviewed[a] || 0) + 1; }
       if (r?.provenance?.reviewed?.how === 'merged') { merged++; mergers.add(str(r.provenance.reviewed.by) || 'a person'); }
       if (a === 'sol') { const d = solDraftOf(r), e = d?.engine; if (e === 'model') { engines.model++; const m = [str(d.provider), str(d.model)].filter(Boolean).join(' · '); if (m) models.set(m, (models.get(m) || 0) + 1); } else if (e === 'model-assisted') engines.assisted++; else if (e === 'rules') engines.rules++; }
       const c = chapters.get(chapter) || {chapter, title: chapterTitle(chapter), total: 0, sol: 0, import: 0, rules: 0, person: 0, reference: 0, proposal: 0, confirmed: 0};
