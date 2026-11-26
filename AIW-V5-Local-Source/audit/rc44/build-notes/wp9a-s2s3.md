@@ -265,3 +265,21 @@ wp2 45 checks, run in the archive of `4349bb6`):
    changed in the design (the plan's state, its placements), never by dismissing it. Confirm, or rule that a person's
    dismissal stands for the gate too.
 6. An agent account retires and restores a person's claim, gate or copy as it does a node (L11 (b), wp9b's).
+
+## Fix-up (owner decision AA1: one review, one fix-up)
+
+Branch `rc44/wp9a-s2s3-fix`, from `10b97b7` (the build's head). The review's verdict was "changes needed": six must-fix
+items, nine should-fix items, nine design concerns. Each must-fix item gets a case seen to fail on `10b97b7` first, then
+the fix; each small should-fix item inside the build's files is fixed with its case; every other should-fix item and every
+design concern is carried (below, "Carried forward"). Logs under `.aiw-local/fixup/` (git-ignored).
+
+- **State:** in progress. Done: the plan. Next: must-fix 1.
+
+| Item | What | State |
+|---|---|---|
+| must-fix 1 | a draft or agent account takes a person's claim out of scope, empties what must survive, clears its minutes | next |
+| must-fix 2 | a draft or agent account lifts a failing location gate (gate, copy, zone, node) | |
+| must-fix 3 | L11 (d): zones and placements a draft changed are not named, and the acceptance is taken | |
+| must-fix 4 | a restore after a recovery import brings back an acceptance and a gate's evidence | |
+| must-fix 5 | H5 compares independence pairwise beside hostingComparison's groups (L2, rule 39) | |
+| must-fix 6 | Chapter 10's checks with declared failures cost O(placements x zones) per case | |
