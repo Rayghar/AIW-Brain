@@ -31,7 +31,7 @@ import {verifierRefusal} from './architecture-obligations.js';
 import {valueFingerprint} from './source-fingerprint.js';
 import {remember} from './document-memo.js';
 import {list} from './util.js';
-import {TRACKED,LABELS,topologyTyped,failureDomains,deploymentNodes,hostingComparison,groupKey,zoneFails,requireTyped,storeWritten,DRAFT,pad,find,refOf,and,sharedCause,patchBounded,authoredRecord,put,BOOKKEEPING} from './topology-domain.js';
+import {TRACKED,LABELS,topologyTyped,failureDomains,deploymentNodes,hostingComparison,groupKey,zoneFails,requireTyped,storeWritten,DRAFT,pad,find,refOf,and,sharedCause,standing,patchBounded,authoredRecord,put,BOOKKEEPING} from './topology-domain.js';
 import {failingGate} from './topology-gates.js';
 
 export const FAILURE_SCOPES=['instance','zone','site','region','provider','shared-cause','correlated'],QUANTIFIERS=['any-one','named'];
@@ -129,7 +129,7 @@ export function lossCases(p,fs){
     for(const d of [...own,...under])add([d.id]);
    }
   }
-  for(const id of list(fs.domainIds))if(find(ds,id))add([id]);
+  for(const id of list(fs.domainIds))if(standing(ds,id))add([id]);else unknown.push((refOf(find(ds,id))||id)+', which '+fs.ref+' names, is not standing in the design.');
  }
  if(keys.length>EVALUATION_BOUND)return {cases:[],unknown:[],bound:'The claim reads '+keys.length+' loss cases, more than the '+EVALUATION_BOUND+' one evaluation reads: narrow the scope.'};
  return {cases:keys.map(ids=>({id:fs.id+':'+ids.join('+'),title:lostTitle(p,ids,fs.scope==='correlated'),lostDomainIds:ids,...prefix(losing(p,ids))})),unknown,bound:null};

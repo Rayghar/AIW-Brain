@@ -1472,6 +1472,10 @@ await block('S2.2 any one zone, and the bound', () => {
   // a hosting zone with no typed domain of the needed scope reads unknown, never survives
   { const x = declare(q, {environmentId: I.recovery, title: 'Any one recovery zone', mustSurvive: [I.recoveryStorePlan]}), y = evaluate(x.document, x.selected);
     assert.equal(y.verdict, 'unknown'); assert.match(y.unknown.join(' '), /ZON-003 stands in no failure domain of scope zone/); }
+  // a domain the claim names that is not standing (a hand-made or recovered document: the lifecycle refuses to retire a named domain) reads unknown, never
+  // a case silently dropped
+  { const x = structuredClone(q); declared(x, r.selected).domainIds = ['fd-404']; const y = evaluate(withFinalReview(x), r.selected);
+    assert.equal(y.verdict, 'unknown'); assert.match(y.unknown.join(' '), /fd-404, which FS-001 names, is not standing in the design\./); }
   // the bound: at most 64 cases; this build writes at most 60 failure domains, so through the commands the domain bound binds first, and a document
   // that holds more (a recovery package of another build) answers unknown with the bound named: nothing is truncated silently
   assert.equal(FA.EVALUATION_BOUND, 64); assert.ok(T.TOPOLOGY_LIMITS.domains < FA.EVALUATION_BOUND, 'through the commands the failure-domain bound (60) binds before the case bound');
