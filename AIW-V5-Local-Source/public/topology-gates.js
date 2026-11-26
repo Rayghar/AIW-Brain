@@ -221,11 +221,15 @@ function recordEvidence(p,raw,at,actor,options){
 }
 
 // ---------------------------------------------------------------- the hook of workspace.merge (H11)
-// A merge that would make a gate fail that does not fail before it is refused, the gate named, before anything is kept.
+// A merge that would add a failing row to a gate (a copy or a location that fails it), whether or not the gate fails
+// before it, is refused, the gate and those rows named, before anything is kept (the fix-up's should-fix 2: rows, not the
+// gate's state, so a gate that fails already is no leave to move more data where it may not rest).
+const rowKey=r=>JSON.stringify([r.copyId,r.dataId,r.kind,r.zoneId,r.nodeId,r.jurisdiction]);
 export function refuseMerge(before,after){
  if(!topologyTyped(after))return;
- for(const g of gates(after))if(g?.id&&!isProposed(g)){const now=gateReading(after,g.id);if(now?.state!=='fail'||gateReading(before,g.id)?.state==='fail')continue;
-  throw Error(g.ref+' '+g.title+' would fail: '+now.rows.filter(r=>r.state==='fail').map(r=>r.why).join('; ')+'; '+terms(g)+'. A location gate is not traded off: revise the alternative.');}
+ for(const g of gates(after))if(g?.id&&!isProposed(g)){const now=gateReading(after,g.id);if(now?.state!=='fail')continue;
+  const was=new Set((gateReading(before,g.id)?.rows||[]).filter(r=>r.state==='fail').map(rowKey)),added=now.rows.filter(r=>r.state==='fail'&&!was.has(rowKey(r)));if(!added.length)continue;
+  throw Error(g.ref+' '+g.title+' would fail: '+added.map(r=>r.why).join('; ')+'; '+terms(g)+'. A location gate is not traded off: revise the alternative.');}
 }
 Object.assign(TOPOLOGY,{refuseMerge});
 
@@ -278,8 +282,9 @@ function applyGateCommand(p,command,at,actor,options){
 }
 TRACKED.push(['runtime.gates',10,'gate',GATE_KEYS.filter(k=>k!=='open'),true],['runtime.copies',10,'copy',COPY_KEYS.filter(k=>k!=='open'),true]);
 Object.assign(LABELS,{dataIds:'Data',classifications:'Classifications',personalData:'Personal data',permitted:'Permitted jurisdictions',requires:'Requires',nodeIds:'Deployment nodes',requirement:'Requirement',source:'Source',dataId:'Data',planId:'Runtime plan',zoneId:'Zone',derivedFrom:'Derived from'});
-// What gates and copies say to the design fingerprint: all but who wrote and reviewed them; a proposal says nothing.
-const DESIGN_OFF=new Set([...BOOKKEEPING,'actor','recorded']),statement=xs=>{const out=xs.filter(r=>r&&!isProposed(r)).map(r=>Object.fromEntries(Object.entries(r).filter(([k])=>!DESIGN_OFF.has(k))));return out.length?out:undefined;};
+// What gates and copies say to the design fingerprint: all but who wrote and reviewed them, and a step a recovery import
+// moved aside (the fix-up's should-fix 7); a proposal says nothing.
+const DESIGN_OFF=new Set([...BOOKKEEPING,'actor','recorded','importedReview']),statement=xs=>{const out=xs.filter(r=>r&&!isProposed(r)).map(r=>Object.fromEntries(Object.entries(r).filter(([k])=>!DESIGN_OFF.has(k))));return out.length?out:undefined;};
 const edit={apply:applyGateCommand,staged:true,validate:refuseDraft};
 export const GATES_PART={
  objectTypes:{gate:{label:'Location gate',chapter:10,level:'deployment',prefix:'LG'},copy:{label:'Data copy',chapter:10,level:'deployment',prefix:'DCP'}},

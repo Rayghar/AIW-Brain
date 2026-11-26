@@ -2181,6 +2181,55 @@ await block('S3.11 a draft lifts no failing location gate, through the server', 
   pass('S3.11: through the server, a draft by Sol and an agent account lift no failing location gate: a change of the gate (its permitted list, its data, its environment, its words) or of a copy, and a node\'s jurisdiction cleared, are refused in words; a zone a draft locates and a placement a draft moves are read as failing, the gate naming them, until a person locates or moves them; the hard finding stands throughout, and a person\'s own change stands');
 });
 
+//   S3.12 (should-fix 2, H11) through the server: a merge that adds a failing row to a gate that fails already is refused; one that adds none merges;
+//   S3.13 (should-fix 3) an acceptance lapses when a gate of its environment starts failing after it;
+//   S3.14 (should-fix 7) the design statement of claims and gates leaves out what a recovery import moved aside.
+await block('S3.12 a merge that adds a failing row to a failing gate, through the server', async () => {
+  need();
+  const I = F.ids(), {h, d, ok, stockholm, lg} = await stockholmServer();
+  try {
+    assert.equal(GA.gateReading(d(), lg).state, 'fail', 'the log in Stockholm fails the gate already');
+    const standby = d().runtime.placements.find(l => l.planId === I.storePlan && l.role === 'standby'), alternative = async (commands, title) => { ok(await h.send('workspace.alternative', {commands, stamp: previewScenarioAlternative(d(), commands, undefined).stamp, title, reason: 'To see it (synthetic).'})); return d().workbench.alternatives.at(-1); };
+    const merge = alt => h.send('workspace.merge', {id: alt.id, stamp: rebaseWorkingAlternative(d(), alt).stamp, reviewed: true, reason: 'Merged to see it.'}, B);
+    // fails on 10b97b7: the gate failed before the merge, so a merge that moves the standby into Stockholm (SE) was taken (200)
+    const into = await alternative([{type: 'runtime.placement', payload: {id: standby.id, zoneId: stockholm}}], 'A standby in Stockholm'), x = await merge(into);
+    assert.equal(x.status, 400, 'refused: ' + JSON.stringify(x.body).slice(0, 300));
+    assert.match(x.error, /^LG-001 Booking records stay in Norway would fail: the replica of DAT-001 Passenger booking record the trail places in ZON-004 rests at DN-002 Sweden Central, in SE; LG-001 permits NO\. A location gate is not traded off: revise the alternative\.$/, x.error);
+    assert.equal(d().runtime.placements.find(l => l.id === standby.id).zoneId, I.zone2, 'nothing moved');
+    // a merge that adds no failing row merges, though the gate still fails
+    ok(await merge(await alternative([{type: 'runtime.placement', payload: {id: standby.id, basis: 'Confirmed in zone 2 (synthetic).'}}], 'The standby stays')), 'a merge that adds no failing row');
+    assert.equal(GA.gateReading(d(), lg).state, 'fail');
+  } finally { h.close(); }
+  pass('S3.12: through the server, a merge that adds a failing row to a location gate that fails already (the standby moved into Stockholm, SE) is refused naming that row, and nothing moves; a merge that adds no failing row merges (H11 compares the failing rows, not the gate\'s state)');
+});
+
+await block('S3.13 an acceptance lapses when a gate of its environment starts failing', () => {
+  need();
+  const I = F.ids(); let {p, zoneSE} = withStockholm();
+  p = recordedInNorway(gate(p).document); const r = declare(p); p = r.document; const fs = r.selected;
+  declared(p, fs).review = {actor: B, at: AT, account: 'person', decision: 'accepted', stamp: FA.failureStamp(p, declared(p, fs)), verdict: 'survives', cases: [], reviewer: 'B (synthetic)', reference: 'REV-6', observations: 'Accepted as a design claim; not demonstrated.'};
+  assert.deepEqual([GA.locationGateState(p, I.production), FA.failureAccepted(p, declared(p, fs))], ['pass', true], 'accepted while the gate passes');
+  // fails on 10b97b7: a log copy moved into Sweden afterwards fails the gate, and the acceptance stood
+  const q = doc(p, 'runtime.copy', {dataId: I.data, kind: 'log', zoneId: zoneSE, basis: 'Audit log (synthetic).'});
+  assert.equal(GA.locationGateState(q, I.production), 'fail');
+  assert.equal(FA.failureAccepted(q, declared(q, fs)), false, 'a claim does not stand accepted while a gate of its environment fails');
+  assert.equal(FA.failureAccepted(doc(q, 'runtime.copy', {id: q.runtime.copies.at(-1).id, zoneId: I.zone1}), declared(q, fs)), true, 'and stands again once the gate passes');
+  pass('S3.13: a second person\'s acceptance of a declared failure stands only while no location gate of its environment fails: a copy moved into Sweden afterwards lapses it, and moved back it stands again');
+});
+
+await block('S3.14 the design statement leaves out what a recovery import moved aside', () => {
+  need();
+  const I = F.ids(); let {p, made} = typedTidewater();
+  p = declare(p).document; p = doc(p, 'runtime.gate', {kind: 'key-custody', title: 'Keys held in Norway', environmentId: '', nodeIds: [made.region], requirement: 'Keys are held by the customer.', source: 'Key policy (synthetic)'});
+  p.runtime.failures[0].review = {actor: B, at: AT, account: 'person', decision: 'accepted', stamp: '', verdict: 'survives', cases: [], reviewer: 'B', reference: 'R', observations: 'O'};
+  p.runtime.gates[0].review = {actor: B, at: AT, account: 'person', evidence: {[made.region]: {state: 'pass', actor: B, at: AT, account: 'person', stamp: '', reference: 'R', observations: 'O'}}};
+  const statement = q => JSON.stringify([mine().design['runtime.failures'](q), mine().design['runtime.gates'](q)]), imported = withFinalReview(neutraliseImportedAuthority(structuredClone(p), AT));
+  assert.ok(imported.runtime.failures[0].importedReview && imported.runtime.gates[0].importedReview, 'the import moved both steps aside');
+  // fails on 10b97b7: the statement read importedReview, so the import moved the design fingerprint by a step's history
+  assert.equal(statement(imported), statement(p), 'a step moved aside says nothing to the design, as the step did not');
+  pass('S3.14: the design statement of declared failures and location gates leaves out importedReview as it leaves out review: a recovery import that moves a step aside moves nothing they say to the design fingerprint');
+});
+
 // ================================================================ Slice 4: blueprint adoption glue, transitional populations
 // (design section g, Slice 4. Slice 4 adds its cases here, as blocks named 'S4.n …'.)
 

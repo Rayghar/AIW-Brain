@@ -200,7 +200,8 @@ function evaluate(p,id){
 }
 // A second person's acceptance that stands: taken by a signed-in person who wrote nothing of the claim (the one rule,
 // verifierRefusal, at read time; ruling D7.1), on the claim and the design as they read now.
-export function failureAccepted(p,fs){const s=fs?.review;return !!s&&typeof s==='object'&&!isProposed(fs)&&s.decision==='accepted'&&s.account==='person'&&!verifierRefusal(fs,s.actor,s.account)&&s.stamp===failureStamp(p,fs);}
+// (the fix-up's should-fix 3) It lapses while a location gate of the claim's environment fails, as the step is refused then.
+export function failureAccepted(p,fs){const s=fs?.review;return !!s&&typeof s==='object'&&!isProposed(fs)&&s.decision==='accepted'&&s.account==='person'&&!verifierRefusal(fs,s.actor,s.account)&&s.stamp===failureStamp(p,fs)&&!failingGate(p,fs.environmentId);}
 // The widest declared failure in scope of zone scope or narrower, for the sizing of capacity (wp3); null when none.
 export function survivalScope(p,envId){const rank={instance:1,zone:2};let best=null;for(const fs of failures(p))if(fs?.environmentId===envId&&fs.inScope&&!isProposed(fs)&&rank[fs.scope]&&(!best||rank[fs.scope]>rank[best.scope]))best={failureId:fs.id,scope:fs.scope};return best;}
 
@@ -297,8 +298,9 @@ function applyFailureCommand(p,command,at,actor,options){
 }
 TRACKED.push(['runtime.failures',10,'failure',FS_KEYS.filter(k=>k!=='open'),true],['runtime.environments',10,'environment',['recoversIds'],true]);
 Object.assign(LABELS,{environmentId:'Environment',quantifier:'Quantifier',durationMinutes:'Duration (minutes)',mustSurvive:'Must survive',mayDegrade:'May degrade',minimumService:'Minimum service',exclusions:'Exclusions',acceptedCauseIds:'Accepted shared causes',inScope:'In scope',recoversIds:'Recovers'});
-// What a declared failure says to the design fingerprint: all but who wrote and reviewed it (rulings J3, L5, L6).
-const DESIGN_OFF=new Set([...BOOKKEEPING,'actor','recorded']),statement=p=>{const xs=failures(p).filter(r=>r&&!isProposed(r)).map(r=>Object.fromEntries(Object.entries(r).filter(([k])=>!DESIGN_OFF.has(k))));return xs.length?xs:undefined;};
+// What a declared failure says to the design fingerprint: all but who wrote and reviewed it, and a step a recovery import
+// moved aside (rulings J3, L5, L6; the fix-up's should-fix 7).
+const DESIGN_OFF=new Set([...BOOKKEEPING,'actor','recorded','importedReview']),statement=p=>{const xs=failures(p).filter(r=>r&&!isProposed(r)).map(r=>Object.fromEntries(Object.entries(r).filter(([k])=>!DESIGN_OFF.has(k))));return xs.length?xs:undefined;};
 const edit={apply:applyFailureCommand,staged:true,validate:refuseDraft};
 export const FAILURES_PART={
  objectTypes:{failure:{label:'Declared failure',chapter:10,level:'deployment',prefix:'FS'}},
