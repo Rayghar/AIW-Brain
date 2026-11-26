@@ -46,7 +46,7 @@ import {documentClone,memoPass} from './document-memo.js';
 import {changeTargetStamp,changeFingerprint} from './changes-domain.js';
 import {appSnapshot,capabilitySnapshot,intakeStamp} from './technology-domain.js';
 import {inputSnapshot} from './technology-realisation-domain.js';
-import {reviewFingerprint,designFingerprint,computeChapterStamps,inheritedFindings,legacyStampOf,actionDefinition,registerReadingsUpgrade,DESIGN_FINGERPRINT,withDesignFingerprint,withLibraryLogAsDesign} from './review-domain.js';
+import {reviewFingerprint,designFingerprint,computeChapterStamps,inheritedFindings,legacyStampOf,actionDefinition,registerReadingsUpgrade,DESIGN_FINGERPRINT,withDesignFingerprint,withLibraryLogAsDesign,evidenceStamp} from './review-domain.js';
 import {currentResponsibilityReading} from './logical-domain.js';
 import {currentComponentReading} from './realisation-domain.js';
 import {workingBasis,guideBasis} from './guidance-record.js';
@@ -126,7 +126,7 @@ function recordStamps(p,what){
 // keeps; review-domain.js dispositionCurrent reads each by the treatment's basis).
 const treatedFindingIds=p=>new Set(list(p.finalReview?.dispositions).flatMap(d=>d.scope==='cause'?list(d.findings).map(x=>x?.[0]):[d.findingId]).filter(id=>typeof id==='string'));
 function designStamps(p,findingIds){
- const out={source:designFingerprint(p),chapters:computeChapterStamps(p),findings:new Map()};
+ const out={source:designFingerprint(p),chapters:computeChapterStamps(p),evidence:evidenceStamp(p),findings:new Map()};
  // Findings are kept per document object (review-domain.js): taken of a copy, so the document itself keeps none.
  if(findingIds.size){const copy=documentClone(p);for(const f of inheritedFindings(copy))if(findingIds.has(f.id))out.findings.set(f.id,[f.stamp,legacyStampOf(copy,f)]);}
  return out;
@@ -151,18 +151,41 @@ export function upgradeReadings(p){
 // once, at its first read here. The stamps the upgrade read stay on record (finalReview.libraryLogUpgrade), which also
 // says it is done.
 function toLibraryLog(q){
- const m=q.finalReview,findingIds=treatedFindingIds(q),before=withLibraryLogAsDesign(()=>designStamps(q,findingIds)),after=designStamps(q,findingIds),version=m.version,map=new Map();
+ const findingIds=treatedFindingIds(q),before=withLibraryLogAsDesign(()=>designStamps(q,findingIds)),after=designStamps(q,findingIds);
+ carry(q,before,after);
+ q.finalReview.libraryLogUpgrade={design:{[after.source]:before.source}};
+ return q;
+}
+// The stamps of the whole design carried over a change that leaves the design as it was (toLibraryLog above, and the
+// import's move of the record stamps below): a stored stamp of the design, of its version or of a treated finding equal
+// to the one taken before (it was current) becomes the one taken after; a verification of an action that was current
+// stays current; a frozen baseline, which is never changed, is answered through the one alias table, chained through an
+// earlier one, for its chapters, its design stamp and (the fix-up of S0-w3-stamps, must-fix 3) the evidence it was
+// frozen beside (review-domain.js designStampIs and baselineChanges). The table is written only when a stamp moved.
+function carry(q,before,after){
+ const m=q.finalReview,version=m.version,map=new Map();
  record(map,before.source,after.source);record(map,before.source+':'+version,after.source+':'+version);
  recordFindings(map,before.findings,after.findings);
  const verified=list(m.actions).map(a=>!!a.verification&&a.verification.stamp===reviewFingerprint(actionDefinition(a)));
  translate(q,m,map);
  list(m.actions).forEach((a,i)=>{if(verified[i])a.verification={...a.verification,stamp:reviewFingerprint(actionDefinition(a))};});
- if(list(m.baselines).length){
-  const old=m.readingsUpgrade,aliases={};for(const [id,b] of Object.entries(before.chapters)){const legacy=old?.chapters?.[id]?.[b]??b,a=after.chapters[id];if(a!==legacy||old?.chapters?.[id])aliases[id]={[a]:legacy};}
-  m.readingsUpgrade={design:{[after.source]:old?.design?.[before.source]??before.source},chapters:aliases};
+ if(list(m.baselines).length&&(before.source!==after.source||before.evidence!==after.evidence||Object.keys(before.chapters).some(id=>before.chapters[id]!==after.chapters[id]))){
+  const old=m.readingsUpgrade,aliases={},evidence=old?.evidence?.[before.evidence]??before.evidence;for(const [id,b] of Object.entries(before.chapters)){const legacy=old?.chapters?.[id]?.[b]??b,a=after.chapters[id];if(a!==legacy||old?.chapters?.[id])aliases[id]={[a]:legacy};}
+  m.readingsUpgrade={design:{[after.source]:old?.design?.[before.source]??before.source},chapters:aliases,...(after.evidence!==evidence?{evidence:{[after.evidence]:evidence}}:{})};
  }
- m.libraryLogUpgrade={design:{[after.source]:before.source}};
- return q;
+}
+// A recovery import moves every record stamp aside (the lead's ruling Z8: provenance.js keepImportedStamps, called by
+// recovery-service.js). The design fingerprint reads a built-in record's provenance, so the move changes the stamps of
+// the whole design though the design is as it was: they are carried over in the same pass (the fix-up of S0-w3-stamps,
+// must-fix 2), each taken before and after the move under the reading the document's stamps were taken at (its design
+// fingerprint, and a library's log as design when its log upgrade is still due). A document that keeps no stamp of the
+// design, or whose stamps cannot be taken, is moved as it is. Answers what `move` answers (how many records it moved).
+export function keepingDesignStamps(p,move){
+ const m=p?.finalReview;if(!plain(m)||!keepsDesignStamps(m))return move(p);
+ const findingIds=treatedFindingIds(p),version=designFingerprintOf(p),log=libraryLogDue(p),take=()=>{try{const f=()=>withDesignFingerprint(version,()=>designStamps(p,findingIds));return log?withLibraryLogAsDesign(f):f();}catch{return null;}};
+ const before=take(),moved=move(p),after=before&&moved?take():null;
+ if(after)carry(p,before,after);
+ return moved;
 }
 function toCurrentReadings(p){
  const copies=keepsCopies(p),whole=copies?withReadingsDefinition(1,()=>convertCopies(p)):p,from=copies?1:readingsDefinitionOf(p);
@@ -198,7 +221,7 @@ function toDesignFingerprint(q){
  m.designFingerprintUpgrade={from:1,design:{[after.source]:before.source},chapters,...(old?{readingsUpgrade:old}:{})};
  if(list(m.baselines).length){
   const aliases={};for(const [id,b] of Object.entries(before.chapters)){const legacy=old?.chapters?.[id]?.[b]??b,a=after.chapters[id];if(a!==legacy||old?.chapters?.[id])aliases[id]={[a]:legacy};}
-  m.readingsUpgrade={design:{[after.source]:old?.design?.[before.source]??before.source},chapters:aliases};
+  m.readingsUpgrade={design:{[after.source]:old?.design?.[before.source]??before.source},chapters:aliases,...(old?.evidence?{evidence:old.evidence}:{})};
  }
  m.designFingerprint=DESIGN_FINGERPRINT;
  return q;

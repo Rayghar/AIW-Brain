@@ -9,6 +9,7 @@ import {assertDocumentSafe} from './shared/document-safety.js';
 import {RECOVERY_V2,packageLines,packageText,checkManifest,checkLine,assemblePackage,stagingKey} from './recovery-package.js';
 import {json} from './http.js';
 import {keepImportedStamps} from './public/provenance.js';
+import {keepingDesignStamps} from './public/readings-upgrade.js';
 // A request to this route stays within 12 MiB (server.js): a package larger than that arrives in entries (upload).
 const MAX=12*1024*1024;
 function decoded(s){if(typeof s!=='string'||s.length>MAX*1.4)throw Error('Invalid recovery file encoding.');return Uint8Array.from(atob(s),c=>c.charCodeAt(0));}
@@ -101,7 +102,9 @@ export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??
  // and they name nobody here, whatever the package says of their dates (public/provenance.js keepImportedStamps, over
  // every collection the server stamps, a package's included, and the retired store). The import says how many it moved
  // (finalReview.imported.stamps), which is how a reader knows that no date of this import decides anything.
- const stamps=keepImportedStamps(p);
+ // (the fix-up: the stamps of the whole design are carried over the move, public/readings-upgrade.js keepingDesignStamps,
+ // so a review, a check or a frozen baseline current before the move reads as it read: the design did not change)
+ const stamps=keepingDesignStamps(p,keepImportedStamps);
  const m=p.finalReview;if(!m||typeof m!=='object')return p;
  strip(m.intake);strip(m.checks);
  for(const r of m.reviews||[])strip(r);

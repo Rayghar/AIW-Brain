@@ -17,6 +17,7 @@
 // Run: npm run test:rc44-s0-import
 import assert from 'node:assert/strict';
 import {readFileSync, existsSync} from 'node:fs';
+import {createHash} from 'node:crypto';
 import * as R from './rc44-s0-readings.mjs';
 import worker from './worker.js';
 import {localDatabase} from './local-db.js';
@@ -86,6 +87,50 @@ function readers(p) {
 async function secondStep(p, id, actor) {
   const {extensionHandler} = await import('./design-extension-boundary.js'), h = extensionHandler('stampsyn.accept');
   try { h(rv.withFinalReview(clone(p), {upgrade: false}), {type: 'stampsyn.accept', payload: {id}}, AT, actor, {author: {kind: 'person', id: actor, account: 'person', reviewed: true}}); return 'taken'; } catch (e) { return e.message; }
+}
+
+// ------------------------------------------------------------------------------------------------ frozen baselines (the fix-up, must-fix 2)
+// The three references with person stamps dated before the import (A wrote every requirement and decision, B confirmed
+// the decisions that read confirmed), then the review's checks and a frozen baseline taken of them, in process at the
+// fixed time; and what a reader says of the baseline after the import (the server's restore: neutraliseImportedAuthority,
+// then the read, withFinalReview with its upgrade). Golden: `node rc44-s0-import-validate.mjs --capture-baselines <sha>`,
+// captured from the unchanged start commit 4349bb6 into rc44-s0-import-baselines.json (never recaptured).
+const BASELINES = 'rc44-s0-import-baselines.json';
+const unstamped = text => JSON.stringify(JSON.parse(text), (k, v) => (k === 'stamp' || k === 'legacyStamp' ? undefined : v));
+const shaOf = text => createHash('sha256').update(text).digest('hex');
+export function frozenDocument(template) {
+  let p = clone(R.reference(template));
+  for (const r of list(p.artefacts).filter(a => a.type === 'requirement')) r.provenance = {...(r.provenance || {}), author: {kind: 'person', by: A, at: PAST}};
+  for (const d of list(p.decisions?.records)) d.provenance = {...(d.provenance || {}), author: {kind: 'person', by: A, at: PAST}, ...(d.confirmed ? {reviewed: {by: B, at: PAST, how: 'confirmed'}} : {})};
+  p = rv.withFinalReview(p, {upgrade: false});
+  p = rv.applyFinalReviewCommand(p, {type: 'review.checks', payload: {stamp: rv.reviewDesignStamp(p)}}, AT, A).document;
+  return rv.applyFinalReviewCommand(rv.withFinalReview(p, {upgrade: false}), {type: 'review.baseline', payload: {title: 'Frozen where the package comes from', stamp: rv.reviewDesignStamp(rv.withFinalReview(p, {upgrade: false})), reviewed: true}}, AT, A).document;
+}
+export function baselineReading(d) {
+  const q = rv.withFinalReview(clone(d)), bs = list(q.finalReview.baselines), L = R.readings(q);
+  return {changes: bs.map(b => rv.baselineChanges(q, b)), current: bs.map(b => rv.baselineCurrent(q, b)), steps: rv.finalFindings(q).map(f => [f.id, f.title, f.level]), readiness: shaOf(unstamped(L.readiness)), findings: shaOf(unstamped(L.findings))};
+}
+// The same through the server: A edits a requirement and B confirms it, A records the review's checks and freezes a
+// baseline (the job, scripts/freeze-baseline.mjs); the project is exported and restored through /api/recovery. What the
+// reader says of the baseline there and after the restore (the server stamps its own times, so only what the readers
+// say is kept: no stamp, no time).
+async function frozenThroughServer() {
+  const h = harness(), {freezeBaseline} = await import('./scripts/freeze-baseline.mjs'), say = d => { const x = baselineReading(d); return {changes: x.changes, current: x.current, steps: x.steps}; };
+  try {
+    const o = await projectOf(h, A, [B]); await o.read(A); const req = o.d().artefacts.find(a => a.type === 'requirement');
+    await o.ok('artefact', {...req, title: req.title + ' (edited by A)'}, A); await o.ok('artefact', {...o.d().artefacts.find(a => a.id === req.id), confirmed: true}, B);
+    await o.ok('review.checks', {}, A); await o.read(A);
+    const f = await freezeBaseline((path, body) => h.api(path, body ? 'POST' : 'GET', body, A), {title: 'Frozen where the package comes from', stamp: rv.reviewDesignStamp(rv.withFinalReview(clone(o.d()))), project: o.pid}); assert.ok(!f.error, f.error);
+    await o.read(A); const there = say(o.d()), pack = await (await h.api('/api/recovery?project=' + encodeURIComponent(o.pid) + '&action=export', 'GET', null, A)).text(), rid = await restore(h, pack, B, 'Restored with a baseline'), r = await projectOf(h, B, [], rid); await r.read(B);
+    return {there, restored: say(r.d()), stamps: r.d().finalReview.imported.stamps ?? null};
+  } finally { h.close(); }
+}
+if (process.argv.includes('--capture-baselines')) {
+  const out = {capturedFrom: process.argv[process.argv.indexOf('--capture-baselines') + 1] || 'working tree', importedAt: IMPORT_AT, references: {}};
+  for (const t of R.REFERENCES) { const d = frozenDocument(t); out.references[t] = {before: baselineReading(d), imported: baselineReading(neutraliseImportedAuthority(clone(d), IMPORT_AT, B))}; }
+  out.server = await frozenThroughServer();
+  console.log(JSON.stringify(out));
+  process.exit(0);
 }
 
 if (process.argv.includes('--capture')) {
@@ -305,6 +350,23 @@ add('I8 (ruling Z8, Z2; the fix-up, must-fix 1): through /api/recovery an adopti
     const then = D.adoptionReading(r.d(), adp(r.d()));
     assert.deepEqual([then.accepted, then.acceptance.by, then.label, adp(r.d()).importedReview.actor], [true, B, 'applied · accepted by ' + B, 'architect-x'], 'the second person here is named; the history is kept');
   } finally { s.close(); }
+});
+
+// ------------------------------------------------------------------------------------------------ I9 (the fix-up, must-fix 2: a frozen baseline)
+add('I9 (ruling Z8; the fix-up, must-fix 2): the import moves the stamps aside and carries the stamps of the whole design over in the same pass, so a project with stamped records and a frozen baseline reads its baseline as on the start commit: baselineChanges, baselineCurrent, the readiness and what the findings say equal the golden of 4349bb6, in process for the three references and through /api/recovery', async () => {
+  if (!existsSync(BASELINES)) throw Error(BASELINES + ' is missing: capture it from the start commit.');
+  const G = JSON.parse(readFileSync(BASELINES, 'utf8'));
+  for (const t of R.REFERENCES) {
+    const d = frozenDocument(t), q = neutraliseImportedAuthority(clone(d), IMPORT_AT, B), now = baselineReading(q), was = G.references[t].imported;
+    assert.deepEqual(baselineReading(d), G.references[t].before, t + ': the fixture reads as on the start commit before the import');
+    assert.ok(q.finalReview.imported.stamps > 0 && PV.listAt(q, 'artefacts').some(r => r.provenance?.imported?.author?.by === A), t + ': the import moved the stamps aside');
+    assert.deepEqual([now.changes, now.current], [was.changes, was.current], t + ': the frozen baseline reads as on the start commit after the import: ' + JSON.stringify(now.changes));
+    assert.deepEqual(now.steps, was.steps, t + ': the readiness steps, as there'); assert.equal(now.readiness, was.readiness, t + ': the readiness, as there'); assert.equal(now.findings, was.findings, t + ': what the findings say, as there');
+  }
+  const S = await frozenThroughServer();
+  assert.deepEqual(S.there, G.server.there, 'the origin reads its baseline as on the start commit');
+  assert.ok(S.stamps > 0, 'the import moved the stamps aside');
+  assert.deepEqual([S.restored.changes, S.restored.current, S.restored.steps], [G.server.restored.changes, G.server.restored.current, G.server.restored.steps], 'through /api/recovery the restored project reads its baseline as on the start commit: ' + JSON.stringify(S.restored.changes));
 });
 
 // ------------------------------------------------------------------------------------------------ the runner
