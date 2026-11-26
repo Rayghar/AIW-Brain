@@ -31,7 +31,7 @@ import {verifierRefusal} from './architecture-obligations.js';
 import {valueFingerprint} from './source-fingerprint.js';
 import {remember} from './document-memo.js';
 import {list} from './util.js';
-import {TRACKED,LABELS,topologyTyped,failureDomains,deploymentNodes,hostingComparison,groupKey,zoneFails,requireTyped,storeWritten,standingOf,DRAFT,pad,find,refOf,and,sharedCause,standing,patchBounded,authoredRecord,put,BOOKKEEPING} from './topology-domain.js';
+import {TRACKED,LABELS,topologyTyped,failureDomains,deploymentNodes,hostingComparison,groupKey,zoneFails,requireTyped,storeWritten,standingOf,draftedIds,draftedOf,DRAFT,pad,find,refOf,and,sharedCause,standing,patchBounded,authoredRecord,put,BOOKKEEPING} from './topology-domain.js';
 import {failingGate} from './topology-gates.js';
 
 export const FAILURE_SCOPES=['instance','zone','site','region','provider','shared-cause','correlated'],QUANTIFIERS=['any-one','named'];
@@ -159,9 +159,6 @@ export function failureStamp(p,fs){
  const envs=[fs.environmentId,...recoveringEnvironments(p,fs.environmentId).map(e=>e.id)];
  return JSON.stringify([envs.map(id=>runtimeEnvironmentStamp(p,id)),valueFingerprint([said(failureDomains(p)),said(deploymentNodes(p))]),fs.id,fs.revision]);
 }
-// Whose words a reading stands on: a domain or a node a draft by Sol, an import or an agent account changed last that no
-// person has reviewed since (ruling L11 (d)).
-const unreviewed=r=>{const v=r?.provenance;return !!v?.author&&v.author.kind!=='person'&&!v.reviewed;};
 // What a plan's row says of it in a case: available, conditional (a declared recovery, here or in a linked recovery environment), unknown, or lost.
 const stateOf=r=>['available','conditional'].includes(r.recovery.state)?r.initial.state==='available'?'available':'conditional':[r.initial.state,r.recovery.state].includes('unknown')?'unknown':'lost';
 export const evaluateFailure=(p,id)=>remember(p,'topology:evaluate',id,()=>evaluate(p,id));
@@ -175,8 +172,15 @@ function evaluate(p,id){
  for(const pid of [...must,...may]){const r=find(p.runtime.plans,pid);if(!r||isProposed(r)||r.environmentId!==env.id)unknown.push((refOf(r)||pid)+' is not a plan of '+refOf(env)+' standing in the design.');else if(list(p.runtime.placements).some(l=>l?.planId===pid&&(!['active','standby'].includes(l.role)||!stated(l.replicas))))unknown.push(refOf(r)+' has a placement whose role or copy count is not stated.');}
  const L=lossCases(p,fs);if(L.bound){unknown.push(L.bound);return out;}
  unknown.push(...L.unknown);
- {const ds=failureDomains(p),ns=deploymentNodes(p),read=new Set();for(const z of hosting(p,env.id))for(const d of zoneFails(p,z))read.add(d.id);for(const c of L.cases)for(const i of c.lostDomainIds)read.add(i);for(const z of list(p.runtime.zones))if(z?.nodeId)for(let n=find(ns,z.nodeId),k=0;n&&k<9;n=find(ns,n.parentId),k++)read.add(n.id);
-  for(const x of [...ds,...ns])if(read.has(x.id)&&unreviewed(x))drafted.push(x.id);}
+ // (ruling L11 (d); the fix-up's must-fix 3) every record the cases read: the claim, the environment and the recovery
+ // environments linked to it, their hosting zones, plans and placements, the domains and nodes those stand in, and what
+ // each case loses
+ {const ns=deploymentNodes(p),envs=[env.id,...recoveringEnvironments(p,env.id).map(e=>e.id)],read=[fs.id,...envs],chain=id=>{for(let n=find(ns,id),k=0;n&&k<9;n=find(ns,n.parentId),k++)read.push(n.id);};
+  for(const e of envs)for(const z of hosting(p,e)){read.push(z.id);for(const d of zoneFails(p,z))read.push(d.id);}
+  for(const c of L.cases)read.push(...c.lostDomainIds,...c.lostZoneIds,...c.lostPlacementIds);
+  for(const z of list(p.runtime.zones))if(z?.nodeId)chain(z.nodeId);
+  const mine=new Set(envs.flatMap(e=>plansOf(p,e).map(r=>r.id)));read.push(...mine);for(const l of list(p.runtime.placements))if(mine.has(l?.planId)){read.push(l.id);if(l.nodeId)chain(l.nodeId);}
+  drafted.push(...draftedOf(p,read).map(r=>r.id));}
  const state=stateOf;let lost=null,open=false,conditional=false;
  for(const c of L.cases){
   const sim=simulateRuntime(p,{environmentId:env.id},lostSet(p,fs,c)),rows=sim.rows.filter(r=>must.includes(r.id)||may.includes(r.id)).map(r=>({id:r.id,ref:r.ref,title:r.title,role:must.includes(r.id)?'must':'may',initial:r.initial,recovery:r.recovery}));
@@ -205,7 +209,7 @@ function acceptFailure(p,raw,at,actor,options){
  if(!list(fs.mustSurvive).length)throw Error(fs.ref+' names nothing that must survive: name the plans first.');
  if(raw.decision==='accepted'){
   if(e.verdict==='does-not-survive')throw Error(fs.ref+' does not survive its case '+e.cases.find(c=>c.id===e.counterexample.caseId).title+': a claim that does not survive is not accepted. Change the design, or return the claim.');
-  if(e.drafted.length)throw Error(and(e.drafted.map(id=>refOf(find(failureDomains(p),id)||find(deploymentNodes(p),id))))+(e.drafted.length>1?' were':' was')+' last changed by a draft no person has reviewed: a person reviews '+(e.drafted.length>1?'them':'it')+' before the claim is accepted.');
+  if(e.drafted.length)throw Error(and(e.drafted.map(id=>refOf(draftedIds(p).get(id))))+(e.drafted.length>1?' were':' was')+' last changed by a draft no person has reviewed: a person reviews '+(e.drafted.length>1?'them':'it')+' before the claim is accepted.');
   const g=failingGate(p,fs.environmentId);if(g)throw Error(g.ref+' '+g.title+' fails: a claim of '+refOf(find(m.environments,fs.environmentId))+' is not accepted while a location gate of its environment fails.');
  }
  fs.review={actor,at,account:options?.author?.account??null,decision:raw.decision,stamp:e.stamp,verdict:e.verdict,cases:e.cases.map(c=>c.id),reviewer:words(raw.reviewer,180),reference:words(raw.reference),observations:words(raw.observations)};

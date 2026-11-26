@@ -1726,6 +1726,36 @@ await block('S2.12 a draft changes no declared failure a person saved, through t
   pass('S2.12: through the server, a draft by Sol and an agent account change nothing of a declared failure a person saved (alone and in a drafted batch): neither its scope, what must survive, its minutes nor its words; it reads as its writer saved it and failure-unsurvived stands; a draft edits its own proposal until a person keeps it');
 });
 
+await block('S2.13 no acceptance on a zone or a placement a draft changed, through the server', async () => {
+  need();
+  const I = F.ids(), {h, d, ok, region, z2, z3} = await regionServer();
+  try {
+    const claim = async payload => { const r = await h.send('runtime.failure', {environmentId: I.production, mustSurvive: [I.workerPlan], inScope: true, ...payload}); ok(r, 'a claim'); return r.body.selected; };
+    const lost = await claim({title: 'The primary region is lost', scope: 'region', quantifier: 'named', domainIds: [region]}), zone = await claim({title: 'Any one availability zone is lost', scope: 'zone', quantifier: 'any-one'});
+    const accept = id => h.send('runtime.failure-accept', {id, decision: 'accepted', stamp: FA.failureStamp(d(), declared(d(), id)), reviewer: 'B (synthetic)', reference: 'REV-4', observations: 'Accepted as a design claim; not demonstrated.', reviewed: true}, B);
+    assert.deepEqual([evaluate(d(), lost).verdict, evaluate(d(), zone).verdict], ['does-not-survive', 'survives']);
+    // fails on 10b97b7: a draft that locates zone 2 outside the region turns the verdict to survives with nothing named, and the acceptance was taken (200)
+    for (const [account, extra, who] of [[B, SOL_EXTRA, 'a draft by Sol'], [AGENT, {}, 'an agent account']]) {
+      ok(await h.send('runtime.locate', {zoneId: I.zone2, domainIds: [z3]}, account, extra), who + ' locates zone 2 in the Oslo zone domain');
+      const e = evaluate(d(), lost); assert.deepEqual([e.verdict, e.drafted.includes(I.zone2)], ['survives', true], who + ': the reading stands and names the zone a draft located: ' + JSON.stringify(e.drafted));
+      const x = await accept(lost); assert.equal(x.status, 400, who + ': ' + JSON.stringify(x.body).slice(0, 200)); assert.match(x.error, /^ZON-002 was last changed by a draft no person has reviewed: a person reviews it before the claim is accepted\.$/, x.error);
+      ok(await h.send('runtime.locate', {zoneId: I.zone2, domainIds: [z2], reason: 'Back in its own zone domain (synthetic).'}, C), 'a person locates it back');
+      assert.deepEqual([evaluate(d(), lost).verdict, evaluate(d(), lost).drafted], ['does-not-survive', []]);
+    }
+    // a placement a draft changed (a built-in command): the worker's copy in zone 2 given two replicas by an agent account
+    const placement = d().runtime.placements.find(l => l.planId === I.workerPlan && l.zoneId === I.zone2);
+    ok(await h.send('runtime.placement', {id: placement.id, replicas: 2}, AGENT), 'an agent account changes the placement');
+    assert.ok(evaluate(d(), zone).drafted.includes(placement.id), 'the reading names the placement');
+    { const x = await accept(zone); assert.equal(x.status, 400); assert.match(x.error, new RegExp('^' + placement.id + ' was last changed by a draft no person has reviewed: a person reviews it before the claim is accepted\\.$'), x.error); }
+    ok(await h.send('runtime.placement', {id: placement.id, basis: 'Two replicas, reviewed (synthetic).'}, C), 'a person saves it');
+    ok(await accept(zone), 'then a second person accepts the claim');
+    // a person's own location outside the region stands: the region claim then survives and is accepted
+    ok(await h.send('runtime.locate', {zoneId: I.zone2, domainIds: [z3], reason: 'Moved to Oslo (synthetic).'}, C)); assert.deepEqual([evaluate(d(), lost).verdict, evaluate(d(), lost).drafted], ['survives', []]);
+    ok(await accept(lost), 'accepted on a chain persons wrote');
+  } finally { h.close(); }
+  pass('S2.13: through the server, after a draft by Sol or an agent account locates zone 2 outside the region, the region claim reads survives and names ZON-002, and the acceptance is refused in those words until a person locates it; a placement an agent account changed is named the same way; a person\'s own change stands and the claim is accepted (ruling L11 (d))');
+});
+
 // ================================================================ Slice 3: location gates and data copies
 // (design section g, Slice 3, its eight cases; ruling L8 carried; the build contract's rules 10 to 12, 14 to 17, 31 and
 // 54. The build notes are audit/rc44/build-notes/wp9a-s2s3.md.)
