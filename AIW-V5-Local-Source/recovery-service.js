@@ -86,6 +86,11 @@ export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??
   s.imported={started:s.started??null,judgements:Array.isArray(s.judgements)?s.judgements:[],choice:s.choice??null,confirm:s.confirm??null,instantiated:s.instantiated??null,actor:s.actor??null};
   s.started=null;s.judgements=[];s.choice=null;delete s.confirm;delete s.instantiated;s.actor=null;
   for(const a of Array.isArray(d.alternatives)?d.alternatives:[])if(a?.candidate&&a.candidate.outcome){a.candidate.importedOutcome=a.candidate.outcome;delete a.candidate.outcome;}}
+ // rc44 (slice S0-D12; the lead's ruling Z2): who prepared each command of a workbench alternative (its list, and the list
+ // each of its revisions kept in its history) was recorded on the workbench the package came from. It is kept as history
+ // (importedAuthors) and names nobody here, whatever the package says of it or of its dates: an imported alternative merges
+ // as one saved before this build, stamping what it writes as nobody's. An alternative that names nobody gains no key.
+ for(const a of Array.isArray(p?.workbench?.alternatives)?p.workbench.alternatives:[])for(const x of a&&typeof a==='object'?[a,...(Array.isArray(a.history)?a.history:[])]:[])if(x&&typeof x==='object'&&'authors' in x){x.importedAuthors=x.authors;delete x.authors;}
  const m=p.finalReview;if(!m||typeof m!=='object')return p;
  strip(m.intake);strip(m.checks);
  for(const r of m.reviews||[])strip(r);

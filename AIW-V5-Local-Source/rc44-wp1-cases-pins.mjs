@@ -395,7 +395,17 @@ add('S3.10 (size, rulings A4, M4, O1): the client build passes every gate with t
   for (const [k, n] of Object.entries(start.pool)) assert.equal(booked.pool[k], n, k + ' is in the shared pool as at the slice\'s start');
   assert.equal(3229840 + sum(start.others) + sum(start.pool), size.base.chapters, 'the start commit is the integrated base and what the other packages and the pool booked');
   assert.equal(size.slice.chapters - 3229840 - sum(start.others) - sum(start.pool), size.ownBytes, 'the route at the slice\'s head, less the base and the others, is what S3 books');
-  { const m = size.atMerge; assert.ok(m && m.chapters - 3229840 - booked.othersTotal - booked.poolTotal === size.ownBytes, 'at the head (atMerge), the route less the base and every booking is what S3 books'); assert.ok(m.chapters <= BUDGET.routes.chapters && m.scripts === 148); }
+  // (slice S0-D12's fix-up, old -> new, as the lead's ruling X4 ruled for S2.12. Was: m.chapters - 3229840 - booked.othersTotal
+  // - booked.poolTotal === size.ownBytes, which held the route recorded at the head against every booking filed since, so a
+  // booking filed after wp1 S3's merge (the lead's mergeAuthorY3, rulings Y3 and Z1 to Z7) broke it. Now the record is held
+  // against the bookings recorded with it, atMerge.otherPackages and atMerge.sharedPool, each asserted to be on the books
+  // still with its bytes; the head's build is checked against every booking below (this build: S3 is ...) and by S0's O1.)
+  { const m = size.atMerge, others = m?.otherPackages || {}, items = m?.sharedPool?.items || {}, file = n => 'audit/rc44/evidence/' + n;
+    assert.ok(m && Object.keys(others).length >= 4 && Object.keys(items).length >= 1, 'the bookings recorded at the head');
+    for (const [f, n] of Object.entries(others)) assert.equal(booked.others[file(f)], n, f + ' books what it booked at the head');
+    for (const [k, n] of Object.entries(items)) assert.deepEqual(Object.entries(booked.pool).filter(([x]) => x.endsWith(':' + k)).map(([, b]) => b), [n], k + ' is in the shared pool as at the head');
+    assert.equal(sum(items), m.sharedPool.total);
+    assert.ok(m.chapters - 3229840 - sum(others) - m.sharedPool.total === size.ownBytes, 'at the head (atMerge), the route less the base and every booking is what S3 books'); assert.ok(m.chapters <= BUDGET.routes.chapters && m.scripts === 148); }
   assert.ok(size.slice.chapters <= BUDGET.routes.chapters); assert.deepEqual([size.slice.scripts, size.slice.css], [148, size.base.css]);
   R.assertUnder10kCeiling(size.slice, size.base, BUDGET.tiny);
   { const w = size['opens with records']; assert.ok(w && w.host === 'public/knowledge-workspace-ui.js' && w.total === w.route + w.added && w.route === size.slice.chapters && w.files >= 1, 'opens with records'); }

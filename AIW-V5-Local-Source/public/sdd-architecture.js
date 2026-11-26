@@ -156,8 +156,13 @@ const chapterTitle = n => CHAPTERS.find(c => c.id === n)?.title || (n === 11 ? '
 // is drafted by Sol, not reviewed by a person, while it is a proposal, and the person's once a person keeps it or saves
 // a change to it; a journey draft is its drafter's until a person edits it.
 // (rc44, the lead's ruling J9 of 2026-11-19) upgrade: a record of a design package's collection that carries no author
-// stamp. An upgrade step wrote it from an older document, or a merge did (ruling D12): no person wrote it, so it is
-// never counted as written by a person. The count exists only in a document that holds such a record.
+// stamp. An upgrade step wrote it from an older document, or a merge did of a command its alternative names no preparer
+// for (rulings D12, Y3 and Z5): no person wrote it, so it is never counted as written by a person. The count exists only
+// in a document that holds such a record.
+// (rc44, the lead's ruling Z7 of 2026-11-22) merged: a record whose stamp says a person merged it from a workbench
+// alternative is counted as written by whoever prepared it (sddAuthor reads the stamp) and not as confirmed (a merge
+// reviews the alternative, not the record's words: provenance.js reviewOf); Appendix E names who merged. The count exists
+// only in a document that holds such a record.
 export const AUTHOR_WORDS = {sol: 'drafted by Sol', import: 'imported from a source', rules: 'drafted by the journey rules', person: 'written by a person', reference: 'AIW reference content', proposal: 'proposed by AIW', upgrade: 'written by an upgrade of the project or a merge'};
 export function provenanceReading(p) {
   return passValue(p, 'sdd:provenance', () => {
@@ -165,9 +170,10 @@ export function provenanceReading(p) {
     // Which engine drafted Sol's records (the drafter's mark, record-lifecycle.js solDraftOf): the model through the
     // architecture contract, with its provider and model; the drafting rules, worded with the model or not.
     const engines = {model: 0, assisted: 0, rules: 0}, models = new Map();
-    let total = 0, confirmed = 0;
+    let total = 0, confirmed = 0, merged = 0; const mergers = new Set();
     for (const [chapter, , read, packaged] of collections()) for (const r of read(p)) {
       const stated = sddAuthor(r), a = packaged && stated === 'person' && !r?.provenance?.author ? 'upgrade' : stated, ok = confirmedByPerson(p, r, chapter); total++; by[a] = (by[a] || 0) + 1; if (ok) { confirmed++; reviewed[a] = (reviewed[a] || 0) + 1; }
+      if (r?.provenance?.reviewed?.how === 'merged') { merged++; mergers.add(str(r.provenance.reviewed.by) || 'a person'); }
       if (a === 'sol') { const d = solDraftOf(r), e = d?.engine; if (e === 'model') { engines.model++; const m = [str(d.provider), str(d.model)].filter(Boolean).join(' · '); if (m) models.set(m, (models.get(m) || 0) + 1); } else if (e === 'model-assisted') engines.assisted++; else if (e === 'rules') engines.rules++; }
       const c = chapters.get(chapter) || {chapter, title: chapterTitle(chapter), total: 0, sol: 0, import: 0, rules: 0, person: 0, reference: 0, proposal: 0, confirmed: 0};
       c.total++; c[a] = (c[a] || 0) + 1; if (ok) c.confirmed++; chapters.set(chapter, c);
@@ -193,7 +199,7 @@ export function provenanceReading(p) {
     }
     const engineParts = [engines.model ? count(engines.model) + ' with the model' + (models.size ? ' (' + [...models.keys()].join('; ') + ')' : '') : '', engines.assisted ? count(engines.assisted) + ' by AIW’s drafting rules and worded with the model' : '', engines.rules ? count(engines.rules) + ' by AIW’s drafting rules' : ''].filter(Boolean);
     const detail = total ? 'Of ' + plural(total, 'record') + ': ' + parts.join(', ') + '; ' + (confirmed ? count(confirmed) + ' confirmed by a person' : 'none confirmed by a person') + '.' + (engineParts.length ? ' Of Sol’s drafts: ' + engineParts.join(', ') + '.' : '') + ' Approval is printed only from approval records.' : '';
-    return {total, by, reviewed, confirmed, engines: {...engines, models: Object.fromEntries(models)}, chapters: [...chapters.values()].sort((a, b) => a.chapter - b.chapter), sources, people, line, detail};
+    return {total, by, reviewed, confirmed, ...(merged ? {merged: {count: merged, by: [...mergers].sort()}} : {}), engines: {...engines, models: Object.fromEntries(models)}, chapters: [...chapters.values()].sort((a, b) => a.chapter - b.chapter), sources, people, line, detail};
   });
 }
 // How far a set of records has come, in one line: "12 records: 10 drafted by Sol and not reviewed by a person, 2
@@ -1736,7 +1742,8 @@ function appendixE(B) {
   // (ruling J9) what an upgrade step or a merge wrote has a column and a line of its own, only where there is any
   const up = prov.by.upgrade || 0, upOk = prov.reviewed.upgrade || 0;
   if (prov.chapters.length) out += table(['Chapter', 'Records', 'Drafted by Sol', 'Imported', 'Journey rules', 'By a person', 'AIW reference', 'Proposed by AIW', ...(up ? ['By an upgrade or a merge'] : []), 'Confirmed'], prov.chapters.map(c => [c.chapter + ' · ' + c.title, count(c.total), count(c.sol), count(c.import), count(c.rules), count(c.person), count(c.reference), count(c.proposal), ...(up ? [count(c.upgrade || 0)] : []), count(c.confirmed)]));
-  if (up) out += 'Written by an upgrade of the project or by a merge, with no author stamp: ' + plural(up, 'record') + '. No person wrote ' + (up === 1 ? 'it' : 'them') + '; ' + (upOk ? count(upOk) + ' ' + isAre(upOk) + ' confirmed by a person since' : 'none is confirmed by a person') + '. A signed-in person reads each against the model and confirms it.\n\n';
+  if (up) out += 'Written by an upgrade of the project or by a merge of an alternative that names no preparer, with no author stamp: ' + plural(up, 'record') + '. No person wrote ' + (up === 1 ? 'it' : 'them') + '; ' + (upOk ? count(upOk) + ' ' + isAre(upOk) + ' confirmed by a person since' : 'none is confirmed by a person') + '. A signed-in person reads each against the model and confirms it.\n\n';
+  if (prov.merged) out += 'Merged from workbench alternatives: ' + plural(prov.merged.count, 'record') + ', counted as written by whoever prepared them; merged by ' + named(prov.merged.by.map(md)) + '. A merge is a person’s review of the alternative and confirms no record’s words.\n\n';
   out += 'People: ' + (prov.people.length ? named(prov.people.map(md)) + ', as the change journal, the imports and the reviews record them' : 'no person is recorded against a change, an import or a review') + '.\n\n';
   out += 'Sources:' + (prov.sources.length ? '\n\n' + bullets(prov.sources.map(s => md(s.title) + ' (' + md(s.kind) + (s.detail ? '; ' + md(s.detail) : '') + (s.hash ? '; SHA-256 ' + s.hash.slice(0, 16) + '…' : '') + ')'), {rest: k => 'And ' + plural(k, 'more source') + ' (Chapter 1 · Evidence).'}) : ' no source document is kept with the project.\n\n');
   out += evidenceTrail(B);
