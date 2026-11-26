@@ -220,6 +220,15 @@ One in a general suite, as ruling Z8 rules (the import's one new change to the d
    package loads (S3's evidence keys); the log rule of this build does not depend on it. For S0-D10's shared entry
    (`s0-w3-bundle`) or the lead.
 5. wp2's `here()` readers (deviation 8 b).
+6. **An import moves the imported project's design stamp once, at the import**: the design fingerprint reads a built-in
+   record's provenance as it always did, so moving its stamps aside changes the fingerprint (and the stamps of findings
+   taken of the whole design). Measured on the Bank Payment reference with every requirement and decision stamped
+   (a probe not kept in the tree: the import as built against the same import with the stamps put back): graph, model,
+   trails, readiness, provenance, registers, SDD and ARS the same; findings the same but their stamps; only the stamps
+   move. Every step stamped against the design is moved aside by the import already, so no current step of this
+   workbench lapses; a baseline frozen elsewhere reads its stamped chapters as changed since it was frozen, where it read
+   them unchanged before (it was never current here: its architect review is imported). Carrying the import's stamps
+   over through the alias table, as `toLibraryLog` does for a library, is left to the lead.
 
 ## Suites (on this branch, each with env -u of the provider keys; the runner `.aiw-local/run-suites.sh`, two at a time)
 
@@ -269,6 +278,8 @@ One in a general suite, as ruling Z8 rules (the import's one new change to the d
 1. Deviation 1 (concepts as evidence) and deviation 6 (an imported record's kind) are readings; confirm or rule.
 2. The three replaced wp1 assertions turn S3's assertions around, as Y2 rules; the lead confirms the leave.
 3. wp2's `here()` readers: point them at `datedImport` in wp2's next build, or by the lead at the merge.
+4. Known limit 6: whether the import should carry its design stamps over for frozen baselines (the alias table).
+5. The six size cases that fail only by the unbooked +583 B (Measurements): retired by `s0-w3-bundle` (AA2).
 
 ## External dependencies
 
