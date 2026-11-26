@@ -235,7 +235,8 @@ One in a general suite, as ruling Z8 rules (the import's one new change to the d
 
 ## Suites (on this branch, each with env -u of the provider keys; the runner `.aiw-local/run-suites.sh`, two at a time)
 
-- This build's: `test:rc44-s0-b10` 7/7, `test:rc44-s0-import` 7/7.
+- This build's: `test:rc44-s0-b10` 7/7, `test:rc44-s0-import` 7/7 (both, and the four rc44 suites below, run again on
+  the final code with the same outcome; the evidence file lists every suite's exit).
 - rc44: `test:rc44-s0-extensions` 35 of 36 blocks (O1, bytes only); `test:rc44-wp1-knowledge` (all of it) 85 of 87
   delivered cases (S2.12 and S3.10, bytes only; 2 pending); `test:rc44-wp2-adoption` all blocks but "size" and
   "S5 size" (bytes only); `test:rc44-wp9a-deployment` 24 of 25 (S1.10, bytes only). Each of those six size cases fails
