@@ -100,7 +100,12 @@ async function side(which, file, name) {
   // (the fix-up, must-fix 1) and whether the review checks the document records read current on this side (review-ui.js
   // sends its own reading of them with review.record and the baseline's freeze, which the server refuses when they differ)
   const {finalChecksCurrent} = await import('./public/review-domain.js');
-  return {digests: R.digests(doc), registered: X.EXTENSIONS.map(e => e.id).filter(id => !id.endsWith('-route')), checksCurrent: finalChecksCurrent(doc)};
+  // (the lead's merge of wp9a-s2s3, ruling S3.7's trail relation) the graph and the model as read without the relations
+  // derived from a plan's backup zone (backsUpTo, source runtime.plans.backupZoneId), and how many were taken out
+  const text = R.readings(doc), ruled = {}, out = {};
+  for (const k of ['graph', 'model']) { const t = JSON.parse(text[k]), back = e => e[1] === 'backsUpTo' && e[e.length - (k === 'graph' ? 4 : 1)] === 'runtime.plans.backupZoneId';
+    out[k] = t.relationships.filter(back).length; t.relationships = t.relationships.filter(e => !back(e)); ruled[k] = sha(JSON.stringify(t)); }
+  return {digests: R.digests(doc), ruled, ruledOut: out, registered: X.EXTENSIONS.map(e => e.id).filter(id => !id.endsWith('-route')), checksCurrent: finalChecksCurrent(doc)};
 }
 const readSide = (which, file, name) => { const r = spawnSync(process.execPath, [process.argv[1], '--side', which, file, name], {encoding: 'utf8', maxBuffer: 1 << 26}); if (r.status !== 0) throw Error(which + ' ' + name + ': ' + (r.stderr || r.stdout).slice(0, 600)); return JSON.parse(r.stdout.trim().split('\n').at(-1)); };
 
@@ -142,17 +147,29 @@ const CHECKED = await (async () => { const {commandHandler} = await import('./wo
 writeFileSync(FILE, JSON.stringify({...DOCS, chosen: CHOSEN, ...LIBRARIES, checked: CHECKED}));
 
 await block('D10.1 readings', async () => {
-  for (const n of NAMES) assert.equal(sha(JSON.stringify(DOCS[n])), golden.documents[n], 'the ' + n + ' document is the base\'s, byte for byte (a fixture or a command changed, not a reading)');
+  // (the lead's merge of s0-w3-stamps, ruling Y2; old -> new. Was: every document the base's, byte for byte. Now: every
+  // document the base's byte for byte, but the knowledge document, whose two package steps write the family's log again
+  // (Y2): exactly two lines naming p10-knowledge, the concept-pin and the concept-link, and the version moved by two; with
+  // those lines taken out and the version as it was, it is the base's byte for byte.)
+  const asAtTheBase = (n, d) => { if (n !== 'knowledge') return d; const c = structuredClone(d), lines = c.knowledge.history.filter(l => l.package === 'p10-knowledge');
+    assert.deepEqual(lines.map(l => [l.type, l.actor]), [['knowledge.concept-pin', 'architect'], ['knowledge.concept-link', 'architect']], 'the knowledge document\'s package steps each write one line naming the package (Y2)');
+    c.knowledge.history = c.knowledge.history.filter(l => l.package !== 'p10-knowledge'); c.knowledge.version -= lines.length; return c; };
+  for (const n of NAMES) assert.equal(sha(JSON.stringify(asAtTheBase(n, DOCS[n]))), golden.documents[n], 'the ' + n + ' document is the base\'s, byte for byte (a fixture or a command changed, not a reading)');
   const file = FILE, moved = [];
   for (const n of NAMES) { const server = readSide('server', file, n);
-    for (const [which, now] of [['server', server], ['client', readSide('client', file, n)]]) { const was = golden.readings[which][n]; for (const k of Object.keys(was)) if (now.digests[k] !== was[k]) moved.push(which + ' ' + n + ': ' + k);
+    for (const [which, now] of [['server', server], ['client', readSide('client', file, n)]]) { const was = golden.readings[which][n]; for (const k of Object.keys(was)) {
+        // (the lead's merge of wp9a-s2s3; old -> new. Was: every reading the base's. Now: every reading the base's, but the
+        // deployment document's graph and model, which hold one relation more, the plan's backup zone read as backsUpTo
+        // (wp9a slice 3, the trail relation copy proposals derive from, S3.7): exactly one, and without it the base's.)
+        if (n === 'deployment' && (k === 'graph' || k === 'model')) { assert.equal(now.ruledOut[k], 1, which + ' deployment ' + k + ': one backsUpTo relation from the plan\'s backup zone'); if (now.ruled[k] !== was[k]) moved.push(which + ' ' + n + ': ' + k + ' (without the backsUpTo relation)'); continue; }
+        if (now.digests[k] !== was[k]) moved.push(which + ' ' + n + ': ' + k); }
       // every package the server holds, once a document holds any package's records (the one shared entry), and none otherwise
       if (which === 'client') assert.deepEqual(now.registered, n === 'none' ? [] : server.registered, 'the client registers ' + (n === 'none' ? 'no package for a document without package records' : 'every package the server holds for a document with ' + n + ' records (the one shared entry)') + ': ' + JSON.stringify(now.registered));
       // (the fix-up, should-fix 6) and at least the packages it registered at the base, on each side, as the server's list is held below
       assert.ok(golden.registered[which][n].every(id => now.registered.includes(id)), which + ' ' + n + ': at least the base\'s packages ' + JSON.stringify(golden.registered[which][n]) + ': ' + JSON.stringify(now.registered)); } }
   assert.ok(golden.registered.server.none.every(id => readSide('server', file, 'none').registered.includes(id)), 'the server holds at least the base\'s packages');
   assert.deepEqual(moved, [], 'every reading is the base\'s, on the client and on the server');
-  pass('D10.1: the graph, model, trails, findings, stamps (the design fingerprint), readiness, provenance, registers, SDD and ARS of ' + NAMES.join(', ') + ' are byte for byte those of 4349bb6, on the client and on the server; the client registers every package once a document holds any package\'s records, and none for one that holds none');
+  pass('D10.1: the graph, model, trails, findings, stamps (the design fingerprint), readiness, provenance, registers, SDD and ARS of ' + NAMES.join(', ') + ' are byte for byte those of 4349bb6 (the deployment graph and model but for the one backsUpTo relation of wp9a slice 3; the knowledge document but for the two log lines of Y2), on the client and on the server; the client registers every package once a document holds any package\'s records, and none for one that holds none');
 });
 
 await block('D10.6 a package step kept on a built-in record', async () => {
