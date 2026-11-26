@@ -9,6 +9,8 @@
 //   D10.4 the route grows by at most 1 KB for this part;
 //   D10.5 the script files grow by at most 2, to 150 at most; the gate in client-bundle.mjs is the measured count, with
 //         ruling Y1 named beside it; no other gate moves (the chapters cap moves by AA2 alone);
+//         (D10.4 and D10.5 read this part's size evidence, audit/rc44/evidence/s0-w3-bundle-size.json, always, and hold
+//         the live build to it at this build's own commit: AIW_D10_MEASURE=1; D10.2, D10.3 and AA2 hold on every build)
 //   AA2   the chapters route cap is the base's raised by 32 KB, named beside it, and the build passes the one size check
 //         (rc44-s0-readings.mjs assertRouteWithinCap), which reads every cap from client-bundle.mjs.
 // The goldens (rc44-s0-d10-baseline.json: the SHA-256 of each document and of each side's readings, and the base's
@@ -19,7 +21,7 @@
 // readings are compared: a document that moved says that a fixture or a command changed, not a reading. Every fixture
 // takes a fixed time; the suite reads no clock. Run: npm run test:rc44-s0-d10
 import assert from 'node:assert/strict';
-import {readFileSync, writeFileSync, mkdirSync} from 'node:fs';
+import {readFileSync, writeFileSync, mkdirSync, existsSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import * as R from './rc44-s0-readings.mjs';
@@ -130,9 +132,11 @@ const CHOSEN = await chosenSelection(DOCS.selection); writeFileSync(FILE, JSON.s
 await block('D10.1 readings', async () => {
   for (const n of NAMES) assert.equal(sha(JSON.stringify(DOCS[n])), golden.documents[n], 'the ' + n + ' document is the base\'s, byte for byte (a fixture or a command changed, not a reading)');
   const file = FILE, moved = [];
-  for (const which of ['client', 'server']) for (const n of NAMES) { const now = readSide(which, file, n), was = golden.readings[which][n];
-    for (const k of Object.keys(was)) if (now.digests[k] !== was[k]) moved.push(which + ' ' + n + ': ' + k);
-    if (which === 'client') assert.deepEqual(now.registered, n === 'none' ? [] : [...new Set(golden.registered.server.none)].sort(), 'the client registers ' + (n === 'none' ? 'no package for a document without package records' : 'every package for a document with ' + n + ' records (the one shared entry)') + ': ' + JSON.stringify(now.registered)); }
+  for (const n of NAMES) { const server = readSide('server', file, n);
+    for (const [which, now] of [['server', server], ['client', readSide('client', file, n)]]) { const was = golden.readings[which][n]; for (const k of Object.keys(was)) if (now.digests[k] !== was[k]) moved.push(which + ' ' + n + ': ' + k);
+      // every package the server holds, once a document holds any package's records (the one shared entry), and none otherwise
+      if (which === 'client') assert.deepEqual(now.registered, n === 'none' ? [] : server.registered, 'the client registers ' + (n === 'none' ? 'no package for a document without package records' : 'every package the server holds for a document with ' + n + ' records (the one shared entry)') + ': ' + JSON.stringify(now.registered)); } }
+  assert.ok(golden.registered.server.none.every(id => readSide('server', file, 'none').registered.includes(id)), 'the server holds at least the base\'s packages');
   assert.deepEqual(moved, [], 'every reading is the base\'s, on the client and on the server');
   pass('D10.1: the graph, model, trails, findings, stamps (the design fingerprint), readiness, provenance, registers, SDD and ARS of ' + NAMES.join(', ') + ' are byte for byte those of 4349bb6, on the client and on the server; the client registers every package once a document holds any package\'s records, and none for one that holds none');
 });
@@ -170,20 +174,31 @@ await block('D10.3 no package records', async () => {
   pass('D10.3: a document with no package records opens with exactly the route (' + o.route + ' B)');
 });
 
+// D10.4 and D10.5 are this part's own figures. The size evidence (audit/rc44/evidence/s0-w3-bundle-size.json, written
+// from node build.mjs at this build and at the base) is held to them always; the live build is held to the evidence at
+// this build's own commit (AIW_D10_MEASURE=1), since later builds move the route, which the one size check holds (AA2).
+const EVIDENCE = 'audit/rc44/evidence/s0-w3-bundle-size.json', AT_THIS_BUILD = process.env.AIW_D10_MEASURE === '1';
+const evidence = () => { assert.ok(existsSync(EVIDENCE), 'the size evidence of this build is kept (' + EVIDENCE + ')'); const e = JSON.parse(readFileSync(EVIDENCE, 'utf8'));
+  assert.equal(e.before?.commit, '4349bb6', 'measured against 4349bb6'); assert.deepEqual([e.before.chapters, e.before.scripts, e.before.buckets?.under10k, e.before.css], [BASE.chapters, BASE.scripts, BASE.under10k, BASE.css], 'the evidence\'s base is the build the goldens were captured with'); assert.equal(e.productionAccepted, false); return e; };
+
 await block('D10.4 the route', async () => {
-  const {report} = await build(), now = report.routes.chapters.code;
-  assert.ok(now - BASE.chapters <= KB, 'the route grows by at most 1 KB for this part: ' + BASE.chapters + ' -> ' + now + ' (' + (now - BASE.chapters) + ' B)');
-  pass('D10.4: the chapters route is ' + now + ' B, ' + (now - BASE.chapters) + ' B against 4349bb6 (' + BASE.chapters + ' B), at most 1 KB');
+  const e = evidence(), {report} = await build(), now = report.routes.chapters.code;
+  assert.equal(e.deltas.chapters, e.after.chapters - e.before.chapters); assert.ok(e.deltas.chapters <= KB, 'the route grows by at most 1 KB for this part: ' + e.before.chapters + ' -> ' + e.after.chapters + ' (' + e.deltas.chapters + ' B)');
+  if (AT_THIS_BUILD) assert.deepEqual([now, report.scripts, report.buckets, report.css], [e.after.chapters, e.after.scripts, e.after.buckets, e.after.css], 'at this build\'s commit the build measures what the evidence says');
+  pass('D10.4: the chapters route grew ' + e.deltas.chapters + ' B for this part (' + e.before.chapters + ' B at 4349bb6 -> ' + e.after.chapters + ' B), at most 1 KB; this build: ' + now + ' B' + (AT_THIS_BUILD ? ', as the evidence says' : ''));
 });
 
 await block('D10.5 script files and gates', async () => {
-  const {BUDGET} = await import('./client-bundle.mjs'), {report} = await build(), src = readFileSync('client-bundle.mjs', 'utf8');
-  assert.ok(report.scripts <= BASE.scripts + 2 && report.scripts <= 150, 'the script files grow by at most 2, to 150 at most: ' + BASE.scripts + ' -> ' + report.scripts);
-  assert.equal(BUDGET.scripts, report.scripts, 'the gate is the measured count');
+  const {BUDGET} = await import('./client-bundle.mjs'), e = evidence(), {report} = await build(), src = readFileSync('client-bundle.mjs', 'utf8');
+  assert.ok(e.after.scripts <= e.before.scripts + 2 && e.after.scripts <= 150, 'the script files grow by at most 2, to 150 at most: ' + e.before.scripts + ' -> ' + e.after.scripts);
+  assert.equal(e.after.gates.scripts, e.after.scripts, 'the gate is moved to the measured count');
   assert.match(/^\s*scripts: \d+,(.*)$/m.exec(src)?.[1] || '', /ruling Y1/, 'the gate names ruling Y1 beside it');
-  const was = golden.gates, now = gatesOf(BUDGET);
-  assert.deepEqual({...now, scripts: was.scripts, routes: {...now.routes, chapters: was.routes.chapters}}, was, 'no other gate moves');
-  pass('D10.5: ' + report.scripts + ' script files (' + BASE.scripts + ' at 4349bb6), the gate ' + BUDGET.scripts + ' with ruling Y1 named; no other gate moved');
+  assert.ok(BUDGET.scripts <= 150 && report.scripts <= BUDGET.scripts, 'this build: ' + report.scripts + ' script files, the gate ' + BUDGET.scripts + ', at most 150');
+  // no other gate moves: the base's gates are the goldens', and this part moved the chapters cap (AA2) and the script gate (Y1) alone
+  const was = golden.gates; assert.deepEqual(e.before.gates, {chapters: was.routes.chapters, projects: was.routes.projects, scripts: was.scripts, under10k: was.tiny, css: was.css}, 'the evidence\'s gates before are the base\'s');
+  assert.deepEqual({...e.after.gates, chapters: e.before.gates.chapters, scripts: e.before.gates.scripts}, e.before.gates, 'no other gate moves');
+  if (AT_THIS_BUILD) { const now = gatesOf(BUDGET); assert.equal(BUDGET.scripts, report.scripts, 'at this build the gate is the measured count'); assert.deepEqual({...now, scripts: was.scripts, routes: {...now.routes, chapters: was.routes.chapters}}, was, 'and no other gate of client-bundle.mjs moved'); }
+  pass('D10.5: ' + e.after.scripts + ' script files for this part (' + e.before.scripts + ' at 4349bb6), the gate moved to ' + e.after.gates.scripts + ' with ruling Y1 named; no other gate moved; this build: ' + report.scripts + ' of ' + BUDGET.scripts);
 });
 
 await block('AA2 the cap', async () => {
