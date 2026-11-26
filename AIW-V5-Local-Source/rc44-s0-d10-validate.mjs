@@ -41,6 +41,9 @@ const argv = process.argv.slice(2), sha = text => createHash('sha256').update(te
 //   selection   a component selection started on a Chapter 3 decision (p40-adoption: a package step kept on a built-in
 //               record, decision.selection, and no adoption);
 //   deployment  the Tidewater project with its topology typed (p30-deployment: runtime.topology and its records).
+// (Built beside them, not among the goldens: the knowledge library the knowledge document relies on, and a project only
+// marked as a library, in LIBRARIES; case D10.6.)
+const LIBRARIES = {};
 async function buildDocuments() {
   const {commandHandler} = await import('./worker.js'), {withFinalReview} = await import('./public/review-domain.js');
   const person = id => ({kind: 'person', id, account: 'person', reviewed: true});
@@ -56,6 +59,9 @@ async function buildDocuments() {
     for (const id of Object.values(claimIds)) k('review', {...F.REVIEW, formChecked: true, id}, 'reviewer');
     k('concept-review', {decision: 'verified', reviewer: 'Synthetic second person', reason: 'Checked the identity, each form and its membership.', reviewed: true, identityChecked: true, formsChecked: true, crosswalkChecked: true, id: record}, 'reviewer');
     const releaseId = k('release', {...F.REVIEW, title: 'Synthetic integration concepts 1', conceptIds: ['SYN-P001']}, 'releaser'); k('activate', {...F.REVIEW, id: releaseId, stamp: K.knowledgeStamp(p)}, 'releaser');
+    // (the fix-up, must-fix 1) the library itself, and a project a person has only marked as a library: the package's
+    // evidence keys (knowledge.concepts, .topics, .library) and no crosswalk row or pin; not among the goldens (case D10.6)
+    LIBRARIES.library = structuredClone(p); LIBRARIES.mark = CC.applyConceptCommand(F.blankProject('rc44-s0-d10-mark'), {type: 'knowledge.library', payload: {enabled: true, reason: 'This project will author one tranche of the synthetic handbook.', reviewer: 'Synthetic steward', reviewed: true}}, F.AT, 'steward', F.person('steward')).document;
     const design = structuredClone(R.reference('bank-payment')), {library: _mark, ...knowledge} = structuredClone(p.knowledge); design.knowledge = knowledge;
     const STEP = {reviewer: 'Synthetic architect', reason: 'This design relies on the released concept.', reviewed: true};
     let q = run(design, 'knowledge.concept-pin', {conceptId: 'SYN-P001', releaseId, ...STEP}, 'architect').document;
@@ -91,7 +97,10 @@ async function side(which, file, name) {
   if (which === 'server') await import('./design-packages.js'); else await import('./' + ROUTES);
   const X = await import('./public/design-extensions.js');
   if (which === 'client') await X.ensureExtensions({document: doc, revision: 1});
-  return {digests: R.digests(doc), registered: X.EXTENSIONS.map(e => e.id).filter(id => !id.endsWith('-route'))};
+  // (the fix-up, must-fix 1) and whether the review checks the document records read current on this side (review-ui.js
+  // sends its own reading of them with review.record and the baseline's freeze, which the server refuses when they differ)
+  const {finalChecksCurrent} = await import('./public/review-domain.js');
+  return {digests: R.digests(doc), registered: X.EXTENSIONS.map(e => e.id).filter(id => !id.endsWith('-route')), checksCurrent: finalChecksCurrent(doc)};
 }
 const readSide = (which, file, name) => { const r = spawnSync(process.execPath, [process.argv[1], '--side', which, file, name], {encoding: 'utf8', maxBuffer: 1 << 26}); if (r.status !== 0) throw Error(which + ' ' + name + ': ' + (r.stderr || r.stdout).slice(0, 600)); return JSON.parse(r.stdout.trim().split('\n').at(-1)); };
 
@@ -127,7 +136,10 @@ const block = async (name, fn) => { if (ONLY && !ONLY.some(x => name.startsWith(
 const golden = JSON.parse(readFileSync(GOLDEN, 'utf8')), BASE = golden.build;
 assert.equal(golden.capturedFrom, '4349bb6', 'the goldens are the base\'s'); assert.deepEqual(Object.keys(golden.documents), NAMES);
 const DOCS = await buildDocuments(), FILE = SCRATCH + '/documents.json'; mkdirSync(SCRATCH, {recursive: true});
-const CHOSEN = await chosenSelection(DOCS.selection); writeFileSync(FILE, JSON.stringify({...DOCS, chosen: CHOSEN}));
+const CHOSEN = await chosenSelection(DOCS.selection);
+// (the fix-up, must-fix 1) the library with its review checks run by the server (review.checks, as a person runs them in Chapter 11)
+const CHECKED = await (async () => { const {commandHandler} = await import('./worker.js'), {withFinalReview} = await import('./public/review-domain.js'); return withFinalReview(commandHandler('review.checks')(structuredClone(LIBRARIES.library), {type: 'review.checks', payload: {}}, AT, 'architect', {author: {kind: 'person', id: 'architect', account: 'person', reviewed: true}}).document); })();
+writeFileSync(FILE, JSON.stringify({...DOCS, chosen: CHOSEN, ...LIBRARIES, checked: CHECKED}));
 
 await block('D10.1 readings', async () => {
   for (const n of NAMES) assert.equal(sha(JSON.stringify(DOCS[n])), golden.documents[n], 'the ' + n + ' document is the base\'s, byte for byte (a fixture or a command changed, not a reading)');
@@ -146,11 +158,35 @@ await block('D10.6 a package step kept on a built-in record', async () => {
   // sections of the SDD: S0's sections part is read by the server's exports), for every document: one that holds a
   // package's step kept on a built-in record (a chosen selection, with no adoption) loads the package as one with its
   // records does, and the error the selection raises on its decision reads on the client too
-  const differ = [];
-  for (const n of [...NAMES, 'chosen']) { const c = readSide('client', FILE, n), s = readSide('server', FILE, n); for (const k of Object.keys(s.digests)) if (k !== 'sdd' && c.digests[k] !== s.digests[k]) differ.push(n + ': ' + k); }
+  // (the fix-up, must-fix 1: the knowledge library the knowledge document relies on, and a project only marked as one,
+  // hold the package's evidence keys and no crosswalk row or pin; the p10 stub asked for those two keys only, so the
+  // client read the library's design and evidence stamps, and every inherited finding's, as no server does)
+  const differ = [], ALL = [...NAMES, 'chosen', 'library', 'mark'];
+  for (const n of ALL) { const c = readSide('client', FILE, n), s = readSide('server', FILE, n); for (const k of Object.keys(s.digests)) if (k !== 'sdd' && c.digests[k] !== s.digests[k]) differ.push(n + ': ' + k); }
   assert.deepEqual(differ, [], 'the client and the server read the same, but for the SDD\'s package sections');
   const {selectionFindings} = await import('./public/adoption-selection.js'); assert.ok(selectionFindings(CHOSEN).some(f => f.code === 'selection-confirm' && f.level === 'error'), 'the chosen selection raises its error on the decision');
-  pass('D10.6 (U6): the client reads every document as the server does, but for the SDD\'s package sections: ' + [...NAMES, 'chosen'].join(', ') + ' (a chosen selection with no adoption, whose decision carries the error selection-confirm, loads the package on the client)');
+  // the review checks the server records on the library read current on the client, so that review-ui.js's own stamp, sent
+  // with review.record and the baseline's freeze, is the server's
+  { const s = readSide('server', FILE, 'checked'), c = readSide('client', FILE, 'checked'); assert.deepEqual([s.checksCurrent, c.checksCurrent], [true, true], 'the review checks the server ran on the library read current on the server and on the client: ' + JSON.stringify({server: s.checksCurrent, client: c.checksCurrent})); }
+  pass('D10.6 (U6): the client reads every document as the server does, but for the SDD\'s package sections: ' + ALL.join(', ') + ' (a chosen selection with no adoption, whose decision carries the error selection-confirm, loads the package on the client; so does a knowledge library with no crosswalk row or pin, and a project only marked as one); the review checks the server ran on the library read current on the client');
+});
+
+await block('D10.7 a stub\'s needs and its package\'s keys', async () => {
+  // (the fix-up, must-fix 1) A package's rows read every key it states (its design rows, designKeys, evidenceKeys: the
+  // reviewSource and designOf of review-domain.js take each out of the design, or put the row's reading in its place,
+  // whenever the key is there, whatever it holds), so the stub's needs holds for a document that holds any one of them,
+  // or the client reads that document as no server does. A package that marks its records with a key of its own states
+  // it here, and its other keys are written only beside the marker (p30: runtime.topology; ruling L11 a, a hand-made
+  // package without the marker is read by the built-in key). The references hold none, and no stub asks for anything.
+  const MARKER = {'p30-deployment': 'runtime.topology'}, all = await stubs(), {EXTENSIONS} = await import('./public/design-extensions.js');
+  const packages = EXTENSIONS.filter(e => !e.id.endsWith('-route')), put = (d, k, v) => { const [a, b] = k.split('.'); if (b) d[a] = {...Object(d[a]), [b]: v}; else d[a] = v; return d; };
+  assert.deepEqual(packages.map(e => e.id + '-route').sort(), all.map(s => s.id).sort(), 'one stub for each package the server holds');
+  const missed = [], held = [];
+  for (const e of packages) { const stub = all.find(s => s.id === e.id + '-route'), keys = [...new Set([...Object.keys(e.design || {}), ...(e.designKeys || []), ...(e.evidenceKeys || [])])];
+    for (const k of keys) { const d = structuredClone(R.reference('bank-payment')); if (MARKER[e.id] && MARKER[e.id] !== k) put(d, MARKER[e.id], {}); put(d, k, []); (stub.needs(d) ? held : missed).push(e.id + ' ' + k); } }
+  assert.deepEqual(missed, [], 'each stub\'s needs holds for a document that holds any key its package states (held: ' + held.join(', ') + ')');
+  for (const t of R.REFERENCES) assert.deepEqual(all.filter(s => s.needs(R.reference(t))).map(s => s.id), [], t + ': no stub asks for anything');
+  pass('D10.7: each stub\'s needs holds for a document that holds any one key its package states (' + held.length + ' keys: ' + held.join(', ') + '); for the references no stub asks for anything');
 });
 
 let built = null;
