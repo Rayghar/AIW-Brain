@@ -1283,6 +1283,17 @@ await block('S1.10 the client build', async () => {
   // that holds them now, the shared entry's (pkgOf), each pinned as before; the lists are read from the script of HOST as before.)
   const holderOf = m => Object.keys(m.outputs).find(f => f.endsWith('.js') && Object.keys(m.outputs[f].inputs || {}).includes(HOST));
   const pkgOf = m => Object.keys(m.outputs).find(f => f.endsWith('.js') && Object.keys(m.outputs[f].inputs || {}).includes('public/topology.js'));
+  // (S0-D10's fix-up, must-fix 2; rulings R4 and Y1) the script that holds the package, as the same build makes it without
+  // the package: the client built again with the package's line taken out of the shared first-draw entry (its only
+  // importer), measured live, so that what the package adds to that script's import and export lists is read whatever
+  // other package's readers join the script; WITHOUT is that script's bytes, the bytes of its modules and its lists
+  // (all 0 if no such script is made without the package).
+  const WITHOUT = await (async () => {
+    const line = /^import '\.\/topology\.js';.*$/m, drop = {name: 'rc44-wp9a-without-the-package', setup(b) { b.onLoad({filter: /[\\/]public[\\/]design-package-readers\.js$/}, async a => { const text = readFileSync(a.path, 'utf8'); assert.match(text, line, 'the shared entry imports the package'); return {contents: text.replace(line, ''), loader: 'js'}; }); }};
+    const w = JSON.parse(readFileSync((await bundleClient('.aiw-local/rc44-wp9a/without', {budget: false, plugins: [drop]})).metafile, 'utf8')), mates = Object.keys(meta.outputs[pkgOf(meta)].inputs).filter(i => !/^public\/topology(-[a-z]+)?\.js$/.test(i));
+    const f = Object.keys(w.outputs).find(f => f.endsWith('.js') && mates.some(i => Object.keys(w.outputs[f].inputs || {}).includes(i))), o = f && w.outputs[f];
+    const modules = o ? Object.values(o.inputs).reduce((n, x) => n + x.bytesInOutput, 0) : 0; return {bytes: o?.bytes || 0, modules, lists: (o?.bytes || 0) - modules, script: f || null};
+  })();
   const shareOf = m => { const o = m.outputs[holderOf(m)], inputs = Object.entries(o.inputs), modules = Object.fromEntries(Object.entries(m.outputs[pkgOf(m)].inputs).filter(([i]) => /^public\/topology(-[a-z]+)?\.js$/.test(i)).map(([i, x]) => [i, x.bytesInOutput]).sort(([a], [b]) => a < b ? -1 : 1));
     const script = {bytes: o.bytes, modules: inputs.reduce((n, [, x]) => n + x.bytesInOutput, 0)}; script.lists = script.bytes - script.modules;
     const lists = script.lists - ADOPTION_HOLDER.lists; return {modules, lists, total: Object.values(modules).reduce((n, x) => n + x, 0) + lists, script}; };
@@ -1295,7 +1306,11 @@ await block('S1.10 the client build', async () => {
     assert.ok(shifted, 'a script of the entry\'s closure beside the route and the script that holds the package: ' + others.join(', '));
     assert.deepEqual(withinShare(shifted), [], 'a shared chunk another package moves by 24 B does not move the package\'s share');
     const past = structuredClone(meta); past.outputs[held].bytes += LAZY_SHARE.lists - shareOf(meta).lists + 1; assert.ok(withinShare(past).some(x => /^its import and export lists grew/.test(x)), 'its own import and export lists one byte past the measure fail it');
-    const grown = structuredClone(meta), pkg = pkgOf(meta); grown.outputs[pkg].inputs['public/topology.js'].bytesInOutput += 1; grown.outputs[pkg].bytes += 1; assert.ok(withinShare(grown).some(x => /^the modules are/.test(x)), 'a module one byte past its pin fails it'); }
+    const grown = structuredClone(meta), pkg = pkgOf(meta); grown.outputs[pkg].inputs['public/topology.js'].bytesInOutput += 1; grown.outputs[pkg].bytes += 1; assert.ok(withinShare(grown).some(x => /^the modules are/.test(x)), 'a module one byte past its pin fails it');
+    // (S0-D10's fix-up, must-fix 2; rulings R4 and Y1) the package's own lists are read in the script that holds it: that
+    // script's lists one byte past the measure fail it, and so does its share past the total
+    const own = (() => { const o = meta.outputs[pkg]; return o.bytes - Object.values(o.inputs).reduce((n, x) => n + x.bytesInOutput, 0) - WITHOUT.lists; })();
+    const over = structuredClone(meta); over.outputs[pkg].bytes += LAZY_SHARE.lists - own + 1; assert.ok(withinShare(over).some(x => /^its import and export lists grew/.test(x)), 'the lists of the script that holds the package one byte past the measure fail it (own lists ' + own + ' B, the measure ' + LAZY_SHARE.lists + ' B)'); }
   // (ruling Y1, old -> new. Was: the stub's load imports './deploy-view.js', 'the route stub loads the host entry'. Now it imports the one shared first-draw entry.)
   const stub = readFileSync('public/design-package-routes.js', 'utf8'); assert.match(stub, /registerExtension\(\{id:'p30-deployment-route',needs:[^\n]+load:\(\)=>import\('\.\/design-package-readers\.js'\)\}\);/, 'the route stub loads the shared first-draw entry (ruling Y1)');
   if (process.argv.includes('--measure')) { mkdirSync('audit/rc44/evidence', {recursive: true}); const fromAdoption = measured.chapters - ADOPTION.chapters; writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v3', name: 'wp9a slice 1 after its fifth fix-up: typed failure domains, nodes and registration (p30-deployment)',
