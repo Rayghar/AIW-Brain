@@ -1807,6 +1807,29 @@ await block('S2.15 one reading of independence, across a recovery link', () => {
   pass('S2.15: H5 reads independence through the one grouping of hostingComparison (zoneGroups, over the environment and the recovery environments linked to it): zones joined by shared causes across the link read as one failure domain and raise the standby error as they do in one environment; a recovery zone that shares nothing stands apart');
 });
 
+// Chapter 10's checks are pure and cheap (contract rule 12): at the built-in limits of the runtime (2,000 zones and 2,000 placements) and with 60
+// failure domains (slice 1's limit), 24 in-scope any-one zone claims (this build's limit, through the commands) keep the checks within a stated
+// factor of the same document without them. Times are the least of two runs each, in one process; the factor leaves room for a loaded runner.
+const CHECKS_FACTOR = 3;
+await block('S2.16 Chapter 10\'s checks at the limits, with 24 in-scope claims', () => {
+  need();
+  const I = F.ids(); let {p, made} = typedTidewater();
+  const doms = [made.fdZone1, made.fdZone2]; for (let i = 0; i < 56; i++) { const id = 'fd-' + (500 + i); p.technology.domains.push({id, ref: 'FD-' + (500 + i), revision: 1, title: 'Zone domain ' + i, scope: 'zone', cause: 'location', parentId: made.fdRegion, basis: '', owner: '', recoveryOwner: '', treatment: '', origin: 'authored', history: []}); doms.push(id); }
+  assert.equal(p.technology.domains.length, T.TOPOLOGY_LIMITS.domains, 'the failure domains at their limit');
+  const plans = p.runtime.plans.filter(r => r.environmentId === I.production).map(r => r.id), zones = 2000 - p.runtime.zones.length, placements = 2000 - p.runtime.placements.length;
+  for (let i = 0; i < zones; i++) p.runtime.zones.push({id: 'zon-' + (700 + i), ref: 'ZON-' + (700 + i), revision: 1, environmentId: I.production, title: 'Zone ' + i, kind: 'hosting', failureDomain: '', isolation: '', owner: '', boundaryIds: [], boundaryId: '', domainIds: [doms[i % doms.length]], nodeId: i % 2 ? made.az1 : made.az2});
+  for (let i = 0; i < placements; i++) p.runtime.placements.push({id: 'pl-x' + i, revision: 1, planId: plans[i % plans.length], zoneId: 'zon-' + (700 + i % zones), role: 'active', replicas: 1, basis: 'Synthetic.'});
+  const bare = withFinalReview(JSON.parse(JSON.stringify(p)));
+  assert.deepEqual([bare.runtime.zones.length, bare.runtime.placements.length], [2000, 2000]);
+  let q = bare; for (let i = 0; i < FA.FAILURE_LIMITS.failures; i++) q = doc(q, 'runtime.failure', {environmentId: I.production, title: 'Any one zone, claim ' + i, scope: 'zone', quantifier: 'any-one', mustSurvive: [I.workerPlan], inScope: true});
+  const fresh = x => withFinalReview(JSON.parse(JSON.stringify(x))), time = x => { let best = Infinity; for (let n = 0; n < 2; n++) { const y = fresh(x), t = process.hrtime.bigint(); ch10(y); best = Math.min(best, Number(process.hrtime.bigint() - t) / 1e6); } return best; };
+  assert.equal(FA.evaluateFailure(fresh(q), 'fs-001').cases.length, 58, 'each claim reads a case for each of the 58 zone domains');
+  // fails on 10b97b7: about 25 s with the claims against about 2 s without (each case walked every zone and placement, a linear search for each)
+  const without = time(bare), withClaims = time(q);
+  assert.ok(withClaims <= CHECKS_FACTOR * without, 'Chapter 10\'s checks take ' + withClaims.toFixed(0) + ' ms with 24 claims and ' + without.toFixed(0) + ' ms without them: more than ' + CHECKS_FACTOR + ' times');
+  pass('S2.16: at 2,000 zones, 2,000 placements and 60 failure domains, Chapter 10\'s checks take ' + withClaims.toFixed(0) + ' ms with 24 in-scope claims of 58 cases each and ' + without.toFixed(0) + ' ms without them (at most ' + CHECKS_FACTOR + ' times): one index of what each zone fails with, and a case two claims share walked once');
+});
+
 // ================================================================ Slice 3: location gates and data copies
 // (design section g, Slice 3, its eight cases; ruling L8 carried; the build contract's rules 10 to 12, 14 to 17, 31 and
 // 54. The build notes are audit/rc44/build-notes/wp9a-s2s3.md.)

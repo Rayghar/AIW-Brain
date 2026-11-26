@@ -267,6 +267,15 @@ export function zoneFails(p,z,from=z?.nodeId,upto=null){
  for(const n of chainOf(ns,find(ns,from))){if(n.id===upto)break;add(n.domainId);}
  return [...out.values()];
 }
+// (the fix-up's must-fix 6) What each hosting zone that stands fails with (zones: id -> its domains), what each placement
+// with a node of its own fails with from its node up to its zone's (placements: id -> {zoneId, fails}), and the
+// placements of each zone (byZone), once a document or a pass: a loss case reads them in O(zones + placements).
+export const failIndex=p=>remember(p,'topology:fails','all',()=>{
+ const zones=new Map(),placements=new Map(),byZone=new Map(),all=new Map(list(p?.runtime?.zones).filter(z=>z?.id).map(z=>[z.id,z]));
+ for(const z of all.values())if(hostingZone(z)&&!isProposed(z))zones.set(z.id,zoneFails(p,z));
+ for(const l of list(p?.runtime?.placements)){const z=all.get(l?.zoneId);if(!z)continue;let xs=byZone.get(z.id);if(!xs)byZone.set(z.id,xs=[]);xs.push(l);if(l.nodeId)placements.set(l.id,{zoneId:z.id,fails:zoneFails(p,z,l.nodeId,z.nodeId)});}
+ return {zones,placements,byZone};
+});
 export const hostingComparison=(p,environmentId)=>remember(p,'topology:comparison',environmentId,()=>compareHosting(p,environmentId));
 function compareHosting(p,environmentId){
  const zs=list(p?.runtime?.zones).filter(z=>z?.environmentId===environmentId&&hostingZone(z)&&!isProposed(z)),issues=[];
@@ -275,7 +284,9 @@ function compareHosting(p,environmentId){
  for(const z of zs){const gone=[...list(z.domainIds).filter(id=>!standing(domains,id)),...(z.nodeId&&!standing(nodes,z.nodeId)?[z.nodeId]:[])];if(gone.length)issues.push({kind:'not-standing',zones:[z.id],ids:gone});}
  const typed=zs.filter(z=>list(z.domainIds).length),named=zs.filter(z=>!list(z.domainIds).length&&statedField(z,'failureDomain'));
  if(typed.length&&named.length)issues.push({kind:'mixed',zones:[...typed,...named].map(z=>z.id),ids:[]});
- for(const a of typed)for(const b of typed){const da=standing(domains,a.domainIds[0]),db=standing(domains,b.domainIds[0]);if(a!==b&&da&&db&&da.id!==db.id&&above(domains,db).some(x=>x.id===da.id))issues.push({kind:'nested',zones:[a.id,b.id],ids:[da.id,db.id]});}
+ // (the fix-up's must-fix 6: each zone's hosting domain and what that lies in read once, not once a pair)
+ {const host=new Map(typed.map(z=>[z.id,standing(domains,z.domainIds[0])])),up=new Map();for(const d of host.values())if(d&&!up.has(d.id))up.set(d.id,new Set(above(domains,d).map(x=>x.id)));
+  for(const a of typed)for(const b of typed){const da=host.get(a.id),db=host.get(b.id);if(a!==b&&da&&db&&da.id!==db.id&&up.get(db.id).has(da.id))issues.push({kind:'nested',zones:[a.id,b.id],ids:[da.id,db.id]});}}
  const {groups,causes}=failGroups(p,typed);
  return {comparable:!issues.length,zones:zs.map(z=>z.id),issues,groups,shared:[...causes].filter(([,xs])=>xs.length>1).map(([causeId,xs])=>({causeId,zones:xs}))};
 }

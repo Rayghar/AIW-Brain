@@ -273,13 +273,13 @@ items, nine should-fix items, nine design concerns. Each must-fix item gets a ca
 the fix; each small should-fix item inside the build's files is fixed with its case; every other should-fix item and every
 design concern is carried (below, "Carried forward"). Logs under `.aiw-local/fixup/` (git-ignored).
 
-- **State:** in progress. Done: the plan. Next: must-fix 1.
+- **State:** in progress. Done: the plan; must-fix 1 to 5 (each case seen to fail first, then green). Next: must-fix 6, then the small should-fix items, the notes, the suites.
 
 | Item | What | State |
 |---|---|---|
-| must-fix 1 | a draft or agent account takes a person's claim out of scope, empties what must survive, clears its minutes | next |
-| must-fix 2 | a draft or agent account lifts a failing location gate (gate, copy, zone, node) | |
-| must-fix 3 | L11 (d): zones and placements a draft changed are not named, and the acceptance is taken | |
-| must-fix 4 | a restore after a recovery import brings back an acceptance and a gate's evidence | |
-| must-fix 5 | H5 compares independence pairwise beside hostingComparison's groups (L2, rule 39) | |
-| must-fix 6 | Chapter 10's checks with declared failures cost O(placements x zones) per case | |
+| must-fix 1 | a draft or agent account takes a person's claim out of scope, empties what must survive, clears its minutes | done: S2.12 |
+| must-fix 2 | a draft or agent account lifts a failing location gate (gate, copy, zone, node) | done: S3.11 |
+| must-fix 3 | L11 (d): zones and placements a draft changed are not named, and the acceptance is taken | done: S2.13 |
+| must-fix 4 | a restore after a recovery import brings back an acceptance and a gate's evidence | done: S2.14 |
+| must-fix 5 | H5 compares independence pairwise beside hostingComparison's groups (L2, rule 39) | done: S2.15 |
+| must-fix 6 | Chapter 10's checks with declared failures cost O(placements x zones) per case | next |

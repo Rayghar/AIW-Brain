@@ -29,9 +29,9 @@ import {patchFields,patchOpen} from './technology-domain.js';
 import {isProposed} from './record-lifecycle.js';
 import {verifierRefusal} from './architecture-obligations.js';
 import {valueFingerprint} from './source-fingerprint.js';
-import {remember} from './document-memo.js';
+import {remember,memoPass} from './document-memo.js';
 import {list} from './util.js';
-import {TRACKED,LABELS,topologyTyped,failureDomains,deploymentNodes,hostingComparison,zoneGroups,groupKey,zoneFails,requireTyped,storeWritten,standingOf,draftedIds,draftedOf,DRAFT,pad,find,refOf,and,sharedCause,standing,patchBounded,authoredRecord,put,BOOKKEEPING} from './topology-domain.js';
+import {TRACKED,LABELS,topologyTyped,failureDomains,deploymentNodes,hostingComparison,zoneGroups,groupKey,zoneFails,failIndex,requireTyped,storeWritten,standingOf,draftedIds,draftedOf,DRAFT,pad,find,refOf,and,sharedCause,standing,patchBounded,authoredRecord,put,BOOKKEEPING} from './topology-domain.js';
 import {failingGate} from './topology-gates.js';
 
 export const FAILURE_SCOPES=['instance','zone','site','region','provider','shared-cause','correlated'],QUANTIFIERS=['any-one','named'];
@@ -107,13 +107,14 @@ const recoveringEnvironments=(p,envId)=>list(p?.runtime?.environments).filter(e=
 const hosting=(p,envId)=>list(p?.runtime?.zones).filter(z=>z?.environmentId===envId&&hostingZone(z)&&!isProposed(z));
 const lostTitle=(p,ids,together)=>{const ds=failureDomains(p),say=id=>{const d=find(ds,id);return d?d.ref+' '+d.title:id;};return and(ids.map(say))+(together&&ids.length>1?' lost together':' lost');};
 // What a case loses: every hosting zone (of any environment) that fails with a lost domain, and every placement in a
-// zone it does not lose whose own nodes do; the records read on the way.
-function losing(p,lost){
- const gone=new Set(lost),zones=[],placements=[];
- for(const z of list(p?.runtime?.zones))if(hostingZone(z)&&!isProposed(z)&&zoneFails(p,z).some(d=>gone.has(d.id)))zones.push(z.id);
- for(const l of list(p?.runtime?.placements)){const z=find(p.runtime.zones,l?.zoneId);if(z&&!zones.includes(z.id)&&l.nodeId&&zoneFails(p,z,l.nodeId,z.nodeId).some(d=>gone.has(d.id)))placements.push(l.id);}
- return {zones,placements};
-}
+// zone it does not lose whose own nodes do; the records read on the way. (The fix-up's must-fix 6: read through the
+// document's index of what each zone and placement fails with, once a set of domains: O(zones + placements) a case.)
+const losing=(p,lost)=>remember(p,'topology:losing',lost.join('+'),()=>{
+ const gone=new Set(lost),X=failIndex(p),zones=new Set(),placements=[],hit=xs=>xs.some(d=>gone.has(d.id));
+ for(const [id,xs] of X.zones)if(hit(xs))zones.add(id);
+ for(const [id,x] of X.placements)if(!zones.has(x.zoneId)&&hit(x.fails))placements.push(id);
+ return {zones:[...zones],placements};
+});
 // One case for each domain the claim loses: any one of its scope that a hosting zone of the environment holding a
 // placement fails with (a zone that fails with none reads unknown), and each domain it names; a correlated set is one
 // case. Answers {cases, unknown, bound}: past the bound no case is answered.
@@ -122,9 +123,10 @@ export function lossCases(p,fs){
  if(fs.scope==='correlated'){if(list(fs.domainIds).length)add([...fs.domainIds]);}
  else{
   if(fs.quantifier==='any-one'){
-   const plans=new Set(plansOf(p,env).map(r=>r.id)),placed=list(p.runtime.placements).filter(l=>plans.has(l?.planId)),fit=d=>fs.scope==='shared-cause'?sharedCause(d):!sharedCause(d)&&d.scope===fs.scope;
-   for(const z of hosting(p,env).filter(z=>placed.some(l=>l.zoneId===z.id))){
-    const own=zoneFails(p,z).filter(fit),under=placed.filter(l=>l.zoneId===z.id&&l.nodeId).flatMap(l=>zoneFails(p,z,l.nodeId,z.nodeId).filter(fit));
+   const plans=new Set(plansOf(p,env).map(r=>r.id)),X=failIndex(p),fit=d=>fs.scope==='shared-cause'?sharedCause(d):!sharedCause(d)&&d.scope===fs.scope;
+   for(const z of hosting(p,env)){
+    const placed=(X.byZone.get(z.id)||[]).filter(l=>plans.has(l?.planId));if(!placed.length)continue;
+    const own=(X.zones.get(z.id)||[]).filter(fit),under=placed.filter(l=>l.nodeId).flatMap(l=>(X.placements.get(l.id)?.fails||[]).filter(fit));
     if(!own.length&&!under.length&&fs.scope!=='shared-cause')unknown.push(refOf(z)+' stands in no failure domain of scope '+fs.scope+'.');
     for(const d of [...own,...under])add([d.id]);
    }
@@ -134,7 +136,7 @@ export function lossCases(p,fs){
  if(keys.length>EVALUATION_BOUND)return {cases:[],unknown:[],bound:'The claim reads '+keys.length+' loss cases, more than the '+EVALUATION_BOUND+' one evaluation reads: narrow the scope.'};
  return {cases:keys.map(ids=>({id:fs.id+':'+ids.join('+'),title:lostTitle(p,ids,fs.scope==='correlated'),lostDomainIds:ids,...prefix(losing(p,ids))})),unknown,bound:null};
 }
-const prefix=({zones,placements})=>({lostZoneIds:zones,lostPlacementIds:placements});
+const prefix=({zones,placements})=>({lostZoneIds:[...zones],lostPlacementIds:[...placements]});
 // The plans of an environment that a linked recovery environment takes over in a case, with why: a plan of the same
 // asset there, outside what the case loses, with a declared recovery, its state known and its authority written, and
 // stated copies enough for its minimum.
@@ -157,11 +159,15 @@ const lostSet=(p,fs,c)=>({zones:c.lostZoneIds,placements:c.lostPlacementIds,else
 const said=xs=>list(xs).filter(r=>r&&!isProposed(r)).map(r=>Object.fromEntries(Object.entries(r).filter(([k])=>!BOOKKEEPING.has(k))));
 export function failureStamp(p,fs){
  const envs=[fs.environmentId,...recoveringEnvironments(p,fs.environmentId).map(e=>e.id)];
- return JSON.stringify([envs.map(id=>runtimeEnvironmentStamp(p,id)),valueFingerprint([said(failureDomains(p)),said(deploymentNodes(p))]),fs.id,fs.revision]);
+ return JSON.stringify([envs.map(id=>runtimeEnvironmentStamp(p,id)),remember(p,'topology:print','all',()=>valueFingerprint([said(failureDomains(p)),said(deploymentNodes(p))])),fs.id,fs.revision]);
 }
 // What a plan's row says of it in a case: available, conditional (a declared recovery, here or in a linked recovery environment), unknown, or lost.
 const stateOf=r=>['available','conditional'].includes(r.recovery.state)?r.initial.state==='available'?'available':'conditional':[r.initial.state,r.recovery.state].includes('unknown')?'unknown':'lost';
-export const evaluateFailure=(p,id)=>remember(p,'topology:evaluate',id,()=>evaluate(p,id));
+// (the fix-up's must-fix 6) One evaluation is one pass over the document (document-memo.js), so that its cases share the
+// index of what each zone fails with, and a case two claims share (the same environment, the same domains lost) is
+// walked once.
+export const evaluateFailure=(p,id)=>memoPass(p,()=>remember(p,'topology:evaluate',id,()=>evaluate(p,id)));
+const walk=(p,envId,fs,c)=>remember(p,'topology:walk',envId+'|'+c.lostDomainIds.join('+'),()=>simulateRuntime(p,{environmentId:envId},lostSet(p,fs,c)).rows);
 function evaluate(p,id){
  const fs=find(p?.runtime?.failures,id);if(!fs||!topologyTyped(p))return null;
  const env=find(p.runtime.environments,fs.environmentId),unknown=[],drafted=[],must=list(fs.mustSurvive),may=list(fs.mayDegrade);
@@ -175,15 +181,15 @@ function evaluate(p,id){
  // (ruling L11 (d); the fix-up's must-fix 3) every record the cases read: the claim, the environment and the recovery
  // environments linked to it, their hosting zones, plans and placements, the domains and nodes those stand in, and what
  // each case loses
- {const ns=deploymentNodes(p),envs=[env.id,...recoveringEnvironments(p,env.id).map(e=>e.id)],read=[fs.id,...envs],chain=id=>{for(let n=find(ns,id),k=0;n&&k<9;n=find(ns,n.parentId),k++)read.push(n.id);};
-  for(const e of envs)for(const z of hosting(p,e)){read.push(z.id);for(const d of zoneFails(p,z))read.push(d.id);}
+ if(draftedIds(p).size){const ns=deploymentNodes(p),X=failIndex(p),envs=[env.id,...recoveringEnvironments(p,env.id).map(e=>e.id)],read=[fs.id,...envs],chain=id=>{for(let n=find(ns,id),k=0;n&&k<9;n=find(ns,n.parentId),k++)read.push(n.id);};
+  for(const e of envs)for(const z of hosting(p,e)){read.push(z.id);for(const d of X.zones.get(z.id)||[])read.push(d.id);}
   for(const c of L.cases)read.push(...c.lostDomainIds,...c.lostZoneIds,...c.lostPlacementIds);
   for(const z of list(p.runtime.zones))if(z?.nodeId)chain(z.nodeId);
   const mine=new Set(envs.flatMap(e=>plansOf(p,e).map(r=>r.id)));read.push(...mine);for(const l of list(p.runtime.placements))if(mine.has(l?.planId)){read.push(l.id);if(l.nodeId)chain(l.nodeId);}
   drafted.push(...draftedOf(p,read).map(r=>r.id));}
  const state=stateOf;let lost=null,open=false,conditional=false;
  for(const c of L.cases){
-  const sim=simulateRuntime(p,{environmentId:env.id},lostSet(p,fs,c)),rows=sim.rows.filter(r=>must.includes(r.id)||may.includes(r.id)).map(r=>({id:r.id,ref:r.ref,title:r.title,role:must.includes(r.id)?'must':'may',initial:r.initial,recovery:r.recovery}));
+  const rows=walk(p,env.id,fs,c).filter(r=>must.includes(r.id)||may.includes(r.id)).map(r=>({id:r.id,ref:r.ref,title:r.title,role:must.includes(r.id)?'must':'may',initial:r.initial,recovery:r.recovery}));
   out.cases.push({...c,rows});
   for(const r of rows.filter(x=>x.role==='must')){const s=state(r);if(s==='lost'&&!lost)lost={caseId:c.id,planId:r.id,state:r.recovery.state,text:c.title+': '+r.ref+' '+(r.title||'')+' is '+r.recovery.state+'. '+r.recovery.reason};if(s==='unknown')open=true;if(s==='conditional')conditional=true;}
  }
@@ -240,8 +246,9 @@ export function lostFor(p,raw){
 Object.assign(TOPOLOGY,{zoneKey:groupKey,standbyElsewhere,lostFor});
 
 // ---------------------------------------------------------------- Chapter 10's findings
-function failureFindings(p){
- if(!topologyTyped(p))return [];
+// (the fix-up's must-fix 6) one pass over the document: every claim's cases share one index and one walk a case
+const failureFindings=p=>topologyTyped(p)?memoPass(p,()=>findingsOf(p)):[];
+function findingsOf(p){
  const out=[],m=p.runtime,ds=failureDomains(p),zone=id=>refOf(find(m.zones,id))||id,byCause=new Map();
  for(const env of list(m.environments)){
   const accepted=new Set(failures(p).filter(fs=>fs?.environmentId===env.id&&fs.inScope&&failureAccepted(p,fs)).flatMap(fs=>list(fs.acceptedCauseIds)));

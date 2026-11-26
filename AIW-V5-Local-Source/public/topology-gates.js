@@ -27,7 +27,7 @@ import {SEEDED,PROPOSED,patchFields,patchOpen,retiredOf} from './technology-doma
 import {isProposed} from './record-lifecycle.js';
 import {verifierRefusal} from './architecture-obligations.js';
 import {forwardTrace,traceGraph} from './trace-kernel.js';
-import {remember} from './document-memo.js';
+import {remember,memoPass} from './document-memo.js';
 import {list} from './util.js';
 import {TRACKED,LABELS,JURISDICTIONS,NODE_TIERS,NODE_EXPOSURES,topologyTyped,deploymentNodes,parsePrefix,nodeUnder,requireTyped,storeWritten,standingOf,draftedIds,draftedOf,draftedWords,DRAFT,pad,find,refOf,and,chainOf,patchBounded,authoredRecord,BOOKKEEPING} from './topology-domain.js';
 
@@ -230,8 +230,8 @@ export function refuseMerge(before,after){
 Object.assign(TOPOLOGY,{refuseMerge});
 
 // ---------------------------------------------------------------- Chapter 10's findings
-function gateFindings(p){
- if(!topologyTyped(p))return [];
+const gateFindings=p=>topologyTyped(p)?memoPass(p,()=>gateFindingsOf(p)):[];
+function gateFindingsOf(p){
  const out=[];
  for(const g of gates(p))if(g?.id&&!isProposed(g)){
   const r=gateReading(p,g.id);if(!r)continue;
