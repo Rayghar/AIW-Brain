@@ -162,7 +162,8 @@ export function failureStamp(p,fs){
 // Whose words a reading stands on: a domain or a node a draft by Sol, an import or an agent account changed last that no
 // person has reviewed since (ruling L11 (d)).
 const unreviewed=r=>{const v=r?.provenance;return !!v?.author&&v.author.kind!=='person'&&!v.reviewed;};
-const evaluated=(p,fs)=>{const st=r=>['available','conditional'].includes(r.recovery.state)?r.initial.state==='available'?'available':'conditional':[r.initial.state,r.recovery.state].includes('unknown')?'unknown':'lost';return st;};
+// What a plan's row says of it in a case: available, conditional (a declared recovery, here or in a linked recovery environment), unknown, or lost.
+const stateOf=r=>['available','conditional'].includes(r.recovery.state)?r.initial.state==='available'?'available':'conditional':[r.initial.state,r.recovery.state].includes('unknown')?'unknown':'lost';
 export const evaluateFailure=(p,id)=>remember(p,'topology:evaluate',id,()=>evaluate(p,id));
 function evaluate(p,id){
  const fs=find(p?.runtime?.failures,id);if(!fs||!topologyTyped(p))return null;
@@ -176,7 +177,7 @@ function evaluate(p,id){
  unknown.push(...L.unknown);
  {const ds=failureDomains(p),ns=deploymentNodes(p),read=new Set();for(const z of hosting(p,env.id))for(const d of zoneFails(p,z))read.add(d.id);for(const c of L.cases)for(const i of c.lostDomainIds)read.add(i);for(const z of list(p.runtime.zones))if(z?.nodeId)for(let n=find(ns,z.nodeId),k=0;n&&k<9;n=find(ns,n.parentId),k++)read.add(n.id);
   for(const x of [...ds,...ns])if(read.has(x.id)&&unreviewed(x))drafted.push(x.id);}
- const state=evaluated(p,fs);let lost=null,open=false,conditional=false;
+ const state=stateOf;let lost=null,open=false,conditional=false;
  for(const c of L.cases){
   const sim=simulateRuntime(p,{environmentId:env.id},lostSet(p,fs,c)),rows=sim.rows.filter(r=>must.includes(r.id)||may.includes(r.id)).map(r=>({id:r.id,ref:r.ref,title:r.title,role:must.includes(r.id)?'must':'may',initial:r.initial,recovery:r.recovery}));
   out.cases.push({...c,rows});

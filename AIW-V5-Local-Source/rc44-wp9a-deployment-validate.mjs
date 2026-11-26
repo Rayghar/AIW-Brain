@@ -1554,7 +1554,7 @@ await block('S2.5 acceptance by a second person, through the server', async () =
   const stampOf = id => fn(FA, 'failureStamp')(d(), declared(d(), id)), accept = (id, as = B, extra = {}, payload = {}) => h.send('runtime.failure-accept', {id, decision: 'accepted', stamp: stampOf(id), reviewer: 'A reviewer (synthetic)', reference: 'REV-1', observations: 'Accepted as a design claim; not demonstrated.', reviewed: true, ...payload}, as, extra);
   try {
     ok(await h.send('runtime.topology-start', {}));
-    const fd = async payload => (await h.send('technology.domain', payload)).body.selected, node = async payload => (await h.send('runtime.node', payload)).body.selected;
+    const fd = async payload => (await h.send('technology.domain', payload)).body.selected;
     const region = await fd({title: 'Norway East region', scope: 'region', cause: 'location'}), z1 = await fd({title: 'Bergen availability zone 1', scope: 'zone', cause: 'location', parentId: region}), z2 = await fd({title: 'Bergen availability zone 2', scope: 'zone', cause: 'location', parentId: region}), rec = await fd({title: 'Recovery region', scope: 'region', cause: 'location'});
     ok(await h.send('runtime.locate', {zoneId: I.zone1, domainIds: [z1]})); ok(await h.send('runtime.locate', {zoneId: I.zone2, domainIds: [z2]})); ok(await h.send('runtime.locate', {zoneId: I.zone3, domainIds: [rec]}));
     const claim = {environmentId: I.production, title: 'Any one availability zone is lost', scope: 'zone', quantifier: 'any-one', mustSurvive: [I.workerPlan], inScope: true};
@@ -1806,7 +1806,7 @@ await block('S3.2 unknown is never pass', () => {
 
 await block('S3.3 a residency or placement gate takes no evidence', () => {
   need();
-  const I = F.ids(), {p, made} = typedTidewater();
+  const {p, made} = typedTidewater();
   for (const payload of [{}, {kind: 'placement', permitted: [], requires: {tiers: ['data'], exposure: 'private'}}]) {
     const r = gate(p, payload), q = r.document; gateOf(q, r.selected).provenance = {author: {kind: 'person', by: A, at: AT, account: 'person'}};
     assert.throws(() => run(q, 'runtime.gate-evidence', {id: r.selected, nodeId: made.region, state: 'pass', reference: 'R-1', observations: 'Seen.', stamp: '', reviewed: true}, B), /^Error: LG-001 is read from where its copies rest: a (residency|placement) gate takes no evidence\.$/, (payload.kind || 'residency') + ' takes no evidence');
