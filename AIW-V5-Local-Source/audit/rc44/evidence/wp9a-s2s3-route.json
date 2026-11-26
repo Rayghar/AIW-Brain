@@ -9,11 +9,37 @@
   "node build.mjs (this build's tree)",
   "node .aiw-local/wp9a-s2s3/share.mjs (in each tree: bundleClient, the holder's modules and lists, opensWithRecords)"
  ],
- "cap": {"chapters": 3233792, "chaptersOnceS0LeadW3Lands": 3266560, "scripts": 148, "under10k": 61, "css": 902144},
- "before": {"commit": "4349bb6", "chapters": 3228938, "projects": 508466, "scripts": 148, "under10k": 52, "from10to50k": 51, "over50k": 45, "css": 901873, "violations": []},
- "after": {"commit": "this build's head", "chapters": 3229341, "projects": 508530, "scripts": 148, "under10k": 52, "from10to50k": 51, "over50k": 45, "css": 901873, "violations": []},
- "routeDelta": 403,
- "headroomAfter": 4451,
+ "cap": {
+  "chapters": 3233792,
+  "chaptersOnceS0LeadW3Lands": 3266560,
+  "scripts": 148,
+  "under10k": 61,
+  "css": 902144
+ },
+ "before": {
+  "commit": "4349bb6",
+  "chapters": 3228938,
+  "projects": 508466,
+  "scripts": 148,
+  "under10k": 52,
+  "from10to50k": 51,
+  "over50k": 45,
+  "css": 901873,
+  "violations": []
+ },
+ "after": {
+  "commit": "the fix-up's head (rc44/wp9a-s2s3-fix)",
+  "chapters": 3229350,
+  "projects": 508539,
+  "scripts": 148,
+  "under10k": 52,
+  "from10to50k": 51,
+  "over50k": 45,
+  "css": 901873,
+  "violations": []
+ },
+ "routeDelta": 412,
+ "headroomAfter": 4442,
  "itemised": {
   "runtimeModelSlotAndZoneKey": 41,
   "runtimeDomainH4H5AndZoneKey": 290,
@@ -22,20 +48,122 @@
   "deskVitalsZoneKey": 4,
   "deskFixesZoneKey": 16,
   "workbenchDomainH11": 0,
-  "importAndExportLists": 38
+  "importAndExportLists": 47
  },
- "itemisedNote": "workbenchDomainH11 is 0 on the client: the merge's branch of applyWorkbenchCommand is not in the client bundle (the server applies a merge); the hook costs the client nothing. The 38 B of lists are the exports the lazy entry now reads from route modules (simulateRuntime, runtimeEnvironmentStamp, verifierRefusal, valueFingerprint, CLASSIFICATIONS, NOT_CLASSIFIED, forwardTrace, traceGraph, retiredOf and the slot TOPOLOGY, zoneKey).",
+ "itemisedNote": "workbenchDomainH11 is 0 on the client: the merge's branch of applyWorkbenchCommand is not in the client bundle (the server applies a merge); the hook costs the client nothing. The 38 B of lists are the exports the lazy entry now reads from route modules (simulateRuntime, runtimeEnvironmentStamp, verifierRefusal, valueFingerprint, CLASSIFICATIONS, NOT_CLASSIFIED, forwardTrace, traceGraph, retiredOf and the slot TOPOLOGY, zoneKey). The fix-up adds 9 B to these lists: the route script that holds provenance.js exports judgementOf, which the lazy entry now reads (ruling L11 (d): a record a person judged kept through the review plan is reviewed).",
  "holder": {
-  "before": {"bytes": 74475, "modules": 71933, "lists": 2542},
-  "after": {"bytes": 114825, "modules": 112197, "lists": 2628},
-  "atTheAdoptionRecord": {"bytes": 51789, "modules": 49415, "lists": 2374}
+  "before": {
+   "bytes": 74475,
+   "modules": 71933,
+   "lists": 2542
+  },
+  "after": {
+   "bytes": 118744,
+   "modules": 116099,
+   "lists": 2645
+  },
+  "atTheAdoptionRecord": {
+   "bytes": 51789,
+   "modules": 49415,
+   "lists": 2374
+  }
  },
- "packageShare": {"modules": {"public/topology-blueprints.js": 10, "public/topology-domain.js": 22697, "public/topology-failures.js": 19382, "public/topology-fallback.js": 10, "public/topology-gates.js": 19064, "public/topology.js": 1529}, "lists": 254, "total": 62956},
+ "packageShare": {
+  "modules": {
+   "public/topology-blueprints.js": 10,
+   "public/topology-domain.js": 24498,
+   "public/topology-failures.js": 19695,
+   "public/topology-fallback.js": 10,
+   "public/topology-gates.js": 20842,
+   "public/topology.js": 1529
+  },
+  "lists": 271,
+  "total": 66855
+ },
  "opensWithRecords": {
   "gate": "The chapters-route gate is unchanged and measures opening a document that holds no package records (ruling D10). A document that holds the marker runtime.topology also loads the lazy entry of the Chapter 10 Model view (deploy-view.js) before it is first drawn.",
   "host": "public/deploy-view.js",
-  "before": {"route": 3228938, "added": 855804, "total": 4084742, "files": 12},
-  "after": {"route": 3229341, "added": 896154, "total": 4125495, "files": 12},
-  "note": "The package's two filled parts add 40,350 B to what a typed document opens with. Ruling Y1 moves the packages' first-draw readers into one shared lazy entry (the lead's build S0-D10, s0-w3-bundle), which holds such a document to the route plus 160 KB; these parts are first-draw readers (checks, readings) and move with it."
+  "before": {
+   "route": 3228938,
+   "added": 855804,
+   "total": 4084742,
+   "files": 12
+  },
+  "after": {
+   "route": 3229350,
+   "added": 900073,
+   "total": 4129423,
+   "files": 12
+  },
+  "note": "The package's two filled parts add 44,269 B to what a typed document opens with (40,350 B at the build's head, 10b97b7; the fix-up 3,919 B more). Ruling Y1 moves the packages' first-draw readers into one shared lazy entry (the lead's build S0-D10, s0-w3-bundle), which holds such a document to the route plus 160 KB; these parts are first-draw readers (checks, readings) and move with it."
+ },
+ "fixUp": {
+  "rule": "Owner decision AA1: one review, one fix-up. The fix-up's route bytes before (the build's head, 10b97b7) and after (its own head), measured the same way: node build.mjs in an archive of 10b97b7 (git archive, node_modules linked) and in the fix-up's tree; the share and the holder from bundleClient's metafile of each tree (.aiw-local/fixup/share.mjs, git-ignored). Nothing is booked.",
+  "commands": [
+   "git archive -o .aiw-local/fixup/start.tar 10b97b7 AIW-V5-Local-Source; tar -x -C .aiw-local/fixup/start; (cd .aiw-local/fixup/start/AIW-V5-Local-Source && node build.mjs)",
+   "node build.mjs (the fix-up's tree)",
+   "node share.mjs <out.json> (copied into each tree's source root and removed after)"
+  ],
+  "before": {
+   "commit": "10b97b7",
+   "chapters": 3229341,
+   "projects": 508530,
+   "scripts": 148,
+   "under10k": 52,
+   "from10to50k": 51,
+   "over50k": 45,
+   "css": 901873,
+   "violations": []
+  },
+  "after": {
+   "commit": "the fix-up's head",
+   "chapters": 3229350,
+   "projects": 508539,
+   "scripts": 148,
+   "under10k": 52,
+   "from10to50k": 51,
+   "over50k": 45,
+   "css": 901873,
+   "violations": []
+  },
+  "routeDelta": 9,
+  "itemised": {
+   "importAndExportLists": 9
+  },
+  "itemisedNote": "The route script that holds provenance.js (and module-model.js) grows 9 B in its export list (judgementOf). No route module's own bytes move: the fix-up's code is in the lazy entry (topology-domain.js, topology-failures.js, topology-gates.js) and on the server (recovery-service.js).",
+  "holder": {
+   "before": {
+    "bytes": 114825,
+    "modules": 112197,
+    "lists": 2628
+   },
+   "after": {
+    "bytes": 118744,
+    "modules": 116099,
+    "lists": 2645
+   }
+  },
+  "packageShare": {
+   "before": {
+    "modules": {
+     "public/topology-domain.js": 22697,
+     "public/topology-failures.js": 19382,
+     "public/topology-gates.js": 19064
+    },
+    "lists": 254,
+    "total": 62946
+   },
+   "after": {
+    "modules": {
+     "public/topology-domain.js": 24498,
+     "public/topology-failures.js": 19695,
+     "public/topology-gates.js": 20842
+    },
+    "lists": 271,
+    "total": 66855
+   }
+  },
+  "packageShareNote": "The build pinned a share total of 62,956 B; its modules and lists add to 62,946 B, which the build's tree measures again. The fix-up pins the measured 66,855 B (the sum).",
+  "capsUnchanged": "The chapters cap is 3,233,792 B on this base (3,266,560 B once s0-lead-w3 lands, owner decision AA2); script files 148; the stylesheet as at the base."
  }
 }

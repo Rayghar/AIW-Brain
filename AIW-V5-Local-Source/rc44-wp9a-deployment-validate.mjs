@@ -1267,7 +1267,12 @@ const LAZY_SHARE = {modules: {'public/topology-blueprints.js': 10, 'public/topol
 // reader extended (ruling L2) and the helpers the parts share; lists: the holder's import and export lists (2,628 B at this build) less the adoption
 // record's holder's (2,374 B). LAZY_SHARE stays slice 1's record, which its evidence holds. Measured with bundleClient on this build; the figures are in
 // audit/rc44/evidence/wp9a-s2s3-route.json (BUILD_EVIDENCE), with the route before and after (owner decision AA2).
-const BUILD_SHARE = {modules: {'public/topology-blueprints.js': 10, 'public/topology-domain.js': 22697, 'public/topology-failures.js': 19382, 'public/topology-fallback.js': 10, 'public/topology-gates.js': 19064, 'public/topology.js': 1529}, lists: 254, total: 62956};
+// (the fix-up of wp9a-s2s3, owner decision AA2 as the build read it; was: topology-domain.js 22,697 B, topology-failures.js 19,382 B,
+// topology-gates.js 19,064 B, the lists at most 254 B and the share at most 62,956 B) re-measured at the fix-up's head, each module pinned exactly as
+// before: the draft reading of ruling L11 (d) and the index of what each zone fails with (topology-domain.js +1,801 B), the drafted rows of a gate
+// and H11's failing rows (topology-gates.js +1,778 B), H5 on the one grouping and the pass of an evaluation (topology-failures.js +313 B); the lists
+// +17 B for the two names the lazy entry now reads from route modules (judgementOf, memoPass). The figures are in BUILD_EVIDENCE's fixUp.
+const BUILD_SHARE = {modules: {'public/topology-blueprints.js': 10, 'public/topology-domain.js': 24498, 'public/topology-failures.js': 19695, 'public/topology-fallback.js': 10, 'public/topology-gates.js': 20842, 'public/topology.js': 1529}, lists: 271, total: 66855};
 const BUILD_EVIDENCE = 'audit/rc44/evidence/wp9a-s2s3-route.json';
 await block('S1.10 the client build', async () => {
   need();
