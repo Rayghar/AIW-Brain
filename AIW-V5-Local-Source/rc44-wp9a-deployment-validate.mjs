@@ -1830,6 +1830,53 @@ await block('S2.16 Chapter 10\'s checks at the limits, with 24 in-scope claims',
   pass('S2.16: at 2,000 zones, 2,000 placements and 60 failure domains, Chapter 10\'s checks take ' + withClaims.toFixed(0) + ' ms with 24 in-scope claims of 58 cases each and ' + without.toFixed(0) + ' ms without them (at most ' + CHECKS_FACTOR + ' times): one index of what each zone fails with, and a case two claims share walked once');
 });
 
+//   S2.17 (should-fix 6) the bound read at 64 cases (evaluated) and 65 (unknown, the bound named);
+//   S2.18 (should-fix 9) a zone that holds only a proposed placement of a plan is no hosting case of an any-one claim;
+//   S2.19 (should-fix 1, contract rule 38, in part) the isolate proposal and backup-domain read the shared-cause groups (zoneKey).
+await block('S2.17 the bound, at 64 and 65 cases', () => {
+  need();
+  const I = F.ids(), {p, made} = typedTidewater(), r = declare(p, {title: 'Any one availability zone is lost'});
+  const past = n => { const big = structuredClone(r.document); for (let i = 0; i < n; i++) { const k = String(900 + i), fd = 'fd-' + k, z = 'zon-' + k;
+      big.technology.domains.push({id: fd, ref: 'FD-' + k, revision: 1, title: 'Zone ' + k, scope: 'zone', cause: 'location', parentId: made.fdRegion, basis: '', owner: '', recoveryOwner: '', treatment: '', origin: 'authored', history: []});
+      big.runtime.zones.push({id: z, ref: 'ZON-' + k, revision: 1, environmentId: I.production, title: 'Zone ' + k, kind: 'hosting', failureDomain: '', isolation: '', owner: '', boundaryIds: [], boundaryId: '', domainIds: [fd]});
+      big.runtime.placements.push({id: 'PL-' + k, revision: 1, planId: I.workerPlan, zoneId: z, role: 'active', replicas: 1, basis: 'Synthetic.'}); }
+    return evaluate(withFinalReview(big), r.selected); };
+  { const e = past(62); assert.deepEqual([e.cases.length, e.verdict, e.unknown], [64, 'survives', []], '64 cases: each evaluated'); }
+  { const e = past(63); assert.deepEqual([e.cases.length, e.verdict], [0, 'unknown'], '65 cases: none evaluated'); assert.deepEqual(e.unknown, ['The claim reads 65 loss cases, more than the 64 one evaluation reads: narrow the scope.']); }
+  pass('S2.17: an any-one zone claim reads 64 loss cases and evaluates each; at 65 it answers unknown with the bound named and evaluates none');
+});
+
+await block('S2.18 a proposed placement is no hosting case', () => {
+  need();
+  const I = F.ids(); let {p, made} = typedTidewater();
+  p = doc(p, 'runtime.zone', {environmentId: I.production, title: 'Bergen zone 3', kind: 'hosting', failureDomain: '', isolation: 'x', owner: 'x'}); const z3 = p.runtime.zones.at(-1).id;
+  p = doc(p, 'technology.domain', {title: 'Bergen availability zone 3', scope: 'zone', cause: 'location', parentId: made.fdRegion}); const fd3 = p.technology.domains.at(-1).id;
+  p = doc(p, 'runtime.locate', {zoneId: z3, domainIds: [fd3]});
+  const q = structuredClone(p); q.runtime.placements.push({id: 'PL-900', revision: 1, planId: I.workerPlan, zoneId: z3, role: 'active', replicas: 1, basis: 'Proposed standby capacity (synthetic).', origin: 'seeded', state: 'proposed'});
+  const r = declare(withFinalReview(q), {title: 'Any one availability zone is lost'}), e = evaluate(r.document, r.selected);
+  // fails on 10b97b7: the zone holding only the proposal gave a case of its own
+  assert.deepEqual(e.cases.map(c => c.lostDomainIds), [[made.fdZone1], [made.fdZone2]], 'a case for each zone a standing placement holds, none for a proposal\'s');
+  pass('S2.18: a hosting zone that holds only a proposed placement of a standing plan gives an any-one claim no loss case of its own (proposals are read as plansOf reads them)');
+});
+
+await block('S2.19 the isolate proposal and backup-domain read the shared-cause groups', () => {
+  need();
+  const I = F.ids(); let {p, made} = typedTidewater();
+  p = doc(p, 'technology.domain', {title: 'One power feed', scope: 'site', cause: 'power'}); const power = p.technology.domains.at(-1).id;
+  p = doc(p, 'technology.domain', {title: 'Bergen availability zone 3', scope: 'zone', cause: 'location', parentId: made.fdRegion}); const fd3 = p.technology.domains.at(-1).id;
+  p = doc(p, 'runtime.zone', {environmentId: I.production, title: 'Bergen zone 3', kind: 'hosting', failureDomain: '', isolation: 'x', owner: 'x'}); const z3 = p.runtime.zones.at(-1).id;
+  p = doc(doc(p, 'runtime.locate', {zoneId: I.zone1, domainIds: [made.fdZone1, power]}), 'runtime.locate', {zoneId: z3, domainIds: [fd3, power]});
+  const old = fnOff => { const was = runtimeModel.TOPOLOGY.zoneKey; runtimeModel.TOPOLOGY.zoneKey = undefined; try { return fnOff(); } finally { runtimeModel.TOPOLOGY.zoneKey = was; } };
+  // the isolate proposal for the API (active in zones 1 and 2): zone 3 shares zone 1's power feed, so it isolates nothing
+  const isolate = q => rt.runtimeProposal(withFinalReview(structuredClone(q)), 'isolate', I.apiPlan)?.record?.zoneId ?? null;
+  assert.equal(isolate(p), null, 'no zone stands apart from the active copies'); assert.equal(old(() => isolate(p)), z3, 'read by the first domain alone (failureDomainKey), zone 3 would be proposed');
+  // backup-domain: the store's backup zone shares the power feed with its active copy
+  const q = doc(p, 'runtime.locate', {zoneId: I.zone2, domainIds: [made.fdZone2, power]}), backup = x => findingOf(x, 'backup-domain:' + I.storePlan)?.level;
+  assert.equal(backup(q), 'warning', 'the backup shares an active failure domain'); assert.equal(old(() => backup(q)), undefined, 'read by the first domain alone, it would not');
+  assert.equal(backup(p), undefined, 'without the shared cause it does not');
+  pass('S2.19: runtimeProposal\'s isolate and the backup-domain check read zones that share a stated cause as one failure domain (zoneKey, ruling L2): no isolating zone is proposed beside a zone that shares the cause, and a backup zone sharing it raises backup-domain; read by the first domain alone, each would answer otherwise');
+});
+
 // ================================================================ Slice 3: location gates and data copies
 // (design section g, Slice 3, its eight cases; ruling L8 carried; the build contract's rules 10 to 12, 14 to 17, 31 and
 // 54. The build notes are audit/rc44/build-notes/wp9a-s2s3.md.)

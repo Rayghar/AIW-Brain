@@ -125,7 +125,7 @@ export function lossCases(p,fs){
   if(fs.quantifier==='any-one'){
    const plans=new Set(plansOf(p,env).map(r=>r.id)),X=failIndex(p),fit=d=>fs.scope==='shared-cause'?sharedCause(d):!sharedCause(d)&&d.scope===fs.scope;
    for(const z of hosting(p,env)){
-    const placed=(X.byZone.get(z.id)||[]).filter(l=>plans.has(l?.planId));if(!placed.length)continue;
+    const placed=(X.byZone.get(z.id)||[]).filter(l=>plans.has(l?.planId)&&!isProposed(l));if(!placed.length)continue;
     const own=(X.zones.get(z.id)||[]).filter(fit),under=placed.filter(l=>l.nodeId).flatMap(l=>(X.placements.get(l.id)?.fails||[]).filter(fit));
     if(!own.length&&!under.length&&fs.scope!=='shared-cause')unknown.push(refOf(z)+' stands in no failure domain of scope '+fs.scope+'.');
     for(const d of [...own,...under])add([d.id]);
