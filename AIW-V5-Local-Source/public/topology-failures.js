@@ -31,7 +31,7 @@ import {verifierRefusal} from './architecture-obligations.js';
 import {valueFingerprint} from './source-fingerprint.js';
 import {remember,memoPass} from './document-memo.js';
 import {list} from './util.js';
-import {TRACKED,LABELS,topologyTyped,failureDomains,deploymentNodes,hostingComparison,zoneGroups,groupKey,zoneFails,failIndex,requireTyped,storeWritten,standingOf,draftedIds,draftedOf,DRAFT,pad,find,refOf,and,sharedCause,standing,patchBounded,authoredRecord,put,BOOKKEEPING} from './topology-domain.js';
+import {TRACKED,LABELS,topologyTyped,failureDomains,deploymentNodes,hostingComparison,zoneGroups,groupKey,failIndex,requireTyped,storeWritten,standingOf,draftedIds,draftedOf,DRAFT,pad,find,refOf,and,sharedCause,standing,patchBounded,authoredRecord,put,BOOKKEEPING} from './topology-domain.js';
 import {failingGate} from './topology-gates.js';
 
 export const FAILURE_SCOPES=['instance','zone','site','region','provider','shared-cause','correlated'],QUANTIFIERS=['any-one','named'];

@@ -1763,7 +1763,7 @@ await block('S2.13 no acceptance on a zone or a placement a draft changed, throu
 
 await block('S2.14 a restore after a recovery import brings back no step', () => {
   need();
-  const I = F.ids(); let {p, made} = typedTidewater();
+  let {p, made} = typedTidewater();
   // the boundary's stamps are the server's: a person's stamp stands in for them, so that a second person's step can be taken through the handlers
   const stamped = (q, path, id) => { q.runtime[path].find(x => x.id === id).provenance = {author: {kind: 'person', by: A, at: AT, account: 'person'}}; return q; };
   let r = declare(p); const fs = r.selected; p = stamped(r.document, 'failures', fs);
@@ -2271,7 +2271,7 @@ await block('S3.13 an acceptance lapses when a gate of its environment starts fa
 
 await block('S3.14 the design statement leaves out what a recovery import moved aside', () => {
   need();
-  const I = F.ids(); let {p, made} = typedTidewater();
+  let {p, made} = typedTidewater();
   p = declare(p).document; p = doc(p, 'runtime.gate', {kind: 'key-custody', title: 'Keys held in Norway', environmentId: '', nodeIds: [made.region], requirement: 'Keys are held by the customer.', source: 'Key policy (synthetic)'});
   p.runtime.failures[0].review = {actor: B, at: AT, account: 'person', decision: 'accepted', stamp: '', verdict: 'survives', cases: [], reviewer: 'B', reference: 'R', observations: 'O'};
   p.runtime.gates[0].review = {actor: B, at: AT, account: 'person', evidence: {[made.region]: {state: 'pass', actor: B, at: AT, account: 'person', stamp: '', reference: 'R', observations: 'O'}}};
