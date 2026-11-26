@@ -388,6 +388,30 @@ stylesheet 901,873 B -> 901,873 B, no violation. Against 4349bb6: +412 B. Cap 3,
 `s0-lead-w3` lands). Opens with records (rule 52): 4,125,495 B -> 4,129,433 B (the package's share 62,946 B -> 66,865 B).
 Evidence: `audit/rc44/evidence/wp9a-s2s3-route.json` (`after` and `fixUp`).
 
+### Fix-up suites
+
+On the fix-up's final product code (logs under `.aiw-local/fixup/`, git-ignored; servers on their own port from 4100 with
+their own database under `.aiw-local`, stopped; no tracked file left rewritten):
+- `rc44-wp9a-deployment-validate.mjs`: 59 of 59 (the build's 47 and the fix-up's S2.12 to S2.19 and S3.11 to S3.14),
+  `final-wp9a.log`; S2.16 there: 549 ms with the claims against 429 ms without (a loaded runner).
+- `rc44-wp9a-deployment-browser-validate.mjs` (after `node build.mjs`, `AIW_BROWSER_EXECUTABLE` set): 1 of 1.
+- `action-undo-validate.mjs` unchanged: green.
+- Every suite that imports a changed file or exercises the package and is not red on this runner, run one at a time
+  (`suites/summary.txt`): `runtime`, `rc42-g5-runtime`, `deploy`, `desk`, `desk-fixes`, `workspace`, `provenance`,
+  `rc42-g4-trace-kernel`, `technology`, `recovery-authority`, `recovery-size`, `intake`, `knowledge-retrieval`,
+  `operations`, `rc42-g2-library`, `rc42-g3a-risk-and-limits`, `rc42-g3b-trace-and-delivery`, `service-routes`: each
+  exit 0. Not run: `scale` (red at the base, the lead's full regression), the full regression and the other browser
+  suites (the lead's).
+- S0's suite (`rc44-s0-extensions-validate.mjs`): 35 blocks pass; "O1 the bookings add up" fails as at `10b97b7`, by the
+  route's figure only (-490 B against 9673661 here, -499 B there): the block AA2 retires (s0-w3-bundle removes it).
+- The same booking cases of other slices' suites fail as at `10b97b7`, each by this fix-up's 9 B more (contract rule 55;
+  none edited): `rc44-wp1-knowledge-validate.mjs` "S2.12 (size, ruling A4 and M4)" ("this build: S2 is 530 B of its
+  250 B", was 521 B) and "S3.10 (size, rulings A4, M4, O1)" ("S3 is 520 B of its 477 B"), 85 passed, 2 pending;
+  `rc44-wp2-adoption-validate.mjs` "size" (737 !== 325, was 728) and "S5 size" (1601 !== 1189, was 1592).
+- `node check-syntax.mjs`: 946 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, 0 new.
+- `node build.mjs`: chapters route 3,229,350 B (cap 3,233,792 B), 148 script files, buckets 52/51/45, stylesheet
+  901,873 B, no violation.
+
 ### Replaced assertions in the fix-up (old -> new)
 
 - rc44-wp9a-deployment-validate.mjs S1.10 (`BUILD_SHARE`, owner decision AA2 as the build read it): topology-domain.js
