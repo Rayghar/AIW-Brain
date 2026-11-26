@@ -5,9 +5,10 @@
  "measuredWith": "node build.mjs in each tree (dist/client-size-report.json: routes.chapters.code, routes.projects.code, scripts, buckets, css; dist/client-metafile.json read with rc44-s0-readings.mjs opensWithRecords(metafile, entry, Object.keys(BUDGET.data)))",
  "commands": {
   "base": "git archive 4349bb6 AIW-V5-Local-Source | tar -x -C <dir>; ln -s <node_modules> <dir>/AIW-V5-Local-Source/node_modules; cd <dir>/AIW-V5-Local-Source; env -u ANTHROPIC_BASE_URL -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN -u OPENAI_API_KEY node build.mjs",
-  "head": "env -u ANTHROPIC_BASE_URL -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN -u OPENAI_API_KEY node build.mjs (on rc44/s0-w3-bundle)",
+  "head": "env -u ANTHROPIC_BASE_URL -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN -u OPENAI_API_KEY node build.mjs (on rc44/s0-w3-bundle at 629a005, then on rc44/s0-w3-bundle-fix-c2, the fix-up)",
   "opensWithRecords": "node -e \"import('./rc44-s0-readings.mjs').then(async R => { const {BUDGET} = await import('./client-bundle.mjs'), m = JSON.parse(require('fs').readFileSync('dist/client-metafile.json', 'utf8')); console.log(R.opensWithRecords(m, 'public/design-package-readers.js', Object.keys(BUDGET.data))); })\" (on the base, with the entry each stub loaded: public/knowledge-workspace-ui.js, public/architecture-task-ui.js, public/deploy-view.js)",
-  "suite": "node rc44-s0-d10-validate.mjs (D10.2 to D10.5 and AA2 hold these figures on every build)"
+  "suite": "node rc44-s0-d10-validate.mjs (D10.2 to D10.5 and AA2 hold these figures on every build)",
+  "sources": "the digest rc44-s0-d10-validate.mjs sourcesOf takes of dist/client-metafile.json: SHA-256 of the JSON list [path, SHA-256 of its content] of every input, sorted by path"
  },
  "before": {
   "commit": "4349bb6",
@@ -31,11 +32,11 @@
   }
  },
  "after": {
-  "commit": "rc44/s0-w3-bundle",
-  "note": "no client module changed after the commit that built the shared entry; the later commits change suites and notes only",
-  "chapters": 3228967,
+  "commit": "rc44/s0-w3-bundle-fix-c2 (the fix-up of AA1)",
+  "note": "the fix-up's one client change is the p10 stub's needs (public/design-package-routes.js: it holds for every key the package states), +114 B on the chapters route and on the projects route; the build's head, 629a005, is kept below as atBuildHead",
+  "chapters": 3229081,
   "chapterFiles": 72,
-  "projects": 508526,
+  "projects": 508640,
   "scripts": 150,
   "buckets": {
    "under10k": 53,
@@ -50,7 +51,22 @@
    "scripts": 150,
    "under10k": 61,
    "css": 902144
-  }
+  },
+  "sources": "f926ddc1385834199b1c44b3523139dae0ad8918c8e6c4bc75ab6eabe0ec67b1"
+ },
+ "atBuildHead": {
+  "commit": "629a005",
+  "chapters": 3228967,
+  "chapterFiles": 72,
+  "projects": 508526,
+  "scripts": 150,
+  "buckets": {
+   "under10k": 53,
+   "from10to50k": 51,
+   "over50k": 46
+  },
+  "css": 901873,
+  "note": "the build as reviewed (the review measured the same figures)"
  },
  "opens with records": {
   "what": "The route plus the static closure of the lazy entry a route stub loads before a document with a package's records is first drawn, each script counted once (rulings D10, Y1; contract rule 52).",
@@ -83,18 +99,19 @@
   },
   "after": {
    "any package's records, or all three (public/design-package-readers.js)": {
-    "route": 3228967,
+    "route": 3229081,
     "added": 69723,
-    "total": 3298690,
+    "total": 3298804,
     "files": 2
    },
    "no package records": {
-    "route": 3228967,
+    "route": 3229081,
     "added": 0,
-    "total": 3228967,
+    "total": 3229081,
     "files": 0
    },
-   "bound": "160 KB (163,840 B) beside the route (ruling Y1), held by rc44-s0-d10-validate.mjs D10.2"
+   "bound": "160 KB (163,840 B) beside the route (ruling Y1), held by rc44-s0-d10-validate.mjs D10.2",
+   "note": "the fix-up: a knowledge library with no crosswalk row or pin, and a project only marked as one, now load the shared entry too (they hold the package's evidence keys), as rc44-s0-d10-validate.mjs D10.2 and D10.6 hold"
   },
   "surfaceEntries": {
    "what": "What opening each surface's host entry loads beside the route, before and after: each host imports the shared entry, so opening a surface now loads every package's readers (the price of keeping them in one script).",
@@ -120,29 +137,29 @@
    },
    "after": {
     "public/knowledge-workspace-ui.js": {
-     "route": 3228967,
+     "route": 3229081,
      "added": 214170,
-     "total": 3443137,
+     "total": 3443251,
      "files": 3
     },
     "public/architecture-task-ui.js": {
-     "route": 3228967,
+     "route": 3229081,
      "added": 158991,
-     "total": 3387958,
+     "total": 3388072,
      "files": 3
     },
     "public/deploy-view.js": {
-     "route": 3228967,
+     "route": 3229081,
      "added": 902275,
-     "total": 4131242,
+     "total": 4131356,
      "files": 13
     }
    }
   }
  },
  "deltas": {
-  "chapters": 29,
-  "projects": 60,
+  "chapters": 143,
+  "projects": 174,
   "scripts": 2,
   "under10k": 1,
   "css": 0
@@ -152,7 +169,7 @@
    "chunks/design-package-readers-*.js: the shared entry's facade (under 1 KB, in the files-under-10-KB bucket)",
    "chunks/chunk-*.js: the readers of the three packages (knowledge-package, knowledge-crosswalk, knowledge-pins; topology and its parts; adoption-package, adoption-domain, adoption-selection), about 69 KB, reached by the shared entry and the three host entries"
   ],
-  "route": "the stubs' loads name one entry (design-package-routes.js) and the route chunks' import lists: +29 B; without the shared entry's import of review-domain.js the route split model-alternatives-state.js into a script of its own (+470 B, 151 script files), measured and recorded in public/design-package-readers.js",
+  "route": "the stubs' loads name one entry (design-package-routes.js) and the route chunks' import lists: +29 B; without the shared entry's import of review-domain.js the route split model-alternatives-state.js into a script of its own (+470 B, 151 script files), measured and recorded in public/design-package-readers.js; the fix-up's p10 stub, whose needs names every key the package states, +114 B (3,228,967 -> 3,229,081 B; the projects route 508,526 -> 508,640 B)",
   "gates": "the chapters route cap 3158 KB -> 3190 KB (the owner's decision AA2); the script gate 148 -> 150 (ruling Y1, the measured count); every other gate unchanged"
  },
  "bookings": "none: per-slice booking was retired by the owner's decision AA2 at this build (lead-bookings-size.json records it); this file books nothing and states the one size check's figures"
