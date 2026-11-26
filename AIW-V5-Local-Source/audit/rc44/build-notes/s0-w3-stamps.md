@@ -221,6 +221,35 @@ One in a general suite, as ruling Z8 rules (the import's one new change to the d
    (`s0-w3-bundle`) or the lead.
 5. wp2's `here()` readers (deviation 8 b).
 
+## Suites (on this branch, each with env -u of the provider keys; the runner `.aiw-local/run-suites.sh`, two at a time)
+
+- This build's: `test:rc44-s0-b10` 7/7, `test:rc44-s0-import` 7/7.
+- rc44: `test:rc44-s0-extensions` 35 of 36 blocks (O1, bytes only); `test:rc44-wp1-knowledge` (all of it) 85 of 87
+  delivered cases (S2.12 and S3.10, bytes only; 2 pending); `test:rc44-wp2-adoption` all blocks but "size" and
+  "S5 size" (bytes only); `test:rc44-wp9a-deployment` 24 of 25 (S1.10, bytes only). Each of those six size cases fails
+  by exactly the +583 B unbooked here and passes on `4349bb6` (S0's suite 36/36, wp1's two size cases and wp9a's suite
+  25/25 run there in `.aiw-local/base`; wp2's two by their own figures: 908 - 325 = 1772 - 1189 = 583).
+- Green, importing or exercising the changed files: provenance, recovery-authority, evidence, review-plan,
+  seeded-proposals, fingerprint, rc42-g3c-evidence-fingerprint, rc42-g2-library, rc42-g3a-risk-and-limits,
+  rc42-g3b-trace-and-delivery, architecture-obligation, architecture-verification, knowledge-coverage, repository-sync,
+  hosted-knowledge, knowledge-boundaries, knowledge-design, knowledge-repository, knowledge-structure,
+  repository-transfer, candidate-import, payment-knowledge-pilot, driver-applicability, specification-reasoning,
+  technology-realisation, journal-archive, intake, operations, sdd-formats, service-routes, architecture-case,
+  perspective-view, ui-modules, knowledge-retrieval, sdd-architecture, sdd-content, sdd-modules, sol-sdd, workspace,
+  model-alternatives, action-undo, action-undo-api, design-records, connected-design-projections,
+  rc42-g7-data-contracts, model-reconciliation, local-accounts, drafter-groups.
+- `test:recovery-size`: red on this branch before its one assertion was replaced (replaced assertion 4: "every other
+  section restores exactly … + 'quality'"), green after it (every check, its timings inside their bounds).
+- Red on this runner before the change, and red the same way here (the first failing assertion compared with the run
+  on `4349bb6` in `.aiw-local/base`, timestamps and UUIDs aside): command-equivalence ("a working choice made: the saved
+  document is the one the route saved before round 12 · $.workbench.history[1]"), sol-disclosure ("The desk no longer
+  holds F:capacity:run-001, F:capacity:run-008"), knowledge ("The upstream inventory dependency can time out."),
+  stewardship ("F:latency:QD-003: knowledge captured from a disagreement …"), brain-ahead ("| Capacity | Critical |").
+- Not run: the browser suites (they start servers on ports the OS chooses, outside 4100-4999; the panel's change is
+  held by B10.5 and S3.27), the full regression (the lead's), `test:scale` (red at the baseline).
+- `node check-syntax.mjs`: 947 modules, passed. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, new 0.
+  `node build.mjs`: every gate passes (Measurements).
+
 ## What later builds must know
 
 - A recovery import leaves no `provenance.author` or `provenance.reviewed` on any record: they are under
