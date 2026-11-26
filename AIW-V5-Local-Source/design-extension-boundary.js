@@ -37,7 +37,7 @@ import {workbenchKey as onWorkbenchKey} from './public/design-extension-parts.js
 import {verifierRefusal} from './public/architecture-obligations.js';
 import {registerReviewTypes} from './authorship.js';
 import {registerUndoExtensions} from './public/action-undo-domain.js';
-import {innerCommands, listAt, reviewOf, stampChanged, stampTracked} from './public/provenance.js';
+import {innerCommands, listAt, reviewOf, stampChanged, stampTracked, datedImport} from './public/provenance.js';
 import {isRetiredCommand, LIFECYCLE_RULES} from './public/canonical-command.js';
 import {inheritedFindings, findingCause} from './public/review-domain.js';
 import {createProject} from './shared/projects-domain.js';
@@ -83,12 +83,14 @@ export const extensionCommand = type => statedBy(type)?.[1] || null;
 // an agent account never writes as a person, and a draft by Sol and an import are stamped as what they are), or a
 // person has confirmed or kept the record as it now reads (provenance.reviewed, or a review plan judgement that kept
 // it: reviewOf). A record with no stamp has no person behind it (one a merge wrote, ruling D12), and neither has one
-// whose stamp was made before the project was restored here or copied from a template: that is history from
-// elsewhere, as a restored review is.
+// whose stamp was made before the project was copied from a template: that is history from elsewhere, as a restored
+// review is. A recovery import moves every stamp a record carries aside (public/provenance.js keepImportedStamps; the
+// lead's ruling Z8), so no date of it decides: the import's date is read only for a project imported before this build
+// (datedImport), which keeps its stamps in place until its next import (a known limit).
 function personBehind(p, record, actor) {
   if (!record || typeof record !== 'object') return false;
   // (ruling F3: a project copied from a template carries the template's stamps; they were made in another project)
-  const a = record.provenance?.author, review = reviewOf(p, record), from = [p?.finalReview?.imported?.at, p?.workspace?.templateOrigin?.at].filter(Boolean).sort().pop(), here = at => !(from && !(at > from));
+  const a = record.provenance?.author, review = reviewOf(p, record), from = [datedImport(p) ? p.finalReview.imported.at : null, p?.workspace?.templateOrigin?.at].filter(Boolean).sort().pop(), here = at => !(from && !(at > from));
   if (a?.kind === 'person' && a.by && a.by !== actor && here(a.at)) return true;
   // (rulings Y3 and Z7: a merge is the merger's reviewed step, so the person who merged the record stands behind it as it
   // reads; it is no review of the record's words, which reviewOf reads, so it is read from its stamp)

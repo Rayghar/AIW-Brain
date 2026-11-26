@@ -1,6 +1,7 @@
 // Applied solution recipes already live in guided-task history. Specifications
 // and product comparisons read those same records; no second solution register.
 import {digest} from './brain-integrity.js';
+import {datedImport} from './provenance.js';
 import {architectureActionStamp,architectureObligationBasis,acceptedObligation as accepted,obligationContent as semantic} from './architecture-obligation-basis.js';
 export {deliveryActionDefinition,architectureActionStamp,architectureObligationBasis} from './architecture-obligation-basis.js';
 import {verificationForAction,verificationEvidence} from './architecture-verification.js';
@@ -49,7 +50,7 @@ export function architectureObligationActionState(p,a){
   if(!same(v.architectureObligation,ref)||v.architectureObligation.basisStamp!==basis.stamp||v.actionStamp!==architectureActionStamp(a))evidenceCurrent=false;
   try{architectureEvidenceSources(p,v.evidenceSources);}catch{evidenceCurrent=false;}
   if(comparison&&(comparison.state!=='pass'||digest(v.verificationEvidence)!==digest(verificationEvidence(p,a))))evidenceCurrent=false;
-  if(p.finalReview?.imported&&!(v.actor&&!v.importedActor&&v.at>p.finalReview.imported.at))evidenceCurrent=false;
+  if(p.finalReview?.imported&&!(v.actor&&!v.importedActor&&(!datedImport(p)||v.at>p.finalReview.imported.at)))evidenceCurrent=false;
  }else if(a?.status==='Verified')evidenceCurrent=false;
  if(!evidenceCurrent)reasons.push('The captured verification no longer identifies this current obligation, action and evidence.');
  const targetIds=accepted(p,ref)?.obligation.targetIds||[],defined=['title','owner','due','acceptance'].every(key=>typeof a?.[key]==='string'&&a[key].trim())&&targetIds.length>0&&targetIds.every(id=>list(a?.objectIds).includes(id));

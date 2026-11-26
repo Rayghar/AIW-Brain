@@ -40,7 +40,9 @@ const REVIEW_STATE=new Set(['confirmed','targetConfirmed','evidenceTreatment','h
 // alone writes; provenance.js reads them) are not what the record says either. A reading reads a record as if they were
 // not there: a provenance that held nothing else is left out whole, so a record keeps the reading it had before it was
 // stamped, and confirming or adopting a record moves no fingerprint downstream.
-const AUTHORSHIP=new Set(['author','reviewed']);
+// (rc44, S0-w3-stamps; ruling Z8) Nor are the stamps a recovery import kept as history (provenance.imported): moving
+// them aside moves no reading of the record.
+const AUTHORSHIP=new Set(['author','reviewed','imported']);
 const DROP=Symbol('drop');
 // A record, or a structure of records (a change target's context), as a reading reads it: the same value when it holds
 // no review state, else a copy without it at any depth (a provenance keeps its source, not its trail), keys in order.
@@ -51,7 +53,7 @@ const kept=(v,keys,i)=>{const out=new Array(i);for(let j=0;j<i;j++)out[j]=[keys[
 const entry=(k,x)=>{
  if(!x||typeof x!=='object')return x;
  if(k!=='provenance'||Array.isArray(x))return readContent(x);
- if(Object.hasOwn(x,'author')||Object.hasOwn(x,'reviewed')){
+ if(Object.hasOwn(x,'author')||Object.hasOwn(x,'reviewed')||Object.hasOwn(x,'imported')){
   const y={};for(const key of Object.keys(x))if(!AUTHORSHIP.has(key))y[key]=x[key];
   if(!Object.keys(y).length)return DROP;
   x=y;
@@ -81,7 +83,7 @@ export function withoutAuthorship(v){
  if(Array.isArray(v)){let out=null;for(let i=0;i<v.length;i++){const y=withoutAuthorship(v[i]);if(y!==v[i]){out??=v.slice();out[i]=y;}}return out||v;}
  let out=null;const keys=Object.keys(v);
  for(let i=0;i<keys.length;i++){const k=keys[i],x=v[k];let y=x;
-  if(k==='provenance'&&x&&typeof x==='object'&&!Array.isArray(x)&&(Object.hasOwn(x,'author')||Object.hasOwn(x,'reviewed'))){const z={};for(const key of Object.keys(x))if(!AUTHORSHIP.has(key))z[key]=x[key];y=Object.keys(z).length?z:DROP;}
+  if(k==='provenance'&&x&&typeof x==='object'&&!Array.isArray(x)&&(Object.hasOwn(x,'author')||Object.hasOwn(x,'reviewed')||Object.hasOwn(x,'imported'))){const z={};for(const key of Object.keys(x))if(!AUTHORSHIP.has(key))z[key]=x[key];y=Object.keys(z).length?z:DROP;}
   else y=withoutAuthorship(x);
   if(y!==x)out??=Object.fromEntries(kept(v,keys,i));
   if(out&&y!==DROP)out[k]=y;

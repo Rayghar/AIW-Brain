@@ -15,7 +15,7 @@ import {architectureRegister,renderSDD} from './sdd-renderer.js';
 import {processMarkdown,withProcessModel} from './process-model.js';
 import {withChanges,changeSummary,changeCauses,fourEyesOn} from './changes-domain.js';
 // The grouped judgements of the review plan (round 12, GR-GOV-04): who reviewed which records, as they read then.
-import {recordJudgement,reviewOf,eachRecord,provenanceBlocksMarkdown} from './provenance.js';
+import {recordJudgement,reviewOf,eachRecord,provenanceBlocksMarkdown,datedImport} from './provenance.js';
 // What a review of a record reads of it (round 12, GR-GOV-05): its own fingerprint, not the whole design's.
 import {recordStamp} from './source-fingerprint.js';
 import {withRuntime,runtimeFindings,runtimeMilestones,runtimeHandoffCurrent,exportRuntimeMarkdown} from './runtime-domain.js';
@@ -77,6 +77,11 @@ export const reviewSource=p=>{const s={...(acceptedNarratives(p).length?{coautho
 export const DESIGN_FINGERPRINT=2;
 let fingerprintVersion=DESIGN_FINGERPRINT;
 export function withDesignFingerprint(version,fn){const was=fingerprintVersion;fingerprintVersion=version;try{return fn();}finally{fingerprintVersion=was;}}
+// (rc44, S0-w3-stamps; ruling Y2) The reading of the knowledge family's log before this build, under which a library's
+// stamps were taken: its log was design. Only the readings upgrade reads it (readings-upgrade.js toLibraryLog), to carry
+// a stored library's stamps over once.
+let logRead=true;
+export function withLibraryLogAsDesign(fn){const was=logRead;logRead=false;try{return fn();}finally{logRead=was;}}
 // Each chapter's overlay: its records | its markers.
 const OVERLAY={security:'evidence risks governance simulations|assuranceVersion review handoff counters',runtime:'evidence simulations|evidenceVersion intake review handoff counters'};
 // A design source (a project's reviewSource, or a frozen baseline's source) as [its design, the evidence overlay beside
@@ -85,6 +90,12 @@ const OVERLAY={security:'evidence risks governance simulations|assuranceVersion 
 export function designOf(s){const d={...s},o=[],put=v=>v?.length&&o.push(v),a=d.assurance,e=d.evidence;
  for(const k in OVERLAY)if(d[k]){const v=d[k]={...d[k]};for(const x of OVERLAY[k].split('|')[0].split(' '))put(v[x]);for(const x of OVERLAY[k].split(/\W/))delete v[x];}
  if(a){const {version,counter,semanticFindings,records=[],...c}=a;c.records=records.filter(x=>assuranceChapter(x)<11);put(records.filter(x=>!c.records.includes(x)));put(semanticFindings);Object.values(c).some(v=>v?.length)?d.assurance=c:delete d.assurance;}
+ // (rc44, S0-w3-stamps; the lead's ruling Y2) The knowledge family's log (knowledge.history, and the version its lines move):
+ // in a knowledge library (the library mark) it is the family's log, not design, so a library's design source reads the
+ // knowledge records themselves and its evidence reads the log (the version is bookkeeping). Elsewhere the log is design,
+ // as before, less the lines a design package's step writes (each names its package) and the version they moved: the
+ // package's records say what they say through its design rows, so a step moves no design stamp through its line (J3).
+ if(logRead){const k=d.knowledge,h=Array.isArray(k?.history)?k.history:[],own=h.filter(x=>!x?.package);if(k?.library?.enabled===true){const {history,version,...rest}=k;put(history);d.knowledge=rest;}else if(own.length<h.length)d.knowledge={...k,history:own,version:k.version-(h.length-own.length)};}
  // What a design package records as evidence (rc44, slice S0: its evidenceKeys, each a key of the document or 'chapter.key')
  // leaves the design the same way; every other key a package writes is design, as any key is.
  for(const x of EXTENSIONS)for(const k of x.evidenceKeys||[]){const [a,b]=k.split('.'),v=b?d[a]&&(d[a]={...d[a]}):d;if(v){put(v[b||a]);delete v[b||a];}}
@@ -97,9 +108,11 @@ const sourceCache=new WeakMap(),findingCache=new WeakMap(),summaryCache=new Weak
 // The design fingerprint taken afresh (the upgrade's reading of a document it is changing), and the one kept per document
 // (under an earlier fingerprint, once per pass: the upgrade and the legacy judgements read it for every finding).
 export const designFingerprint=p=>reviewFingerprint(designSource(p));
-export function reviewSourceStamp(p){if(fingerprintVersion!==DESIGN_FINGERPRINT)return remember(p,'review:stamp',fingerprintVersion,()=>designFingerprint(p));if(!sourceCache.has(p))sourceCache.set(p,designFingerprint(p));return sourceCache.get(p);}
+export function reviewSourceStamp(p){if(fingerprintVersion!==DESIGN_FINGERPRINT||!logRead)return remember(p,'review:stamp',fingerprintVersion+(logRead?'':':log'),()=>designFingerprint(p));if(!sourceCache.has(p))sourceCache.set(p,designFingerprint(p));return sourceCache.get(p);}
 export const reviewDesignStamp=p=>reviewSourceStamp(p)+':'+p.finalReview.version;
-const localReview=(p,r)=>!p.finalReview?.imported||!!(r?.actor&&!r?.importedActor&&r.at>p.finalReview.imported.at);
+// (an import moves each step's actor aside: what it carried names nobody here; the import's date is read only for a
+// project imported before this build, rc44 S0-w3-stamps, ruling Z8: provenance.js datedImport)
+const localReview=(p,r)=>!p.finalReview?.imported||!!(r?.actor&&!r?.importedActor&&(!datedImport(p)||r.at>p.finalReview.imported.at));
 export const narrativeCurrent=p=>p.finalReview.narrative.confirmed&&p.finalReview.narrative.sourceStamp===reviewSourceStamp(p)&&(!p.finalReview.imported||!!reviewOf(p,p.finalReview.narrative,11));
 // A recorded stamp is compared with the design's; with none recorded the answer is no without fingerprinting the whole
 // design (round 5, R5-G: at 500 records per chapter the fingerprint reads 12 MB of JSON).
@@ -400,8 +413,9 @@ function chapterStamps(p){return remember(p,'review:chapter-stamps','',()=>compu
 // A chapter's stamp reads its design as the design fingerprint does: Chapters 9 and 10 without their overlay (rc42, D14).
 export function computeChapterStamps(p){const s=designSource(p);return Object.fromEntries(CHAPTERS.map(c=>[c.id,reviewFingerprint(c.id===1?{brief:p.brief,artefacts:p.artefacts,relationships:p.relationships,review:p.review,handoff:p.handoff}:s[c.key])]));}
 // What changed since a baseline: each chapter whose design changed, a change outside the chapters, a new review outcome,
-// and evidence recorded since, named apart from design edits (rc42, D14: known for a baseline that kept its evidence stamp).
-export function baselineChanges(p,b){const now=chapterStamps(p),alias=p.finalReview?.readingsUpgrade?.chapters||{},same=c=>{const s=b.chapterStamps[c.id],n=now[c.id];return s===n||s!=null&&s===alias[c.id]?.[n];};return CHAPTERS.filter(c=>!same(c)).map(c=>c.title).concat(!designStampIs(p,b.stamp)&&CHAPTERS.every(same)?['Review narrative, traceability, findings, or delivery plan']:[]).concat(b.reviewId!==(latestDesignReview(p)?.id||null)?['Architect review outcome']:[]).concat(b.evidenceStamp!=null&&b.evidenceStamp!==evidenceStamp(p)?['Evidence recorded since the baseline']:[]);}
+// and evidence recorded since, named apart from design edits (rc42, D14: known for a baseline that kept its evidence stamp;
+// an upgrade that moves the evidence stamp of a design left as it was answers for it through its alias: S0-w3-stamps).
+export function baselineChanges(p,b){const now=chapterStamps(p),alias=p.finalReview?.readingsUpgrade?.chapters||{},same=c=>{const s=b.chapterStamps[c.id],n=now[c.id];return s===n||s!=null&&s===alias[c.id]?.[n];};return CHAPTERS.filter(c=>!same(c)).map(c=>c.title).concat(!designStampIs(p,b.stamp)&&CHAPTERS.every(same)?['Review narrative, traceability, findings, or delivery plan']:[]).concat(b.reviewId!==(latestDesignReview(p)?.id||null)?['Architect review outcome']:[]).concat(b.evidenceStamp!=null&&(e=>b.evidenceStamp!==e&&b.evidenceStamp!==p.finalReview?.readingsUpgrade?.evidence?.[e])(evidenceStamp(p))?['Evidence recorded since the baseline']:[]);}
 // Four eyes (a project's setting, workspace.governance): a person does not treat a finding of a record they wrote, nor
 // review a trail of records they wrote.
 const personWriter=r=>r?.provenance?.author?.kind==='person'?r.provenance.author.by:null;

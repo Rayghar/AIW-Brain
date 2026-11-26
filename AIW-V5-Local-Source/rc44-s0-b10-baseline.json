@@ -1,0 +1,1227 @@
+{
+ "capturedFrom": "4349bb6",
+ "at": "2026-11-16T09:00:00.000Z",
+ "design": {
+  "blank-with-knowledge": {
+   "graph": "c614f5abb63049276b4310f27c9ce5ab14a871a372f5c290d570c65cc97e605e",
+   "model": "eb62a27cf4884963df338dadf296c299072d6aa0dccab952bd73317e6f82f874",
+   "trails": "d17ebb049f109befca0c0510b4ba6f78b0bd8e22ae037a43a816edc74bd58bff",
+   "findings": "0255f5143e4aea69cfed7063f921ec9d3bb30b4be9b9f1010225da7ed9dd6fb4",
+   "stamps": "c220de60632781834fd919fd486d132b913ec42a191ac025101f34066c1723bc",
+   "readiness": "fc8c68f6a5d04d5fe0e1050bae913fc0a173533b6c049faa7a55da015c2f4b44",
+   "provenance": "19acef0b06875592f0c868c33675be662cfcf61671e8476af2a8117d8b4e54d5",
+   "registers": "ba6d84da9c0d3c1d169193238082582a7f1f58267595e9739c51ff14f2d37362",
+   "sdd": "8b0bc1ed61b019a17dace273b07008a7a2d0114541e052335b5293fbc7d1104c",
+   "ars": "0583c267c635d9281e260ec84630a605af203474d3465112b2b2a753328fc743"
+  },
+  "bank-with-knowledge": {
+   "graph": "89906a5772f72d3d3a4689930106658aaca11eccbfd004c69941c76528c8cbbf",
+   "model": "a38df459e38651fa26828b512bc9d6ad03fda3ede81ddddd8e457404357a997f",
+   "trails": "82cca41a6c153a3928f54e278c3a97bfd92eda4add61eb1860ca4681e960b608",
+   "findings": "ac563b63e1cbceb8bfb088290111eb432d5be7394769ae488a7126549b7e74f2",
+   "stamps": "7578f6f54595584f093543ac419c6b329a1fd46adb15dac7a096af10df4246bc",
+   "readiness": "f738e9427f4871e413387a314984f389ab784661c7786eb40dfed2f28fa08f54",
+   "provenance": "4a176e91be36037040d198c25727648574b7561d22f4aafad5c731e3f89ce3d7",
+   "registers": "917bbde91b3f65170a174860be36a82e4fcc71cc6a25a7f65095724929eb0c92",
+   "sdd": "93a6e56fd2d036a1b07215fb6821a450bac8240fbd6fcb46fc6f9f4e8ba3b01a",
+   "ars": "a5486cb3ea9c0b394fb481718b9200abdecdc8480aa26a2d55b859a9288c7c36"
+  },
+  "library-unmarked": {
+   "graph": "b034acfae06cdea27745d8fb3f490586477dee57124b714870c3f0b9bb6bdd3f",
+   "model": "f0fdd4c5b7bd70ce15fcff3654705fea16ecbb3f24c25df8721233a848b4a953",
+   "trails": "d17ebb049f109befca0c0510b4ba6f78b0bd8e22ae037a43a816edc74bd58bff",
+   "findings": "ac8f8631163c5202a4dc93cb76f555df6fc35ea626f3427d781ad1d965f3c338",
+   "stamps": "0ce9ebc57ccbefbb116865f7818d3d0aba45639abeb109b65416a65c629a6580",
+   "readiness": "21ff46fbd50b4242e1aa410ea866e258ae2b4b234bff97a2afc18ca4f11115b3",
+   "provenance": "1f475a4d0fd00a9e59d21b97d658b56885ed4d6df860798d2f367e1cd8365d50",
+   "registers": "c5e77c142217542bd55abc066f12ff5ddb3a39bf408d598fe8f1320a674f0249",
+   "sdd": "d724440916182328f3b0834badb53b2e594a32d27adcd6824519dee406bad759",
+   "ars": "0583c267c635d9281e260ec84630a605af203474d3465112b2b2a753328fc743"
+  }
+ },
+ "library": {
+  "document": {
+   "schemaVersion": "aiw.project.v2",
+   "id": "rc44-wp1-library",
+   "name": "Northquay knowledge library",
+   "contentVersion": 2,
+   "brief": {
+    "problem": "",
+    "goal": "",
+    "source": "",
+    "confirmed": false
+   },
+   "artefacts": [
+    {
+     "id": "REQ-001",
+     "type": "requirement",
+     "title": "Tell carriers a parcel was booked",
+     "description": "Each booking leads to one partner notice.",
+     "owner": "Booking team",
+     "source": "Synthetic workshop",
+     "priority": "",
+     "acceptance": "A notice is recorded for each booking.",
+     "confirmed": false,
+     "origin": "user",
+     "scopeMode": "in",
+     "order": 0,
+     "modelRef": ""
+    }
+   ],
+   "relationships": [],
+   "counters": {
+    "outcome": 0,
+    "stakeholder": 0,
+    "actor": 0,
+    "scope": 0,
+    "journey": 0,
+    "constraint": 0,
+    "assumption": 0,
+    "requirement": 1,
+    "rule": 0,
+    "relationship": 0
+   },
+   "review": null,
+   "handoff": null,
+   "explorer": null,
+   "quality": {
+    "schemaVersion": 1,
+    "version": 1,
+    "drivers": [],
+    "conflicts": [],
+    "counters": {
+     "driver": 0,
+     "conflict": 0
+    },
+    "intake": null,
+    "review": null,
+    "handoff": null
+   },
+   "decisions": {
+    "schemaVersion": 1,
+    "version": 1,
+    "counters": {
+     "decision": 0,
+     "alternative": 0,
+     "conflict": 0
+    },
+    "records": [],
+    "conflicts": [],
+    "intake": null,
+    "review": null,
+    "handoff": null
+   },
+   "logical": {
+    "schemaVersion": 1,
+    "version": 1,
+    "counters": {
+     "responsibility": 0,
+     "group": 0,
+     "connection": 0,
+     "mapping": 0,
+     "asset": 0
+    },
+    "responsibilities": [],
+    "groups": [],
+    "connections": [],
+    "mappings": [],
+    "assets": [],
+    "intake": null,
+    "scenarios": {},
+    "review": null,
+    "handoff": null
+   },
+   "realisation": {
+    "schemaVersion": 1,
+    "version": 1,
+    "counters": {
+     "component": 0,
+     "connection": 0
+    },
+    "components": [],
+    "connections": [],
+    "intake": null,
+    "scenarios": {},
+    "review": null,
+    "handoff": null
+   },
+   "technology": {
+    "schemaVersion": 1,
+    "version": 1,
+    "counters": {
+     "capability": 0,
+     "need": 0,
+     "mapping": 0,
+     "dependency": 0,
+     "boundary": 0
+    },
+    "capabilities": [],
+    "needs": [],
+    "mappings": [],
+    "dependencies": [],
+    "boundaries": [],
+    "applicationBoundaries": {},
+    "knownApplications": [],
+    "intake": null,
+    "review": null,
+    "handoff": null,
+    "simulations": []
+   },
+   "technologyRealisation": {
+    "schemaVersion": 1,
+    "version": 1,
+    "counters": {
+     "record": 0,
+     "option": 0,
+     "mapping": 0,
+     "connection": 0
+    },
+    "records": [],
+    "mappings": [],
+    "connections": [],
+    "intake": null,
+    "review": null,
+    "handoff": null
+   },
+   "interfaces": {
+    "schemaVersion": 1,
+    "version": 2,
+    "counters": {
+     "contract": 0,
+     "data": 0,
+     "field": 0,
+     "exchange": 0,
+     "lineage": 0,
+     "party": 0,
+     "check": 0
+    },
+    "contracts": [],
+    "data": [],
+    "lineage": [],
+    "parties": [],
+    "checks": [],
+    "intake": null,
+    "review": null,
+    "handoff": null,
+    "knownData": []
+   },
+   "security": {
+    "schemaVersion": 1,
+    "version": 1,
+    "assuranceVersion": 1,
+    "counters": {
+     "control": 0,
+     "threat": 0,
+     "evidence": 0,
+     "risk": 0,
+     "governance": 0,
+     "simulation": 0
+    },
+    "controls": [],
+    "threats": [],
+    "evidence": [],
+    "risks": [],
+    "governance": [],
+    "simulations": [],
+    "intake": null,
+    "review": null,
+    "handoff": null
+   },
+   "runtime": {
+    "schemaVersion": 1,
+    "version": 1,
+    "evidenceVersion": 1,
+    "counters": {
+     "environment": 0,
+     "zone": 0,
+     "plan": 0,
+     "placement": 0,
+     "path": 0,
+     "evidence": 0,
+     "simulation": 0
+    },
+    "environments": [],
+    "zones": [],
+    "plans": [],
+    "placements": [],
+    "paths": [],
+    "evidence": [],
+    "simulations": [],
+    "intake": null,
+    "review": null,
+    "handoff": null
+   },
+   "processModel": {
+    "schemaVersion": 1,
+    "referenceVersion": 1,
+    "version": 0,
+    "elements": [],
+    "transitions": [],
+    "claims": []
+   },
+   "roadmap": {
+    "schemaVersion": 1,
+    "counters": {
+     "plateau": 0
+    },
+    "plateaus": [],
+    "assignments": {},
+    "history": []
+   },
+   "finalReview": {
+    "schemaVersion": 1,
+    "version": 2,
+    "deliveryVersion": 1,
+    "designFingerprint": 2,
+    "counters": {
+     "action": 0,
+     "disposition": 0,
+     "trace": 0,
+     "review": 0,
+     "baseline": 0,
+     "governance": 0
+    },
+    "narrative": {
+     "title": "Northquay knowledge library — Solution Design",
+     "owner": "Integration guild",
+     "audience": "Architects",
+     "summary": "One tranche of the synthetic handbook.",
+     "scope": "The synthetic integration concepts.",
+     "approach": "Concepts released through the library.",
+     "confirmed": true,
+     "sourceStamp": "3a96628f22dc413d"
+    },
+    "intake": null,
+    "checks": null,
+    "dispositions": [],
+    "actions": [],
+    "traces": [],
+    "reviews": [],
+    "baselines": [],
+    "governance": [],
+    "handoff": null
+   },
+   "changes": {
+    "schemaVersion": 1,
+    "counter": 0,
+    "events": []
+   },
+   "coauthoring": {
+    "schemaVersion": 1,
+    "counters": {
+     "source": 0,
+     "task": 0
+    },
+    "sources": [],
+    "tasks": []
+   },
+   "readingsDefinition": 3,
+   "dataOwnership": {
+    "definition": 2,
+    "toConfirm": []
+   },
+   "workspace": {
+    "template": "blank",
+    "createdAt": "2026-11-26T10:50:29.076Z"
+   },
+   "knowledge": {
+    "version": 11,
+    "counter": 8,
+    "sources": [
+     {
+      "id": "KS-0001",
+      "title": "SYN-P001 Transactional outbox",
+      "body": "# SYN-P001 Transactional outbox\nSynthetic Integration Handbook | pattern | Reliable publication\n\n## Definition\nA transactional outbox stores the notice to be published in the same local transaction as the booking record, and a relay sends it afterwards.\nIt is not exactly-once delivery: the relay may send a notice again after a crash, so a receiver must tolerate repeats.\nOutbox row: the stored notice awaiting publication. Relay: the worker that publishes stored notices.\n\n## How it works\nStep one: the booking service writes the booking and the outbox row in one commit.\nStep two: the relay claims a small batch of unsent rows and publishes each notice to the broker.\nStep three: the relay marks a row as sent only after the broker confirms it.\nThe effect on integrity is that a committed booking always has a stored notice; the cost is added delay before publication.\n\n## When to use it\nUse it when a committed booking must always lead to a partner notice, even while the broker is unavailable.\nAvoid it when the caller only reads data and nothing has to be published afterwards.\nIt needs a store that commits the booking and the outbox row together.\nThe bounded claim is that no committed booking loses its notice; it does not establish that a carrier acted on the notice.\n\n## Choosing between alternatives\nChoose the polling relay when the store supports short claims and simple operation matters more than delay.\nChoose log capture when an approved capture platform already exists and low delay justifies its operation.\nA direct call is the candidate when nothing must survive a broker outage; its contraindication is any durable obligation, and a failure-injection record is the evidence needed.\n\n## Parts and rules\nThe outbox writer belongs to the booking service and is required.\nThe relay is a separate worker that owns publication attempts.\nThe pattern requires an idempotent receiver because a notice can arrive twice.\nIt conflicts with an unsafe dual write, where the booking and the notice are written separately.\nInvariant: the booking and its outbox row are written in the same local transaction.\nParameter claim batch size, in rows: bound it by lock time and broker capacity; too large a batch holds locks for too long. A teaching value is 50 rows.\nPort outbox rows, consumed: committed rows with a unique notice identity.\nSequence: first commit, then claim, then publish, then mark as sent; if publishing fails the row stays unsent.\n\n## Sizing the backlog\nThe oldest unsent notice age is the time now minus the commit time of the oldest unsent row.\nInputs are the commit time of the oldest unsent row, in seconds, and the current time, in seconds.\nThe result is bounded by the relay polling interval plus the broker outage length.\nIt does not consider clock skew between the store and the relay.\nA worked teaching value: an outage of 120 seconds gives an age of about 120 seconds.\n\n## Checking it\nScenario crash after publish: given a published notice that is not yet marked, when the relay restarts, then the notice is sent again and the receiver applies it once.\nThe evidence required is a crash-injection record with notice identities reconciled; the handbook proposes this test and did not run it.\nFailure mode: cleanup deletes unsent rows by age; the signal is a booking with no notice; the response is to restore the rows with their original identities.\nMetric oldest unsent notice age, in seconds, measured from local commit to broker confirmation over all unsent rows, as a maximum per minute; unknown when the relay is not reporting.\nSignal relay lag, in seconds: a rising value means publication is falling behind.\n\n## Example\nA broker outage lasts two minutes while forty bookings are accepted; every booking keeps its outbox row.\nWhen the broker returns, the relay publishes the forty notices in order of commit.\nThe expected outcome is forty notices and no lost booking; the numbers are teaching assumptions.\n\n## Practice\nBeginner: draw the commit, publish and mark steps and show where a crash repeats a notice.\nIntermediate: decide a claim batch size for a store with short lock limits and explain the basis.\nAdvanced: design ordering across two relay workers without holding locks during broker calls.",
+      "hash": "cf965556749091c645421f10919778454bf29dfd5b40ce19e6cf00fc062d5410",
+      "url": "",
+      "repository": "",
+      "revision": "Synthetic edition 1",
+      "path": "synthetic/integration-handbook.md · SYN-P001 Transactional outbox",
+      "license": "Synthetic test material written for the AIW suites; free to use.",
+      "origin": "recorded-original",
+      "acquiredAt": "2026-11-16T09:00:00.000Z",
+      "actor": "importer"
+     }
+    ],
+    "suggestions": [],
+    "claims": [
+     {
+      "id": "KC-0003",
+      "subjectId": "SYN-P001",
+      "predicate": "is defined as",
+      "statement": "A transactional outbox stores the notice in the booking's local transaction and a relay sends it afterwards.",
+      "claimType": "definition",
+      "polarity": "neutral",
+      "conditions": [],
+      "limitations": [],
+      "tags": [
+       "form:definition"
+      ],
+      "form": {
+       "type": "definition",
+       "v": 1,
+       "short": "A notice to publish is stored in the same local transaction as the booking record, and a relay sends it afterwards.",
+       "quotes": [
+        {
+         "field": "short",
+         "quote": "stores the notice to be published in the same local transaction as the booking record"
+        }
+       ],
+       "distinctions": [
+        {
+         "from": "exactly-once delivery",
+         "difference": "The relay may send a notice again after a crash, so a receiver must tolerate repeats.",
+         "at": [
+          6,
+          6
+         ],
+         "quote": "It is not exactly-once delivery"
+        }
+       ],
+       "vocabulary": [
+        {
+         "term": "Outbox row",
+         "meaning": "The stored notice awaiting publication.",
+         "at": [
+          7,
+          7
+         ],
+         "quote": "Outbox row: the stored notice awaiting publication."
+        },
+        {
+         "term": "Relay",
+         "meaning": "The worker that publishes stored notices.",
+         "at": [
+          7,
+          7
+         ],
+         "quote": "Relay: the worker that publishes stored notices."
+        }
+       ]
+      },
+      "authoredAs": "person",
+      "sourceId": "KS-0001",
+      "sourceHash": "cf965556749091c645421f10919778454bf29dfd5b40ce19e6cf00fc062d5410",
+      "lineStart": 5,
+      "lineEnd": 7,
+      "excerpt": "A transactional outbox stores the notice to be published in the same local transaction as the booking record, and a relay sends it afterwards.\nIt is not exactly-once delivery: the relay may send a notice again after a crash, so a receiver must tolerate repeats.\nOutbox row: the stored notice awaiting publication. Relay: the worker that publishes stored notices.",
+      "excerptHash": "024cef689de21acba5db1768a08fdc855b844f8b64933d533d49c7d13ef46d1a",
+      "createdAt": "2026-11-16T09:00:00.000Z",
+      "actor": "importer",
+      "review": {
+       "decision": "verified",
+       "reviewer": "Synthetic second person",
+       "actor": "reviewer",
+       "at": "2026-11-16T09:00:00.000Z",
+       "reason": "Checked the synthetic passage, its permitted use, its conditions and each item of the form.",
+       "sourceChecked": true,
+       "rightsChecked": true,
+       "conditionsChecked": true,
+       "formChecked": true,
+       "claimHash": "061c9e799afd2b37f242fc11dc8ebc8d1fcbc07bad64c71a128fca09268be369"
+      }
+     },
+     {
+      "id": "KC-0004",
+      "subjectId": "SYN-P001",
+      "predicate": "applies when",
+      "statement": "Use it where a committed booking must always lead to a notice; it does not show that a carrier acted.",
+      "claimType": "applicability",
+      "polarity": "supports",
+      "conditions": [
+       "A local booking must cause a publication."
+      ],
+      "limitations": [
+       "Receivers need their own identity record."
+      ],
+      "tags": [
+       "form:applicability"
+      ],
+      "architectureUnit": {
+       "kind": "pattern",
+       "mechanism": "A notice is committed with the booking and sent later by a relay that may deliver it more than once.",
+       "scope": {},
+       "effects": [
+        {
+         "quality": "integrity",
+         "direction": "supports",
+         "rationale": "A committed booking always has a stored notice."
+        },
+        {
+         "quality": "performance",
+         "direction": "tradeoff",
+         "rationale": "Publication is delayed until the relay runs."
+        }
+       ],
+       "obligations": [
+        {
+         "action": "Receivers deduplicate by the notice identity.",
+         "evidence": "A crash-injection record with notice identities reconciled."
+        }
+       ],
+       "exclusions": [
+        "Do not describe the result as exactly-once delivery."
+       ],
+       "placement": [
+        {
+         "target": "data-owner",
+         "role": "outbox writer",
+         "reason": "The notice is written in the owner's local transaction."
+        }
+       ]
+      },
+      "form": {
+       "type": "applicability",
+       "v": 1,
+       "useWhen": [
+        {
+         "text": "A committed booking must always lead to a partner notice, even while the broker is unavailable.",
+         "at": [
+          16,
+          16
+         ],
+         "quote": "a committed booking must always lead to a partner notice"
+        }
+       ],
+       "avoidWhen": [
+        {
+         "text": "The caller only reads data and nothing has to be published afterwards.",
+         "at": [
+          17,
+          17
+         ],
+         "quote": "the caller only reads data and nothing has to be published afterwards"
+        }
+       ],
+       "prerequisites": [
+        {
+         "text": "A store that commits the booking and the outbox row together.",
+         "at": [
+          18,
+          18
+         ],
+         "quote": "a store that commits the booking and the outbox row together"
+        }
+       ],
+       "guaranteeBoundary": {
+        "boundedClaim": "No committed booking loses its notice.",
+        "doesNotEstablish": [
+         {
+          "text": "That a carrier acted on the notice.",
+          "quote": "it does not establish that a carrier acted on the notice"
+         }
+        ],
+        "at": [
+         19,
+         19
+        ],
+        "quote": "no committed booking loses its notice"
+       }
+      },
+      "authoredAs": "person",
+      "sourceId": "KS-0001",
+      "sourceHash": "cf965556749091c645421f10919778454bf29dfd5b40ce19e6cf00fc062d5410",
+      "lineStart": 16,
+      "lineEnd": 19,
+      "excerpt": "Use it when a committed booking must always lead to a partner notice, even while the broker is unavailable.\nAvoid it when the caller only reads data and nothing has to be published afterwards.\nIt needs a store that commits the booking and the outbox row together.\nThe bounded claim is that no committed booking loses its notice; it does not establish that a carrier acted on the notice.",
+      "excerptHash": "5fcc874879f3ee99f71ad1932e08886d676ff65939d39b37de438ee2ec80d114",
+      "createdAt": "2026-11-16T09:00:00.000Z",
+      "actor": "importer",
+      "review": {
+       "decision": "verified",
+       "reviewer": "Synthetic second person",
+       "actor": "reviewer",
+       "at": "2026-11-16T09:00:00.000Z",
+       "reason": "Checked the synthetic passage, its permitted use, its conditions and each item of the form.",
+       "sourceChecked": true,
+       "rightsChecked": true,
+       "conditionsChecked": true,
+       "formChecked": true,
+       "claimHash": "de28c1ef7e2bef2a51963174382abe5c43baacda2935c992d59200f74b5be4ca"
+      }
+     }
+    ],
+    "contradictions": [],
+    "releases": [
+     {
+      "id": "KR-0006",
+      "title": "Synthetic integration concepts 1",
+      "claims": [
+       {
+        "id": "KC-0003",
+        "subjectId": "SYN-P001",
+        "predicate": "is defined as",
+        "statement": "A transactional outbox stores the notice in the booking's local transaction and a relay sends it afterwards.",
+        "claimType": "definition",
+        "polarity": "neutral",
+        "conditions": [],
+        "limitations": [],
+        "tags": [
+         "form:definition"
+        ],
+        "form": {
+         "type": "definition",
+         "v": 1,
+         "short": "A notice to publish is stored in the same local transaction as the booking record, and a relay sends it afterwards.",
+         "quotes": [
+          {
+           "field": "short",
+           "quote": "stores the notice to be published in the same local transaction as the booking record"
+          }
+         ],
+         "distinctions": [
+          {
+           "from": "exactly-once delivery",
+           "difference": "The relay may send a notice again after a crash, so a receiver must tolerate repeats.",
+           "at": [
+            6,
+            6
+           ],
+           "quote": "It is not exactly-once delivery"
+          }
+         ],
+         "vocabulary": [
+          {
+           "term": "Outbox row",
+           "meaning": "The stored notice awaiting publication.",
+           "at": [
+            7,
+            7
+           ],
+           "quote": "Outbox row: the stored notice awaiting publication."
+          },
+          {
+           "term": "Relay",
+           "meaning": "The worker that publishes stored notices.",
+           "at": [
+            7,
+            7
+           ],
+           "quote": "Relay: the worker that publishes stored notices."
+          }
+         ]
+        },
+        "authoredAs": "person",
+        "sourceId": "KS-0001",
+        "sourceHash": "cf965556749091c645421f10919778454bf29dfd5b40ce19e6cf00fc062d5410",
+        "lineStart": 5,
+        "lineEnd": 7,
+        "excerpt": "A transactional outbox stores the notice to be published in the same local transaction as the booking record, and a relay sends it afterwards.\nIt is not exactly-once delivery: the relay may send a notice again after a crash, so a receiver must tolerate repeats.\nOutbox row: the stored notice awaiting publication. Relay: the worker that publishes stored notices.",
+        "excerptHash": "024cef689de21acba5db1768a08fdc855b844f8b64933d533d49c7d13ef46d1a",
+        "createdAt": "2026-11-16T09:00:00.000Z",
+        "actor": "importer",
+        "review": {
+         "decision": "verified",
+         "reviewer": "Synthetic second person",
+         "actor": "reviewer",
+         "at": "2026-11-16T09:00:00.000Z",
+         "reason": "Checked the synthetic passage, its permitted use, its conditions and each item of the form.",
+         "sourceChecked": true,
+         "rightsChecked": true,
+         "conditionsChecked": true,
+         "formChecked": true,
+         "claimHash": "061c9e799afd2b37f242fc11dc8ebc8d1fcbc07bad64c71a128fca09268be369"
+        }
+       },
+       {
+        "id": "KC-0004",
+        "subjectId": "SYN-P001",
+        "predicate": "applies when",
+        "statement": "Use it where a committed booking must always lead to a notice; it does not show that a carrier acted.",
+        "claimType": "applicability",
+        "polarity": "supports",
+        "conditions": [
+         "A local booking must cause a publication."
+        ],
+        "limitations": [
+         "Receivers need their own identity record."
+        ],
+        "tags": [
+         "form:applicability"
+        ],
+        "architectureUnit": {
+         "kind": "pattern",
+         "mechanism": "A notice is committed with the booking and sent later by a relay that may deliver it more than once.",
+         "scope": {},
+         "effects": [
+          {
+           "quality": "integrity",
+           "direction": "supports",
+           "rationale": "A committed booking always has a stored notice."
+          },
+          {
+           "quality": "performance",
+           "direction": "tradeoff",
+           "rationale": "Publication is delayed until the relay runs."
+          }
+         ],
+         "obligations": [
+          {
+           "action": "Receivers deduplicate by the notice identity.",
+           "evidence": "A crash-injection record with notice identities reconciled."
+          }
+         ],
+         "exclusions": [
+          "Do not describe the result as exactly-once delivery."
+         ],
+         "placement": [
+          {
+           "target": "data-owner",
+           "role": "outbox writer",
+           "reason": "The notice is written in the owner's local transaction."
+          }
+         ]
+        },
+        "form": {
+         "type": "applicability",
+         "v": 1,
+         "useWhen": [
+          {
+           "text": "A committed booking must always lead to a partner notice, even while the broker is unavailable.",
+           "at": [
+            16,
+            16
+           ],
+           "quote": "a committed booking must always lead to a partner notice"
+          }
+         ],
+         "avoidWhen": [
+          {
+           "text": "The caller only reads data and nothing has to be published afterwards.",
+           "at": [
+            17,
+            17
+           ],
+           "quote": "the caller only reads data and nothing has to be published afterwards"
+          }
+         ],
+         "prerequisites": [
+          {
+           "text": "A store that commits the booking and the outbox row together.",
+           "at": [
+            18,
+            18
+           ],
+           "quote": "a store that commits the booking and the outbox row together"
+          }
+         ],
+         "guaranteeBoundary": {
+          "boundedClaim": "No committed booking loses its notice.",
+          "doesNotEstablish": [
+           {
+            "text": "That a carrier acted on the notice.",
+            "quote": "it does not establish that a carrier acted on the notice"
+           }
+          ],
+          "at": [
+           19,
+           19
+          ],
+          "quote": "no committed booking loses its notice"
+         }
+        },
+        "authoredAs": "person",
+        "sourceId": "KS-0001",
+        "sourceHash": "cf965556749091c645421f10919778454bf29dfd5b40ce19e6cf00fc062d5410",
+        "lineStart": 16,
+        "lineEnd": 19,
+        "excerpt": "Use it when a committed booking must always lead to a partner notice, even while the broker is unavailable.\nAvoid it when the caller only reads data and nothing has to be published afterwards.\nIt needs a store that commits the booking and the outbox row together.\nThe bounded claim is that no committed booking loses its notice; it does not establish that a carrier acted on the notice.",
+        "excerptHash": "5fcc874879f3ee99f71ad1932e08886d676ff65939d39b37de438ee2ec80d114",
+        "createdAt": "2026-11-16T09:00:00.000Z",
+        "actor": "importer",
+        "review": {
+         "decision": "verified",
+         "reviewer": "Synthetic second person",
+         "actor": "reviewer",
+         "at": "2026-11-16T09:00:00.000Z",
+         "reason": "Checked the synthetic passage, its permitted use, its conditions and each item of the form.",
+         "sourceChecked": true,
+         "rightsChecked": true,
+         "conditionsChecked": true,
+         "formChecked": true,
+         "claimHash": "de28c1ef7e2bef2a51963174382abe5c43baacda2935c992d59200f74b5be4ca"
+        }
+       }
+      ],
+      "sourceIds": [
+       "KS-0001"
+      ],
+      "createdAt": "2026-11-16T09:00:00.000Z",
+      "actor": "releaser",
+      "reviewer": "Synthetic second person",
+      "reason": "Checked the synthetic passage, its permitted use, its conditions and each item of the form.",
+      "supersedes": null,
+      "authority": "Project-reviewed conditional guidance; no scoring or automatic model mutation",
+      "parts": {
+       "concepts": [
+        {
+         "id": "KN-0002",
+         "conceptId": "SYN-P001",
+         "title": "Transactional outbox",
+         "kind": "pattern",
+         "family": "Reliable publication",
+         "scope": [
+          "data-owner",
+          "interaction"
+         ],
+         "stages": [
+          5,
+          8
+         ],
+         "lenses": [
+          "integrity",
+          "reliability"
+         ],
+         "steward": "Integration guild",
+         "reviewDue": "2027-11-16",
+         "reviewTriggers": [
+          "platform-contract"
+         ],
+         "notAdopted": [],
+         "successorOf": null,
+         "splitFrom": null,
+         "changeNote": null,
+         "forms": [
+          {
+           "type": "definition",
+           "claimId": "KC-0003",
+           "claimHash": "6e89064e17f499d84db8d70a2995a5b123e1c2b074d2233023543362ebcb8302",
+           "tier": "teaching"
+          },
+          {
+           "type": "applicability",
+           "claimId": "KC-0004",
+           "claimHash": "8d74582bde584629229f6d9f2321e7fba0a6b0549223552086f38df75fcd9bf6",
+           "tier": "decision"
+          }
+         ],
+         "revision": 2,
+         "at": "2026-11-16T09:00:00.000Z",
+         "actor": "importer",
+         "lastEditor": "importer",
+         "history": [
+          {
+           "revision": 1,
+           "at": "2026-11-16T09:00:00.000Z",
+           "actor": "importer",
+           "change": "Created"
+          },
+          {
+           "revision": 2,
+           "at": "2026-11-16T09:00:00.000Z",
+           "actor": "importer",
+           "change": "Edited"
+          }
+         ],
+         "review": {
+          "decision": "verified",
+          "actor": "reviewer",
+          "account": "person",
+          "reviewer": "Synthetic second person",
+          "at": "2026-11-16T09:00:00.000Z",
+          "reason": "Checked the identity, each form and its membership.",
+          "identityChecked": true,
+          "formsChecked": true,
+          "crosswalkChecked": true,
+          "conceptHash": "abb6605b18704d16a0078571cf9a03ade81bd73672aaf90924667c313cd9bc12",
+          "crosswalkSeen": [
+           [
+            "KA-0005",
+            "8616959ae8363792c9e62ebdd4d279ba9273d211363a2d634add62f5eccde353",
+            "verified"
+           ]
+          ]
+         },
+         "topics": [],
+         "version": 1,
+         "conceptHash": "abb6605b18704d16a0078571cf9a03ade81bd73672aaf90924667c313cd9bc12"
+        }
+       ],
+       "changes": [
+        {
+         "conceptId": "SYN-P001",
+         "change": "added",
+         "forms": [
+          {
+           "type": "definition",
+           "was": null,
+           "now": "6e89064e17f499d84db8d70a2995a5b123e1c2b074d2233023543362ebcb8302"
+          },
+          {
+           "type": "applicability",
+           "was": null,
+           "now": "8d74582bde584629229f6d9f2321e7fba0a6b0549223552086f38df75fcd9bf6"
+          }
+         ],
+         "note": ""
+        }
+       ],
+       "crosswalk": [
+        {
+         "id": "KA-0005",
+         "conceptId": "SYN-P001",
+         "scheme": "external",
+         "aliasId": "Outbox",
+         "label": "Outbox (an external register)",
+         "relation": "same",
+         "evidenceClaimId": "KC-0003",
+         "note": "The register names it so.",
+         "revision": 1,
+         "at": "2026-11-16T09:00:00.000Z",
+         "actor": "architect",
+         "lastEditor": "architect",
+         "history": [
+          {
+           "revision": 1,
+           "at": "2026-11-16T09:00:00.000Z",
+           "actor": "architect",
+           "change": "Proposed"
+          }
+         ],
+         "review": {
+          "decision": "verified",
+          "actor": "reviewer",
+          "account": "person",
+          "reviewer": "Synthetic second person",
+          "at": "2026-11-16T09:00:00.000Z",
+          "reason": "Checked the alias against its passage.",
+          "aliasChecked": true,
+          "rowHash": "8616959ae8363792c9e62ebdd4d279ba9273d211363a2d634add62f5eccde353"
+         }
+        }
+       ]
+      },
+      "checksum": "fcdc79317a5e9a710b8c49d870deb0bb36b55212c5552f17744028a89a09716d"
+     }
+    ],
+    "pins": [
+     "KR-0006"
+    ],
+    "withdrawals": [],
+    "links": [],
+    "history": [
+     {
+      "at": "2026-11-16T09:00:00.000Z",
+      "actor": "steward",
+      "type": "knowledge.library",
+      "id": "library",
+      "reason": "This project authors one tranche of the synthetic handbook.",
+      "reviewer": "Synthetic steward"
+     },
+     {
+      "at": "2026-11-16T09:00:00.000Z",
+      "actor": "importer",
+      "type": "knowledge.source",
+      "id": "KS-0001",
+      "reason": "",
+      "reviewer": ""
+     },
+     {
+      "at": "2026-11-16T09:00:00.000Z",
+      "actor": "importer",
+      "type": "knowledge.concept",
+      "id": "KN-0002",
+      "reason": "",
+      "reviewer": ""
+     },
+     {
+      "at": "2026-11-16T09:00:00.000Z",
+      "actor": "importer",
+      "type": "knowledge.claim",
+      "id": "KC-0003",
+      "reason": "",
+      "reviewer": ""
+     },
+     {
+      "at": "2026-11-16T09:00:00.000Z",
+      "actor": "importer",
+      "type": "knowledge.claim",
+      "id": "KC-0004",
+      "reason": "",
+      "reviewer": ""
+     },
+     {
+      "at": "2026-11-16T09:00:00.000Z",
+      "actor": "importer",
+      "type": "knowledge.concept",
+      "id": "KN-0002",
+      "reason": "",
+      "reviewer": ""
+     },
+     {
+      "at": "2026-11-16T09:00:00.000Z",
+      "actor": "reviewer",
+      "type": "knowledge.review",
+      "id": "KC-0003",
+      "reason": "Checked the synthetic passage, its permitted use, its conditions and each item of the form.",
+      "reviewer": "Synthetic second person"
+     },
+     {
+      "at": "2026-11-16T09:00:00.000Z",
+      "actor": "reviewer",
+      "type": "knowledge.review",
+      "id": "KC-0004",
+      "reason": "Checked the synthetic passage, its permitted use, its conditions and each item of the form.",
+      "reviewer": "Synthetic second person"
+     },
+     {
+      "at": "2026-11-16T09:00:00.000Z",
+      "actor": "reviewer",
+      "type": "knowledge.concept-review",
+      "id": "KN-0002",
+      "reason": "Checked the identity, each form and its membership.",
+      "reviewer": "Synthetic second person"
+     },
+     {
+      "at": "2026-11-16T09:00:00.000Z",
+      "actor": "releaser",
+      "type": "knowledge.release",
+      "id": "KR-0006",
+      "reason": "Checked the synthetic passage, its permitted use, its conditions and each item of the form.",
+      "reviewer": "Synthetic second person"
+     },
+     {
+      "at": "2026-11-16T09:00:00.000Z",
+      "actor": "releaser",
+      "type": "knowledge.activate",
+      "id": "KR-0006",
+      "reason": "Checked the synthetic passage, its permitted use, its conditions and each item of the form.",
+      "reviewer": "Synthetic second person"
+     }
+    ],
+    "library": {
+     "enabled": true,
+     "at": "2026-11-16T09:00:00.000Z",
+     "actor": "steward",
+     "reason": "This project authors one tranche of the synthetic handbook."
+    },
+    "concepts": [
+     {
+      "id": "KN-0002",
+      "conceptId": "SYN-P001",
+      "title": "Transactional outbox",
+      "kind": "pattern",
+      "family": "Reliable publication",
+      "scope": [
+       "data-owner",
+       "interaction"
+      ],
+      "stages": [
+       5,
+       8
+      ],
+      "lenses": [
+       "integrity",
+       "reliability"
+      ],
+      "steward": "Integration guild",
+      "reviewDue": "2027-11-16",
+      "reviewTriggers": [
+       "platform-contract"
+      ],
+      "notAdopted": [],
+      "successorOf": null,
+      "splitFrom": null,
+      "changeNote": null,
+      "forms": [
+       {
+        "type": "definition",
+        "claimId": "KC-0003"
+       },
+       {
+        "type": "applicability",
+        "claimId": "KC-0004"
+       }
+      ],
+      "revision": 2,
+      "at": "2026-11-16T09:00:00.000Z",
+      "actor": "importer",
+      "lastEditor": "importer",
+      "history": [
+       {
+        "revision": 1,
+        "at": "2026-11-16T09:00:00.000Z",
+        "actor": "importer",
+        "change": "Created"
+       },
+       {
+        "revision": 2,
+        "at": "2026-11-16T09:00:00.000Z",
+        "actor": "importer",
+        "change": "Edited"
+       }
+      ],
+      "review": {
+       "decision": "verified",
+       "actor": "reviewer",
+       "account": "person",
+       "reviewer": "Synthetic second person",
+       "at": "2026-11-16T09:00:00.000Z",
+       "reason": "Checked the identity, each form and its membership.",
+       "identityChecked": true,
+       "formsChecked": true,
+       "crosswalkChecked": true,
+       "conceptHash": "abb6605b18704d16a0078571cf9a03ade81bd73672aaf90924667c313cd9bc12",
+       "crosswalkSeen": [
+        [
+         "KA-0005",
+         "8616959ae8363792c9e62ebdd4d279ba9273d211363a2d634add62f5eccde353",
+         "verified"
+        ]
+       ]
+      }
+     }
+    ],
+    "crosswalk": [
+     {
+      "id": "KA-0005",
+      "conceptId": "SYN-P001",
+      "scheme": "external",
+      "aliasId": "Outbox",
+      "label": "Outbox (an external register)",
+      "relation": "same",
+      "evidenceClaimId": "KC-0003",
+      "note": "The register names it so.",
+      "revision": 1,
+      "at": "2026-11-16T09:00:00.000Z",
+      "actor": "architect",
+      "lastEditor": "architect",
+      "history": [
+       {
+        "revision": 1,
+        "at": "2026-11-16T09:00:00.000Z",
+        "actor": "architect",
+        "change": "Proposed"
+       }
+      ],
+      "provenance": {
+       "author": {
+        "kind": "person",
+        "by": "architect",
+        "at": "2026-11-16T09:00:00.000Z"
+       }
+      },
+      "review": {
+       "decision": "verified",
+       "actor": "reviewer",
+       "account": "person",
+       "reviewer": "Synthetic second person",
+       "at": "2026-11-16T09:00:00.000Z",
+       "reason": "Checked the alias against its passage.",
+       "aliasChecked": true,
+       "rowHash": "8616959ae8363792c9e62ebdd4d279ba9273d211363a2d634add62f5eccde353"
+      }
+     }
+    ],
+    "conceptPins": [
+     {
+      "id": "KU-0007",
+      "conceptId": "SYN-P001",
+      "title": "Transactional outbox",
+      "releaseId": "KR-0006",
+      "releaseHash": "fcdc79317a5e9a710b8c49d870deb0bb36b55212c5552f17744028a89a09716d",
+      "version": 1,
+      "conceptHash": "abb6605b18704d16a0078571cf9a03ade81bd73672aaf90924667c313cd9bc12",
+      "anchor": {
+       "claimId": "KC-0003",
+       "claimHash": "6e89064e17f499d84db8d70a2995a5b123e1c2b074d2233023543362ebcb8302"
+      },
+      "status": "active",
+      "pinnedAt": "2026-11-16T09:00:00.000Z",
+      "pinnedBy": "architect",
+      "reviewer": "Synthetic architect",
+      "reason": "This design relies on the released concept.",
+      "actor": "architect",
+      "revision": 1,
+      "history": [
+       {
+        "revision": 1,
+        "at": "2026-11-16T09:00:00.000Z",
+        "actor": "architect",
+        "change": "Pinned"
+       }
+      ],
+      "provenance": {
+       "author": {
+        "kind": "person",
+        "by": "architect",
+        "at": "2026-11-16T09:00:00.000Z"
+       }
+      }
+     }
+    ],
+    "pinCurrency": {
+     "KU-0007": {
+      "state": "current",
+      "title": "Knowledge is current",
+      "detail": "SYN-P001 v1 of “Synthetic integration concepts 1” is current."
+     }
+    },
+    "conceptLinks": [
+     {
+      "id": "KB-0008",
+      "pinId": "KU-0007",
+      "conceptId": "SYN-P001",
+      "version": 1,
+      "objectId": "REQ-001",
+      "form": "definition",
+      "relationship": "informs",
+      "reason": "This design relies on the released concept.",
+      "reviewer": "Synthetic architect",
+      "actor": "architect",
+      "at": "2026-11-16T09:00:00.000Z",
+      "status": "active",
+      "receipt": {
+       "kind": "governed-concept",
+       "conceptId": "SYN-P001",
+       "releaseId": "KR-0006",
+       "releaseHash": "fcdc79317a5e9a710b8c49d870deb0bb36b55212c5552f17744028a89a09716d",
+       "version": 1,
+       "conceptHash": "abb6605b18704d16a0078571cf9a03ade81bd73672aaf90924667c313cd9bc12",
+       "forms": [
+        {
+         "type": "definition",
+         "claimId": "KC-0003",
+         "claimHash": "6e89064e17f499d84db8d70a2995a5b123e1c2b074d2233023543362ebcb8302"
+        },
+        {
+         "type": "applicability",
+         "claimId": "KC-0004",
+         "claimHash": "8d74582bde584629229f6d9f2321e7fba0a6b0549223552086f38df75fcd9bf6"
+        }
+       ],
+       "scoring": false
+      },
+      "provenance": {
+       "author": {
+        "kind": "person",
+        "by": "architect",
+        "at": "2026-11-16T09:00:00.000Z"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "digests": {
+   "graph": "b034acfae06cdea27745d8fb3f490586477dee57124b714870c3f0b9bb6bdd3f",
+   "model": "f0fdd4c5b7bd70ce15fcff3654705fea16ecbb3f24c25df8721233a848b4a953",
+   "trails": "d17ebb049f109befca0c0510b4ba6f78b0bd8e22ae037a43a816edc74bd58bff",
+   "findings": "ac8f8631163c5202a4dc93cb76f555df6fc35ea626f3427d781ad1d965f3c338",
+   "stamps": "0ce9ebc57ccbefbb116865f7818d3d0aba45639abeb109b65416a65c629a6580",
+   "readiness": "21ff46fbd50b4242e1aa410ea866e258ae2b4b234bff97a2afc18ca4f11115b3",
+   "provenance": "1f475a4d0fd00a9e59d21b97d658b56885ed4d6df860798d2f367e1cd8365d50",
+   "registers": "c5e77c142217542bd55abc066f12ff5ddb3a39bf408d598fe8f1320a674f0249",
+   "sdd": "d724440916182328f3b0834badb53b2e594a32d27adcd6824519dee406bad759",
+   "ars": "0583c267c635d9281e260ec84630a605af203474d3465112b2b2a753328fc743"
+  },
+  "stamps": {
+   "design": "3a96628f22dc413d",
+   "designVersion": "3a96628f22dc413d:2",
+   "evidence": "ea35c2918f0148a5"
+  },
+  "findings": "798c3dafb11d98e532dcf55a3a57f24195863d17e43ac46ef7248a1419769cb6",
+  "readiness": "21ff46fbd50b4242e1aa410ea866e258ae2b4b234bff97a2afc18ca4f11115b3",
+  "narrativeCurrent": true
+ }
+}

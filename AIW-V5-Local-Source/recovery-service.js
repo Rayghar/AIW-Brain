@@ -8,6 +8,8 @@ import {sha256} from './public/workbook-reader.js';
 import {assertDocumentSafe} from './shared/document-safety.js';
 import {RECOVERY_V2,packageLines,packageText,checkManifest,checkLine,assemblePackage,stagingKey} from './recovery-package.js';
 import {json} from './http.js';
+import {keepImportedStamps} from './public/provenance.js';
+import {keepingDesignStamps} from './public/readings-upgrade.js';
 // A request to this route stays within 12 MiB (server.js): a package larger than that arrives in entries (upload).
 const MAX=12*1024*1024;
 function decoded(s){if(typeof s!=='string'||s.length>MAX*1.4)throw Error('Invalid recovery file encoding.');return Uint8Array.from(atob(s),c=>c.charCodeAt(0));}
@@ -68,6 +70,14 @@ const importedAuthoritySummary=p=>{const m=p.finalReview||{};const actors=new Se
 // author and last editor, so another signed-in person here approves it before workspace.guidance or workspace.template
 // uses it. An organisation entry is adopted again from its signed release (refreshOrganizationAssurance, install).
 export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??null){
+ // rc44 (S0-w3-stamps; the lead's ruling Z8): every stamp a record carries (who wrote it, who confirmed or kept it, who
+ // merged it) was made on the workbench the package came from. Each record keeps them as history (provenance.imported)
+ // and they name nobody here, whatever the package says of their dates (public/provenance.js keepImportedStamps, over
+ // every collection the server stamps, a package's included, and the retired store). The import says how many it moved
+ // (finalReview.imported.stamps), which is how a reader knows that no date of this import decides anything.
+ // (the fix-up: the move comes first, so its stamps are taken of the document as the package holds it, and the stamps
+ // of the whole design are carried over it, public/readings-upgrade.js keepingDesignStamps: what was current reads so)
+ const stamps=keepingDesignStamps(p,keepImportedStamps);
  for(const e of Array.isArray(p.workbench?.catalogue)?p.workbench.catalogue:[]){if(!e||typeof e!=='object')continue;if(e.status==='approved')e.importedApproval={actor:e.actor??null,at:e.at??null,reviewNote:e.reviewNote??'',authority:IMPORTED_AUTHORITY};e.status='draft';for(const [k,to] of [['actor','importedActor'],['author','importedAuthor'],['lastEditor','importedLastEditor']])if(e[k]!=null)e[to]=e[k];e.actor=null;e.author=e.lastEditor=actor;if(e.organization)e.organization.assurance={eligible:false,status:'Restored history; review and adopt the signed release again.'};}
  const strip=r=>{if(!r||typeof r!=='object')return;if(r.actor!=null)r.importedActor=r.actor;r.actor=null;};
  // rc.10.73.42 (D5): who recorded a Chapter 9 risk treatment and who approved it are historical here too, so an imported
@@ -83,6 +93,10 @@ export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??
  // (the fix-up's must-fix 4) a retired claim or gate too, so that a restore here brings back no step taken there
  const retiredHere=path=>(Array.isArray(p?.retired?.records)?p.retired.records:[]).filter(x=>x?.path===path).map(x=>x.record);
  for(const path of ['failures','gates'])for(const r of [...(Array.isArray(p?.runtime?.[path])?p.runtime[path]:[]),...retiredHere('runtime.'+path)])if(r&&typeof r==='object'&&r.review){r.importedReview=r.review;r.review=null;}
+ // rc44 (S0-w3-stamps fix-up; rulings Z2 and Z8): an adoption's acceptance (wp2: adoptions.records[].review) is a second
+ // person's step taken on the workbench the package came from. It is kept as history (importedReview) and is nobody's
+ // here, whatever its dates, until a second person here accepts again. An adoption with no step gains no key.
+ for(const a of Array.isArray(p?.adoptions?.records)?p.adoptions.records:[])if(a&&typeof a==='object'&&a.review){a.importedReview=a.review;a.review=null;}
  // rc44 (wp2 S5; the lead's ruling Q6): a component selection's steps (who started it, each judgement, the choice, the
  // second person's confirm, the instantiation) were taken on the workbench the package came from. They are kept as
  // history (decision.selection.imported) and count as nobody's here; the candidates' outcomes go with the choice. A
@@ -109,7 +123,7 @@ export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??
  for(const a of m.actions||[]){strip(a);for(const h of a.history||[])if(h?.actor!=null)strip(h);strip(a.verification);}
  if(m.capacity)strip(m.capacity);
  if(m.handoff){m.importedHandoff={...m.handoff,authority:IMPORTED_AUTHORITY};m.handoff=null;}
- m.imported={at,authority:IMPORTED_AUTHORITY,reviews:(m.reviews||[]).length,judgements:(m.judgements||[]).length,baselines:(m.baselines||[]).length,governance:(m.governance||[]).length};
+ m.imported={at,authority:IMPORTED_AUTHORITY,reviews:(m.reviews||[]).length,judgements:(m.judgements||[]).length,baselines:(m.baselines||[]).length,governance:(m.governance||[]).length,stamps};
  // Knowledge claims follow the same four-eyes rule (knowledgeEligibility: the verifier is not the author). An imported
  // verifier is a historical assertion too, so a claim, and its copy in a release, needs a verification recorded here
  // by a signed-in person before it is used: a released claim is immutable, so that means a successor release.

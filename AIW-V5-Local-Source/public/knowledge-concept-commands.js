@@ -558,13 +558,14 @@ function crosswalkCommand({p,s,r,type,at,actor,next},author){
  }
 }
 // The handler of the package's command types (design-extension-boundary.js calls it as every handler is called):
-// applyKnowledgeCommand with the form capability of the request and the crosswalk's command types. Since slice S3 a
-// package's step writes no line into the knowledge family's log (quiet), which the design fingerprint reads, so a
-// person's confirmation and a second person's review of a row move no design stamp (rulings P5 b and B10); the boundary
-// records the step (the activity row) and the row keeps who took it.
+// applyKnowledgeCommand with the form capability of the request and the crosswalk's command types. A package's step
+// writes its line into the knowledge family's log, naming the package (the lead's ruling Y2, which turns back S3's quiet
+// step: one trail holds every step), and the row keeps who took it. In a library the log is evidence beside the design,
+// so a person's confirmation and a second person's review of a row move no design stamp (rulings P5 b and B10).
+const PACKAGE='p10-knowledge';
 export function applyCrosswalkCommand(input,command,at=new Date().toISOString(),actor='local-review',{author=null}={}){
  const limits=knowledgeLimits(input);
- return withCurrency(applyKnowledgeCommand(input,command,at,actor,{forms:{...formCapability(author,limits),quiet:true,command:context=>crosswalkCommand(context,author)},limits}),at);
+ return withCurrency(applyKnowledgeCommand(input,command,at,actor,{forms:{...formCapability(author,limits),package:PACKAGE,command:context=>crosswalkCommand(context,author)},limits}),at);
 }
 // The projection a second person's review of a row reads (ruling D7.1), for the boundary.
 export const crosswalkSubject=(p,command)=>{const x=list(knowledgeState(p).crosswalk).find(y=>y?.id===command?.payload?.id);return x?{id:x.id,actor:x.actor,owner:'',history:list(x.history).map(h=>({revision:h?.revision,actor:h?.actor}))}:null;};
@@ -658,11 +659,12 @@ function pinCommand({p,s,r,type,at,actor,next},author){
  default:return undefined;
  }
 }
-// The handler of the pins' command types: applyKnowledgeCommand with the form capability of the request, the pins' types
-// and no line in the family's log (quiet); then the pins' currency is read again.
+// The handler of the pins' command types: applyKnowledgeCommand with the form capability of the request and the pins'
+// types, each step's line in the family's log naming the package (ruling Y2; outside a library such a line says nothing to
+// the design fingerprint, review-domain.js designOf); then the pins' currency is read again.
 export function applyPinCommand(input,command,at=new Date().toISOString(),actor='local-review',{author=null}={}){
  const limits=knowledgeLimits(input);
- return withCurrency(applyKnowledgeCommand(input,command,at,actor,{forms:{...formCapability(author,limits),quiet:true,command:context=>pinCommand(context,author)},limits}),at);
+ return withCurrency(applyKnowledgeCommand(input,command,at,actor,{forms:{...formCapability(author,limits),package:PACKAGE,command:context=>pinCommand(context,author)},limits}),at);
 }
 // The projection a second person's repin reads (ruling D7.1): the proposal and everyone who wrote a revision of it.
 export const migrationSubject=(p,command)=>{const m=list(knowledgeState(p).conceptMigrations).find(x=>x?.id===command?.payload?.id);return m?{id:m.id,actor:m.actor,owner:'',history:list(m.history).map(h=>({revision:h?.revision,actor:h?.actor}))}:null;};

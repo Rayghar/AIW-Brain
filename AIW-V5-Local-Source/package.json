@@ -30,6 +30,8 @@
     "test:rc42-g4-trace-kernel": "node rc42-g4-trace-kernel-validate.mjs",
     "test:rc44-s0-extensions": "node rc44-s0-extensions-validate.mjs",
     "test:rc44-s0-d10": "node rc44-s0-d10-validate.mjs",
+    "test:rc44-s0-b10": "node rc44-s0-b10-validate.mjs",
+    "test:rc44-s0-import": "node rc44-s0-import-validate.mjs",
     "test:rc44-wp9a-deployment": "node rc44-wp9a-deployment-validate.mjs",
     "test:rc44-wp9a-deployment-browser": "node rc44-wp9a-deployment-browser-validate.mjs",
     "test:rc44-wp2-adoption": "node rc44-wp2-adoption-validate.mjs",
