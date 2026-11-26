@@ -202,7 +202,7 @@ One in a general suite, as ruling Z8 rules (the import's one new change to the d
    section with the original's -> compares it with the original's with exactly the import's record-stamp move made on a
    copy (`keepImportedStamps`), character for character; and the review's expected imported mark
    (`neutraliseImportedAuthority({finalReview})`) gets the count the import makes over the whole project
-   (`expected.imported.stamps = moved`). Seen red on this branch before the replacement: "every other section restores
+   (`expected.imported.stamps = keptStamps`). Seen red on this branch before the replacement: "every other section restores
    exactly … + 'quality'" (the trade-off conflict the suite saves through the server carries an author stamp). Every
    other assertion of the case (the journal whole, the review whole, the knowledge and workbench, the baseline parts by
    their SHA-256) is unchanged.

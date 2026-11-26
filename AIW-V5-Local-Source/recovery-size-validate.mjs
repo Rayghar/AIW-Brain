@@ -189,13 +189,13 @@ try {
   // provenance.imported, its one change to the design's sections. Old -> new: each other section equals the original's
   // -> equals the original's with exactly that change made on a copy of it (keepImportedStamps), character for
   // character; and the review's expected imported mark counts the records of the whole project, as the import does.)
-  const kept = structuredClone(original), moved = keepImportedStamps(kept);
+  const kept = structuredClone(original), keptStamps = keepImportedStamps(kept);
   const changedKeys = [...new Set([...Object.keys(kept), ...Object.keys(restored)])].filter(k => JSON.stringify(kept[k]) !== JSON.stringify(restored[k]));
   assert.deepEqual(changedKeys.filter(k => !['id', 'name', 'workspace', 'finalReview', 'knowledge', 'workbench'].includes(k)), [], 'every other section restores exactly');
   assert.equal(JSON.stringify(restored.changes.events), JSON.stringify(original.changes.events), 'the change journal, whole');
   // The review restores with its imported authority neutralised (recovery-service.js), and nothing else changed.
   const expected = neutraliseImportedAuthority({finalReview: structuredClone(original.finalReview)}, restored.finalReview.imported.at).finalReview;
-  expected.imported.stamps = moved;
+  expected.imported.stamps = keptStamps;
   assert.equal(JSON.stringify(restored.finalReview), JSON.stringify(expected), 'the review, its baseline whole, with imported authority neutralised');
   assert.equal(JSON.stringify(without(restored.knowledge, ['pins', 'history', 'repositorySync', 'claims', 'releases'])), JSON.stringify(without(original.knowledge, ['pins', 'history', 'repositorySync', 'claims', 'releases'])));
   assert.equal(JSON.stringify(without(restored.workbench, ['catalogue', 'views'])), JSON.stringify(without(original.workbench, ['catalogue', 'views'])));
