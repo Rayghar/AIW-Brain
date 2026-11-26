@@ -58,8 +58,8 @@
    "lists": 2542
   },
   "after": {
-   "bytes": 118744,
-   "modules": 116099,
+   "bytes": 118754,
+   "modules": 116109,
    "lists": 2645
   },
   "atTheAdoptionRecord": {
@@ -74,11 +74,11 @@
    "public/topology-domain.js": 24498,
    "public/topology-failures.js": 19695,
    "public/topology-fallback.js": 10,
-   "public/topology-gates.js": 20842,
+   "public/topology-gates.js": 20852,
    "public/topology.js": 1529
   },
   "lists": 271,
-  "total": 66855
+  "total": 66865
  },
  "opensWithRecords": {
   "gate": "The chapters-route gate is unchanged and measures opening a document that holds no package records (ruling D10). A document that holds the marker runtime.topology also loads the lazy entry of the Chapter 10 Model view (deploy-view.js) before it is first drawn.",
@@ -91,11 +91,11 @@
   },
   "after": {
    "route": 3229350,
-   "added": 900073,
-   "total": 4129423,
+   "added": 900083,
+   "total": 4129433,
    "files": 12
   },
-  "note": "The package's two filled parts add 44,269 B to what a typed document opens with (40,350 B at the build's head, 10b97b7; the fix-up 3,919 B more). Ruling Y1 moves the packages' first-draw readers into one shared lazy entry (the lead's build S0-D10, s0-w3-bundle), which holds such a document to the route plus 160 KB; these parts are first-draw readers (checks, readings) and move with it."
+  "note": "The package's two filled parts add 44,279 B to what a typed document opens with (40,350 B at the build's head, 10b97b7; the fix-up 3,929 B more). Ruling Y1 moves the packages' first-draw readers into one shared lazy entry (the lead's build S0-D10, s0-w3-bundle), which holds such a document to the route plus 160 KB; these parts are first-draw readers (checks, readings) and move with it."
  },
  "fixUp": {
   "rule": "Owner decision AA1: one review, one fix-up. The fix-up's route bytes before (the build's head, 10b97b7) and after (its own head), measured the same way: node build.mjs in an archive of 10b97b7 (git archive, node_modules linked) and in the fix-up's tree; the share and the holder from bundleClient's metafile of each tree (.aiw-local/fixup/share.mjs, git-ignored). Nothing is booked.",
@@ -138,8 +138,8 @@
     "lists": 2628
    },
    "after": {
-    "bytes": 118744,
-    "modules": 116099,
+    "bytes": 118754,
+    "modules": 116109,
     "lists": 2645
    }
   },
@@ -157,13 +157,13 @@
     "modules": {
      "public/topology-domain.js": 24498,
      "public/topology-failures.js": 19695,
-     "public/topology-gates.js": 20842
+     "public/topology-gates.js": 20852
     },
     "lists": 271,
-    "total": 66855
+    "total": 66865
    }
   },
-  "packageShareNote": "The build pinned a share total of 62,956 B; its modules and lists add to 62,946 B, which the build's tree measures again. The fix-up pins the measured 66,855 B (the sum).",
+  "packageShareNote": "The build pinned a share total of 62,956 B; its modules and lists add to 62,946 B, which the build's tree measures again. The fix-up pins the measured 66,865 B (the sum).",
   "capsUnchanged": "The chapters cap is 3,233,792 B on this base (3,266,560 B once s0-lead-w3 lands, owner decision AA2); script files 148; the stylesheet as at the base."
  }
 }

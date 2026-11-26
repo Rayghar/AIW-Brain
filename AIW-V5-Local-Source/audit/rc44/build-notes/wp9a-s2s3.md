@@ -335,7 +335,7 @@ record of this build in the document is the lead's call (carried).
    a record a gate reads therefore raises the hard finding until a person reviews it (carried below).
 2. S1.10's share (ruling R4) is re-measured and pinned as the build pinned it (owner decision AA2, read as the build
    read it): each module exact as before; the lists at most 254 B -> at most 271 B and the share at most 62,956 B -> at
-   most 66,855 B. A larger bound is no stricter assertion: it is recorded under AA2's exception for size cases, as the
+   most 66,865 B. A larger bound is no stricter assertion: it is recorded under AA2's exception for size cases, as the
    build recorded 168 -> 254 B, and is for the lead to confirm.
 3. S2.17 and S2.19 pass on 10b97b7 (should-fix 6 and 1 ask for coverage of what the build already reads); S2.19 holds its
    own failing reading (the old key, with the slot's zoneKey unset, answers otherwise).
@@ -385,12 +385,12 @@ Measured with `node build.mjs` in an archive of `10b97b7` and in the fix-up's tr
 chapters route 3,229,341 B -> 3,229,350 B (+9 B: the route script that holds provenance.js exports `judgementOf`, which
 the lazy entry now reads), projects route 508,530 B -> 508,539 B, script files 148 -> 148, buckets 52/51/45 -> 52/51/45,
 stylesheet 901,873 B -> 901,873 B, no violation. Against 4349bb6: +412 B. Cap 3,233,792 B on this base (3,266,560 B once
-`s0-lead-w3` lands). Opens with records (rule 52): 4,125,495 B -> 4,129,423 B (the package's share 62,946 B -> 66,855 B).
+`s0-lead-w3` lands). Opens with records (rule 52): 4,125,495 B -> 4,129,433 B (the package's share 62,946 B -> 66,865 B).
 Evidence: `audit/rc44/evidence/wp9a-s2s3-route.json` (`after` and `fixUp`).
 
 ### Replaced assertions in the fix-up (old -> new)
 
 - rc44-wp9a-deployment-validate.mjs S1.10 (`BUILD_SHARE`, owner decision AA2 as the build read it): topology-domain.js
   22,697 B, topology-failures.js 19,382 B, topology-gates.js 19,064 B (exact), lists at most 254 B, share at most
-  62,956 B -> 24,498 B, 19,695 B, 20,842 B (exact), lists at most 271 B, share at most 66,855 B; the route evidence's
+  62,956 B -> 24,498 B, 19,695 B, 20,852 B (exact), lists at most 271 B, share at most 66,865 B; the route evidence's
   `packageShare` deep-equal to it, as before. No other assertion of the start commit is changed.
