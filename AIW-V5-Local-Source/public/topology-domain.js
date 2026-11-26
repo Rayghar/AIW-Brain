@@ -127,6 +127,10 @@ function store(xs,old,next,raw,at,keys,fresh){
 // (slices 2 and 3) The same for a record a second person's step reads (a declared failure, a location gate): who wrote
 // it is kept as its `actor`, and each earlier revision with its writer in `history`, never trimmed (verifierRefusal reads
 // every one: architecture-obligations.js); `recorded` says who saved what it now says, and when.
+// (fix-up, the review's must-fix 1 and 2) What a draft by Sol or an agent account may change of a record of slices 2 and 3:
+// its proposals only. A declared failure, a location gate or a data copy that stands is a person's to change, since a
+// reading of Chapter 10 rests on it; a draft sends its own as a proposal. The one rule of both parts' validate.
+export const standingOf=(xs,raw)=>{const old=raw?.id!=null?find(xs,raw.id):null;return old&&!isProposed(old)?old:null;};
 export function storeWritten(xs,old,next,raw,at,actor,keys,fresh){
  if(old&&sameRecord(old,next,keys))return [old,false];
  const draft=raw.origin===DRAFT,who=actor||null;let r=old;

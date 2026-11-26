@@ -31,7 +31,7 @@ import {verifierRefusal} from './architecture-obligations.js';
 import {valueFingerprint} from './source-fingerprint.js';
 import {remember} from './document-memo.js';
 import {list} from './util.js';
-import {TRACKED,LABELS,topologyTyped,failureDomains,deploymentNodes,hostingComparison,groupKey,zoneFails,requireTyped,storeWritten,DRAFT,pad,find,refOf,and,sharedCause,standing,patchBounded,authoredRecord,put,BOOKKEEPING} from './topology-domain.js';
+import {TRACKED,LABELS,topologyTyped,failureDomains,deploymentNodes,hostingComparison,groupKey,zoneFails,requireTyped,storeWritten,standingOf,DRAFT,pad,find,refOf,and,sharedCause,standing,patchBounded,authoredRecord,put,BOOKKEEPING} from './topology-domain.js';
 import {failingGate} from './topology-gates.js';
 
 export const FAILURE_SCOPES=['instance','zone','site','region','provider','shared-cause','correlated'],QUANTIFIERS=['any-one','named'];
@@ -273,6 +273,7 @@ function refuseDraft(p,command,{author}={}){
  if(!author||author.kind!==DRAFT&&author.account!=='agent')return;
  const raw=command?.payload||{};
  if(command.type==='runtime.environment-link')return 'A signed-in person links a recovery environment: a draft by Sol or an agent account does not.';
+ {const old=standingOf(p?.runtime?.failures,raw);if(old)return refOf(old)+' is a declared failure a person saved: a draft by Sol or an agent account changes no claim that stands. It sends a claim of its own as a proposal (origin: sol-draft), and a person keeps it.';}
  if(raw.origin!==DRAFT)return 'A draft by Sol or an agent account sends a declared failure as its proposal (origin: sol-draft); a person keeps it.';
  if(raw.inScope===true)return 'Whether a claim is in scope is a signed-in person\'s statement: a draft by Sol or an agent account sets none.';
  if(raw.durationMinutes!=null&&raw.durationMinutes!=='')return 'A draft by Sol or an agent account states no duration: a person states the minutes.';

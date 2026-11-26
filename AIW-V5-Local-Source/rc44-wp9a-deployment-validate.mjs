@@ -1676,6 +1676,56 @@ await block('S2.11 the tracker stays in its paths with the records of slices 2 a
   pass('S2.11: the tracker journals a declared failure, a recovery link, a gate and a copy as one change each, journals AIW\'s copy proposals not at all, and stays in its paths (assertTrackerStaysInPaths)');
 });
 
+// ---------------------------------------------------------------- the fix-up (owner decision AA1; the review's must-fix and should-fix items)
+//   S2.12 (must-fix 1) through the server: a draft by Sol and an agent account change no declared failure a person saved: not out of scope,
+//         not what must survive, not its minutes, not its words; the error stays; a draft still edits its own proposal;
+//   S2.13 (must-fix 3, ruling L11 (d)) through the server: a zone a draft by Sol or an agent account located, and a placement a draft moved, are
+//         named by the reading, and the acceptance waits for a person;
+//   S2.14 (must-fix 4) a restore after a recovery import brings back no acceptance and no gate evidence, by a person or an agent account;
+//   S2.15 (must-fix 5) one reading of independence: H5 reads the groups of hostingComparison across a recovery link;
+//   S2.16 (must-fix 6) Chapter 10's checks at the limits, with 24 in-scope claims, within a stated factor of the same document without them.
+const SOL_EXTRA = {authorKind: 'sol-draft', reason: 'Drafted.'};
+// The Tidewater project on a server with two zone domains inside one region domain, both zones located in them.
+async function regionServer() {
+  const I = F.ids(), h = await F.server(worker), d = () => withFinalReview(h.state.document), ok = (r, why) => assert.equal(r.status, 200, (why || 'accepted') + ': ' + JSON.stringify(r.body).slice(0, 300));
+  ok(await h.send('runtime.topology-start', {}));
+  const fd = async payload => { const r = await h.send('technology.domain', payload); ok(r, 'a failure domain'); return r.body.selected; };
+  const region = await fd({title: 'Norway East region', scope: 'region', cause: 'location'}), z1 = await fd({title: 'Bergen availability zone 1', scope: 'zone', cause: 'location', parentId: region}), z2 = await fd({title: 'Bergen availability zone 2', scope: 'zone', cause: 'location', parentId: region}), other = await fd({title: 'Oslo region', scope: 'region', cause: 'location'}), z3 = await fd({title: 'Oslo availability zone', scope: 'zone', cause: 'location', parentId: other});
+  ok(await h.send('runtime.locate', {zoneId: I.zone1, domainIds: [z1]})); ok(await h.send('runtime.locate', {zoneId: I.zone2, domainIds: [z2]}));
+  return {h, d, ok, region, z1, z2, other, z3};
+}
+
+await block('S2.12 a draft changes no declared failure a person saved, through the server', async () => {
+  need();
+  const I = F.ids(), {h, d, ok, region} = await regionServer();
+  try {
+    // A's claim: the primary region is lost and the API must survive; it does not (an error of Chapter 10)
+    const made = await h.send('runtime.failure', {environmentId: I.production, title: 'The primary region is lost', scope: 'region', quantifier: 'named', domainIds: [region], mustSurvive: [I.apiPlan], durationMinutes: 240, inScope: true}); ok(made); const id = made.body.selected;
+    const error = () => findingOf(d(), 'failure-unsurvived:' + id)?.level, as = () => { const x = declared(d(), id); return JSON.stringify([x.revision, x.inScope, x.mustSurvive, x.durationMinutes, x.domainIds, x.scope, x.basis, x.actor]); }, was = as();
+    assert.equal(error(), 'error');
+    // fails on 10b97b7: a draft took the claim out of scope (200), emptied what must survive (the error became a warning) and cleared the minutes
+    for (const [account, extra, who] of [[B, SOL_EXTRA, 'a draft by Sol'], [AGENT, {}, 'an agent account']]) for (const [change, what] of [
+      [{inScope: false}, 'takes the claim out of scope'], [{mustSurvive: []}, 'empties what must survive'], [{mustSurvive: [I.workerPlan]}, 'names another plan'], [{durationMinutes: ''}, 'clears the minutes'], [{durationMinutes: null}, 'clears the minutes (null)'],
+      [{scope: 'zone', quantifier: 'any-one', domainIds: []}, 'narrows what is lost'], [{basis: 'Drafted words.'}, 'changes its words']]) {
+      const x = await h.send('runtime.failure', {id, ...change, origin: 'sol-draft'}, account, extra);
+      assert.equal(x.status, 400, who + ' ' + what + ': ' + JSON.stringify(x.body).slice(0, 200));
+      assert.match(x.error, /^FS-001 is a declared failure a person saved: a draft by Sol or an agent account changes no claim that stands\. It sends a claim of its own as a proposal \(origin: sol-draft\), and a person keeps it\.$/, who + ' ' + what);
+      assert.equal(as(), was, who + ' ' + what + ': the claim reads as its writer saved it'); assert.equal(error(), 'error', who + ' ' + what + ': the error stands');
+    }
+    // in a batch drafted by Sol, the same
+    { const commands = [{type: 'runtime.failure', payload: {id, inScope: false, origin: 'sol-draft'}}], cur = await h.read(AGENT), x = await h.send('workspace.apply', {commands, stamp: previewWorkingChange(cur.document, commands).stamp, reason: 'A drafted batch.', reviewed: false}, AGENT);
+      assert.equal(x.status, 400); assert.match(x.error, /changes no claim that stands/); assert.equal(as(), was); }
+    // a draft still sends its own proposal and edits it; a person keeps it, and from then on it stands
+    const own = await h.send('runtime.failure', {environmentId: I.production, title: 'A drafted claim', scope: 'zone', quantifier: 'any-one', mustSurvive: [I.workerPlan], origin: 'sol-draft'}, B, SOL_EXTRA); ok(own, 'a proposal');
+    ok(await h.send('runtime.failure', {id: own.body.selected, title: 'A drafted claim, renamed', origin: 'sol-draft'}, AGENT), 'a draft edits a proposal');
+    ok(await h.send('record.keep', {id: own.body.selected, chapter: 10}, C), 'a person keeps it');
+    assert.equal((await h.send('runtime.failure', {id: own.body.selected, inScope: false, origin: 'sol-draft'}, AGENT)).status, 400, 'kept, it stands');
+    // a person's own save still changes it
+    ok(await h.send('runtime.failure', {id, inScope: false}, C), 'a person takes it out of scope'); assert.equal(error(), undefined);
+  } finally { h.close(); }
+  pass('S2.12: through the server, a draft by Sol and an agent account change nothing of a declared failure a person saved (alone and in a drafted batch): neither its scope, what must survive, its minutes nor its words; it reads as its writer saved it and failure-unsurvived stands; a draft edits its own proposal until a person keeps it');
+});
+
 // ================================================================ Slice 3: location gates and data copies
 // (design section g, Slice 3, its eight cases; ruling L8 carried; the build contract's rules 10 to 12, 14 to 17, 31 and
 // 54. The build notes are audit/rc44/build-notes/wp9a-s2s3.md.)
