@@ -10,6 +10,8 @@ This file supersedes sections 5 and 8 of `UPGRADE-PLAN-2026-11-16.md` where they
 
 **Amended 2026-11-18** by `RULINGS-2026-11-18.md`: section 2 items 2 and 3 (allowances after S0; package ids by dependency, D8), ruling 5 as read by D1 (a second step needs two persons) and section 4 test 3 (`hard` means no waiver, not no disposition).
 
+**Amended 2026-11-26** by the owner (RULINGS section AA): one review and one fix-up per build; the chapters route cap rises by 32 KB to 3,266,560 B, checked once per merge instead of booked per slice; every slice is delivered, consolidated into fewer builds; wp1 S6 is the last build.
+
 ## 1. What exists at this checkpoint
 
 | Item | State |
