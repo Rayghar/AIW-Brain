@@ -498,7 +498,12 @@ add('S3.13 (ruling P1, organisation releases): the administrator who publishes a
 // notices are bookkeeping, and the package's own collections say to the design fingerprint what their records say,
 // never their steps; a migration, a proposal, says nothing. The package's own commands write no line into the knowledge
 // family's log, which the design fingerprint reads (the boundary's activity row records each).
-add('S3.14 (rulings B10 and P5 b): the knowledge keys are stated through S0: a library\'s concepts, topics and mark leave its design stamp; the currency and the notices are bookkeeping; pins and links say what they say, not their steps; a migration says nothing', async () => {
+// The lead's ruling Y2 (rc44 build S0-w3-stamps) completes B10: in a library the log is not design, so the package's
+// steps write it again. Old -> new (S0-w3-stamps, ruling Y2): "no line in knowledge.history" (history length equal) and
+// "knowledge.version does not move" (version equal) -> exactly the pin's and the link's lines after the lines the library
+// had (type, record, who took it, the package named), the version moved by two, and the design stamp of the library with
+// those two lines and the version put back the same as with them: the lines say nothing to the design; the pin still does.
+add('S3.14 (rulings B10 and P5 b; completed by ruling Y2): the knowledge keys are stated through S0: a library\'s concepts, topics and mark leave its design stamp; the currency and the notices are bookkeeping; pins and links say what they say, not their steps; a migration says nothing', async () => {
   const {KP} = await mods(), X = await import('./public/design-extensions.js'); await import('./worker.js');
   const mine = X.EXTENSIONS.find(e => e.id === PACKAGE);
   assert.deepEqual(Object.keys(mine.design).sort(), ['knowledge.conceptLinks', 'knowledge.conceptMigrations', 'knowledge.conceptPins', 'knowledge.crosswalk']);
@@ -511,8 +516,13 @@ add('S3.14 (rulings B10 and P5 b): the knowledge keys are stated through S0: a l
   let d = (await packaged(p, 'knowledge.concept-pin', {conceptId: 'SYN-P001', releaseId: L.releaseId, ...STEP}, 'architect')).document; d = (await packaged(d, 'knowledge.concept-link', {pinId: pins(d)[0].id, objectId: 'REQ-001', ...STEP}, 'architect')).document;
   assert.equal(R.assertStepsMoveNoStamp(d, x => [...pins(x), ...links(x)]), 2);
   { const q = clone(d); q.knowledge.conceptMigrations = [{id: 'KM-0099', pinId: pins(d)[0].id, toReleaseId: 'KR-0099', reason: 'A proposal.'}]; assert.equal(stamp(q), stamp(d), 'a migration, a proposal, says nothing to the design fingerprint (ruling L6)'); }
-  // A pin is design: pinning moves the stamp; and the package's commands write no line into the knowledge family's log.
-  assert.notEqual(stamp(d), stamp(p)); assert.equal(d.knowledge.history.length, p.knowledge.history.length, 'no line in knowledge.history'); assert.equal(d.knowledge.version, p.knowledge.version, 'knowledge.version does not move');
+  // A pin is design: pinning moves the stamp; and the package's commands write their lines into the family's log, which
+  // is not the library's design.
+  assert.notEqual(stamp(d), stamp(p));
+  assert.deepEqual(d.knowledge.history.slice(0, p.knowledge.history.length), p.knowledge.history, 'the lines the library had stand');
+  assert.deepEqual(d.knowledge.history.slice(p.knowledge.history.length).map(h => [h.type, h.id, h.actor, h.package]), [['knowledge.concept-pin', pins(d)[0].id, 'architect', PACKAGE], ['knowledge.concept-link', links(d)[0].id, 'architect', PACKAGE]], 'one line in knowledge.history for each step, naming it');
+  assert.equal(d.knowledge.version, p.knowledge.version + 2, 'knowledge.version moves by one for each');
+  { const q = clone(d); q.knowledge.history = clone(p.knowledge.history); q.knowledge.version = p.knowledge.version; assert.equal(stamp(q), stamp(d), 'the lines and the version say nothing to the library\'s design'); }
   assert.equal(typeof KP.conceptLinkFindings, 'function');
 });
 
@@ -825,21 +835,31 @@ add('S3.26 (ruling X4, B10): the concept reading takes a released concept\'s ide
 // The design package's steps write no line into knowledge.history (they are quiet: rulings B10 and P5 b): the boundary's
 // activity row records each, faithfully. The knowledge workspace's history panel reads them from that row beside the
 // family's log, so a person sees one trail; without the activity the panel reads as before.
-add('S3.27 (ruling X4): the knowledge workspace\'s history panel shows the design package\'s steps, read from the project activity, beside knowledge.history, as one trail; the package\'s command types are the ones it reads, and no built-in knowledge type is', async () => {
+// The lead's ruling Y2 (rc44 build S0-w3-stamps) retires the join: the package's steps write their lines into the log, so
+// the log is the one trail and the panel reads no activity. Old -> new (S0-w3-stamps, rulings Y2 and X4): "with it: the
+// log and the package's two steps" (the panel handed the activity counts the log plus 2) and each step "in the trail,
+// with who took it" in the panel handed the activity -> the log itself holds exactly the pin's and the link's lines after
+// the family's own (type, record, who took it, the package named), the panel drawn from the document alone counts that
+// log and draws each of the two with who took it, and the panel handed the activity is the panel without it; "of the log
+// is still in it" -> each of the family's own lines is drawn as before (no actor), in the panel drawn from the document.
+add('S3.27 (ruling X4; completed by ruling Y2): the knowledge workspace\'s history panel shows the design package\'s steps, which write their lines into knowledge.history, as one trail drawn from the document alone; the package\'s command types are the ones it reads, and no built-in knowledge type is', async () => {
   const KW = await import('./public/knowledge-workspace-ui.js'), KG = await import('./public/knowledge-package.js'), X = await import('./public/design-extensions.js'), W = await world();
   try {
     const lib = await worldLibrary(W), OR1 = await lib.publish(lib.v1, 'Synthetic integration concepts 1'), {D, pinId, linkId} = await worldDesign(W, OR1);
     const doc = await D.read(), events = (await W.api('/api/activity?project=' + D.id, null, 'architect')).data.events;
     assert.ok(events.some(e => e.command === 'knowledge.concept-pin' && e.objectId === pinId) && events.some(e => e.command === 'knowledge.concept-link' && e.objectId === linkId), 'the activity records the steps');
     const panel = html => html.slice(html.indexOf('Recorded knowledge history'));
-    const plain = panel(KW.renderKnowledgeReleases(doc)), both = panel(KW.renderKnowledgeReleases(doc, events));
-    assert.match(plain, new RegExp('^Recorded knowledge history · ' + doc.knowledge.history.length + '<'), 'without the activity: the family\'s log alone');
-    assert.match(both, new RegExp('^Recorded knowledge history · ' + (doc.knowledge.history.length + 2) + '<'), 'with it: the log and the package\'s two steps');
-    for (const [type, id] of [['concept-pin', pinId], ['concept-link', linkId]]) assert.match(both, new RegExp(' · ' + type + ' · ' + id + ' · architect<'), type + ' is in the trail, with who took it');
-    for (const h of doc.knowledge.history) assert.ok(both.includes(' · ' + h.type.replace('knowledge.', '') + ' · ' + h.id + '<br>'), h.type + ' of the log is still in it, as it read before the slice (no actor on the family\'s own lines)');
+    const plain = panel(KW.renderKnowledgeReleases(doc)), both = panel(KW.renderKnowledgeReleases(doc, events)), own = doc.knowledge.history.filter(h => !h.package);
+    assert.deepEqual(doc.knowledge.history.filter(h => h.package).map(h => [h.type, h.id, h.actor, h.package]), [['knowledge.concept-pin', pinId, 'architect', PACKAGE], ['knowledge.concept-link', linkId, 'architect', PACKAGE]], 'the log holds the package\'s two steps');
+    assert.equal(doc.knowledge.history.length, own.length + 2);
+    assert.match(plain, new RegExp('^Recorded knowledge history · ' + doc.knowledge.history.length + '<'), 'the panel counts the family\'s log, which holds every step');
+    assert.equal(both, plain, 'the panel handed the activity reads no activity');
+    for (const [type, id] of [['concept-pin', pinId], ['concept-link', linkId]]) assert.match(plain, new RegExp(' · ' + type + ' · ' + id + ' · architect<'), type + ' is in the trail, with who took it');
+    for (const h of own) assert.ok(plain.includes(' · ' + h.type.replace('knowledge.', '') + ' · ' + h.id + '<br>'), h.type + ' of the log is still in it, as it read before the slice (no actor on the family\'s own lines)');
     // (the lead's follow-up after the verifier) the family's own lines read as before: no actor is printed on them, with or
     // without the activity, and an activity that holds no package step draws the panel exactly as no activity does
-    for (const h of doc.knowledge.history.filter(h => h.actor)) assert.ok(!plain.includes(' · ' + h.id + ' · ' + h.actor + '<'), h.type + ' ' + h.id + ' is drawn without its actor, as before');
+    // (old -> new, ruling Y2: the lines of the whole log -> the family's own lines; the package's lines are drawn with their actor, above)
+    for (const h of own.filter(h => h.actor)) assert.ok(!plain.includes(' · ' + h.id + ' · ' + h.actor + '<'), h.type + ' ' + h.id + ' is drawn without its actor, as before');
     assert.equal(KW.renderKnowledgeReleases(doc, events.filter(e => !KG.packageStep(e.command))), KW.renderKnowledgeReleases(doc), 'an activity with no package step changes nothing');
     assert.ok(!events.filter(e => !KG.packageStep(e.command)).some(e => e.command && both.includes(' · ' + e.command + ' ')), 'no other activity is listed');
     const mine = Object.keys(X.EXTENSIONS.find(e => e.id === PACKAGE).commands);

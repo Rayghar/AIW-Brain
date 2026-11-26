@@ -779,7 +779,13 @@ add('S2.15 (ruling P5 a): a released row whose register row no longer has the re
 // what they say, never their steps (S2.10). Old -> new (rc44 wp1 S3): "moves the library's design stamp (the known
 // limit)", history + 1, version moved, and the stamp back with the log put back -> the stamp does not move, the history
 // and the version do not move, the row keeps who took the step, and the boundary's activity row names it.
-add('S2.16 (ruling P5 b, turned around by S3 with the knowledge keys, ruling B10): through the commands, a person\'s confirmation and a second person\'s review of a row move no design stamp of the library: the package\'s step writes no line into knowledge.history and moves no knowledge.version, and the row and the activity keep who took it', async () => {
+// The lead's ruling Y2 (rc44 build S0-w3-stamps) completes B10: in a library knowledge.history and knowledge.version are
+// the family's log, not design, so the package's steps write the log again and the stamp still does not move. Old -> new
+// (S0-w3-stamps, ruling Y2): "writes no line into knowledge.history" (history length equal) and "moves no
+// knowledge.version" (version equal) -> exactly one line after the lines it had, the step's (its type, the row, who took
+// it, the package named), and the version moved by one; the design stamp does not move, and the row and the activity keep
+// who took the step, as before.
+add('S2.16 (ruling P5 b, turned around by S3 with the knowledge keys, ruling B10; completed by ruling Y2): through the commands, a person\'s confirmation and a second person\'s review of a row move no design stamp of the library: the package\'s step writes its one line into the family\'s log, which is not the library\'s design, and the row and the activity keep who took it', async () => {
   const {S} = await strangler();
   const stamp = d => { const q = rv.withFinalReview(clone(d), {upgrade: false}); return rv.reviewSourceStamp(q) + ' ' + rv.reviewDesignStamp(q); };
   try {
@@ -787,7 +793,9 @@ add('S2.16 (ruling P5 b, turned around by S3 with the knowledge keys, ruling B10
     for (const [type, payload, as] of [['knowledge.crosswalk-confirm', {...PERSON_STEP, id}, 'steward'], ['knowledge.crosswalk-review', {...ROW_REVIEW, id}, 'reviewer']]) {
       const before = clone(S.document); await S.ok(type, payload, as);
       assert.equal(stamp(S.document), stamp(before), type + ' moves no design stamp of the library');
-      assert.equal(S.document.knowledge.history.length, before.knowledge.history.length, type + ' writes no line into knowledge.history'); assert.equal(S.document.knowledge.version, before.knowledge.version, type + ' moves no knowledge.version');
+      assert.deepEqual(S.document.knowledge.history.slice(0, -1), before.knowledge.history, type + ' writes one line into knowledge.history, after the lines it had');
+      assert.deepEqual([S.document.knowledge.history.length, ...['type', 'id', 'actor', 'package'].map(k => S.document.knowledge.history.at(-1)[k])], [before.knowledge.history.length + 1, type, id, as, 'p10-knowledge'], type + ': the line is the step\'s, naming who took it and the package');
+      assert.equal(S.document.knowledge.version, before.knowledge.version + 1, type + ' moves knowledge.version by one');
       const r = row(S.document, id); assert.ok(type.endsWith('-confirm') ? r.confirmed === true && r.provenance?.reviewed?.by === 'steward' : r.review?.actor === 'reviewer' && r.review.account === 'person', type + ': the row keeps who took the step');
       const activity = await S.api('/api/activity?project=' + S.projectId, null, 'importer');
       assert.equal(activity.status, 200, JSON.stringify(activity.data).slice(0, 200)); assert.ok(JSON.stringify(activity.data).includes(type), type + ': the boundary\'s activity row names the step');
