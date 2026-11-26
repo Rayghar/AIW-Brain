@@ -566,7 +566,8 @@ add('S3.17 (old documents and S0\'s helpers): with ' + PACKAGE + ' registered as
   // (S1.8 run here, with the package registered as S3 states it: the bank reference and the legacy knowledge document, their
   // findings, stamps, fingerprint, SDD text and release checksums, as at 94dbd4f.)
   { const forms = await import('./rc44-wp1-cases-forms.mjs'), s18 = forms.cases.find(c => c.name.startsWith('S1.8:')); assert(s18, 'S1.8 exists'); await s18.run(); }
-  const routes = readFileSync('public/design-package-routes.js', 'utf8'); assert.match(routes, /registerExtension\(\{id:'p10-knowledge-route',needs:p=>p\.knowledge\?\.crosswalk\|\|p\.knowledge\?\.conceptPins,load:\(\)=>import\('\.\/knowledge-workspace-ui\.js'\)\}\);/);
+  // (ruling Y1, built by S0-D10; old -> new. Was: the stub's load imports './knowledge-workspace-ui.js'. Now it loads the one shared entry of the packages' first-draw readers.)
+  const routes = readFileSync('public/design-package-routes.js', 'utf8'); assert.match(routes, /registerExtension\(\{id:'p10-knowledge-route',needs:p=>p\.knowledge\?\.crosswalk\|\|p\.knowledge\?\.conceptPins,load:\(\)=>import\('\.\/design-package-readers\.js'\)\}\);/);
   const W = await world();
   try {
     const lib = await worldLibrary(W), OR1 = await lib.publish(lib.v1, 'Synthetic integration concepts 1'), D = await W.project('architect', 'bank-payment', 'Northquay booking design', ['second-architect']);

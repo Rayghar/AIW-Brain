@@ -841,7 +841,10 @@ export default async function ({block, pass, load}) {
     assert.deepEqual(out.before, stubs, 'before any document is read the route holds the stubs and no package');
     assert.equal(out.needs, true, 'the stub asks for the lazy entry for a document that holds adoptions'); assert.equal(out.plain, false, 'and for none without');
     assert.equal(out.early, false, 'until the entry has arrived no reader knows the adoption (the built-in emitter skips its task): the store loads it before the first draw');
-    assert.deepEqual(out.after, [...stubs, PACKAGE].sort(), 'ensureExtensions loads the entry, and the package registers when it arrives (was: [PACKAGE, PACKAGE + \'-route\'])');
+    // (ruling Y1, built by S0-D10; old -> new. Was: out.after equals [...stubs, PACKAGE], ensureExtensions adding this package and
+    // no other. The stub now loads the one shared entry of the packages' first-draw readers, which registers every package of
+    // the build: the stubs and each stub's package, exactly.)
+    assert.deepEqual(out.after, [...stubs, ...stubs.map(id => id.slice(0, -'-route'.length))].sort(), 'ensureExtensions loads the shared entry, and every package of the build, this one among them, registers when it arrives (was: [PACKAGE, PACKAGE + \'-route\'])');
     assert.deepEqual(out.parts, ['checks', 'commands', 'design', 'hops', 'id', 'layers', 'prefixes', 'provenance', 'records', 'track'], 'the browser\'s package has no upgrade step (ruling J12): the browser reads no old document with it');
     // (slice S5, the lead's ruling U5; was: the browser's parts and upgrade, upgradeNote. The SDD's selection basis is the package's section of
     // the architecture edition, which only the server prints, so the server adds it beside the upgrade (adoption-server.js); the browser's parts

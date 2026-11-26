@@ -1923,7 +1923,7 @@ await block('8 client build', async () => {
     const run = () => assertUnder10kCeiling(slice, BASELINE, BUDGET.tiny);
     if (ok) assert.doesNotThrow(run, JSON.stringify(slice)); else assert.throws(run, /^Error: \d+ script files under 10 KB: at most \d+ \(the gate \d+, and the base's \d+ plus the \d+ script files? the slice adds\)\.$/, JSON.stringify(slice)); }
   assert.deepEqual(size.baseline, BASELINE, 'against the build of 94dbd4f'); assert.equal(size.slice.scripts, 148, '148 script files'); assertUnder10kCeiling(size.slice, BASELINE, BUDGET.tiny); assert.ok(measured.under10k <= BUDGET.tiny, 'this build: ' + measured.under10k + ' files under 10 KB'); assert.equal(size.slice.css, BASELINE.css, 'no stylesheet rule');
-  // (the owner's decision AA2 of 2026-11-26, old -> new. Was: size.allowance.chapters equal to 915 and size.delta in (0, 915]
+  // (the owner's decision AA2 of 2026-11-26, old -> new. Was: the allowance in the evidence equal to 915 B and size.delta in (0, 915]
   // ("at most 700 B", then 900 B by ruling D9, then 915 B by ruling F7). AA2 retires the allowances: the slice's recorded
   // measurement passes the one size check, and its delta is what it records.)
   assert.equal(size.delta, size.slice.chapters - size.baseline.chapters); await R.assertRouteWithinCap(size.slice, BASELINE);

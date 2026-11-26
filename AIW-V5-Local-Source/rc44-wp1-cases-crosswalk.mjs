@@ -579,9 +579,13 @@ add('S2.10 (old documents and S0\'s helpers): with ' + PACKAGE + ' registered, t
   }
   { const listed = R.reviewListDocument(), now = R.digests(listed); for (const k of Object.keys(golden.reviewList.readings)) assert.equal(now[k], golden.reviewList.readings[k], 'a document with a review list: ' + k); }
   // The browser can open a document that names the package: its route stub is registered under <id>-route.
-  const routes = readFileSync('public/design-package-routes.js', 'utf8'); assert.match(routes, /registerExtension\(\{id:'p10-knowledge-route',needs:p=>p\.knowledge\?\.crosswalk\|\|p\.knowledge\?\.conceptPins,load:\(\)=>import\('\.\/knowledge-workspace-ui\.js'\)\}\);/); // (S3, old -> new: needs reads the concept pins as well)
+  // (ruling Y1, built by S0-D10; old -> new. Was: the stub's load imports './knowledge-workspace-ui.js', and the host entry
+  // imports './knowledge-package.js' for the registration, 'the host entry registers the package in the browser'. Now the
+  // stub loads the one shared entry of the packages' first-draw readers, which registers the package, and the host entry
+  // imports that entry, so that its surface finds the package registered.)
+  const routes = readFileSync('public/design-package-routes.js', 'utf8'); assert.match(routes, /registerExtension\(\{id:'p10-knowledge-route',needs:p=>p\.knowledge\?\.crosswalk\|\|p\.knowledge\?\.conceptPins,load:\(\)=>import\('\.\/design-package-readers\.js'\)\}\);/); // (S3, old -> new: needs reads the concept pins as well)
   assert.match(readFileSync('design-packages.js', 'utf8'), /^import '\.\/knowledge-package-server\.js'; \/\/ p10-knowledge/m);
-  assert.match(readFileSync('public/knowledge-workspace-ui.js', 'utf8'), /import '\.\/knowledge-package\.js';/, 'the host entry registers the package in the browser');
+  assert.match(readFileSync('public/design-package-readers.js', 'utf8'), /^import '\.\/knowledge-package\.js';/m, 'the shared first-draw entry registers the package in the browser'); assert.match(readFileSync('public/knowledge-workspace-ui.js', 'utf8'), /^import '\.\/design-package-readers\.js';/m, 'and the host entry imports it');
   const {S} = await strangler();
   try {
     assert.equal(S.document.workspace.packages, undefined, 'a library whose knowledge holds no row names no package');

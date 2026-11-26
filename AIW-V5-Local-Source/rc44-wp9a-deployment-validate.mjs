@@ -1243,6 +1243,13 @@ const BASE_OPENS = {route: 3229840, added: 833044, total: 4062884, files: 12};
 const ADOPTION_OPENS = {route: 3230165, added: 833120, total: 4063285, files: 12};
 const ADOPTION_HOLDER = {bytes: 51789, modules: 49415, lists: 2374};
 const LAZY_SHARE = {modules: {'public/topology-blueprints.js': 10, 'public/topology-domain.js': 20937, 'public/topology-failures.js': 10, 'public/topology-fallback.js': 10, 'public/topology-gates.js': 10, 'public/topology.js': 1529}, lists: 168, total: 22674};
+// (ruling Y1, built by S0-D10; old -> new for this build's pins. Was: each module of this build pinned to LAZY_SHARE.modules,
+// as the Chapter 10 Model view's script held them. The modules are now held by the shared first-draw entry's script, where
+// the minifier names them apart: each is pinned to what S0-D10 measured there (node build.mjs at rc44/s0-w3-bundle,
+// dist/client-metafile.json bytesInOutput: topology-domain.js 20,892 B, 45 B fewer, topology.js 1,528 B, 1 B fewer, the four
+// parts 10 B each, as before), exactly, and the share's lists and total are held to LAZY_SHARE's as before. The evidence of
+// slice 1 keeps LAZY_SHARE as it was measured.)
+const SHARED_MODULES = {'public/topology-blueprints.js': 10, 'public/topology-domain.js': 20892, 'public/topology-failures.js': 10, 'public/topology-fallback.js': 10, 'public/topology-gates.js': 10, 'public/topology.js': 1528};
 await block('S1.10 the client build', async () => {
   need();
   const {bundleClient, BUDGET} = await import('./client-bundle.mjs');
@@ -1280,7 +1287,7 @@ await block('S1.10 the client build', async () => {
     const script = {bytes: o.bytes, modules: inputs.reduce((n, [, x]) => n + x.bytesInOutput, 0)}; script.lists = script.bytes - script.modules;
     const lists = script.lists - ADOPTION_HOLDER.lists; return {modules, lists, total: Object.values(modules).reduce((n, x) => n + x, 0) + lists, script}; };
   const withinShare = m => { const s = shareOf(m), out = [];
-    if (JSON.stringify(s.modules) !== JSON.stringify(LAZY_SHARE.modules)) out.push('the modules are ' + JSON.stringify(s.modules)); if (s.lists > LAZY_SHARE.lists) out.push('its import and export lists grew ' + s.lists + ' B, more than ' + LAZY_SHARE.lists); if (s.total > LAZY_SHARE.total) out.push('the share is ' + s.total + ' B, more than ' + LAZY_SHARE.total); return out; };
+    if (JSON.stringify(s.modules) !== JSON.stringify(SHARED_MODULES)) out.push('the modules are ' + JSON.stringify(s.modules)); if (s.lists > LAZY_SHARE.lists) out.push('its import and export lists grew ' + s.lists + ' B, more than ' + LAZY_SHARE.lists); if (s.total > LAZY_SHARE.total) out.push('the share is ' + s.total + ' B, more than ' + LAZY_SHARE.total); return out; };
   // a script of the entry's closure beside the route and the holder that another package moves by 24 B does not move the package's share; its own
   // import and export lists one byte past the measure, and a module one byte past its pin, do
   { const held = holderOf(meta), others = (meta.outputs[held].imports || []).filter(i => i.kind === 'import-statement' && i.path !== held).map(i => i.path);
@@ -1327,7 +1334,7 @@ await block('S1.10 the client build', async () => {
     // evidence records the script that holds it, grew no more than the share's
     const s = w.holder?.slice; assert.ok(s && s.lists === s.bytes - s.modules && s.lists - ADOPTION_HOLDER.lists <= LAZY_SHARE.lists, 'the package\'s own import and export lists grew ' + (s && s.lists - ADOPTION_HOLDER.lists) + ' B, at most ' + LAZY_SHARE.lists); }
   { const share = shareOf(meta);
-    assert.deepEqual(share.modules, LAZY_SHARE.modules, 'each module of the package in the entry\'s script is as measured');
+    assert.deepEqual(share.modules, SHARED_MODULES, 'each module of the package in the shared entry\'s script is as measured');
     // (ruling R4; was: opens.added - ADOPTION_OPENS.added <= LAZY_SHARE.total, the entry's whole growth) this build: its own modules and its own lists
     assert.deepEqual(withinShare(meta), [], 'this build: the package is ' + share.total + ' B of its lazy entry (its lists ' + share.lists + ' B), at most ' + LAZY_SHARE.total); }
   if (process.argv.includes('--measure')) assert.deepEqual(measured, size.slice, 'at the slice\'s commit the build measures what the evidence says');
