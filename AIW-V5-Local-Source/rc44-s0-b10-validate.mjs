@@ -78,6 +78,20 @@ export const designDocuments = () => ({'blank-with-knowledge': F.legacyKnowledge
 const unstamped = text => JSON.stringify(JSON.parse(text), (k, v) => (k === 'stamp' || k === 'legacyStamp' ? undefined : v));
 const read = p => rv.withFinalReview(clone(p));
 
+// (the fix-up, must-fix 3) The stored library of the golden with the review's checks and a baseline frozen on the start
+// commit, at the fixed time: `node rc44-s0-b10-validate.mjs --capture-frozen <sha>` (run there, beside the golden above)
+// prints it and what a reader says of the baseline there; captured from 4349bb6 into rc44-s0-b10-frozen.json (never
+// recaptured).
+const FROZEN = 'rc44-s0-b10-frozen.json';
+const baselineSays = q => { const bs = q.finalReview.baselines || [], L = R.readings(q); return {changes: bs.map(b => rv.baselineChanges(q, b)), current: bs.map(b => rv.baselineCurrent(q, b)), steps: rv.finalFindings(q).map(f => [f.id, f.title, f.level]), stamps: JSON.parse(L.stamps), findings: sha(unstamped(L.findings)), readiness: sha(unstamped(L.readiness))}; };
+if (process.argv.includes('--capture-frozen')) {
+  await import('./worker.js'); let p = rv.withFinalReview(clone(JSON.parse(readFileSync(BASELINE, 'utf8')).library.document), {upgrade: false});
+  p = rv.withFinalReview(rv.applyFinalReviewCommand(p, {type: 'review.checks', payload: {stamp: rv.reviewDesignStamp(p)}}, AT, 'architect').document, {upgrade: false});
+  p = rv.applyFinalReviewCommand(p, {type: 'review.baseline', payload: {title: 'The library frozen on the start commit', stamp: rv.reviewDesignStamp(p), reviewed: true}}, AT, 'architect').document;
+  console.log(JSON.stringify({capturedFrom: process.argv[process.argv.indexOf('--capture-frozen') + 1] || 'working tree', at: AT, document: p, says: baselineSays(read(p))}));
+  process.exit(0);
+}
+
 if (process.argv.includes('--capture')) {
   await import('./worker.js');
   const lib = await libraryDocument(), docs = designDocuments(), out = {capturedFrom: process.argv[process.argv.indexOf('--capture') + 1] || 'working tree', at: AT, design: {}, library: {}};
@@ -220,6 +234,18 @@ add('B10.7 (ruling Y2): a library stored under the start commit reads with the s
   assert.deepEqual(R.digests(again), digests, 'the stamps move once, not at each read'); assert.equal(again.finalReview.narrative.sourceStamp, first.finalReview.narrative.sourceStamp);
   assert.notEqual(first.finalReview.narrative.sourceStamp, stored.finalReview.narrative.sourceStamp, 'the narrative\'s stamp is carried over to the stamp the design has now');
   console.log('    B10.7 moves at the first read: design ' + G.library.stamps.design + ' -> ' + stamps.design + ', design version ' + G.library.stamps.designVersion + ' -> ' + stamps.designVersion + ', evidence ' + G.library.stamps.evidence + ' -> ' + stamps.evidence + '; readings moved: ' + moved.join(', '));
+  // (the fix-up, must-fix 3) The same library with a baseline frozen on the start commit: at its first read here the
+  // baseline reads as it read there (no evidence was recorded since it was frozen, and it is current), and so do the
+  // readiness and what the findings say; what moves is the stamps, the design's and the evidence's, answered for the
+  // baseline through the alias table. Once: a later read reads the same.
+  if (!existsSync(FROZEN)) throw Error(FROZEN + ' is missing: capture it from the start commit.');
+  const Z = JSON.parse(readFileSync(FROZEN, 'utf8')), ff = read(Z.document), says = baselineSays(ff), upgrade = ff.finalReview.readingsUpgrade;
+  assert.deepEqual([says.changes, says.current], [Z.says.changes, Z.says.current], 'a baseline frozen on the start commit reads as it read there: ' + JSON.stringify(says.changes));
+  assert.deepEqual(says.steps, Z.says.steps, 'the readiness steps, as there'); assert.equal(says.readiness, Z.says.readiness); assert.equal(says.findings, Z.says.findings);
+  assert.deepEqual([says.stamps.design !== Z.says.stamps.design, says.stamps.evidence !== Z.says.stamps.evidence], [true, true], 'the stamps of the design and of the evidence move');
+  assert.deepEqual([upgrade?.design?.[says.stamps.design], upgrade?.evidence?.[says.stamps.evidence]], [Z.says.stamps.design, Z.says.stamps.evidence], 'the baseline is answered for through the alias table, its design stamp and the evidence it was frozen beside');
+  assert.deepEqual(baselineSays(read(JSON.parse(JSON.stringify(ff)))), says, 'once: a later read reads the same');
+  console.log('    B10.7 a baseline frozen on the start commit: design ' + Z.says.stamps.design + ' -> ' + says.stamps.design + ', evidence ' + Z.says.stamps.evidence + ' -> ' + says.stamps.evidence + ', both answered through finalReview.readingsUpgrade; the baseline reads ' + JSON.stringify(says.changes) + ', current ' + says.current);
 });
 
 // ------------------------------------------------------------------------------------------------ the runner

@@ -70,6 +70,14 @@ const importedAuthoritySummary=p=>{const m=p.finalReview||{};const actors=new Se
 // author and last editor, so another signed-in person here approves it before workspace.guidance or workspace.template
 // uses it. An organisation entry is adopted again from its signed release (refreshOrganizationAssurance, install).
 export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??null){
+ // rc44 (S0-w3-stamps; the lead's ruling Z8): every stamp a record carries (who wrote it, who confirmed or kept it, who
+ // merged it) was made on the workbench the package came from. Each record keeps them as history (provenance.imported)
+ // and they name nobody here, whatever the package says of their dates (public/provenance.js keepImportedStamps, over
+ // every collection the server stamps, a package's included, and the retired store). The import says how many it moved
+ // (finalReview.imported.stamps), which is how a reader knows that no date of this import decides anything.
+ // (the fix-up: the move comes first, so its stamps are taken of the document as the package holds it, and the stamps
+ // of the whole design are carried over it, public/readings-upgrade.js keepingDesignStamps: what was current reads so)
+ const stamps=keepingDesignStamps(p,keepImportedStamps);
  for(const e of Array.isArray(p.workbench?.catalogue)?p.workbench.catalogue:[]){if(!e||typeof e!=='object')continue;if(e.status==='approved')e.importedApproval={actor:e.actor??null,at:e.at??null,reviewNote:e.reviewNote??'',authority:IMPORTED_AUTHORITY};e.status='draft';for(const [k,to] of [['actor','importedActor'],['author','importedAuthor'],['lastEditor','importedLastEditor']])if(e[k]!=null)e[to]=e[k];e.actor=null;e.author=e.lastEditor=actor;if(e.organization)e.organization.assurance={eligible:false,status:'Restored history; review and adopt the signed release again.'};}
  const strip=r=>{if(!r||typeof r!=='object')return;if(r.actor!=null)r.importedActor=r.actor;r.actor=null;};
  // rc.10.73.42 (D5): who recorded a Chapter 9 risk treatment and who approved it are historical here too, so an imported
@@ -97,14 +105,6 @@ export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??
  // (importedAuthors) and names nobody here, whatever the package says of it or of its dates: an imported alternative merges
  // as one saved before this build, stamping what it writes as nobody's. An alternative that names nobody gains no key.
  for(const a of Array.isArray(p?.workbench?.alternatives)?p.workbench.alternatives:[])for(const x of a&&typeof a==='object'?[a,...(Array.isArray(a.history)?a.history:[])]:[])if(x&&typeof x==='object'&&'authors' in x){x.importedAuthors=x.authors;delete x.authors;}
- // rc44 (S0-w3-stamps; the lead's ruling Z8): every stamp a record carries (who wrote it, who confirmed or kept it, who
- // merged it) was made on the workbench the package came from. Each record keeps them as history (provenance.imported)
- // and they name nobody here, whatever the package says of their dates (public/provenance.js keepImportedStamps, over
- // every collection the server stamps, a package's included, and the retired store). The import says how many it moved
- // (finalReview.imported.stamps), which is how a reader knows that no date of this import decides anything.
- // (the fix-up: the stamps of the whole design are carried over the move, public/readings-upgrade.js keepingDesignStamps,
- // so a review, a check or a frozen baseline current before the move reads as it read: the design did not change)
- const stamps=keepingDesignStamps(p,keepImportedStamps);
  const m=p.finalReview;if(!m||typeof m!=='object')return p;
  strip(m.intake);strip(m.checks);
  for(const r of m.reviews||[])strip(r);

@@ -216,7 +216,10 @@ try {
     assert.equal(original.finalReview.readingsUpgrade, undefined, 'the project kept no alias table before the import');
     const evidenceWas = evidenceStamp(before), evidenceNow = evidenceStamp(after);
     const table = {design: {[now]: was}, chapters: Object.fromEntries(moved.map(id => [id, {[chaptersAfter[id]]: chaptersBefore[id]}])), ...(evidenceNow !== evidenceWas ? {evidence: {[evidenceNow]: evidenceWas}} : {})};
-    assert.equal(JSON.stringify(restored.finalReview), JSON.stringify({...translated, readingsUpgrade: table}), 'the review, its baseline whole, with imported authority neutralised and the stamps of the whole design carried over the move'); }
+    const {readingsUpgrade, ...review} = restored.finalReview, [x, y] = [JSON.stringify(review), JSON.stringify(translated)];
+    let at = -1; if (x !== y) { at = 0; while (at < x.length && x[at] === y[at]) at++; } const near = at < 0 ? '' : ' (from character ' + at + ': ' + x.slice(Math.max(0, at - 60), at + 140) + ' | expected ' + y.slice(Math.max(0, at - 60), at + 140) + ')';
+    assert.equal(x, y, 'the review, its baseline whole, with imported authority neutralised and the stamps of the whole design carried over the move' + near);
+    assert.equal(JSON.stringify(readingsUpgrade), JSON.stringify(table), 'the alias table answers for the frozen baseline in exactly the chapters the move changed'); }
   assert.equal(JSON.stringify(without(restored.knowledge, ['pins', 'history', 'repositorySync', 'claims', 'releases'])), JSON.stringify(without(original.knowledge, ['pins', 'history', 'repositorySync', 'claims', 'releases'])));
   assert.equal(JSON.stringify(without(restored.workbench, ['catalogue', 'views'])), JSON.stringify(without(original.workbench, ['catalogue', 'views'])));
   assert.equal(restored.workspace.recovery.originProjectId, id); assert.equal(restored.workspace.recovery.packageHash, m.checksum);
