@@ -7,7 +7,10 @@
 // with registerExtension imported from design-extensions.js above the first such line. The line is on the route.
 // `needs` reads only the document and is cheap (it is asked at every read and every save); it holds for a document with
 // any of the package's records, a step the package keeps on a built-in record among them (ruling U6: wp2's selection on
-// a Chapter 3 decision). `load` is the one dynamic import of the one shared lazy entry of the packages' first-draw
+// a Chapter 3 decision), and for one that holds any key the package states (its design rows, designKeys, evidenceKeys),
+// whatever the key holds: the package's rows read each such key, so without the package the browser would read the
+// design's stamps as no server does (the fix-up of S0-D10; a package that marks its records with a key of its own asks
+// for the marker, beside which its commands write its other keys: p30). `load` is the one dynamic import of the one shared lazy entry of the packages' first-draw
 // readers, design-package-readers.js, which registers every package (the lead's ruling Y1, built by S0-D10: before it,
 // each stub loaded the lazy entry of its package's surface, so that a document with deployment records loaded the
 // Chapter 10 Model view, 855 KB, before its first draw). project-store.js imports this file and nothing else does: it
@@ -20,5 +23,5 @@ import {registerExtension} from './design-extensions.js';
 registerExtension({id:'p30-deployment-route',needs:p=>p.runtime?.topology,load:()=>import('./design-package-readers.js')});
 // p40-adoption (wp2): its surface in the lazy entry of the comparison tools; a selection is its step on a Chapter 3 decision (U6).
 registerExtension({id:'p40-adoption-route',needs:p=>p.adoptions||p.decisions?.records?.some?.(d=>d?.selection),load:()=>import('./design-package-readers.js')});
-// p10-knowledge (wp1): its surface in the lazy entry of the knowledge workspace.
-registerExtension({id:'p10-knowledge-route',needs:p=>p.knowledge?.crosswalk||p.knowledge?.conceptPins,load:()=>import('./design-package-readers.js')});
+// p10-knowledge (wp1): its surface in the lazy entry of the knowledge workspace; a library's mark, concepts and topics are its evidence keys.
+registerExtension({id:'p10-knowledge-route',needs:p=>['crosswalk','conceptPins','conceptLinks','conceptMigrations','concepts','topics','library','pinCurrency','organizationNotices'].some(k=>k in Object(p.knowledge)),load:()=>import('./design-package-readers.js')});

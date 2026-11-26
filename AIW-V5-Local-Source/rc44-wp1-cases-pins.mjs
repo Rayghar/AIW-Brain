@@ -567,7 +567,7 @@ add('S3.17 (old documents and S0\'s helpers): with ' + PACKAGE + ' registered as
   // findings, stamps, fingerprint, SDD text and release checksums, as at 94dbd4f.)
   { const forms = await import('./rc44-wp1-cases-forms.mjs'), s18 = forms.cases.find(c => c.name.startsWith('S1.8:')); assert(s18, 'S1.8 exists'); await s18.run(); }
   // (ruling Y1, built by S0-D10; old -> new. Was: the stub's load imports './knowledge-workspace-ui.js'. Now it loads the one shared entry of the packages' first-draw readers.)
-  const routes = readFileSync('public/design-package-routes.js', 'utf8'); assert.match(routes, /registerExtension\(\{id:'p10-knowledge-route',needs:p=>p\.knowledge\?\.crosswalk\|\|p\.knowledge\?\.conceptPins,load:\(\)=>import\('\.\/design-package-readers\.js'\)\}\);/);
+  const routes = readFileSync('public/design-package-routes.js', 'utf8'); assert.match(routes, /registerExtension\(\{id:'p10-knowledge-route',needs:p=>\['crosswalk','conceptPins','conceptLinks','conceptMigrations','concepts','topics','library','pinCurrency','organizationNotices'\]\.some\(k=>k in Object\(p\.knowledge\)\),load:\(\)=>import\('\.\/design-package-readers\.js'\)\}\);/); // (S0-D10's fix-up, must-fix 1, old -> new: needs:p=>p.knowledge?.crosswalk||p.knowledge?.conceptPins -> it holds for every key the package states, its design rows' and its evidence keys, whatever the key holds; every document the old needs held for, and a library's mark, concepts and topics, which the package's evidence keys read: rc44-s0-d10 D10.6, D10.7)
   const W = await world();
   try {
     const lib = await worldLibrary(W), OR1 = await lib.publish(lib.v1, 'Synthetic integration concepts 1'), D = await W.project('architect', 'bank-payment', 'Northquay booking design', ['second-architect']);
