@@ -1401,6 +1401,7 @@ await block('S1.10 the client build', async () => {
   { const share = shareOf(meta);
     // (wp9a slices 2 and 3, at the lead's merge; was: SHARED_MODULES, slice 1's in the shared entry, and BUILD_SHARE.modules on the build's branch) as measured at the merge
     assert.deepEqual(share.modules, MERGE_SHARE.modules, 'each module of the package in the shared entry\'s script is as measured');
+    assert.deepEqual(Object.keys(share.modules), Object.keys(SHARED_MODULES), 'the package\'s modules in the shared entry are the six S0-D10 recorded, slices 2 and 3 filling two of them');
     // (ruling R4; was: opens.added - ADOPTION_OPENS.added <= LAZY_SHARE.total, the entry's whole growth) this build: its own modules and its own lists
     assert.deepEqual(withinShare(meta), [], 'this build: the package is ' + share.total + ' B of its lazy entry (its lists ' + share.lists + ' B), at most ' + MERGE_SHARE.total); }
   if (process.argv.includes('--measure')) assert.deepEqual(measured, size.slice, 'at the slice\'s commit the build measures what the evidence says');
