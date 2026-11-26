@@ -93,9 +93,14 @@ change journal, too much to store). On `4349bb6` with only the suite added (comm
 | D10.6 a package step kept on a built-in record | client and server read a chosen selection with no adoption differently (the client had not loaded p40, so the decision's error `selection-confirm` was missing on the client) | the client reads every document as the server does but for the SDD's package sections (server-only) |
 | D10.2 opens with records | `opensWithRecords` took one entry only | knowledge, adoption, selection, chosen selection, deployment and all three: at most the route plus 160 KB |
 | D10.3 no package records | the same | exactly the route |
-| D10.4 the route | (passed on the base: 0 B) | +29 B, at most 1 KB |
+| D10.4 the route | no size evidence of this build (first form: passed on the base, 0 B) | +29 B for this part, at most 1 KB |
 | D10.5 script files and gates | the gate named no ruling Y1 | 150 files (+2), gate 150 with Y1 named, no other gate moved |
 | AA2 the cap | the cap was 3,233,792 B | the cap is the base's +32 KB with AA2 named above it; the build passes `assertRouteWithinCap` |
+
+D10.4 and D10.5 read this part's size evidence (`audit/rc44/evidence/s0-w3-bundle-size.json`) always and hold the live
+build to it at this build's own commit (`AIW_D10_MEASURE=1`, run green at the head), so that later builds, which move
+the route, are held by the one size check and do not turn this suite red; D10.2, D10.3 and AA2 hold on every build.
+D10.1 holds the client to the packages the server holds (not to a fixed list), for the same reason.
 
 In `rc44-s0-extensions-validate.mjs`, block "AA2 one size check" replaces "O1 the bookings add up": no booking reader in
 `rc44-s0-readings.mjs`, none read or written in any rc44 suite file (17 files), the lead's file's line, the cap equal
@@ -163,6 +168,9 @@ strict, pinning the new place exactly:
   package's records opens with at most the route plus 160 KB (new).
 - wp9a browser S1.b1: a project with the marker loads the Model view's entry before it is drawn -> it loads the shared
   entry, and not the Model view's, before Chapter 1 is drawn; on Chapter 10 the shared entry is asked for once.
+- wp2 selection.mjs S5 Q9 the rest (6): `/adoption-package\.js imports this module/` in the view's header -> `/The
+  comparison tools' entry, architecture-task-ui\.js, imports this module/` (the header says where the view loads now;
+  it failed when the header was corrected, then passed).
 
 ## U6: package steps kept on built-in records
 
@@ -202,18 +210,29 @@ acceptance); the stub now also asks for a decision with a selection (case D10.6,
    whose package prints a section (knowledge, selection), since only the server prints the SDD; D10.6 holds that this is
    the only difference.
 
-## Suites (this build's head)
+## Suites (this build's head; the machine was shared, load 7 to 12)
 
-- `rc44-s0-d10-validate.mjs`: 7 of 7.
-- `rc44-s0-extensions-validate.mjs`: every block (35 and "AA2 one size check"); green at the start.
+- `rc44-s0-d10-validate.mjs` (with `AIW_D10_MEASURE=1`): 7 of 7.
+- `rc44-s0-extensions-validate.mjs`: 36 of 36 (block O1 replaced by "AA2 one size check"); green at the start.
 - `rc44-wp1-knowledge-validate.mjs`: 87 passed, 2 pending (S4, S5 not yet built), as at the start.
-- `rc44-wp2-adoption-validate.mjs`: every block.
+- `rc44-wp2-adoption-validate.mjs`: 45 blocks, none failed.
 - `rc44-wp9a-deployment-validate.mjs`: 25 of 25.
-- `rc44-wp9a-deployment-browser-validate.mjs`: 1 of 1.
-- Browser and UI suites that open a chapter, the knowledge workspace, the comparison tools or the Model view: see the
-  hand-back (run after these notes were written; results there and in the final commit's message).
+- `rc44-wp9a-deployment-browser-validate.mjs`: 1 of 1 (on the built client).
+- Green at the start and green here: module-scope-browser, requirements-browser, rc42-lazy-dossier-browser,
+  knowledge-repository-browser, stewardship-browser, architecture-whatif-browser, model-views-browser,
+  canvas-draft-browser, tradeoff-browser (failed once under load at a 500 ms wait, l.151 "All decisions › QD-004"; green
+  run alone), technology-selection-ux-browser, technology-choice-browser, field-kit-browser, model-alternatives-ui,
+  driver-design-ui, driver-product-ui, architecture-scenarios-ui, architecture-verification-ui,
+  connected-architecture-ui, design-task-ui, exchange-task-ui; and the node suites that name the moved entries:
+  knowledge-coverage, native-connection-ui, repository-sync, rc42-g1-tech-approval (it reads comments).
+- Red at the start (merge-d12 evidence) and red here the same way, each run on this tree and on an unchanged checkout of
+  4349bb6: design-concern (l.199, 'QD-002'), deploy-browser (l.48, "unplaced parts wait in Not placed"), architecture-ui
+  (l.36, "Architecture choices are inside Proposals"), composition-ui (l.37, the same), bundle-browser (l.58, the Work
+  tab of Chapter 1 loads the pattern catalogue).
 - `node check-syntax.mjs`: 947 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, new 0.
 - `node build.mjs`: passes before (148 files) and after (150 files), no violation.
+- Not done: a clean install (`node_modules` is the main checkout's, linked, which this build may not change); the full
+  regression (the lead's).
 
 ## Retirement list (J6)
 
