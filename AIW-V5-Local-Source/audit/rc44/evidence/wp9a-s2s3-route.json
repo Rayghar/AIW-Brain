@@ -1,0 +1,41 @@
+{
+ "schema": "aiw.rc44.build-route.v1",
+ "build": "wp9a-s2s3: wp9a slices 2 and 3 in one build (owner decision AA3) — the declared failure set, its evaluation and acceptance; location gates and data copies (p30-deployment)",
+ "rule": "Owner decision AA2 of 2026-11-26: no booking per slice; one size check at each merge (the chapters route under the cap, the script files at or under the gate, the stylesheet cap unchanged); each build reports its route bytes before and after. This file books nothing, and its name is no *-size.json, so rc44-s0-readings.mjs routeBookings does not read it.",
+ "booking": "none",
+ "measuredWith": "node build.mjs in a checkout of each tree (dist/client-size-report.json: routes.chapters.code, routes.projects.code, scripts, buckets, css, violations). The base tree is an archive of 4349bb6 (git archive 4349bb6 AIW-V5-Local-Source, node_modules linked); the head tree is this build's. The holder of the package (the deploy-view chunk), the package's share and 'opens with records' are read from client-bundle.mjs bundleClient's metafile of each tree, as rc44-wp9a-deployment-validate.mjs S1.10 reads them (rc44-s0-readings.mjs opensWithRecords). The itemised route bytes are each changed module's bytesInOutput in the route's scripts, head less base, and the rest (the import and export lists of the route's scripts).",
+ "commands": [
+  "git archive 4349bb6 AIW-V5-Local-Source | tar -x -C .aiw-local/wp9a-s2s3/base && (cd .aiw-local/wp9a-s2s3/base/AIW-V5-Local-Source && node build.mjs)",
+  "node build.mjs (this build's tree)",
+  "node .aiw-local/wp9a-s2s3/share.mjs (in each tree: bundleClient, the holder's modules and lists, opensWithRecords)"
+ ],
+ "cap": {"chapters": 3233792, "chaptersOnceS0LeadW3Lands": 3266560, "scripts": 148, "under10k": 61, "css": 902144},
+ "before": {"commit": "4349bb6", "chapters": 3228938, "projects": 508466, "scripts": 148, "under10k": 52, "from10to50k": 51, "over50k": 45, "css": 901873, "violations": []},
+ "after": {"commit": "this build's head", "chapters": 3229341, "projects": 508530, "scripts": 148, "under10k": 52, "from10to50k": 51, "over50k": 45, "css": 901873, "violations": []},
+ "routeDelta": 403,
+ "headroomAfter": 4451,
+ "itemised": {
+  "runtimeModelSlotAndZoneKey": 41,
+  "runtimeDomainH4H5AndZoneKey": 290,
+  "designReasoningPlanFactsZoneKey": 4,
+  "deskCapacityZoneKey": 10,
+  "deskVitalsZoneKey": 4,
+  "deskFixesZoneKey": 16,
+  "workbenchDomainH11": 0,
+  "importAndExportLists": 38
+ },
+ "itemisedNote": "workbenchDomainH11 is 0 on the client: the merge's branch of applyWorkbenchCommand is not in the client bundle (the server applies a merge); the hook costs the client nothing. The 38 B of lists are the exports the lazy entry now reads from route modules (simulateRuntime, runtimeEnvironmentStamp, verifierRefusal, valueFingerprint, CLASSIFICATIONS, NOT_CLASSIFIED, forwardTrace, traceGraph, retiredOf and the slot TOPOLOGY, zoneKey).",
+ "holder": {
+  "before": {"bytes": 74475, "modules": 71933, "lists": 2542},
+  "after": {"bytes": 114756, "modules": 112128, "lists": 2628},
+  "atTheAdoptionRecord": {"bytes": 51789, "modules": 49415, "lists": 2374}
+ },
+ "packageShare": {"modules": {"public/topology-blueprints.js": 10, "public/topology-domain.js": 22697, "public/topology-failures.js": 19313, "public/topology-fallback.js": 10, "public/topology-gates.js": 19064, "public/topology.js": 1529}, "lists": 254, "total": 62877},
+ "opensWithRecords": {
+  "gate": "The chapters-route gate is unchanged and measures opening a document that holds no package records (ruling D10). A document that holds the marker runtime.topology also loads the lazy entry of the Chapter 10 Model view (deploy-view.js) before it is first drawn.",
+  "host": "public/deploy-view.js",
+  "before": {"route": 3228938, "added": 855804, "total": 4084742, "files": 12},
+  "after": {"route": 3229341, "added": 896085, "total": 4125426, "files": 12},
+  "note": "The package's two filled parts add 40,281 B to what a typed document opens with. Ruling Y1 moves the packages' first-draw readers into one shared lazy entry (the lead's build S0-D10, s0-w3-bundle), which holds such a document to the route plus 160 KB; these parts are first-draw readers (checks, readings) and move with it."
+ }
+}
