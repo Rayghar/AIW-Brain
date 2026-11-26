@@ -670,9 +670,11 @@ export default async function ({block, pass, load}) {
     assert.ok(S.selectionConstraints(p, decision(p, id)).some(k => k.id === late), 'the late hard constraint is one of the selection\'s');
     assert.ok(decisionFindings(p).some(f => f.decisionId === id && f.code === 'selection-confirm' && f.level === 'error'), 'the confirm no longer covers what the selection says');
     assert.throws(() => send(p, 'selection.instantiate', {id, reviewed: true, component: {title: 'Inbox', kind: 'service', purpose: 'Deduplicate.', boundary: 'Its store.', owner: 'Payments platform'}}), /changed since it was chosen|confirmed by a second person/, 'and the chosen candidate is not instantiated');
-    // (6) the view's module says the package imports it, and the hook is a contract
+    // (6) the view's module says who imports it, and the hook is a contract
+    // (ruling Y1, built by S0-D10; old -> new. Was: /adoption-package\.js imports this module/: the package imported its view. The view now stays
+    // in its host entry and the package's readers load in the shared first-draw entry, so the module says the comparison tools' entry imports it.)
     const ui = readFileSync(new URL('../public/adoption-ui.js', import.meta.url), 'utf8');
-    assert.match(ui, /adoption-package\.js imports this module/); assert.match(ui, /window\.aiwSelection is a contract/);
+    assert.match(ui, /The comparison tools' entry, architecture-task-ui\.js, imports this module/); assert.match(ui, /window\.aiwSelection is a contract/);
     // (9) the SDD prints the current reading beside the rows stored at the choice
     const off = withFinalReview(applyKnowledgeCommand(p, {type: 'knowledge.deactivate', payload: {reviewed: true, reviewer: 'Second reviewer', reason: 'Withdraw project activation.', id: p.knowledge.releases.at(-1).id, stamp: knowledgeStamp(p)}}, AT, 'author').document, {upgrade: false});
     const md = architectureMarkdown(withFinalReview(off)).markdown;
