@@ -335,10 +335,12 @@ export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),
  // The pinned organisation releases count against their own limit, not the project's (GR-DOM-09).
  // A knowledge library is told what to do at the bound (ruling E3): it holds one tranche, and the next goes into another.
  const {organizationReleases:_pinned,...own}=s;if(JSON.stringify(own).length>8000000)throw Error(s.library?.enabled===true?'This knowledge library has reached its storage limit (8,000,000 characters): start another library for the next tranche.':'This project knowledge collection has reached its storage limit. Export it before extending it.');
- // A design package's command (rc44, wp1 S3: the crosswalk's and the pins') writes no line into the family's log and
- // moves no version, which the design fingerprint reads: the boundary records it (the activity row), and its records
- // keep who took each step. So a person's or a second person's step moves no design stamp (rulings J3, P5 b, B10).
- if(!forms?.quiet){s.version++;s.history.push({at,actor,type:command.type,id:selected,reason:text(r.reason),reviewer:text(r.reviewer,180)});}return {document:p,selected};
+ // A design package's command (rc44, wp1: the crosswalk's and the pins') writes its line too, naming the package
+ // (forms.package), so one trail holds every step (the lead's ruling Y2, which turns back S3's quiet step). In a knowledge
+ // library the log is evidence beside the design; elsewhere such a line, and the version it moves, says nothing to the
+ // design fingerprint (review-domain.js designOf). So a person's or a second person's step moves no design stamp through
+ // the log (rulings J3, P5 b, B10), and its records keep who took it.
+ s.version++;s.history.push({at,actor,type:command.type,id:selected,reason:text(r.reason),reviewer:text(r.reviewer,180),...(forms?.package?{package:forms.package}:{})});return {document:p,selected};
 }
 export function knowledgeFindings(p){const s=knowledgeState(p);return s.links.filter(l=>l.status!=='retired'&&!claimReceiptCurrent(p,l.receipt)).map(l=>({id:'knowledge:'+l.id,chapter:11,chapterTitle:'Knowledge support',objectId:l.objectId,level:'warning',title:'Review changed architectural support',detail:l.receipt.claimId+' no longer has eligible support in the active project release. The original rationale is retained.'}));}
 export function knowledgeMarkdown(p){const s=knowledgeState(p);if(!s.history.length)return '';return '## Architecture knowledge and source history\n\nActive project releases: '+(s.pins.join(', ')||'Playbook methods only')+'. No calibrated quality scoring.\n\n'+s.links.map(l=>'- '+l.objectId+' ← '+l.receipt.claimId+' / '+l.receipt.releaseId+' · '+(l.status==='retired'?'Retired rationale':claimReceiptCurrent(p,l.receipt)?'Current support':'Support changed; review required')+'\n  '+l.reason+'\n  Source: '+l.receipt.repository+' / '+l.receipt.path+' @ '+l.receipt.revision+' lines '+l.receipt.lineStart+'–'+l.receipt.lineEnd+'; SHA-256 '+l.receipt.sourceHash).join('\n\n')+'\n\n'+s.withdrawals.map(w=>'- Withdrawn '+w.targetId+' · '+w.at+' · '+w.reason).join('\n')+'\n\n';}

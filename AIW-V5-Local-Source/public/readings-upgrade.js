@@ -46,7 +46,7 @@ import {documentClone,memoPass} from './document-memo.js';
 import {changeTargetStamp,changeFingerprint} from './changes-domain.js';
 import {appSnapshot,capabilitySnapshot,intakeStamp} from './technology-domain.js';
 import {inputSnapshot} from './technology-realisation-domain.js';
-import {reviewFingerprint,designFingerprint,computeChapterStamps,inheritedFindings,legacyStampOf,actionDefinition,registerReadingsUpgrade,DESIGN_FINGERPRINT,withDesignFingerprint} from './review-domain.js';
+import {reviewFingerprint,designFingerprint,computeChapterStamps,inheritedFindings,legacyStampOf,actionDefinition,registerReadingsUpgrade,DESIGN_FINGERPRINT,withDesignFingerprint,withLibraryLogAsDesign} from './review-domain.js';
 import {currentResponsibilityReading} from './logical-domain.js';
 import {currentComponentReading} from './realisation-domain.js';
 import {workingBasis,guideBasis} from './guidance-record.js';
@@ -73,8 +73,11 @@ const readingsDue=p=>keepsCopies(p)||readingsDefinitionOf(p)<READINGS_DEFINITION
 // was written before versions (fingerprint 1), unless it keeps no stamp of the design, which reads alike under any.
 const keepsDesignStamps=m=>!!(m.intake||m.checks||m.narrative?.sourceStamp||['reviews','baselines','actions','traces','dispositions'].some(k=>list(m[k]).length));
 export const designFingerprintOf=p=>{const m=p?.finalReview;return !plain(m)?DESIGN_FINGERPRINT:Number.isInteger(m.designFingerprint)?m.designFingerprint:keepsDesignStamps(m)?1:DESIGN_FINGERPRINT;};
+// (rc44, S0-w3-stamps; ruling Y2) A knowledge library whose stamps of the whole design were taken while its log was
+// design (before this build): carried over once (toLibraryLog), then marked (finalReview.libraryLogUpgrade).
+const libraryLogDue=p=>p?.knowledge?.library?.enabled===true&&plain(p.finalReview)&&!p.finalReview.libraryLogUpgrade&&keepsDesignStamps(p.finalReview);
 export function needsReadingsUpgrade(p){
- return readingsDue(p)||designFingerprintOf(p)<DESIGN_FINGERPRINT;
+ return readingsDue(p)||designFingerprintOf(p)<DESIGN_FINGERPRINT||libraryLogDue(p);
 }
 // Every value of a part of the document, depth first, except the frozen baselines (finalReview.baselines). fn(value,
 // holder, key) answers what to descend into (a falsy answer: nothing).
@@ -136,8 +139,30 @@ const caseStamps=p=>new Map(architectureCases(p).map(c=>[c.id,caseReviewBasis(p,
 // Readings are converted under the design fingerprint the document's stamps were taken at, then the fingerprint upgraded.
 export function upgradeReadings(p){
  if(!p||typeof p!=='object'||!needsReadingsUpgrade(p))return p;
- const fingerprint=designFingerprintOf(p),q=readingsDue(p)?withDesignFingerprint(fingerprint,()=>toCurrentReadings(p)):documentClone(p);
- return fingerprint<DESIGN_FINGERPRINT?toDesignFingerprint(q):q;
+ const fingerprint=designFingerprintOf(p),q=readingsDue(p)?withDesignFingerprint(fingerprint,()=>toCurrentReadings(p)):documentClone(p),r=fingerprint<DESIGN_FINGERPRINT?toDesignFingerprint(q):q;
+ return libraryLogDue(r)?toLibraryLog(r):r;
+}
+// A library's log leaves its design (rc44, S0-w3-stamps; the lead's ruling Y2: in a knowledge library knowledge.history
+// and knowledge.version are the family's log, review-domain.js designOf). The design is unchanged; only what its stamps
+// of the whole design read. As for fingerprint 2 below: each stamp of the design, of its version and of each treated
+// finding is taken with the log read as design and as the log, a stored value equal to the first (it was current)
+// becomes the second, one that was not stays as it was; a frozen baseline is answered through the one alias table,
+// chained through an earlier one. So a library stored before this build reads with the same findings, and its stamps move
+// once, at its first read here. The stamps the upgrade read stay on record (finalReview.libraryLogUpgrade), which also
+// says it is done.
+function toLibraryLog(q){
+ const m=q.finalReview,findingIds=treatedFindingIds(q),before=withLibraryLogAsDesign(()=>designStamps(q,findingIds)),after=designStamps(q,findingIds),version=m.version,map=new Map();
+ record(map,before.source,after.source);record(map,before.source+':'+version,after.source+':'+version);
+ recordFindings(map,before.findings,after.findings);
+ const verified=list(m.actions).map(a=>!!a.verification&&a.verification.stamp===reviewFingerprint(actionDefinition(a)));
+ translate(q,m,map);
+ list(m.actions).forEach((a,i)=>{if(verified[i])a.verification={...a.verification,stamp:reviewFingerprint(actionDefinition(a))};});
+ if(list(m.baselines).length){
+  const old=m.readingsUpgrade,aliases={};for(const [id,b] of Object.entries(before.chapters)){const legacy=old?.chapters?.[id]?.[b]??b,a=after.chapters[id];if(a!==legacy||old?.chapters?.[id])aliases[id]={[a]:legacy};}
+  m.readingsUpgrade={design:{[after.source]:old?.design?.[before.source]??before.source},chapters:aliases};
+ }
+ m.libraryLogUpgrade={design:{[after.source]:before.source}};
+ return q;
 }
 function toCurrentReadings(p){
  const copies=keepsCopies(p),whole=copies?withReadingsDefinition(1,()=>convertCopies(p)):p,from=copies?1:readingsDefinitionOf(p);

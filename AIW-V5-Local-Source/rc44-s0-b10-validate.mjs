@@ -204,7 +204,9 @@ add('B10.6 (ruling Y2): in a design project (no library mark) a line a package\'
 // ------------------------------------------------------------------------------------------------ B10.7 (Y2: a library stored under the start commit)
 add('B10.7 (ruling Y2): a library stored under the start commit reads with the same findings; its design stamp moves once, at the first read under this build, and this case records exactly what moves (for the merge evidence)', async () => {
   await import('./worker.js'); const G = golden(), stored = G.library.document;
-  const now = R.readings(stored), digests = R.digests(stored), moved = Object.keys(G.library.digests).filter(k => digests[k] !== G.library.digests[k]).sort();
+  // The first read under this build (the server's read: withFinalReview with the readings upgrade, as worker.js reads a row).
+  const first = read(stored), now = R.readings(first), digests = R.digests(first), moved = Object.keys(G.library.digests).filter(k => digests[k] !== G.library.digests[k]).sort();
+  assert.deepEqual(first.finalReview.libraryLogUpgrade, {design: {[JSON.parse(now.stamps).design]: G.library.stamps.design}}, 'the upgrade keeps the stamp it read, and says it is done');
   assert.equal(sha(unstamped(now.findings)), G.library.findings, 'the same findings, what each says (its stamp aside)');
   assert.equal(sha(unstamped(now.readiness)), G.library.readiness, 'the same readiness');
   const stamps = JSON.parse(now.stamps);
@@ -212,10 +214,11 @@ add('B10.7 (ruling Y2): a library stored under the start commit reads with the s
   assert.notEqual(stamps.evidence, G.library.stamps.evidence, 'the evidence stamp moves: the log joins the evidence');
   // What moves, exactly: the stamps, the findings' stamps that are taken of the whole design, and what prints them.
   assert.deepEqual(moved, ['findings', 'stamps'], 'what moves at the first read: ' + JSON.stringify(moved));
-  assert.equal(rv.narrativeCurrent(read(stored)), G.library.narrativeCurrent, 'the confirmed narrative reads as it did');
-  // Once: the document as the first read leaves it reads the same at every later read.
-  const first = read(stored), again = read(JSON.parse(JSON.stringify(first)));
-  assert.equal(R.digests(again).stamps, R.digests(first).stamps, 'the stamps move once, not at each read');
+  assert.equal(rv.narrativeCurrent(first), G.library.narrativeCurrent, 'the confirmed narrative reads as it did');
+  // Once: the document as the first read leaves it (the next save stores it) reads the same at every later read.
+  const again = read(JSON.parse(JSON.stringify(first)));
+  assert.deepEqual(R.digests(again), digests, 'the stamps move once, not at each read'); assert.equal(again.finalReview.narrative.sourceStamp, first.finalReview.narrative.sourceStamp);
+  assert.notEqual(first.finalReview.narrative.sourceStamp, stored.finalReview.narrative.sourceStamp, 'the narrative\'s stamp is carried over to the stamp the design has now');
   console.log('    B10.7 moves at the first read: design ' + G.library.stamps.design + ' -> ' + stamps.design + ', design version ' + G.library.stamps.designVersion + ' -> ' + stamps.designVersion + ', evidence ' + G.library.stamps.evidence + ' -> ' + stamps.evidence + '; readings moved: ' + moved.join(', '));
 });
 
