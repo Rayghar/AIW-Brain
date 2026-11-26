@@ -21,7 +21,7 @@
 // the command types of the four designs that will register here are free, and every built-in one is taken.
 // Run: npm run test:rc44-s0-extensions
 import assert from 'node:assert/strict';
-import {readFileSync, existsSync, writeFileSync, mkdirSync, readdirSync, rmSync} from 'node:fs';
+import {readFileSync, existsSync, writeFileSync, mkdirSync, readdirSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import * as R from './rc44-s0-readings.mjs';
