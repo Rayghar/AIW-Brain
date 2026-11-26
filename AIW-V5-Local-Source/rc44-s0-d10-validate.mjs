@@ -188,7 +188,8 @@ await block('D10.7 a stub\'s needs and its package\'s keys', async () => {
     for (const k of keys) { const d = structuredClone(R.reference('bank-payment')); if (MARKER[e.id] && MARKER[e.id] !== k) put(d, MARKER[e.id], {}); put(d, k, []); (stub.needs(d) ? held : missed).push(e.id + ' ' + k); } }
   assert.deepEqual(missed, [], 'each stub\'s needs holds for a document that holds any key its package states (held: ' + held.join(', ') + ')');
   for (const t of R.REFERENCES) assert.deepEqual(all.filter(s => s.needs(R.reference(t))).map(s => s.id), [], t + ': no stub asks for anything');
-  pass('D10.7: each stub\'s needs holds for a document that holds any one key its package states (' + held.length + ' keys: ' + held.join(', ') + '); for the references no stub asks for anything');
+  { const F = await import('./rc44-wp1-knowledge-fixtures.mjs'); assert.deepEqual(all.filter(s => s.needs(F.blankProject('rc44-s0-d10-blank'))).map(s => s.id), [], 'a blank project: no stub asks for anything'); }
+  pass('D10.7: each stub\'s needs holds for a document that holds any one key its package states (' + held.length + ' keys: ' + held.join(', ') + '); for the references and a blank project no stub asks for anything');
 });
 
 await block('D10.8 the one shared entry', async () => {

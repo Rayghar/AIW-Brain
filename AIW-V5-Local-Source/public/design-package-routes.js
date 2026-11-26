@@ -10,12 +10,12 @@
 // a Chapter 3 decision), and for one that holds any key the package states (its design rows, designKeys, evidenceKeys),
 // whatever the key holds: the package's rows read each such key, so without the package the browser would read the
 // design's stamps as no server does (the fix-up of S0-D10; a package that marks its records with a key of its own asks
-// for the marker, beside which its commands write its other keys: p30). `load` is the one dynamic import of the one shared lazy entry of the packages' first-draw
-// readers, design-package-readers.js, which registers every package (the lead's ruling Y1, built by S0-D10: before it,
-// each stub loaded the lazy entry of its package's surface, so that a document with deployment records loaded the
-// Chapter 10 Model view, 855 KB, before its first draw). project-store.js imports this file and nothing else does: it
-// must stay out of the entry script (entry.js), whose own dynamic imports are measured as the route (client-bundle.mjs
-// sizeReport), or the packages would be counted there.
+// for the marker, beside which its commands write its other keys: p30). `load` is the one dynamic import of the one
+// shared lazy entry of the packages' first-draw readers, design-package-readers.js, which registers every package (the
+// lead's ruling Y1, built by S0-D10: before it, each stub loaded the lazy entry of its package's surface, so that a
+// document with deployment records loaded the Chapter 10 Model view, 855 KB, before its first draw). project-store.js
+// imports this file and nothing else does: it must stay out of the entry script (entry.js), whose own dynamic imports
+// are measured as the route (client-bundle.mjs sizeReport), or the packages would be counted there.
 //
 // A slice that adds a package adds its line below and its line in design-packages.js and design-package-readers.js.
 import {registerExtension} from './design-extensions.js';
