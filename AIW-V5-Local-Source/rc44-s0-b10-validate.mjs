@@ -84,6 +84,19 @@ const read = p => rv.withFinalReview(clone(p));
 // recaptured).
 const FROZEN = 'rc44-s0-b10-frozen.json';
 const baselineSays = q => { const bs = q.finalReview.baselines || [], L = R.readings(q); return {changes: bs.map(b => rv.baselineChanges(q, b)), current: bs.map(b => rv.baselineCurrent(q, b)), steps: rv.finalFindings(q).map(f => [f.id, f.title, f.level]), stamps: JSON.parse(L.stamps), findings: sha(unstamped(L.findings)), readiness: sha(unstamped(L.readiness))}; };
+// (the fix-up, must-fix 4) The history panel as the start commit drew it for the stored library and for the same library
+// with its mark cleared (a design project): the family's log joined with the project activity's rows of the package's
+// steps (the rows the server records for each command: its type, the record it answered, who and when, as stepsOf read
+// them). `--capture-panel <sha>`, run on the start commit, prints each panel's trail; captured from 4349bb6 into
+// rc44-s0-b10-panel.json (never recaptured).
+const PANEL = 'rc44-s0-b10-panel.json';
+const trailOf = html => { const s = html.slice(html.indexOf('Recorded knowledge history')), count = Number(/^Recorded knowledge history · (\d+)</.exec(s)?.[1]); return {count, steps: [...s.matchAll(/<p>(?:<time[^>]*>[^<]*<\/time>|[^<]*) · ([a-z-]+) · ([^<·]+?)(?: · ([^<]+))?<br>/g)].map(m => [m[1], m[2], m[3] ?? null]).sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)))}; };
+const activityOf = lib => { const d = lib.knowledge, row = d.crosswalk?.[0], pin = d.conceptPins?.[0], link = d.conceptLinks?.[0]; return [['knowledge.crosswalk', row?.id, 'architect'], ['knowledge.crosswalk-review', row?.id, 'reviewer'], ['knowledge.concept-pin', pin?.id, 'architect'], ['knowledge.concept-link', link?.id, 'architect']].map(([command, objectId, actor]) => ({command, objectId, actor, at: AT, reason: 'A step of the package.'})); };
+if (process.argv.includes('--capture-panel')) {
+  await import('./worker.js'); const KW = await import('./public/knowledge-workspace-ui.js'), lib = JSON.parse(readFileSync(BASELINE, 'utf8')).library.document, steps = activityOf(lib);
+  console.log(JSON.stringify({capturedFrom: process.argv[process.argv.indexOf('--capture-panel') + 1] || 'working tree', activity: steps, library: trailOf(KW.renderKnowledgeReleases(read(lib), steps)), design: trailOf(KW.renderKnowledgeReleases(read(unmarked(lib)), steps))}));
+  process.exit(0);
+}
 if (process.argv.includes('--capture-frozen')) {
   await import('./worker.js'); let p = rv.withFinalReview(clone(JSON.parse(readFileSync(BASELINE, 'utf8')).library.document), {upgrade: false});
   p = rv.withFinalReview(rv.applyFinalReviewCommand(p, {type: 'review.checks', payload: {stamp: rv.reviewDesignStamp(p)}}, AT, 'architect').document, {upgrade: false});
@@ -246,6 +259,25 @@ add('B10.7 (ruling Y2): a library stored under the start commit reads with the s
   assert.deepEqual([upgrade?.design?.[says.stamps.design], upgrade?.evidence?.[says.stamps.evidence]], [Z.says.stamps.design, Z.says.stamps.evidence], 'the baseline is answered for through the alias table, its design stamp and the evidence it was frozen beside');
   assert.deepEqual(baselineSays(read(JSON.parse(JSON.stringify(ff)))), says, 'once: a later read reads the same');
   console.log('    B10.7 a baseline frozen on the start commit: design ' + Z.says.stamps.design + ' -> ' + says.stamps.design + ', evidence ' + Z.says.stamps.evidence + ' -> ' + says.stamps.evidence + ', both answered through finalReview.readingsUpgrade; the baseline reads ' + JSON.stringify(says.changes) + ', current ' + says.current);
+});
+
+// ------------------------------------------------------------------------------------------------ B10.8 (the fix-up, must-fix 4: one trail for a stored document)
+add('B10.8 (rulings Y2 and X4; the fix-up, must-fix 4): a document stored on the start commit holds the package\'s steps only in its records (its steps were quiet, and the panel joined the activity): at its first read here each step its records keep (who, when) is written into the family\'s log, naming the package, and the version moves by as many; the panel drawn from the log alone holds the same steps the start commit drew with its activity, in a library and in a design project; the design project reads exactly as there, and the library\'s stamps move once (B10.7)', async () => {
+  await import('./worker.js'); const KW = await import('./public/knowledge-workspace-ui.js'), G = golden(), P = JSON.parse(readFileSync(PANEL, 'utf8')), stored = G.library.document;
+  for (const [name, doc, was] of [['library', stored, P.library], ['design project', unmarked(stored), P.design]]) {
+    const first = read(doc), added = lines(first).filter(h => h.package === PACKAGE);
+    assert.deepEqual(added.map(h => [h.type, h.id, h.actor]).sort(), P.activity.map(e => [e.command, e.objectId, e.actor]).sort(), name + ': one line for each step the package\'s records keep, naming the package, with who took it');
+    assert.equal(lines(first).length, lines(doc).length + added.length, name + ': the lines the document held stand'); assert.deepEqual(lines(first).filter(h => !h.package), lines(doc), name + ': in their order');
+    assert.equal(first.knowledge.version, doc.knowledge.version + added.length, name + ': the version moves by as many lines');
+    assert.deepEqual(trailOf(KW.renderKnowledgeReleases(first)), was, name + ': the panel holds the steps the start commit drew with its activity');
+    assert.deepEqual(trailOf(KW.renderKnowledgeReleases(read(JSON.parse(JSON.stringify(first))))), was, name + ': once: a later read writes nothing more');
+    assert.equal(lines(read(JSON.parse(JSON.stringify(first)))).length, lines(first).length);
+  }
+  // A design project reads exactly as on the start commit: the lines are bookkeeping there.
+  { const now = R.digests(read(unmarked(stored))), was = G.design['library-unmarked']; for (const key of Object.keys(was)) assert.equal(now[key], was[key], 'library-unmarked at its first read: the reading “' + key + '” moved'); }
+  // A document whose package records keep no step, or that holds a line naming the package, gains no line.
+  { const d = F.legacyKnowledge().document; assert.equal(JSON.stringify(read(d).knowledge.history), JSON.stringify(rv.withFinalReview(clone(d), {upgrade: false}).knowledge.history), 'a document without the package\'s records gains no line'); }
+  { const L = await libraryDocument(), before = lines(L.document).length; assert.equal(lines(read(L.document)).length, before, 'a library written by this build (its steps wrote their lines) gains none'); }
 });
 
 // ------------------------------------------------------------------------------------------------ the runner

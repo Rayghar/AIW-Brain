@@ -46,7 +46,7 @@ import {documentClone,memoPass} from './document-memo.js';
 import {changeTargetStamp,changeFingerprint} from './changes-domain.js';
 import {appSnapshot,capabilitySnapshot,intakeStamp} from './technology-domain.js';
 import {inputSnapshot} from './technology-realisation-domain.js';
-import {reviewFingerprint,designFingerprint,computeChapterStamps,inheritedFindings,legacyStampOf,actionDefinition,registerReadingsUpgrade,DESIGN_FINGERPRINT,withDesignFingerprint,withLibraryLogAsDesign,evidenceStamp} from './review-domain.js';
+import {reviewFingerprint,designFingerprint,computeChapterStamps,inheritedFindings,legacyStampOf,actionDefinition,registerReadingsUpgrade,DESIGN_FINGERPRINT,withDesignFingerprint,withLibraryLogAsDesign,evidenceStamp,withFinalReview} from './review-domain.js';
 import {currentResponsibilityReading} from './logical-domain.js';
 import {currentComponentReading} from './realisation-domain.js';
 import {workingBasis,guideBasis} from './guidance-record.js';
@@ -76,8 +76,36 @@ export const designFingerprintOf=p=>{const m=p?.finalReview;return !plain(m)?DES
 // (rc44, S0-w3-stamps; ruling Y2) A knowledge library whose stamps of the whole design were taken while its log was
 // design (before this build): carried over once (toLibraryLog), then marked (finalReview.libraryLogUpgrade).
 const libraryLogDue=p=>p?.knowledge?.library?.enabled===true&&plain(p.finalReview)&&!p.finalReview.libraryLogUpgrade&&keepsDesignStamps(p.finalReview);
+// (the fix-up of S0-w3-stamps, must-fix 4; rulings X4 and Y2) A document stored before this build holds the knowledge
+// package's steps in the package's records only: they were quiet (no line in the family's log), and the history panel
+// joined them from the project activity, which is retired. Each step its records keep, who took it and when (a row's
+// proposals and edits, its review, a person's confirmation, its retirement; a pin, a repin, an unpin; a link and its
+// retirement; a migration's proposals and edits and a person's confirmation), is one line of the log naming the package,
+// written once, at the first read, as the step would have written it; a step moved aside by an import names nobody and
+// writes none. Due while the document holds such a step and no line names the package.
+const PACKAGE='p10-knowledge',str=v=>typeof v==='string'?v:'';
+function packageSteps(k){
+ const out=[],line=(type,id,x,reason,reviewer='')=>{if(plain(x)&&typeof x.at==='string'&&typeof x.actor==='string'&&x.actor)out.push({at:x.at,actor:x.actor,type:'knowledge.'+type,id,reason:str(reason),reviewer:str(reviewer),package:PACKAGE});};
+ const confirmed=(type,x)=>{const c=x.provenance?.reviewed;if(x.confirmed===true&&c?.how==='confirmed')line(type,x.id,{at:c.at,actor:c.by},'');};
+ const repins=new Map(list(k.conceptMigrations).filter(m=>plain(m?.review)&&m.review.pinId).map(m=>[m.review.pinId,m.review]));
+ for(const x of list(k.crosswalk).filter(plain)){for(const h of list(x.history))line('crosswalk',x.id,h,h?.change);if(plain(x.review))line('crosswalk-review',x.id,x.review,x.review.reason,x.review.reviewer);confirmed('crosswalk-confirm',x);if(plain(x.retired))line('crosswalk-retire',x.id,x.retired,x.retired.reason,x.retired.reviewer);}
+ for(const x of list(k.conceptPins).filter(plain))for(const h of list(x.history)){const r=repins.get(x.id);if(h?.change==='Pinned')line(r?'concept-repin':'concept-pin',x.id,h,(r||x).reason,(r||x).reviewer);else if(h?.change==='Retired')line('concept-unpin',x.id,h,x.retired?.reason,x.retired?.reviewer);}
+ for(const x of list(k.conceptLinks).filter(plain)){line('concept-link',x.id,x,x.reason,x.reviewer);if(plain(x.retired))line('concept-unlink',x.id,x.retired,x.retired.reason,x.retired.reviewer);}
+ for(const x of list(k.conceptMigrations).filter(plain)){for(const h of list(x.history))line('concept-migration',x.id,h,h?.change);confirmed('concept-migration-confirm',x);}
+ return out;
+}
+const packageRecords=k=>['crosswalk','conceptPins','conceptLinks','conceptMigrations'].some(key=>list(k?.[key]).length);
+const packageLinesDue=p=>plain(p?.knowledge)&&packageRecords(p.knowledge)&&!list(p.knowledge.history).some(h=>h?.package)&&packageSteps(p.knowledge).length>0;
+// The lines, by time, each after the lines that stand at its time; the version moves by as many (review-domain.js
+// designOf: in a design project they are bookkeeping, in a library the log is evidence).
+function withPackageLines(q){
+ const k=q.knowledge,steps=packageSteps(k).sort((a,b)=>a.at.localeCompare(b.at)),had=list(k.history),out=[];let i=0;
+ for(const x of had){while(i<steps.length&&steps[i].at<String(x?.at))out.push(steps[i++]);out.push(x);}
+ out.push(...steps.slice(i));k.history=out;k.version=(Number.isInteger(k.version)?k.version:had.length)+steps.length;
+ return q;
+}
 export function needsReadingsUpgrade(p){
- return readingsDue(p)||designFingerprintOf(p)<DESIGN_FINGERPRINT||libraryLogDue(p);
+ return readingsDue(p)||designFingerprintOf(p)<DESIGN_FINGERPRINT||libraryLogDue(p)||packageLinesDue(p);
 }
 // Every value of a part of the document, depth first, except the frozen baselines (finalReview.baselines). fn(value,
 // holder, key) answers what to descend into (a falsy answer: nothing).
@@ -140,7 +168,7 @@ const caseStamps=p=>new Map(architectureCases(p).map(c=>[c.id,caseReviewBasis(p,
 export function upgradeReadings(p){
  if(!p||typeof p!=='object'||!needsReadingsUpgrade(p))return p;
  const fingerprint=designFingerprintOf(p),q=readingsDue(p)?withDesignFingerprint(fingerprint,()=>toCurrentReadings(p)):documentClone(p),r=fingerprint<DESIGN_FINGERPRINT?toDesignFingerprint(q):q;
- return libraryLogDue(r)?toLibraryLog(r):r;
+ return libraryLogDue(r)?toLibraryLog(r):packageLinesDue(r)?toPackageLines(r):r;
 }
 // A library's log leaves its design (rc44, S0-w3-stamps; the lead's ruling Y2: in a knowledge library knowledge.history
 // and knowledge.version are the family's log, review-domain.js designOf). The design is unchanged; only what its stamps
@@ -151,9 +179,21 @@ export function upgradeReadings(p){
 // once, at its first read here. The stamps the upgrade read stay on record (finalReview.libraryLogUpgrade), which also
 // says it is done.
 function toLibraryLog(q){
- const findingIds=treatedFindingIds(q),before=withLibraryLogAsDesign(()=>designStamps(q,findingIds)),after=designStamps(q,findingIds);
+ const findingIds=treatedFindingIds(q),before=withLibraryLogAsDesign(()=>designStamps(q,findingIds));
+ // (the fix-up, must-fix 4: the package's steps of a library stored before this build are written into its log in the same
+ // pass, so the stamps are carried over both at once)
+ if(packageLinesDue(q))withPackageLines(q);
+ const after=designStamps(q,findingIds);
  carry(q,before,after);
  q.finalReview.libraryLogUpgrade={design:{[after.source]:before.source}};
+ return q;
+}
+// The package's lines alone (must-fix 4): in a design project they say nothing to either fingerprint; in a library whose
+// log upgrade is done they are evidence, and the stamps it keeps are carried over them.
+function toPackageLines(q){
+ const library=q.knowledge?.library?.enabled===true&&plain(q.finalReview)&&keepsDesignStamps(q.finalReview),findingIds=library?treatedFindingIds(q):null,before=library?designStamps(q,findingIds):null;
+ withPackageLines(q);
+ if(library)carry(q,before,designStamps(q,findingIds));
  return q;
 }
 // The stamps of the whole design carried over a change that leaves the design as it was (toLibraryLog above, and the
@@ -177,12 +217,12 @@ function carry(q,before,after){
 // A recovery import moves every record stamp aside (the lead's ruling Z8: provenance.js keepImportedStamps, called by
 // recovery-service.js). The design fingerprint reads a built-in record's provenance, so the move changes the stamps of
 // the whole design though the design is as it was: they are carried over in the same pass (the fix-up of S0-w3-stamps,
-// must-fix 2), each taken before and after the move under the reading the document's stamps were taken at (its design
+// must-fix 2), each taken before and after the move of the document as a read gives it, under the reading its stamps were taken at (its design
 // fingerprint, and a library's log as design when its log upgrade is still due). A document that keeps no stamp of the
 // design, or whose stamps cannot be taken, is moved as it is. Answers what `move` answers (how many records it moved).
 export function keepingDesignStamps(p,move){
  const m=p?.finalReview;if(!plain(m)||!keepsDesignStamps(m))return move(p);
- const findingIds=treatedFindingIds(p),version=designFingerprintOf(p),log=libraryLogDue(p),take=()=>{try{const f=()=>withDesignFingerprint(version,()=>designStamps(p,findingIds));return log?withLibraryLogAsDesign(f):f();}catch{return null;}};
+ const findingIds=treatedFindingIds(p),version=designFingerprintOf(p),log=libraryLogDue(p),take=()=>{try{const q=withFinalReview(p,{upgrade:false}),f=()=>withDesignFingerprint(version,()=>designStamps(q,findingIds));return log?withLibraryLogAsDesign(f):f();}catch{return null;}};
  const before=take(),moved=move(p),after=before&&moved?take():null;
  if(after)carry(p,before,after);
  return moved;

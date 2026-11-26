@@ -195,10 +195,10 @@ try {
   // expectation with, exactly, the import's carry-over of the stamps of the whole design: a stored stamp of the design
   // that was current becomes the stamp taken after the move, and the alias table answers for the frozen baseline in each
   // chapter whose section the move changed, keyed by the chapter's stamp after the move and naming the stamp before it.)
-  const SKIP = ['id', 'name', 'workspace', 'finalReview', 'knowledge', 'workbench', 'changes'];
+  const SKIP = ['id', 'name', 'workspace', 'finalReview', 'knowledge', 'workbench', 'changes'], MOVED = k => !SKIP.includes(k) || k === 'knowledge';
   const moveStamps = root => { let n = 0; const seen = new Set(), walk = x => { if (!x || typeof x !== 'object' || seen.has(x)) return; seen.add(x); if (Array.isArray(x)) { x.forEach(walk); return; } const pv = x.provenance; if (pv && typeof pv === 'object' && !Array.isArray(pv) && ('author' in pv || 'reviewed' in pv)) { const {author, reviewed, imported, ...rest} = pv; x.provenance = {...rest, imported: {...(author !== undefined ? {author} : {}), ...(reviewed !== undefined ? {reviewed} : {}), ...(imported !== undefined ? {earlier: imported} : {})}}; n++; } for (const k of Object.keys(x)) if (k !== 'provenance') walk(x[k]); }; walk(root); return n; };
   const kept = structuredClone(original); let keptStamps = 0;
-  for (const k of Object.keys(kept)) if (!SKIP.includes(k)) keptStamps += moveStamps(kept[k]);
+  for (const k of Object.keys(kept)) if (MOVED(k)) keptStamps += moveStamps(kept[k]);
   { const n = kept.finalReview?.narrative; if (n) keptStamps += moveStamps({n}); }
   const changedKeys = [...new Set([...Object.keys(kept), ...Object.keys(restored)])].filter(k => JSON.stringify(kept[k]) !== JSON.stringify(restored[k]));
   assert.deepEqual(changedKeys.filter(k => !SKIP.includes(k)), [], 'every other section restores exactly');
@@ -207,7 +207,7 @@ try {
   // The review restores with its imported authority neutralised (recovery-service.js), and nothing else changed.
   const expected = neutraliseImportedAuthority({finalReview: structuredClone(original.finalReview)}, restored.finalReview.imported.at).finalReview;
   expected.imported.stamps = keptStamps;
-  { const read = d => withFinalReview(structuredClone(d), {upgrade: false}), before = read(original), after = read({...structuredClone(original), ...Object.fromEntries(Object.keys(kept).filter(k => !SKIP.includes(k)).map(k => [k, kept[k]]))});
+  { const read = d => withFinalReview(d, {upgrade: false}), before = read(structuredClone(original)), after = read({...structuredClone(original), ...Object.fromEntries(Object.keys(kept).filter(MOVED).map(k => [k, kept[k]]))});
     const was = designFingerprint(before), now = designFingerprint(after), version = original.finalReview.version, chaptersBefore = computeChapterStamps(before), chaptersAfter = computeChapterStamps(after);
     const translated = JSON.parse(JSON.stringify(expected, (k, v) => (k === 'baselines' ? v : v === was ? now : v === was + ':' + version ? now + ':' + version : v)));
     translated.baselines = expected.baselines;
@@ -218,7 +218,7 @@ try {
     const table = {design: {[now]: was}, chapters: Object.fromEntries(moved.map(id => [id, {[chaptersAfter[id]]: chaptersBefore[id]}])), ...(evidenceNow !== evidenceWas ? {evidence: {[evidenceNow]: evidenceWas}} : {})};
     const {readingsUpgrade, ...review} = restored.finalReview, [x, y] = [JSON.stringify(review), JSON.stringify(translated)];
     let at = -1; if (x !== y) { at = 0; while (at < x.length && x[at] === y[at]) at++; } const near = at < 0 ? '' : ' (from character ' + at + ': ' + x.slice(Math.max(0, at - 60), at + 140) + ' | expected ' + y.slice(Math.max(0, at - 60), at + 140) + ')';
-    assert.equal(x, y, 'the review, its baseline whole, with imported authority neutralised and the stamps of the whole design carried over the move' + near);
+    assert.equal(x, y, 'the review, its baseline whole, with imported authority neutralised and the stamps of the whole design carried over the move' + near + (near ? ' [the design stamp before the move ' + was + ', after it ' + now + ']' : ''));
     assert.equal(JSON.stringify(readingsUpgrade), JSON.stringify(table), 'the alias table answers for the frozen baseline in exactly the chapters the move changed'); }
   assert.equal(JSON.stringify(without(restored.knowledge, ['pins', 'history', 'repositorySync', 'claims', 'releases'])), JSON.stringify(without(original.knowledge, ['pins', 'history', 'repositorySync', 'claims', 'releases'])));
   assert.equal(JSON.stringify(without(restored.workbench, ['catalogue', 'views'])), JSON.stringify(without(original.workbench, ['catalogue', 'views'])));
