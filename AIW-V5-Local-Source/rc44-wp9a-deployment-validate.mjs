@@ -133,7 +133,10 @@ await block('S1.0 the marker', async () => {
     assert.deepEqual([reviewSourceStamp(retaken), evidenceStamp(retaken), retaken.runtime.version], [reviewSourceStamp(copy), evidenceStamp(copy), copy.runtime.version], 'taken again in the copy it moves no stamp and no version');
     // (ruling L5; was: [evidenceKeys, designKeys] are [['runtime.topology'], ['technology.domains', 'runtime.nodes']]) the
     // marker and the two collections are stated through S0's design row; no key of the package is evidence
-    assert.deepEqual([mine().evidenceKeys, mine().designKeys, Object.keys(mine().design)], [undefined, ['runtime.topology', 'technology.domains', 'runtime.nodes'], ['runtime.topology', 'technology.domains', 'runtime.nodes']]); }
+    // (wp9a slices 2 and 3; was: the three keys of slice 1, as designKeys and as the design row's keys) and the three collections of slices 2 and 3,
+    // each through the design row too, in the parts' order
+    { const KEYS = ['runtime.topology', 'technology.domains', 'runtime.nodes', 'runtime.failures', 'runtime.gates', 'runtime.copies'];
+      assert.deepEqual([mine().evidenceKeys, mine().designKeys, Object.keys(mine().design)], [undefined, KEYS, KEYS]); } }
   pass('S1.0: before the marker runtime.node, technology.domain, technology.domain-proposals and runtime.locate are refused; runtime.topology-start is refused for an agent account, a draft by Sol and an import, and for a person writes the marker, names the package in the document and is journalled; sent again it changes nothing; a template copy stays typed and clears who chose it; choosing it moves the design stamp through Chapter 10\'s version, and who chose it moves no stamp');
 });
 
@@ -652,15 +655,16 @@ await block('S1.13 zones compared only when they can be', () => {
     const q = structuredClone(p); spoil(q); assert.equal(level(q, ERR), 'error', why); assert.ok(T.hostingComparison(q, I.production).issues.some(x => x.kind === 'not-standing'), why); }
   // an untyped project and an environment whose zones are all named read as before: no such finding
   assert.ok(!ids10(doc(F.tidewater(), 'runtime.zone', {id: I.zone2, failureDomain: 'AZ-1'})).some(id => id.startsWith('topology-')));
-  // MARKED FOR SLICE 2 (ruling L2; the retirement list): two zones that share a stated cause (domainIds after the first)
-  // still read as independent in the built-in checks today. Slice 2's finding for a shared cause, evaluated over the
-  // ancestors, flips this: it then asserts the opposite.
+  // (ruling L2; slice 2 flips this case, as it was marked: was "SLICE 2 FLIPS THIS", the standby error undefined and planFacts reading two hosting
+  // domains, [fd, other]) two zones that share a stated cause (domainIds after the first) fail together: the built-in checks and the review desk read
+  // them as one failure domain (runtime-model.js zoneKey over hostingComparison's groups, over the ancestors), and the shared cause raises domain-shared
   { let q = doc(p, 'technology.domain', {title: 'Bergen AZ 2', scope: 'zone', cause: 'location'}); const other = q.technology.domains.at(-1).id;
     q = doc(q, 'technology.domain', {title: 'One power feed', scope: 'site', cause: 'power'}); const power = q.technology.domains.at(-1).id;
     q = doc(doc(q, 'runtime.locate', {zoneId: I.zone1, domainIds: [fd, power]}), 'runtime.locate', {zoneId: I.zone2, domainIds: [other, power]});
     assert.ok(T.hostingComparison(q, I.production).comparable, 'comparable');
-    assert.equal(level(q, 'standby:' + I.storePlan), undefined, 'SLICE 2 FLIPS THIS: a shared stated cause reads as independent in the built-in checks today'); assert.deepEqual(facts(q), [fd, other].sort()); }
-  pass('S1.13: the hosting zones of an environment are compared only when they can be (hostingComparison): partly typed, one hosting domain inside another\'s, or naming a domain, a cause or a node that is not standing, they raise one error of Chapter 10 that no treatment waives, names the zones and says what a person does; in every state of the reviewer\'s walk the six findings or the error stand; a shared stated cause still reads as independent (held for slice 2 to flip)');
+    assert.equal(level(q, 'standby:' + I.storePlan), 'error', 'a shared stated cause does not read as independent in the built-in checks'); assert.deepEqual(facts(q), [[fd, other].sort()[0]], 'nor at the review desk');
+    assert.equal(level(q, 'domain-shared:' + power), 'warning', 'and the cause they share is raised, not accepted'); }
+  pass('S1.13: the hosting zones of an environment are compared only when they can be (hostingComparison): partly typed, one hosting domain inside another\'s, or naming a domain, a cause or a node that is not standing, they raise one error of Chapter 10 that no treatment waives, names the zones and says what a person does; in every state of the reviewer\'s walk the six findings or the error stand; a shared stated cause no longer reads as independent (slice 2 flipped the marked case: ruling L2)');
 });
 
 // (the lead's ruling L3; the review's must-fix 3, should-fix 3 and 4) No zone or placement is left naming a record that
@@ -1074,7 +1078,8 @@ await block('S1.23 dismissing a proposal is no design change', () => {
   let p = doc(started(), 'technology.domain-proposals'); p = doc(p, 'runtime.node', {title: 'Drafted region', kind: 'region', origin: 'sol-draft'}, AGENT, SOL); p = checked(p);
   const fd = p.technology.domains.find(d => d.state === 'proposed' && d.origin === 'seeded').id, dn = p.runtime.nodes.find(n => n.state === 'proposed').id;
   assert.deepEqual(current(p), [true, true, true, true], 'Chapters 6 and 10 checked and handed off by a person');
-  assert.deepEqual(Object.keys(mine().quietProposals || {}).sort(), ['runtime.nodes', 'technology.domains'], 'the package states that its proposals say nothing to the design');
+  // (wp9a slices 2 and 3; was: ['runtime.nodes', 'technology.domains']) and of its three collections of slices 2 and 3
+  assert.deepEqual(Object.keys(mine().quietProposals || {}).sort(), ['runtime.copies', 'runtime.failures', 'runtime.gates', 'runtime.nodes', 'technology.domains'], 'the package states that its proposals say nothing to the design');
   // AIW's proposal and Sol's drafted node are dismissed: no version moves, no check or handoff is cleared
   let q = doc(p, 'record.retire', {id: fd, chapter: 6, reason: 'Not a failure domain of ours.'}, B);
   assert.equal(domainOf(q, fd), undefined); assert.deepEqual(q.retired.records.filter(x => x.id === fd).map(x => x.priorState), ['proposed']);
@@ -1149,8 +1154,16 @@ await block('S1.9 staging; candidate knowledge reaches no topology reading', () 
   for (const type of ['runtime.topology-start', 'technology.domain-proposals']) assert.ok(!canonical.stagedBy(type), type + ' is not staged');
   assert.throws(() => canonical.applyCanonical(F.tidewater(), {type: 'runtime.topology-start', payload: {}}, AT, A), /chapter review workflow/);
   // The types the later slices will state are still free, and none is stated before the slice that builds its readers.
-  for (const type of ['technology.capability-domains', 'technology.fallback', 'technology.domain-evidence', 'runtime.environment-link', 'runtime.transition', 'runtime.failure', 'runtime.failure-accept', 'runtime.gate', 'runtime.gate-evidence', 'runtime.copy', 'runtime.copy-proposals']) { assert.equal(boundary.extensionCommand(type), null, type + ' waits for its slice'); assert.equal(boundary.builtInType(type), false, type + ' is free'); }
-  assert.deepEqual(Object.keys(mine().commands).sort(), ['runtime.locate', 'runtime.node', 'runtime.topology-start', 'technology.domain', 'technology.domain-proposals']);
+  // (wp9a slices 2 and 3; was: all eleven types free, "waits for its slice") the seven types of slices 2 and 3 are the package's, each with the row its
+  // part states: the design edits staged and refused by who writes them where a draft must say so, the generator not staged, the two steps a second
+  // person's; the four the later slices build are still free
+  for (const type of ['technology.capability-domains', 'technology.fallback', 'technology.domain-evidence', 'runtime.transition']) { assert.equal(boundary.extensionCommand(type), null, type + ' waits for its slice'); assert.equal(boundary.builtInType(type), false, type + ' is free'); }
+  for (const type of ['runtime.environment-link', 'runtime.failure', 'runtime.failure-accept', 'runtime.gate', 'runtime.gate-evidence', 'runtime.copy', 'runtime.copy-proposals']) { const c = boundary.extensionCommand(type); assert.ok(c && c === mine().commands[type], type + ' is the package\'s'); assert.equal(boundary.builtInType(type), false, type + ' is no built-in type'); }
+  for (const type of ['runtime.environment-link', 'runtime.failure', 'runtime.gate', 'runtime.copy']) assert.ok(canonical.stagedBy(type) && typeof mine().commands[type].validate === 'function' && !mine().commands[type].second && !mine().commands[type].person, type + ' is a design edit a reviewed change may carry, refused by who writes it');
+  for (const type of ['runtime.failure-accept', 'runtime.gate-evidence', 'runtime.copy-proposals']) assert.ok(!canonical.stagedBy(type), type + ' is not staged');
+  for (const type of ['runtime.failure-accept', 'runtime.gate-evidence']) assert.equal(typeof mine().commands[type].second, 'function', type + ' is a second person\'s step');
+  // (wp9a slices 2 and 3; was: the five types of slice 1) and the seven of slices 2 and 3
+  assert.deepEqual(Object.keys(mine().commands).sort(), ['runtime.copy', 'runtime.copy-proposals', 'runtime.environment-link', 'runtime.failure', 'runtime.failure-accept', 'runtime.gate', 'runtime.gate-evidence', 'runtime.locate', 'runtime.node', 'runtime.topology-start', 'technology.domain', 'technology.domain-proposals']);
   // a reviewed change previews and applies the staged types through the package's own handler
   const {p, made} = typedTidewater(), commands = [{type: 'runtime.node', payload: {title: 'Bergen AZ 3', kind: 'availability-zone', parentId: made.region}}, {type: 'technology.domain', payload: {title: 'Bergen availability zone 3', scope: 'zone', cause: 'location', parentId: made.fdRegion}}];
   const preview = previewWorkingChange(p, commands, AT, A);
@@ -1163,7 +1176,7 @@ await block('S1.9 staging; candidate knowledge reaches no topology reading', () 
   assert.equal(k.knowledge.claims.length, 1); assert.notEqual(k.knowledge.claims[0].status, 'released', 'the claim is a candidate');
   const reading = q => JSON.stringify({keys: q.runtime.zones.map(runtimeModel.failureDomainKey), facts: planFacts(reasoningSource(q), q.runtime.plans.find(r => r.id === I.apiPlan)).domains, checks10: rt.runtimeFindings(q), checks6: technologyFindings(q), trail: kernel.requirementTrace(q, I.requirement).layers, topology: recordGraph(q).relationships.filter(e => ['sitsIn', 'failsWith', 'partOf'].includes(e.type)).map(e => [e.type, e.from, e.to, e.source]), proposals: doc(q, 'technology.domain-proposals').technology.domains.map(d => [d.id, d.title, d.state])});
   assert.equal(reading(k), reading(p), 'no candidate claim reaches the failure-domain reading, a check, the trail, the topology relations or the proposals');
-  pass('S1.9: technology.domain, runtime.node and runtime.locate are staged design edits (previewed and applied by the package\'s handler), the person\'s step and the generator are not; eleven command types of the later slices are free and unstated; an unreleased claim about the same records moves no topology reading');
+  pass('S1.9: technology.domain, runtime.node and runtime.locate are staged design edits (previewed and applied by the package\'s handler), the person\'s step and the generator are not; the seven command types of slices 2 and 3 are the package\'s with the rows their parts state, the four of the later slices free and unstated; an unreleased claim about the same records moves no topology reading');
 });
 
 await block('S1.11 the parts of the package', async () => {
@@ -1195,7 +1208,11 @@ await block('S1.11 the parts of the package', async () => {
     assert.throws(() => P.assembleParts('p-test', [{upgrade: one, upgradeNote: 'One.'}, {upgrade: two, upgradeNote: 'Two.'}]), /two parts state upgradeNote/);
     assert.throws(() => P.assembleParts('p-test', [{needs: () => true}]), /a part states “needs”, which the assembly does not carry/, 'what the assembly does not carry is refused, never dropped'); }
   // Slice 1 states one part; the other four are in place and state nothing yet.
-  for (const [file, name] of [['failures', 'FAILURES_PART'], ['gates', 'GATES_PART'], ['blueprints', 'BLUEPRINTS_PART'], ['fallback', 'FALLBACK_PART']]) assert.deepEqual((await import('./public/topology-' + file + '.js'))[name], {}, name + ' waits for its slice');
+  // (wp9a slices 2 and 3; was: the four other parts each {}, "waits for its slice") slices 2 and 3 fill their two parts, each with exactly these rows
+  // and its own record kinds; the other two still state nothing
+  for (const [file, name] of [['blueprints', 'BLUEPRINTS_PART'], ['fallback', 'FALLBACK_PART']]) assert.deepEqual((await import('./public/topology-' + file + '.js'))[name], {}, name + ' waits for its slice');
+  { const ROWS = ['objectTypes', 'records', 'layers', 'hops', 'commands', 'checks', 'lifecycle', 'quietProposals', 'provenance', 'design', 'designKeys'];
+    for (const [file, name, types] of [['failures', 'FAILURES_PART', ['failure']], ['gates', 'GATES_PART', ['gate', 'copy']]]) { const part = (await import('./public/topology-' + file + '.js'))[name]; assert.deepEqual([Object.keys(part), Object.keys(part.objectTypes)], [ROWS, types], name + ' states its rows'); } }
   // (ruling L2; was: the keys without `checks`, "slice 1 states no check") slice 1 states one check, Chapter 10's error
   // for zones that cannot be compared, and no upgrade step and no section (rulings J7 and J3; design b.4)
   // (ruling L3) and the restore rules of its own two collections
@@ -1205,7 +1222,8 @@ await block('S1.11 the parts of the package', async () => {
   // (ruling O2; was: the keys without trackPaths) and the built-in collections its tracker's mend changes
   assert.deepEqual(Object.keys(mine()).sort(), ['canRestore', 'checks', 'commands', 'design', 'designKeys', 'hops', 'id', 'layers', 'lifecycle', 'objectTypes', 'provenance', 'quietProposals', 'records', 'track', 'trackPaths'], 'slice 1 states one check, no upgrade step and no section');
   // (ruling T1; was: trackPaths ['runtime.zones', 'runtime.placements']) the fields the mend changes in each
-  assert.deepEqual(mine().quietProposals, {'technology.domains': true, 'runtime.nodes': true}); assert.deepEqual(mine().trackPaths, {'runtime.zones': ['nodeId', 'domainIds'], 'runtime.placements': ['nodeId']});
+  // (wp9a slices 2 and 3; was: the two collections of slice 1) and the three of slices 2 and 3
+  assert.deepEqual(mine().quietProposals, {'technology.domains': true, 'runtime.nodes': true, 'runtime.failures': true, 'runtime.gates': true, 'runtime.copies': true}); assert.deepEqual(mine().trackPaths, {'runtime.zones': ['nodeId', 'domainIds'], 'runtime.placements': ['nodeId']});
   assert.deepEqual(Object.keys(mine().checks), ['10'], 'the check is Chapter 10\'s');
   pass('S1.11: the package is one registration assembled from five parts, of which slice 1 fills one: tables joined, lists in order, emitters, trackers and a chapter\'s findings of every part; a row two parts state and a part the assembly does not carry are refused');
 });
@@ -1250,6 +1268,25 @@ const LAZY_SHARE = {modules: {'public/topology-blueprints.js': 10, 'public/topol
 // parts 10 B each, as before), exactly, and the share's lists and total are held to LAZY_SHARE's as before. The evidence of
 // slice 1 keeps LAZY_SHARE as it was measured.)
 const SHARED_MODULES = {'public/topology-blueprints.js': 10, 'public/topology-domain.js': 20892, 'public/topology-failures.js': 10, 'public/topology-fallback.js': 10, 'public/topology-gates.js': 10, 'public/topology.js': 1528};
+// (wp9a slices 2 and 3, the build wp9a-s2s3; ruling R4's share, set from the measurement at this build and pinned as slice 1's was; was: this build's
+// modules pinned to slice 1's LAZY_SHARE, and its lists at most 168 B) the two parts slices 2 and 3 fill, and topology-domain.js with the comparability
+// reader extended (ruling L2) and the helpers the parts share; lists: the holder's import and export lists (2,628 B at this build) less the adoption
+// record's holder's (2,374 B). LAZY_SHARE stays slice 1's record, which its evidence holds. Measured with bundleClient on this build; the figures are in
+// audit/rc44/evidence/wp9a-s2s3-route.json (BUILD_EVIDENCE), with the route before and after (owner decision AA2).
+// (the fix-up of wp9a-s2s3, owner decision AA2 as the build read it; was: topology-domain.js 22,697 B, topology-failures.js 19,382 B,
+// topology-gates.js 19,064 B, the lists at most 254 B and the share at most 62,956 B) re-measured at the fix-up's head, each module pinned exactly as
+// before: the draft reading of ruling L11 (d) and the index of what each zone fails with (topology-domain.js +1,801 B), the drafted rows of a gate
+// and H11's failing rows (topology-gates.js +1,788 B), H5 on the one grouping and the pass of an evaluation (topology-failures.js +313 B); the lists
+// +17 B for the two names the lazy entry now reads from route modules (judgementOf, memoPass). The figures are in BUILD_EVIDENCE's fixUp.
+const BUILD_SHARE = {modules: {'public/topology-blueprints.js': 10, 'public/topology-domain.js': 24498, 'public/topology-failures.js': 19695, 'public/topology-fallback.js': 10, 'public/topology-gates.js': 20852, 'public/topology.js': 1529}, lists: 271, total: 66865};
+const BUILD_EVIDENCE = 'audit/rc44/evidence/wp9a-s2s3-route.json';
+// (the lead's merge of wp9a-s2s3 onto S0-D10, ruling R4 with Y1 and owner decision AA2; old -> new. Was, on the build's branch: each module
+// pinned to BUILD_SHARE.modules as the Chapter 10 Model view's script held them, its lists against ADOPTION_HOLDER at most 271 B and the share at most
+// 66,865 B; and, on S0-D10's branch, each module pinned to SHARED_MODULES with the lists and the share at most LAZY_SHARE's, slice 1's. The package's
+// modules now sit in the shared first-draw entry's script with slices 2 and 3 in them: each module is pinned exactly to what node build.mjs measures
+// there at the merge, and the lists (the script's against the same build without the package, S0-D10's fix-up) and the share are held to the measure
+// at the merge. BUILD_SHARE stays the build's own record, which its evidence holds; SHARED_MODULES stays S0-D10's record of slice 1.)
+const MERGE_SHARE = {modules: {'public/topology-blueprints.js': 10, 'public/topology-domain.js': 24475, 'public/topology-failures.js': 19660, 'public/topology-fallback.js': 10, 'public/topology-gates.js': 20833, 'public/topology.js': 1529}, lists: 275, total: 66792};
 await block('S1.10 the client build', async () => {
   need();
   const {bundleClient, BUDGET} = await import('./client-bundle.mjs');
@@ -1304,7 +1341,7 @@ await block('S1.10 the client build', async () => {
     const script = {bytes: o.bytes, modules: inputs.reduce((n, [, x]) => n + x.bytesInOutput, 0)}; script.lists = script.bytes - script.modules;
     const lists = script.lists - without.lists; return {modules, lists, total: Object.values(modules).reduce((n, x) => n + x, 0) + lists, script}; };
   const withinShare = (m, without) => { const s = shareOf(m, without), out = [];
-    if (JSON.stringify(s.modules) !== JSON.stringify(SHARED_MODULES)) out.push('the modules are ' + JSON.stringify(s.modules)); if (s.lists > LAZY_SHARE.lists) out.push('its import and export lists grew ' + s.lists + ' B, more than ' + LAZY_SHARE.lists); if (s.total > LAZY_SHARE.total) out.push('the share is ' + s.total + ' B, more than ' + LAZY_SHARE.total); return out; };
+    if (JSON.stringify(s.modules) !== JSON.stringify(MERGE_SHARE.modules)) out.push('the modules are ' + JSON.stringify(s.modules)); if (s.lists > MERGE_SHARE.lists) out.push('its import and export lists grew ' + s.lists + ' B, more than ' + MERGE_SHARE.lists); if (s.total > MERGE_SHARE.total) out.push('the share is ' + s.total + ' B, more than ' + MERGE_SHARE.total); return out; };
   // a script of the entry's closure beside the route and the holder that another package moves by 24 B does not move the package's share, nor does
   // the Model view's own script (it holds no module of the package since Y1), nor another package's readers joining the script that holds the package
   // (with the lists they bring, which the same build without the package holds too); its own import and export lists one byte past the measure, and a
@@ -1317,7 +1354,7 @@ await block('S1.10 the client build', async () => {
     assert.deepEqual(withinShare(shifted), [], 'a shared chunk another package moves by 24 B does not move the package\'s share');
     { const m = structuredClone(meta); m.outputs[held].bytes += 24; assert.ok(held !== pkg && R.opensWithRecords(m, HOST, Object.keys(BUDGET.data)).added === opens.added + 24); assert.deepEqual(withinShare(m), [], 'the Model view\'s own script, 24 B more, does not move the package\'s share'); }
     { const m = structuredClone(meta); m.outputs[pkg].inputs['public/another-package.js'] = {bytesInOutput: 1000}; m.outputs[pkg].bytes += 1000 + 40; assert.deepEqual(withinShare(m, {...WITHOUT, lists: WITHOUT.lists + 40}), [], 'another package\'s readers joining the script that holds the package, with 40 B of lists, do not move the package\'s share'); }
-    const past = structuredClone(meta); past.outputs[pkg].bytes += LAZY_SHARE.lists - shareOf(meta).lists + 1; assert.ok(withinShare(past).some(x => /^its import and export lists grew/.test(x)), 'its own import and export lists, in the script that holds the package, one byte past the measure fail it (own lists ' + shareOf(meta).lists + ' B, the measure ' + LAZY_SHARE.lists + ' B)');
+    const past = structuredClone(meta); past.outputs[pkg].bytes += MERGE_SHARE.lists - shareOf(meta).lists + 1; assert.ok(withinShare(past).some(x => /^its import and export lists grew/.test(x)), 'its own import and export lists, in the script that holds the package, one byte past the measure fail it (own lists ' + shareOf(meta).lists + ' B, the measure ' + MERGE_SHARE.lists + ' B)');
     const grown = structuredClone(meta); grown.outputs[pkg].inputs['public/topology.js'].bytesInOutput += 1; grown.outputs[pkg].bytes += 1; assert.ok(withinShare(grown).some(x => /^the modules are/.test(x)), 'a module one byte past its pin fails it'); }
   // (ruling Y1, old -> new. Was: the stub's load imports './deploy-view.js', 'the route stub loads the host entry'. Now it imports the one shared first-draw entry.)
   const stub = readFileSync('public/design-package-routes.js', 'utf8'); assert.match(stub, /registerExtension\(\{id:'p30-deployment-route',needs:[^\n]+load:\(\)=>import\('\.\/design-package-readers\.js'\)\}\);/, 'the route stub loads the shared first-draw entry (ruling Y1)');
@@ -1343,6 +1380,11 @@ await block('S1.10 the client build', async () => {
   // the pool's, inside the 500 B. AA2 retires per-slice booking, the pool and the allowances: the slice's recorded
   // measurement passes the one size check against the integrated base, as this build does above.)
   await R.assertRouteWithinCap(size.slice, BASE);
+  // (wp9a-s2s3, kept at the lead's merge; was, on the build's branch: r.after.scripts === BUDGET.scripts, the gate then 148) the build's evidence
+  // reports its route bytes before (4349bb6) and after, as it recorded them on its own branch, and the share it pinned there
+  { const r = JSON.parse(readFileSync(BUILD_EVIDENCE, 'utf8')); assert.equal(r.before.commit, '4349bb6'); assert.equal(r.routeDelta, r.after.chapters - r.before.chapters, 'the route bytes before and after');
+    assert.ok(r.after.chapters <= BUDGET.routes.chapters && r.after.scripts === 148 && !r.after.violations.length && r.after.css === r.before.css, 'after (the build\'s own record, before S0-D10 moved the gate to 150): under the cap, 148 script files, no violation, the stylesheet unchanged'); R.assertUnder10kCeiling(r.after, r.before, BUDGET.tiny);
+    assert.equal(Object.values(r.itemised).reduce((n, x) => n + x, 0), r.routeDelta, 'the route bytes are itemised'); assert.deepEqual(r.packageShare, BUILD_SHARE, 'the share this build pins'); assert.equal(r.booking, 'none', 'nothing is booked (AA2)'); }
   // (ruling R4; was: size.slice.under10k equal to BASE.under10k) the files-under-10-KB bucket is a ceiling, as client-bundle.mjs reads it: at most the
   // gate and at most the base's count plus the script files the slice adds (none), in the evidence; this build is inside the gate
   assert.deepEqual([size.slice.scripts, size.slice.css], [148, BASE.css], '148 script files, no stylesheet rule'); R.assertUnder10kCeiling(size.slice, BASE, BUDGET.tiny); assert.ok(measured.under10k <= BUDGET.tiny, 'this build: ' + measured.under10k + ' files under 10 KB');
@@ -1357,18 +1399,932 @@ await block('S1.10 the client build', async () => {
     // evidence records the script that holds it, grew no more than the share's
     const s = w.holder?.slice; assert.ok(s && s.lists === s.bytes - s.modules && s.lists - ADOPTION_HOLDER.lists <= LAZY_SHARE.lists, 'the package\'s own import and export lists grew ' + (s && s.lists - ADOPTION_HOLDER.lists) + ' B, at most ' + LAZY_SHARE.lists); }
   { const share = shareOf(meta);
-    assert.deepEqual(share.modules, SHARED_MODULES, 'each module of the package in the shared entry\'s script is as measured');
+    // (wp9a slices 2 and 3, at the lead's merge; was: SHARED_MODULES, slice 1's in the shared entry, and BUILD_SHARE.modules on the build's branch) as measured at the merge
+    assert.deepEqual(share.modules, MERGE_SHARE.modules, 'each module of the package in the shared entry\'s script is as measured');
     // (ruling R4; was: opens.added - ADOPTION_OPENS.added <= LAZY_SHARE.total, the entry's whole growth) this build: its own modules and its own lists
-    assert.deepEqual(withinShare(meta), [], 'this build: the package is ' + share.total + ' B of its lazy entry (its lists ' + share.lists + ' B), at most ' + LAZY_SHARE.total); }
+    assert.deepEqual(withinShare(meta), [], 'this build: the package is ' + share.total + ' B of its lazy entry (its lists ' + share.lists + ' B), at most ' + MERGE_SHARE.total); }
   if (process.argv.includes('--measure')) assert.deepEqual(measured, size.slice, 'at the slice\'s commit the build measures what the evidence says');
   pass('S1.10: the client build passes every gate and the one size check (AA2); the chapters route at the slice is ' + size.slice.chapters + ' B (+' + size.fromIntegrated + ' B against ' + BASE.commit + ', +' + size.fromAdoption + ' B against the adoption record ' + ADOPTION.commit + ', itemised); 148 script files at the slice, ' + size.slice.under10k + ' under 10 KB; opens with records: ' + size['opens with records'].total + ' B (' + size['opens with records'].added + ' B in ' + size['opens with records'].files + ' more scripts), of which the package\'s share is its modules, each pinned, and its own import and export lists (' + LAZY_SHARE.total + ' B, the lists ' + LAZY_SHARE.lists + ' B; ruling R4), which a shared chunk another package moves does not move; this build: ' + measured.chapters + ' B, the package\'s share ' + shareOf(meta).total + ' B in the script that holds it (its own lists ' + shareOf(meta).lists + ' B, against the same script without the package, ' + WITHOUT.lists + ' B of lists)');
 });
 
 // ================================================================ Slice 2: declared failure set, evaluation, acceptance
-// (design section g, Slice 2. Slice 2 adds its cases here, as blocks named 'S2.n …'.)
+// (design section g, Slice 2, its seven cases; rulings L2, L3, L11 (d) and M9 (f) carried; the build contract's rules
+// 10, 11, 13 to 17, 31 and 54. The build notes are audit/rc44/build-notes/wp9a-s2s3.md.)
+//   S2.0  runtime.failure (fails on the base: "Unknown Deployment / runtime action."): the record, its patch save, who
+//         wrote each revision, what it refuses in its own words, a draft's proposal, the bound;
+//   S2.1  two availability zones typed inside one region domain, "the primary region is lost": does-not-survive,
+//         naming the plan and the case (on the base no command can state it);
+//   S2.2  any one zone over zone scope: one case per hosting zone domain; a zone with no domain of that scope reads
+//         unknown; a 65th case answers unknown with the bound named, nothing truncated;
+//   S2.3  a shared cause: named in the claim, the claim does not survive; not accepted, domain-shared stands; the
+//         built-in checks read it over the ancestors (L2: S1.13's marked case is flipped there);
+//   S2.4  a linked recovery environment (runtime.environment-link): recovers-conditionally, and no standby error;
+//   S2.5  through the server, acceptance by a second person (verifierRefusal through S0's `second` row): refused from
+//         the recording person, an agent account, a draft by Sol, no actor, a stale stamp, a does-not-survive verdict,
+//         an empty mustSurvive; accepted from a second person; lapses when a placement changes;
+//   S2.6  simulateRuntime without its third argument answers as at 4349bb6 for every fixture (goldens);
+//   S2.7  determinism: the same result object twice, key order included;
+//   S2.8  the walkthrough of a declared case (runtime.simulation with failureId and caseId), simulated;
+//   S2.9  what every package's suite holds with the declared failures in the document (S0's helpers).
+let FA = null, GA = null; try { FA = await import('./public/topology-failures.js'); GA = await import('./public/topology-gates.js'); } catch (e) { loadError ||= e.message; }
+const fn = (M, name) => { assert.equal(typeof M?.[name], 'function', 'the package reads it (' + name + ')'); return M[name]; };
+const ch10 = q => CHAPTERS.find(c => c.id === 10).checks(withFinalReview(q)), findingOf = (q, id) => ch10(q).find(f => f.id === id);
+const planRef = (q, id) => q.runtime.plans.find(r => r.id === id).ref, declared = (q, id) => (q.runtime.failures || []).find(x => x.id === id);
+const SOL_DRAFT = {kind: 'sol-draft', id: A, account: 'person'}, AGENT_ACCOUNT = {kind: 'person', id: AGENT, account: 'agent'};
+// A declared failure of the production environment, saved by a signed-in person (any one zone; the allocation worker must survive).
+const declare = (q, payload = {}, actor = A, author) => run(q, 'runtime.failure', {environmentId: F.ids().production, title: 'A declared failure', scope: 'zone', quantifier: 'any-one', mustSurvive: [F.ids().workerPlan], inScope: true, ...payload}, actor, author);
+const evaluate = (q, id) => fn(FA, 'evaluateFailure')(q, id);
+
+await block('S2.0 a declared failure', () => {
+  need();
+  const I = F.ids(), {p, made} = typedTidewater();
+  // fails today: no command states what the design claims to survive (design c.2; on the base "Unknown Deployment / runtime action.")
+  const r = declare(p, {title: 'Any one availability zone is lost', basis: 'The service claims a zone loss (synthetic).', exclusions: 'A provider-wide outage.', durationMinutes: 240, mayDegrade: [I.apiPlan], owner: 'Reservations team (synthetic)', minimumService: {continues: [I.requirement], deferred: [I.responsibility], rejected: []}});
+  const q = r.document, fs = declared(q, r.selected);
+  assert.deepEqual([fs.id, fs.ref, fs.revision, fs.environmentId, fs.scope, fs.quantifier, fs.mustSurvive, fs.mayDegrade, fs.durationMinutes, fs.inScope, fs.actor, fs.history], ['fs-001', 'FS-001', 1, I.production, 'zone', 'any-one', [I.workerPlan], [I.apiPlan], 240, true, A, []]);
+  assert.deepEqual(fs.minimumService, {continues: [I.requirement], deferred: [I.responsibility], rejected: [], serviceRef: ''});
+  assert.deepEqual(fs.recorded, {at: AT, actor: A, revision: 1}, 'the handler records who saved what the claim says');
+  assert.equal(q.runtime.version, p.runtime.version + 1, 'a design change of Chapter 10');
+  // a second person's save: the writer of each revision is kept (verifierRefusal reads every one; the history is never trimmed)
+  const q2 = doc(q, 'runtime.failure', {id: fs.id, exclusions: 'A provider-wide outage, and a lost identity issuer.'}, B), fs2 = declared(q2, fs.id);
+  assert.deepEqual([fs2.revision, fs2.actor, fs2.history.map(h => [h.revision, h.actor]), fs2.recorded], [2, B, [[1, A]], {at: AT, actor: B, revision: 2}]);
+  assert.deepEqual(declared(doc(q2, 'runtime.failure', {id: fs.id, title: fs.title}, C), fs.id), fs2, 'a save that changes nothing keeps the record as it was');
+  { let x = q2; for (let i = 0; i < 30; i++) x = doc(x, 'runtime.failure', {id: fs.id, basis: 'Revision ' + i}, i % 2 ? A : C); assert.equal(declared(x, fs.id).history.length, 31, 'every save keeps its writer: the history is never trimmed'); }
+  // refused, each in its own words
+  const base = {environmentId: I.production, title: 'A failure', scope: 'zone', quantifier: 'any-one', mustSurvive: [I.workerPlan]};
+  for (const [payload, words] of [
+    [{environmentId: 'env-404'}, /^Choose an existing environment for the declared failure\.$/],
+    [{title: ''}, /^Name the declared failure\.$/],
+    [{scope: 'galaxy'}, /^Choose what the claim loses: an instance, a zone, a site, a region, a provider, a shared cause or a correlated set\.$/],
+    [{quantifier: 'every'}, /^Choose whether the claim loses any one domain of its scope or the domains it names\.$/],
+    [{quantifier: 'named', domainIds: []}, /^A claim of named domains names the failure domains it loses\.$/],
+    [{scope: 'correlated', quantifier: 'any-one'}, /^A correlated failure names the failure domains it loses together\.$/],
+    [{scope: 'shared-cause', quantifier: 'named', domainIds: [made.fdZone1]}, /^FD-002 is a location, not a shared cause: a shared-cause claim names causes\.$/],
+    [{domainIds: ['fd-404']}, /^Choose an existing failure domain\.$/],
+    [{mustSurvive: [I.recoveryStorePlan]}, /^A claim names runtime plans of ENV-001: RUN-005 is not one\.$/],
+    [{mayDegrade: [I.workerPlan]}, /^RUN-002 must survive or may degrade, not both\.$/],
+    [{durationMinutes: -5}, /^State the duration in minutes, from 1 to 525,600, or leave it not stated\.$/],
+    [{minimumService: {continues: ['REQ-404']}}, /^The minimum service names requirements and responsibilities of this project: REQ-404 is neither\.$/],
+    [{minimumService: {serviceRef: 'BS-001'}}, /^A business service's degraded mode is not recorded in this build: leave the service reference not stated\.$/],
+    [{inScope: 'yes'}, /^Say whether the claim is in scope: true or false\.$/],
+    [{acceptedCauseIds: [made.fdZone1]}, /^FD-002 is a location, not a shared cause: a claim accepts shared causes only\.$/],
+    [{exclusions: {words: 'x'}}, /^The exclusions are words: send them as text\.$/]
+  ]) refuses(p, 'runtime.failure', {...base, ...payload}, words, JSON.stringify(payload));
+  // refused before a person types the topology here
+  refuses(F.tidewater(), 'runtime.failure', base, /^This project's topology is not typed yet/);
+  // a draft by Sol and an agent account send a claim as their proposal; neither sets it in scope or states its minutes
+  for (const [author, who] of [[SOL_DRAFT, 'a draft by Sol'], [AGENT_ACCOUNT, 'an agent account']]) {
+    const actor = author.id, d = run(p, 'runtime.failure', {...base, origin: 'sol-draft'}, actor, author), x = declared(d.document, d.selected);
+    assert.deepEqual([x.state, x.origin, x.inScope], ['proposed', 'sol-draft', false], who + ' sends a proposal');
+    assert.equal(d.document.runtime.version, p.runtime.version, who + ': a proposal says nothing to the design (ruling L6)');
+    assert.throws(() => run(p, 'runtime.failure', base, actor, author), /sends a declared failure as its proposal/, who + ' says it is a draft');
+    assert.throws(() => run(p, 'runtime.failure', {...base, origin: 'sol-draft', inScope: true}, actor, author), /in scope is a signed-in person's statement/, who + ' sets nothing in scope');
+    assert.throws(() => run(p, 'runtime.failure', {...base, origin: 'sol-draft', durationMinutes: 60}, actor, author), /states no duration/, who + ' states no minutes');
+    assert.throws(() => run(declared(q, 'fs-001') && q, 'runtime.failure-accept', {id: 'fs-001'}, actor, author), /signed-in person's step/, who + ' accepts nothing');
+  }
+  // the bound, reached through the commands
+  { let x = p; for (let i = 0; i < FA.FAILURE_LIMITS.failures; i++) x = doc(x, 'runtime.failure', {...base, title: 'Claim ' + i}); assert.equal(x.runtime.failures.length, 24);
+    refuses(x, 'runtime.failure', base, /^This workspace keeps up to 24 declared failures\.$/); }
+  // journalled as one change with the record as its source; the tracker answers nothing
+  { const before = structuredClone(p), next = structuredClone(q); assert.equal(mine().track(before, next, {type: 'runtime.failure', payload: {}}, AT), undefined);
+    const e = next.changes.events.at(-1); assert.deepEqual(e.source, {chapter: 10, id: 'fs-001', ref: 'FS-001', kind: 'failure', title: 'Any one availability zone is lost'}); assert.ok(e.fields.some(f => f.key === 'mustSurvive')); }
+  pass('S2.0: runtime.failure saves a declared failure fs-NNN / FS-NNN of an environment (scope, quantifier, named domains, what must survive and may degrade, minimum service, exclusions, accepted causes, in scope) as a patch, with who wrote each revision and the recorded stamp; it refuses each bad value in its own words, before a person types the topology, a draft or an agent account that does not send a proposal, sets it in scope or states minutes; 24 claims a workspace; journalled');
+});
+
+await block('S2.1 the primary region lost', () => {
+  need();
+  const I = F.ids(), {p, made} = typedTidewater();
+  // today a walkthrough of either zone leaves the other running
+  for (const zoneId of [I.zone1, I.zone2]) assert.deepEqual(rt.simulateRuntime(p, {environmentId: I.production, zoneId, mode: 'zone', durationMinutes: 60}).failedZoneIds, [zoneId], 'a walkthrough of one zone loses that zone and leaves the other running');
+  // fails today: no command can state the claim
+  const r = declare(p, {title: 'The primary region is lost', scope: 'region', quantifier: 'named', domainIds: [made.fdRegion], mustSurvive: [I.apiPlan]}), q = r.document;
+  const e = evaluate(q, r.selected), api = planRef(q, I.apiPlan);
+  assert.equal(e.verdict, 'does-not-survive', 'two zones inside the lost region: neither survives it');
+  assert.deepEqual(e.cases.map(c => [c.id, c.lostDomainIds, c.lostZoneIds]), [[r.selected + ':' + made.fdRegion, [made.fdRegion], [I.zone1, I.zone2]]], 'one case: the region, and both zones that lie in it');
+  assert.deepEqual([e.counterexample.caseId, e.counterexample.planId, e.counterexample.state], [e.cases[0].id, I.apiPlan, 'unavailable'], 'the result names the case and the plan');
+  assert.match(e.counterexample.text, new RegExp('^FD-001 Norway East region lost: ' + api + ' .* unavailable'), 'and says it in words: ' + e.counterexample.text);
+  assert.deepEqual([e.evidenceClass, e.method, e.bounds.cases, e.bounds.failures], ['calculated', 'aiw.topology-eval/1', 64, 'one at a time, unless the claim names a correlated set'], 'a calculated reading, with its bounds');
+  assert.deepEqual(e.notConsidered, ['control-plane loss with cached authority', 'data consistency after promotion', 'health detection time', 'partial capacity loss', 'provider facts'], 'what it does not consider, said');
+  // Chapter 10 raises it for a claim in scope; a claim not in scope is read and raises nothing
+  const f = findingOf(q, 'failure-unsurvived:' + r.selected);
+  assert.deepEqual([f?.level, f?.objectId], ['error', r.selected]); assert.match(f.detail, new RegExp('FS-001 .*FD-001 Norway East region lost: ' + api)); assert.ok(!/runtime\.|record\./.test(f.title + f.detail), 'it names no command type');
+  assert.equal(findingOf(doc(q, 'runtime.failure', {id: r.selected, inScope: false}), 'failure-unsurvived:' + r.selected), undefined, 'a claim not in scope raises nothing');
+  pass('S2.1: two availability zones typed inside one region domain and the declared failure "the primary region is lost": one case loses both zones, the verdict is does-not-survive, naming the case and ' + api + ' (unavailable), with the calculated envelope and what it does not consider; Chapter 10 raises failure-unsurvived for a claim in scope');
+});
+
+await block('S2.2 any one zone, and the bound', () => {
+  need();
+  const I = F.ids(), {p, made} = typedTidewater();
+  let r = declare(p, {title: 'Any one availability zone is lost'}), q = r.document, e = evaluate(q, r.selected);
+  assert.deepEqual(e.cases.map(c => [c.lostDomainIds, c.lostZoneIds]), [[[made.fdZone1], [I.zone1]], [[made.fdZone2], [I.zone2]]], 'one case per hosting zone domain of the environment');
+  assert.equal(e.verdict, 'survives', 'the worker keeps one of its two copies in every case');
+  // a hosting zone with no typed domain of the needed scope reads unknown, never survives
+  { const x = declare(q, {environmentId: I.recovery, title: 'Any one recovery zone', mustSurvive: [I.recoveryStorePlan]}), y = evaluate(x.document, x.selected);
+    assert.equal(y.verdict, 'unknown'); assert.match(y.unknown.join(' '), /ZON-003 stands in no failure domain of scope zone/); }
+  // a domain the claim names that is not standing (a hand-made or recovered document: the lifecycle refuses to retire a named domain) reads unknown, never
+  // a case silently dropped
+  { const x = structuredClone(q); declared(x, r.selected).domainIds = ['fd-404']; const y = evaluate(withFinalReview(x), r.selected);
+    assert.equal(y.verdict, 'unknown'); assert.match(y.unknown.join(' '), /fd-404, which FS-001 names, is not standing in the design\./); }
+  // the bound: at most 64 cases; this build writes at most 60 failure domains, so through the commands the domain bound binds first, and a document
+  // that holds more (a recovery package of another build) answers unknown with the bound named: nothing is truncated silently
+  assert.equal(FA.EVALUATION_BOUND, 64); assert.ok(T.TOPOLOGY_LIMITS.domains < FA.EVALUATION_BOUND, 'through the commands the failure-domain bound (60) binds before the case bound');
+  { const big = structuredClone(q); for (let i = 0; i < 65; i++) { const n = String(900 + i), fd = 'fd-' + n, z = 'zon-' + n;
+      big.technology.domains.push({id: fd, ref: 'FD-' + n, revision: 1, title: 'Zone ' + n, scope: 'zone', cause: 'location', parentId: made.fdRegion, basis: '', owner: '', recoveryOwner: '', treatment: '', origin: 'authored', history: []});
+      big.runtime.zones.push({id: z, ref: 'ZON-' + n, revision: 1, environmentId: I.production, title: 'Zone ' + n, kind: 'hosting', failureDomain: '', isolation: '', owner: '', boundaryIds: [], boundaryId: '', domainIds: [fd]});
+      big.runtime.placements.push({id: 'PL-' + n, revision: 1, planId: I.workerPlan, zoneId: z, role: 'active', replicas: 1, basis: 'Synthetic.'}); }
+    const y = evaluate(withFinalReview(big), r.selected);
+    assert.deepEqual([y.verdict, y.cases], ['unknown', []], 'past the bound: unknown, and no case is evaluated'); assert.match(y.unknown.join(' '), /^The claim reads 67 loss cases, more than the 64 one evaluation reads: narrow the scope\.$/); }
+  pass('S2.2: any one zone over zone scope gives one case per hosting zone domain (two in production: survives); a hosting zone with no domain of the needed scope reads unknown; 67 cases are past the bound of 64: unknown with the bound named, nothing truncated (through the commands the 60 failure domains bind first)');
+});
+
+await block('S2.3 a shared cause', () => {
+  need();
+  const I = F.ids();
+  let {p, made} = typedTidewater();
+  p = doc(p, 'technology.domain', {title: 'One power feed', scope: 'site', cause: 'power'}); const power = p.technology.domains.at(-1).id, powerRef = domainOf(p, power).ref;
+  p = doc(doc(p, 'runtime.locate', {zoneId: I.zone1, domainIds: [made.fdZone1, power]}), 'runtime.locate', {zoneId: I.zone2, domainIds: [made.fdZone2, power]});
+  // the zone-loss claim that names the cause: losing it loses both zones
+  let r = declare(p, {title: 'Any one zone, or the power feed', domainIds: [power]}); p = r.document; const named = r.selected;
+  let e = evaluate(p, named);
+  assert.deepEqual(e.cases.map(c => c.lostDomainIds), [[made.fdZone1], [made.fdZone2], [power]], 'a case for each zone domain and one for the named cause');
+  assert.deepEqual([e.verdict, e.counterexample.caseId, e.cases.at(-1).lostZoneIds], ['does-not-survive', named + ':' + power, [I.zone1, I.zone2]], 'the cause takes both zones with it');
+  // the same claim not naming it survives, and the shared cause stands unaccepted: domain-shared
+  r = declare(p, {title: 'Any one zone'}); p = r.document; const plain = r.selected;
+  assert.equal(evaluate(p, plain).verdict, 'survives');
+  let f = findingOf(p, 'domain-shared:' + power);
+  assert.deepEqual([f?.level, f?.objectId], ['warning', power]); assert.match(f.detail, new RegExp('ZON-001 and ZON-002 of ENV-001 share ' + powerRef + ' One power feed \\(power\\): what loses it loses both'));
+  // listed as accepted in a claim no second person accepted: it still stands
+  p = doc(p, 'runtime.failure', {id: plain, acceptedCauseIds: [power]}); assert.ok(findingOf(p, 'domain-shared:' + power), 'a claim that lists it, not accepted, accepts nothing');
+  // accepted by a second person (the step as the boundary keeps it, review): it no longer stands; the step lapses with the claim
+  { const q = structuredClone(p), fs = declared(q, plain); fs.review = {actor: B, at: AT, account: 'person', decision: 'accepted', stamp: fn(FA, 'failureStamp')(q, fs), verdict: 'survives', cases: [], reviewer: 'B (synthetic)', reference: 'REF-1', observations: 'Accepted as a design claim; not demonstrated.'};
+    assert.equal(FA.failureAccepted(q, fs), true); assert.equal(findingOf(q, 'domain-shared:' + power), undefined, 'accepted in a claim a second person accepted');
+    for (const [why, spoil] of [['by its writer', s => { s.actor = A; }], ['by an agent account', s => { s.account = 'agent'; }], ['at an earlier stamp', s => { s.stamp = '[]'; }], ['returned', s => { s.decision = 'returned'; }]]) { const x = structuredClone(q); spoil(declared(x, plain).review); assert.equal(FA.failureAccepted(x, declared(x, plain)), false, why); assert.ok(findingOf(x, 'domain-shared:' + power), why + ': it stands'); } }
+  // a cause the claim loses is not also accepted
+  refuses(p, 'runtime.failure', {id: named, acceptedCauseIds: [power]}, /^FD-005 is a cause the claim loses: it is not also accepted\.$/);
+  // over the ancestors: a cause that another zone's cause lies in is shared
+  { let q = doc(p, 'technology.domain', {title: 'Site power', scope: 'site', cause: 'power'}); const site = q.technology.domains.at(-1).id;
+    q = doc(q, 'technology.domain', {title: 'Feed A', scope: 'node', cause: 'power', parentId: site}); const feed = q.technology.domains.at(-1).id;
+    q = doc(doc(q, 'runtime.locate', {zoneId: I.zone1, domainIds: [made.fdZone1, feed]}), 'runtime.locate', {zoneId: I.zone2, domainIds: [made.fdZone2, site]});
+    assert.ok(findingOf(q, 'domain-shared:' + site), 'a zone fails with the cause its cause lies in'); assert.equal(findingOf(q, 'domain-shared:' + power), undefined, 'and no longer with the feed it left');
+    assert.equal(findingOf(q, 'standby:' + I.storePlan)?.level, 'error', 'the built-in checks read it too'); }
+  // (ruling L2) the built-in checks read a shared stated cause: the store's standby shares the power feed with its active copy
+  assert.equal(findingOf(p, 'standby:' + I.storePlan)?.level, 'error', 'no independent standby');
+  assert.deepEqual(Object.keys(planFacts(reasoningSource(p), p.runtime.plans.find(x => x.id === I.apiPlan)).domains), [made.fdZone1], 'the review desk reads one failure domain for the API');
+  assert.equal(findingOf(p, 'single-domain:' + I.apiPlan)?.level, 'warning', 'all active copies share one failure domain');
+  pass('S2.3: a shared cause attached to both zones: the zone-loss claim that names it does not survive (the cause takes both zones), the one that does not survives and domain-shared stands until a claim that accepts the cause is accepted by a second person; a cause lost is not also accepted; shared over the ancestors; the built-in checks and the desk read the zones as one failure domain (L2)');
+});
+
+await block('S2.4 a linked recovery environment', () => {
+  need();
+  const I = F.ids();
+  let {p, made} = typedTidewater();
+  const standby = p.runtime.placements.find(l => l.planId === I.storePlan && l.role === 'standby');
+  p = doc(p, 'runtime.placement', {id: standby.id, zoneId: I.zone1});
+  assert.equal(findingOf(p, 'standby:' + I.storePlan)?.level, 'error', 'a standby beside its active copy is no independent standby');
+  const r = declare(p, {title: 'The primary region is lost', scope: 'region', quantifier: 'named', domainIds: [made.fdRegion], mustSurvive: [I.storePlan]}); p = r.document;
+  assert.equal(evaluate(p, r.selected).verdict, 'does-not-survive', 'no survivor in production and no recovery environment linked');
+  // fails today: no command links a recovery environment to the production environment it recovers (C10-22)
+  const q = doc(p, 'runtime.environment-link', {id: I.recovery, recoversIds: [I.production]});
+  assert.deepEqual(q.runtime.environments.find(x => x.id === I.recovery).recoversIds, [I.production]);
+  const e = evaluate(q, r.selected), row = e.cases[0].rows.find(x => x.id === I.storePlan);
+  assert.equal(e.verdict, 'recovers-conditionally', 'the plan of the same asset in the linked recovery environment stands outside the lost domain');
+  assert.equal(row.recovery.state, 'conditional'); assert.match(row.recovery.reason, /ENV-002 .*RUN-005.*Promotion, health and consistency are unproven/);
+  assert.equal(findingOf(q, 'standby:' + I.storePlan), undefined, 'the standby in the linked recovery environment is independent: no standby error (H5)');
+  // a recovery environment's own save keeps the link; the link takes only recovery environments and never names itself
+  assert.deepEqual(doc(q, 'runtime.environment', {id: I.recovery, purpose: 'Where reservations are taken when production is lost (renamed).'}).runtime.environments.find(x => x.id === I.recovery).recoversIds, [I.production]);
+  refuses(q, 'runtime.environment-link', {id: I.production, recoversIds: [I.recovery]}, /^Only a recovery design environment recovers another: ENV-001 is a production design\.$/i);
+  refuses(q, 'runtime.environment-link', {id: I.recovery, recoversIds: [I.recovery]}, /^ENV-002 does not recover itself\.$/);
+  refuses(q, 'runtime.environment-link', {id: I.recovery, promotesToId: I.production}, /^This build records which environments a recovery environment recovers; the promotion order and the account come with a later build\.$/);
+  assert.throws(() => run(q, 'runtime.environment-link', {id: I.recovery, recoversIds: []}, A, SOL_DRAFT), /A signed-in person links a recovery environment/, 'a draft by Sol links nothing');
+  // a link that names an environment no longer there recovers nothing
+  { const x = structuredClone(q); x.runtime.environments.find(y => y.id === I.recovery).recoversIds = ['env-404']; assert.equal(evaluate(withFinalReview(x), r.selected).verdict, 'does-not-survive'); }
+  pass('S2.4: a production plan with no survivor and a plan for the same asset in a linked recovery environment (runtime.environment-link) outside the lost domain: recovers-conditionally, and the standby error is not raised for it (H5); without the link: does-not-survive and the error stands; the link is kept by the environment\'s own save and refused from a draft');
+});
+
+await block('S2.5 acceptance by a second person, through the server', async () => {
+  need();
+  const I = F.ids(), h = await F.server(worker), d = () => withFinalReview(h.state.document), ok = (r, why) => assert.equal(r.status, 200, (why || 'accepted') + ': ' + JSON.stringify(r.body).slice(0, 300));
+  const stampOf = id => fn(FA, 'failureStamp')(d(), declared(d(), id)), accept = (id, as = B, extra = {}, payload = {}) => h.send('runtime.failure-accept', {id, decision: 'accepted', stamp: stampOf(id), reviewer: 'A reviewer (synthetic)', reference: 'REV-1', observations: 'Accepted as a design claim; not demonstrated.', reviewed: true, ...payload}, as, extra);
+  try {
+    ok(await h.send('runtime.topology-start', {}));
+    const fd = async payload => (await h.send('technology.domain', payload)).body.selected;
+    const region = await fd({title: 'Norway East region', scope: 'region', cause: 'location'}), z1 = await fd({title: 'Bergen availability zone 1', scope: 'zone', cause: 'location', parentId: region}), z2 = await fd({title: 'Bergen availability zone 2', scope: 'zone', cause: 'location', parentId: region}), rec = await fd({title: 'Recovery region', scope: 'region', cause: 'location'});
+    ok(await h.send('runtime.locate', {zoneId: I.zone1, domainIds: [z1]})); ok(await h.send('runtime.locate', {zoneId: I.zone2, domainIds: [z2]})); ok(await h.send('runtime.locate', {zoneId: I.zone3, domainIds: [rec]}));
+    const claim = {environmentId: I.production, title: 'Any one availability zone is lost', scope: 'zone', quantifier: 'any-one', mustSurvive: [I.workerPlan], inScope: true};
+    const made = await h.send('runtime.failure', claim); ok(made); const id = made.body.selected;
+    assert.equal(evaluate(d(), id).verdict, 'survives');
+    assert.deepEqual({kind: declared(d(), id).provenance?.author?.kind, by: declared(d(), id).provenance?.author?.by}, {kind: 'person', by: A}, 'the claim is stamped as its writer\'s');
+    // refused: from the recording person, an agent account, a draft by Sol
+    let x = await accept(id, A); assert.equal(x.status, 400); assert.match(x.error, /A second signed-in person, who did not write or own the action, verifies it\. architect-a wrote fs-001\./, 'the recording person');
+    x = await accept(id, AGENT); assert.equal(x.status, 400); assert.equal(x.body.code, 'authorship', 'an agent account: ' + x.error);
+    x = await accept(id, A, {authorKind: 'sol-draft', reason: 'Drafted.'}); assert.equal(x.status, 400); assert.equal(x.body.code, 'authorship', 'a draft by Sol: ' + x.error);
+    // refused: a stale stamp, and the unreviewed step
+    x = await accept(id, B, {}, {stamp: '["an earlier design"]'}); assert.equal(x.status, 400); assert.match(x.error, /^The design or the claim changed since it was evaluated: evaluate FS-001 again\.$/);
+    x = await accept(id, B, {}, {reviewed: false}); assert.equal(x.status, 400); assert.match(x.error, /^Review the claim, its cases and what it does not consider, and record the reviewer, the reference and what you observed\.$/);
+    // refused: a does-not-survive verdict, and an empty mustSurvive
+    const lost = await h.send('runtime.failure', {...claim, title: 'The primary region is lost', scope: 'region', quantifier: 'named', domainIds: [region]}); ok(lost);
+    assert.equal(evaluate(d(), lost.body.selected).verdict, 'does-not-survive');
+    x = await accept(lost.body.selected); assert.equal(x.status, 400); assert.match(x.error, /^FS-002 does not survive its case FD-001 Norway East region lost: a claim that does not survive is not accepted\. Change the design, or return the claim\.$/);
+    ok(await accept(lost.body.selected, B, {}, {decision: 'returned'}), 'a claim that does not survive is returned');
+    const empty = await h.send('runtime.failure', {...claim, title: 'Nothing named', mustSurvive: []}); ok(empty);
+    x = await accept(empty.body.selected); assert.equal(x.status, 400); assert.match(x.error, /^FS-003 names nothing that must survive: name the plans first\.$/);
+    // accepted from a second person: the step is kept under the claim's key review, with who took it and the stamp it read
+    const before = {design: reviewSourceStamp(d()), version: d().runtime.version};
+    ok(await accept(id), 'a second person accepts');
+    const fs = declared(d(), id);
+    assert.deepEqual([fs.review.actor, fs.review.account, fs.review.decision, fs.review.verdict, fs.review.stamp === stampOf(id)], [B, 'person', 'accepted', 'survives', true]);
+    assert.equal(FA.failureAccepted(d(), fs), true);
+    assert.deepEqual({design: reviewSourceStamp(d()), version: d().runtime.version}, before, 'a second person\'s step moves no design stamp and no version');
+    // no actor: a request with no signed-in actor (the boundary's first refusal)
+    assert.throws(() => commandHandler('runtime.failure-accept')(structuredClone(d()), {type: 'runtime.failure-accept', payload: {id}}, AT, '', {author: null}), /^Error: Sign in: /);
+    // it lapses when a placement changes
+    const placement = d().runtime.placements.find(l => l.planId === I.workerPlan && l.zoneId === I.zone2);
+    ok(await h.send('runtime.placement', {id: placement.id, replicas: 2}));
+    assert.equal(FA.failureAccepted(d(), declared(d(), id)), false, 'a moved placement lapses the acceptance');
+  } finally { h.close(); }
+  pass('S2.5: through the server, runtime.failure-accept (a second person\'s step: S0\'s `second` row with verifierRefusal and two persons) is refused from the recording person, an agent account, a draft by Sol, no actor, a stale stamp, an unreviewed step, a does-not-survive verdict and an empty mustSurvive; accepted from a second person, kept under the claim\'s review with the stamp it read, moving no design stamp; it lapses when a placement changes');
+});
+
+await block('S2.6 the walkthrough as at 4349bb6', async () => {
+  need();
+  const golden = JSON.parse(readFileSync('rc44-wp9a-simulations-baseline.json', 'utf8')), S = await import('./rc44-wp9a-simulations.mjs');
+  assert.equal(golden.capturedFrom, '4349bb6');
+  assert.deepEqual(S.simulationDigests(), golden.digests, 'simulateRuntime without its third argument answers as at 4349bb6 for every environment, zone and mode of every fixture');
+  { const p = F.tidewater(), I = F.ids(), raw = {environmentId: I.production, zoneId: I.zone1, mode: 'zone', durationMinutes: 60}; assert.deepEqual(rt.simulateRuntime(p, raw, undefined), rt.simulateRuntime(p, raw)); }
+  pass('S2.6: simulateRuntime without its third argument answers deep-equal to 4349bb6 for every environment, zone and mode of ' + Object.keys(golden.digests).join(', ') + ' (rc44-wp9a-simulations-baseline.json)');
+});
+
+await block('S2.7 determinism', () => {
+  need();
+  const I = F.ids(), {p, made} = typedTidewater(), r = declare(p, {title: 'Any one zone, the region too', domainIds: [made.fdRegion], mayDegrade: [I.apiPlan]});
+  const a = evaluate(r.document, r.selected), b = evaluate(structuredClone(r.document), r.selected), c = evaluate(withFinalReview(JSON.parse(JSON.stringify(r.document))), r.selected);
+  assert.equal(JSON.stringify(a), JSON.stringify(b), 'the same document gives the same result, key order included'); assert.equal(JSON.stringify(a), JSON.stringify(c));
+  assert.deepEqual(Object.keys(a), ['failureId', 'environmentId', 'verdict', 'cases', 'counterexample', 'unknown', 'drafted', 'bounds', 'considered', 'notConsidered', 'stamp', 'evidenceClass', 'method']);
+  pass('S2.7: the same document gives the same result object twice, key order included');
+});
+
+await block('S2.8 the walkthrough of a declared case', () => {
+  need();
+  const I = F.ids(), {p, made} = typedTidewater(), r = declare(p, {title: 'The primary region is lost', scope: 'region', quantifier: 'named', domainIds: [made.fdRegion]}), q = r.document, c = evaluate(q, r.selected).cases[0];
+  // fails today: the walkthrough loses one zone or one domain's zones, and asks for a zone
+  const w = doc(q, 'runtime.simulation', {environmentId: I.production, failureId: r.selected, caseId: c.id, durationMinutes: 60, stamp: rt.runtimeEnvironmentStamp(q, I.production), reviewed: true, observations: 'Both zones lost with the region (synthetic).', visited: [0, 1, 2, 3]});
+  const s = w.runtime.simulations.at(-1);
+  assert.deepEqual([s.failureId, s.caseId, s.failedZoneIds, s.simulated, s.environmentId], [r.selected, c.id, [I.zone1, I.zone2], true, I.production], 'a simulated walkthrough of the declared case');
+  refuses(q, 'runtime.simulation', {environmentId: I.production, failureId: r.selected, caseId: 'case-404', durationMinutes: 60, stamp: rt.runtimeEnvironmentStamp(q, I.production), reviewed: true, observations: 'x', visited: [0, 1, 2, 3]}, /^Choose a declared failure and one of its cases\.$/);
+  pass('S2.8: runtime.simulation with failureId and caseId records a simulated walkthrough of the declared case (H4: the lost set comes from the claim)');
+});
+
+await block('S2.9 the declared failures and what every package\'s suite holds', () => {
+  need();
+  const I = F.ids(), {p, made} = typedTidewater(), r = declare(p, {title: 'The primary region is lost', scope: 'region', quantifier: 'named', domainIds: [made.fdRegion], mustSurvive: [I.workerPlan]}), q = doc(r.document, 'runtime.environment-link', {id: I.recovery, recoversIds: [I.production]});
+  const fs = declared(q, r.selected), stepped = structuredClone(q); declared(stepped, r.selected).review = {actor: B, at: AT, account: 'person', decision: 'returned', stamp: '', verdict: 'does-not-survive', cases: [], reviewer: 'B', reference: 'R', observations: 'Returned.'};
+  const failures = x => x.runtime.failures || [];
+  assert.equal(R.assertStepsMoveNoStamp(q, failures), 1, 'a person\'s step moves no design stamp');
+  R.assertTemplateCopyClearsSteps(stepped, failures); assert.ok(R.assertRecoveryClearsSteps(stepped, failures) >= 1);
+  R.assertFindingIdsUnique(withFinalReview(q)); R.assertBuiltInTrailsUnchanged(F.tidewater(), q); R.assertBuiltInChainsUnchanged(F.tidewater(), q);
+  // the record graph: the claim, what it covers and what it assumes lost; the recovery link between the two environments
+  const G = recordGraph(q), rels = type => G.relationships.filter(e => e.type === type).map(e => [e.from, e.to]);
+  assert.equal(G.objects.get(fs.id)?.type, 'failure'); assert.deepEqual(rels('covers'), [[fs.id, I.workerPlan]]); assert.deepEqual(rels('assumesLossOf'), [[fs.id, made.fdRegion]]); assert.deepEqual(rels('recovers'), [[I.recovery, I.production]]);
+  assert.ok(!recordGraph(F.tidewater()).relationships.some(e => ['covers', 'assumesLossOf', 'recovers'].includes(e.type)), 'a document without the records states none');
+  // the survival scope wp3 reads: the widest in-scope claim of scope zone or narrower
+  { const x = declare(q, {title: 'Any one zone'}); assert.deepEqual(fn(FA, 'survivalScope')(x.document, I.production), {failureId: x.selected, scope: 'zone'}); assert.equal(FA.survivalScope(q, I.production), null, 'a region claim is wider than zone scope'); }
+  pass('S2.9: with declared failures in the document a person\'s step moves no design stamp, a template copy and a recovery import clear the steps, finding ids are unique, the built-in trails and chains are unchanged; the graph states the claim, covers, assumesLossOf and recovers; survivalScope answers the widest in-scope zone claim');
+});
+
+// (ruling L11 (d), carried to slice 2) No calculated verdict reads as confirmed an ancestor chain that an unreviewed draft changed: the reading names
+// the records a draft by Sol, an import or an agent account changed last and no person reviewed since, and the acceptance waits for a person.
+await block('S2.10 no verdict confirms a chain a draft changed, through the server', async () => {
+  need();
+  const I = F.ids(), h = await F.server(worker), d = () => withFinalReview(h.state.document), ok = (r, why) => assert.equal(r.status, 200, (why || 'accepted') + ': ' + JSON.stringify(r.body).slice(0, 300));
+  try {
+    ok(await h.send('runtime.topology-start', {}));
+    const fd = async payload => (await h.send('technology.domain', payload)).body.selected;
+    const region = await fd({title: 'Norway East region', scope: 'region', cause: 'location'}), z1 = await fd({title: 'Bergen availability zone 1', scope: 'zone', cause: 'location', parentId: region}), z2 = await fd({title: 'Bergen availability zone 2', scope: 'zone', cause: 'location', parentId: region});
+    ok(await h.send('runtime.locate', {zoneId: I.zone1, domainIds: [z1]})); ok(await h.send('runtime.locate', {zoneId: I.zone2, domainIds: [z2]}));
+    const claim = (await h.send('runtime.failure', {environmentId: I.production, title: 'Any one availability zone is lost', scope: 'zone', quantifier: 'any-one', mustSurvive: [I.workerPlan], inScope: true})).body.selected;
+    const accept = () => h.send('runtime.failure-accept', {id: claim, decision: 'accepted', stamp: FA.failureStamp(d(), declared(d(), claim)), reviewer: 'B (synthetic)', reference: 'REV-3', observations: 'Accepted as a design claim; not demonstrated.', reviewed: true}, B);
+    assert.deepEqual(evaluate(d(), claim).drafted, [], 'a chain persons wrote');
+    // a draft by Sol changes the region both zone domains lie in
+    ok(await h.send('technology.domain', {id: region, basis: 'Drafted: one provider region.', origin: 'sol-draft'}, A, {authorKind: 'sol-draft', reason: 'Drafted.'}), 'a draft changes the region');
+    const e = evaluate(d(), claim); assert.deepEqual([e.verdict, e.drafted], ['survives', [region]], 'the reading stands and names the record a draft changed');
+    const x = await accept(); assert.equal(x.status, 400); assert.match(x.error, /^FD-001 was last changed by a draft no person has reviewed: a person reviews it before the claim is accepted\.$/, x.error);
+    // a person saves it: the chain is a person's again, and the claim is accepted
+    ok(await h.send('technology.domain', {id: region, basis: 'One provider region (reviewed).'}, C), 'a person saves the region');
+    assert.deepEqual(evaluate(d(), claim).drafted, []); ok(await accept(), 'then a second person accepts');
+  } finally { h.close(); }
+  pass('S2.10: through the server, after a draft by Sol changes the region both zone domains lie in, the verdict still reads but names FD-001 as changed by a draft no person reviewed, and the acceptance is refused in those words until a person saves the region (ruling L11 (d))');
+});
+
+await block('S2.11 the tracker stays in its paths with the records of slices 2 and 3', () => {
+  need();
+  const I = F.ids(), {p} = typedTidewater(), kase = (q, type, payload) => ({prior: q, next: run(q, type, payload).document, command: {type, payload}, at: AT});
+  const cases = [kase(p, 'runtime.failure', {environmentId: I.production, title: 'Any one zone', scope: 'zone', quantifier: 'any-one', mustSurvive: [I.workerPlan]}), kase(p, 'runtime.environment-link', {id: I.recovery, recoversIds: [I.production]}),
+    kase(p, 'runtime.gate', {kind: 'residency', title: 'Stay in Norway', environmentId: '', dataIds: [I.data], permitted: ['NO'], source: 'A policy (synthetic)'}), kase(p, 'runtime.copy', {dataId: I.data, kind: 'primary', planId: I.storePlan, zoneId: I.zone1, basis: 'x'}), kase(p, 'runtime.copy-proposals', {environmentId: I.production})];
+  const read = R.assertTrackerStaysInPaths(mine(), cases);
+  assert.deepEqual(read, {cases: 5, changed: {'runtime.zones': 0, 'runtime.placements': 0}, journalled: 4}, 'one change journalled for each claim, link, gate and copy a person saved, none for AIW\'s proposals, and nothing mended: ' + JSON.stringify(read));
+  pass('S2.11: the tracker journals a declared failure, a recovery link, a gate and a copy as one change each, journals AIW\'s copy proposals not at all, and stays in its paths (assertTrackerStaysInPaths)');
+});
+
+// ---------------------------------------------------------------- the fix-up (owner decision AA1; the review's must-fix and should-fix items)
+//   S2.12 (must-fix 1) through the server: a draft by Sol and an agent account change no declared failure a person saved: not out of scope,
+//         not what must survive, not its minutes, not its words; the error stays; a draft still edits its own proposal;
+//   S2.13 (must-fix 3, ruling L11 (d)) through the server: a zone a draft by Sol or an agent account located, and a placement a draft moved, are
+//         named by the reading, and the acceptance waits for a person;
+//   S2.14 (must-fix 4) a restore after a recovery import brings back no acceptance and no gate evidence, by a person or an agent account;
+//   S2.15 (must-fix 5) one reading of independence: H5 reads the groups of hostingComparison across a recovery link;
+//   S2.16 (must-fix 6) Chapter 10's checks at the limits, with 24 in-scope claims, within a stated factor of the same document without them.
+const SOL_EXTRA = {authorKind: 'sol-draft', reason: 'Drafted.'};
+// The Tidewater project on a server with two zone domains inside one region domain, both zones located in them.
+async function regionServer() {
+  const I = F.ids(), h = await F.server(worker), d = () => withFinalReview(h.state.document), ok = (r, why) => assert.equal(r.status, 200, (why || 'accepted') + ': ' + JSON.stringify(r.body).slice(0, 300));
+  ok(await h.send('runtime.topology-start', {}));
+  const fd = async payload => { const r = await h.send('technology.domain', payload); ok(r, 'a failure domain'); return r.body.selected; };
+  const region = await fd({title: 'Norway East region', scope: 'region', cause: 'location'}), z1 = await fd({title: 'Bergen availability zone 1', scope: 'zone', cause: 'location', parentId: region}), z2 = await fd({title: 'Bergen availability zone 2', scope: 'zone', cause: 'location', parentId: region}), other = await fd({title: 'Oslo region', scope: 'region', cause: 'location'}), z3 = await fd({title: 'Oslo availability zone', scope: 'zone', cause: 'location', parentId: other});
+  ok(await h.send('runtime.locate', {zoneId: I.zone1, domainIds: [z1]})); ok(await h.send('runtime.locate', {zoneId: I.zone2, domainIds: [z2]}));
+  return {h, d, ok, region, z1, z2, other, z3};
+}
+
+await block('S2.12 a draft changes no declared failure a person saved, through the server', async () => {
+  need();
+  const I = F.ids(), {h, d, ok, region} = await regionServer();
+  try {
+    // A's claim: the primary region is lost and the API must survive; it does not (an error of Chapter 10)
+    const made = await h.send('runtime.failure', {environmentId: I.production, title: 'The primary region is lost', scope: 'region', quantifier: 'named', domainIds: [region], mustSurvive: [I.apiPlan], durationMinutes: 240, inScope: true}); ok(made); const id = made.body.selected;
+    const error = () => findingOf(d(), 'failure-unsurvived:' + id)?.level, as = () => { const x = declared(d(), id); return JSON.stringify([x.revision, x.inScope, x.mustSurvive, x.durationMinutes, x.domainIds, x.scope, x.basis, x.actor]); }, was = as();
+    assert.equal(error(), 'error');
+    // fails on 10b97b7: a draft took the claim out of scope (200), emptied what must survive (the error became a warning) and cleared the minutes
+    for (const [account, extra, who] of [[B, SOL_EXTRA, 'a draft by Sol'], [AGENT, {}, 'an agent account']]) for (const [change, what] of [
+      [{inScope: false}, 'takes the claim out of scope'], [{mustSurvive: []}, 'empties what must survive'], [{mustSurvive: [I.workerPlan]}, 'names another plan'], [{durationMinutes: ''}, 'clears the minutes'], [{durationMinutes: null}, 'clears the minutes (null)'],
+      [{scope: 'zone', quantifier: 'any-one', domainIds: []}, 'narrows what is lost'], [{basis: 'Drafted words.'}, 'changes its words']]) {
+      const x = await h.send('runtime.failure', {id, ...change, origin: 'sol-draft'}, account, extra);
+      assert.equal(x.status, 400, who + ' ' + what + ': ' + JSON.stringify(x.body).slice(0, 200));
+      assert.match(x.error, /^FS-001 is a declared failure a person saved: a draft by Sol or an agent account changes no claim that stands\. It sends a claim of its own as a proposal \(origin: sol-draft\), and a person keeps it\.$/, who + ' ' + what);
+      assert.equal(as(), was, who + ' ' + what + ': the claim reads as its writer saved it'); assert.equal(error(), 'error', who + ' ' + what + ': the error stands');
+    }
+    // in a batch drafted by Sol, the same
+    { const commands = [{type: 'runtime.failure', payload: {id, inScope: false, origin: 'sol-draft'}}], cur = await h.read(AGENT), x = await h.send('workspace.apply', {commands, stamp: previewWorkingChange(cur.document, commands).stamp, reason: 'A drafted batch.', reviewed: false}, AGENT);
+      assert.equal(x.status, 400); assert.match(x.error, /changes no claim that stands/); assert.equal(as(), was); }
+    // a draft still sends its own proposal and edits it; a person keeps it, and from then on it stands
+    const own = await h.send('runtime.failure', {environmentId: I.production, title: 'A drafted claim', scope: 'zone', quantifier: 'any-one', mustSurvive: [I.workerPlan], origin: 'sol-draft'}, B, SOL_EXTRA); ok(own, 'a proposal');
+    ok(await h.send('runtime.failure', {id: own.body.selected, title: 'A drafted claim, renamed', origin: 'sol-draft'}, AGENT), 'a draft edits a proposal');
+    ok(await h.send('record.keep', {id: own.body.selected, chapter: 10}, C), 'a person keeps it');
+    assert.equal((await h.send('runtime.failure', {id: own.body.selected, inScope: false, origin: 'sol-draft'}, AGENT)).status, 400, 'kept, it stands');
+    // a person's own save still changes it
+    ok(await h.send('runtime.failure', {id, inScope: false}, C), 'a person takes it out of scope'); assert.equal(error(), undefined);
+  } finally { h.close(); }
+  pass('S2.12: through the server, a draft by Sol and an agent account change nothing of a declared failure a person saved (alone and in a drafted batch): neither its scope, what must survive, its minutes nor its words; it reads as its writer saved it and failure-unsurvived stands; a draft edits its own proposal until a person keeps it');
+});
+
+await block('S2.13 no acceptance on a zone or a placement a draft changed, through the server', async () => {
+  need();
+  const I = F.ids(), {h, d, ok, region, z2, z3} = await regionServer();
+  try {
+    const claim = async payload => { const r = await h.send('runtime.failure', {environmentId: I.production, mustSurvive: [I.workerPlan], inScope: true, ...payload}); ok(r, 'a claim'); return r.body.selected; };
+    const lost = await claim({title: 'The primary region is lost', scope: 'region', quantifier: 'named', domainIds: [region]}), zone = await claim({title: 'Any one availability zone is lost', scope: 'zone', quantifier: 'any-one'});
+    const accept = id => h.send('runtime.failure-accept', {id, decision: 'accepted', stamp: FA.failureStamp(d(), declared(d(), id)), reviewer: 'B (synthetic)', reference: 'REV-4', observations: 'Accepted as a design claim; not demonstrated.', reviewed: true}, B);
+    assert.deepEqual([evaluate(d(), lost).verdict, evaluate(d(), zone).verdict], ['does-not-survive', 'survives']);
+    // fails on 10b97b7: a draft that locates zone 2 outside the region turns the verdict to survives with nothing named, and the acceptance was taken (200)
+    for (const [account, extra, who] of [[B, SOL_EXTRA, 'a draft by Sol'], [AGENT, {}, 'an agent account']]) {
+      ok(await h.send('runtime.locate', {zoneId: I.zone2, domainIds: [z3]}, account, extra), who + ' locates zone 2 in the Oslo zone domain');
+      const e = evaluate(d(), lost); assert.deepEqual([e.verdict, e.drafted.includes(I.zone2)], ['survives', true], who + ': the reading stands and names the zone a draft located: ' + JSON.stringify(e.drafted));
+      const x = await accept(lost); assert.equal(x.status, 400, who + ': ' + JSON.stringify(x.body).slice(0, 200)); assert.match(x.error, /^ZON-002 was last changed by a draft no person has reviewed: a person reviews it before the claim is accepted\.$/, x.error);
+      ok(await h.send('runtime.locate', {zoneId: I.zone2, domainIds: [z2], reason: 'Back in its own zone domain (synthetic).'}, C), 'a person locates it back');
+      assert.deepEqual([evaluate(d(), lost).verdict, evaluate(d(), lost).drafted], ['does-not-survive', []]);
+    }
+    // a placement a draft changed (a built-in command): the worker's copy in zone 2 given two replicas by an agent account
+    const placement = d().runtime.placements.find(l => l.planId === I.workerPlan && l.zoneId === I.zone2);
+    ok(await h.send('runtime.placement', {id: placement.id, replicas: 2}, AGENT), 'an agent account changes the placement');
+    assert.ok(evaluate(d(), zone).drafted.includes(placement.id), 'the reading names the placement');
+    { const x = await accept(zone); assert.equal(x.status, 400); assert.match(x.error, new RegExp('^' + placement.id + ' was last changed by a draft no person has reviewed: a person reviews it before the claim is accepted\\.$'), x.error); }
+    ok(await h.send('runtime.placement', {id: placement.id, basis: 'Two replicas, reviewed (synthetic).'}, C), 'a person saves it');
+    ok(await accept(zone), 'then a second person accepts the claim');
+    // a person's own location outside the region stands: the region claim then survives and is accepted
+    ok(await h.send('runtime.locate', {zoneId: I.zone2, domainIds: [z3], reason: 'Moved to Oslo (synthetic).'}, C)); assert.deepEqual([evaluate(d(), lost).verdict, evaluate(d(), lost).drafted], ['survives', []]);
+    ok(await accept(lost), 'accepted on a chain persons wrote');
+  } finally { h.close(); }
+  pass('S2.13: through the server, after a draft by Sol or an agent account locates zone 2 outside the region, the region claim reads survives and names ZON-002, and the acceptance is refused in those words until a person locates it; a placement an agent account changed is named the same way; a person\'s own change stands and the claim is accepted (ruling L11 (d))');
+});
+
+await block('S2.14 a restore after a recovery import brings back no step', () => {
+  need();
+  let {p, made} = typedTidewater();
+  // the boundary's stamps are the server's: a person's stamp stands in for them, so that a second person's step can be taken through the handlers
+  const stamped = (q, path, id) => { q.runtime[path].find(x => x.id === id).provenance = {author: {kind: 'person', by: A, at: AT, account: 'person'}}; return q; };
+  let r = declare(p); const fs = r.selected; p = stamped(r.document, 'failures', fs);
+  p = doc(p, 'runtime.failure-accept', {id: fs, decision: 'accepted', stamp: FA.failureStamp(p, declared(p, fs)), reviewer: 'B (synthetic)', reference: 'REV-5', observations: 'Accepted as a design claim; not demonstrated.', reviewed: true}, B);
+  r = run(p, 'runtime.gate', {kind: 'key-custody', title: 'Keys held in Norway', environmentId: '', nodeIds: [made.region], requirement: 'Keys are held by the customer.', source: 'Key policy (synthetic)'}); const lg = r.selected; p = stamped(r.document, 'gates', lg);
+  p = doc(p, 'runtime.gate-evidence', {id: lg, nodeId: made.region, state: 'pass', reference: 'R-1', observations: 'Seen (synthetic).', stamp: GA.gateEvidenceStamp(p, p.runtime.gates.find(x => x.id === lg), made.region), reviewed: true}, B);
+  assert.deepEqual([FA.failureAccepted(p, declared(p, fs)), GA.gateReading(p, lg).state], [true, 'pass'], 'the two steps stand here');
+  // retired, carried in a recovery package to another workbench, restored there
+  p = doc(doc(p, 'record.retire', {ids: [fs], chapter: 10, reason: 'Retired (synthetic).'}), 'record.retire', {ids: [lg], chapter: 10, reason: 'Retired (synthetic).'});
+  const imported = withFinalReview(neutraliseImportedAuthority(structuredClone(p), AT)), kept = imported.retired.records.filter(x => [fs, lg].includes(x.id));
+  // fails on 10b97b7: a retired record kept its review, and a restore brought it back word for word
+  assert.deepEqual(kept.map(x => [x.id, x.record.review ?? null, !!x.record.importedReview]), [[fs, null, true], [lg, null, true]], 'a retired record keeps its step as history (importedReview), nobody\'s here');
+  for (const [actor, author, who] of [[A, person(A), 'a person'], [AGENT, AGENT_ACCOUNT, 'an agent account']]) {
+    const q = doc(doc(imported, 'record.restore', {ids: [fs], chapter: 10}, actor, author), 'record.restore', {ids: [lg], chapter: 10}, actor, author);
+    assert.deepEqual([FA.failureAccepted(q, declared(q, fs)), GA.gateReading(q, lg).state, !!declared(q, fs).importedReview], [false, 'unknown', true], 'restored by ' + who + ': the acceptance and the evidence are nobody\'s here');
+  }
+  pass('S2.14: a second person\'s acceptance of a declared failure and a second person\'s evidence for a gate, kept on retired records, are moved aside by a recovery import (importedReview) and a restore by a person or an agent account brings back neither: the claim reads not accepted and the gate unknown');
+});
+
+await block('S2.15 one reading of independence, across a recovery link', () => {
+  need();
+  const I = F.ids();
+  // zone 1 shares a power feed with zone 2, zone 2 a network path with the standby's zone: transitively one failure domain (ruling L2)
+  const world = where => {
+    let {p, made} = typedTidewater();
+    p = doc(p, 'technology.domain', {title: 'Power feed 1', scope: 'site', cause: 'power'}); const c1 = p.technology.domains.at(-1).id;
+    p = doc(p, 'technology.domain', {title: 'Network path 2', scope: 'site', cause: 'network-path'}); const c2 = p.technology.domains.at(-1).id;
+    let zs = I.zone3; if (where === 'production') { p = doc(p, 'runtime.zone', {environmentId: I.production, title: 'Third zone', kind: 'hosting', failureDomain: '', isolation: 'x', owner: 'x'}); zs = p.runtime.zones.at(-1).id; }
+    p = doc(doc(doc(p, 'runtime.locate', {zoneId: I.zone1, domainIds: [made.fdZone1, c1]}), 'runtime.locate', {zoneId: I.zone2, domainIds: [made.fdZone2, c1, c2]}), 'runtime.locate', {zoneId: zs, domainIds: [made.fdRecovery, c2]});
+    const standby = p.runtime.placements.find(l => l.planId === I.storePlan && l.role === 'standby');
+    if (where === 'production') p = doc(p, 'runtime.placement', {id: standby.id, zoneId: zs});
+    else p = doc(doc(doc(p, 'runtime.placement', {id: standby.id, zoneId: I.zone1}), 'runtime.environment-link', {id: I.recovery, recoversIds: [I.production]}), 'runtime.plan', {id: I.recoveryStorePlan, recoveryStrategy: 'Failover'});
+    return {p, made, c2};
+  };
+  const prod = world('production'), linked = world('recovery'), standby = q => findingOf(q, 'standby:' + I.storePlan)?.level;
+  assert.equal(standby(prod.p), 'error', 'in production: one group, no independent standby');
+  // fails on 10b97b7: H5's own pairwise reading took the recovery zone as independent (no standby error) where the groups read one failure domain
+  assert.equal(standby(linked.p), 'error', 'across the recovery link the same zones read the same: no independent standby');
+  assert.equal(FA.standbyElsewhere(linked.p, linked.p.runtime.plans.find(r => r.id === I.storePlan)), false);
+  // without the second shared cause the recovery zone stands apart, and H5 reads its standby as independent
+  { const q = doc(linked.p, 'runtime.locate', {zoneId: I.zone3, domainIds: [linked.made.fdRecovery]}); assert.equal(standby(q), undefined); assert.equal(FA.standbyElsewhere(q, q.runtime.plans.find(r => r.id === I.storePlan)), true); }
+  // the one reader: hostingComparison's groups over the environment and the recovery environment linked to it
+  assert.equal(typeof T.zoneGroups, 'function', 'topology-domain.js states the one grouping (zoneGroups)');
+  { const G = T.zoneGroups(linked.p, [I.production, I.recovery]); assert.deepEqual([G[I.zone1], G[I.zone2], G[I.zone3]].map(k => k === G[I.zone1]), [true, true, true], 'one group across the link: ' + JSON.stringify(G));
+    assert.deepEqual(T.zoneGroups(linked.p, [I.production]), T.hostingComparison(linked.p, I.production).groups, 'for one environment, the comparison\'s own groups'); }
+  pass('S2.15: H5 reads independence through the one grouping of hostingComparison (zoneGroups, over the environment and the recovery environments linked to it): zones joined by shared causes across the link read as one failure domain and raise the standby error as they do in one environment; a recovery zone that shares nothing stands apart');
+});
+
+// Chapter 10's checks are pure and cheap (contract rule 12): at the built-in limits of the runtime (2,000 zones and 2,000 placements) and with 60
+// failure domains (slice 1's limit), 24 in-scope any-one zone claims (this build's limit, through the commands) keep the checks within a stated
+// factor of the same document without them. Times are the least of two runs each, in one process; the factor leaves room for a loaded runner.
+const CHECKS_FACTOR = 3;
+await block('S2.16 Chapter 10\'s checks at the limits, with 24 in-scope claims', () => {
+  need();
+  const I = F.ids(); let {p, made} = typedTidewater();
+  const doms = [made.fdZone1, made.fdZone2]; for (let i = 0; i < 56; i++) { const id = 'fd-' + (500 + i); p.technology.domains.push({id, ref: 'FD-' + (500 + i), revision: 1, title: 'Zone domain ' + i, scope: 'zone', cause: 'location', parentId: made.fdRegion, basis: '', owner: '', recoveryOwner: '', treatment: '', origin: 'authored', history: []}); doms.push(id); }
+  assert.equal(p.technology.domains.length, T.TOPOLOGY_LIMITS.domains, 'the failure domains at their limit');
+  const plans = p.runtime.plans.filter(r => r.environmentId === I.production).map(r => r.id), zones = 2000 - p.runtime.zones.length, placements = 2000 - p.runtime.placements.length;
+  for (let i = 0; i < zones; i++) p.runtime.zones.push({id: 'zon-' + (700 + i), ref: 'ZON-' + (700 + i), revision: 1, environmentId: I.production, title: 'Zone ' + i, kind: 'hosting', failureDomain: '', isolation: '', owner: '', boundaryIds: [], boundaryId: '', domainIds: [doms[i % doms.length]], nodeId: i % 2 ? made.az1 : made.az2});
+  for (let i = 0; i < placements; i++) p.runtime.placements.push({id: 'pl-x' + i, revision: 1, planId: plans[i % plans.length], zoneId: 'zon-' + (700 + i % zones), role: 'active', replicas: 1, basis: 'Synthetic.'});
+  const bare = withFinalReview(JSON.parse(JSON.stringify(p)));
+  assert.deepEqual([bare.runtime.zones.length, bare.runtime.placements.length], [2000, 2000]);
+  let q = bare; for (let i = 0; i < FA.FAILURE_LIMITS.failures; i++) q = doc(q, 'runtime.failure', {environmentId: I.production, title: 'Any one zone, claim ' + i, scope: 'zone', quantifier: 'any-one', mustSurvive: [I.workerPlan], inScope: true});
+  const fresh = x => withFinalReview(JSON.parse(JSON.stringify(x))), time = x => { let best = Infinity; for (let n = 0; n < 2; n++) { const y = fresh(x), t = process.hrtime.bigint(); ch10(y); best = Math.min(best, Number(process.hrtime.bigint() - t) / 1e6); } return best; };
+  assert.equal(FA.evaluateFailure(fresh(q), 'fs-001').cases.length, 58, 'each claim reads a case for each of the 58 zone domains');
+  // fails on 10b97b7: about 25 s with the claims against about 2 s without (each case walked every zone and placement, a linear search for each)
+  const without = time(bare), withClaims = time(q);
+  assert.ok(withClaims <= CHECKS_FACTOR * without, 'Chapter 10\'s checks take ' + withClaims.toFixed(0) + ' ms with 24 claims and ' + without.toFixed(0) + ' ms without them: more than ' + CHECKS_FACTOR + ' times');
+  pass('S2.16: at 2,000 zones, 2,000 placements and 60 failure domains, Chapter 10\'s checks take ' + withClaims.toFixed(0) + ' ms with 24 in-scope claims of 58 cases each and ' + without.toFixed(0) + ' ms without them (at most ' + CHECKS_FACTOR + ' times): one index of what each zone fails with, and a case two claims share walked once');
+});
+
+//   S2.17 (should-fix 6) the bound read at 64 cases (evaluated) and 65 (unknown, the bound named);
+//   S2.18 (should-fix 9) a zone that holds only a proposed placement of a plan is no hosting case of an any-one claim;
+//   S2.19 (should-fix 1, contract rule 38, in part) the isolate proposal and backup-domain read the shared-cause groups (zoneKey).
+await block('S2.17 the bound, at 64 and 65 cases', () => {
+  need();
+  const I = F.ids(), {p, made} = typedTidewater(), r = declare(p, {title: 'Any one availability zone is lost'});
+  const past = n => { const big = structuredClone(r.document); for (let i = 0; i < n; i++) { const k = String(900 + i), fd = 'fd-' + k, z = 'zon-' + k;
+      big.technology.domains.push({id: fd, ref: 'FD-' + k, revision: 1, title: 'Zone ' + k, scope: 'zone', cause: 'location', parentId: made.fdRegion, basis: '', owner: '', recoveryOwner: '', treatment: '', origin: 'authored', history: []});
+      big.runtime.zones.push({id: z, ref: 'ZON-' + k, revision: 1, environmentId: I.production, title: 'Zone ' + k, kind: 'hosting', failureDomain: '', isolation: '', owner: '', boundaryIds: [], boundaryId: '', domainIds: [fd]});
+      big.runtime.placements.push({id: 'PL-' + k, revision: 1, planId: I.workerPlan, zoneId: z, role: 'active', replicas: 1, basis: 'Synthetic.'}); }
+    return evaluate(withFinalReview(big), r.selected); };
+  { const e = past(62); assert.deepEqual([e.cases.length, e.verdict, e.unknown], [64, 'survives', []], '64 cases: each evaluated'); }
+  { const e = past(63); assert.deepEqual([e.cases.length, e.verdict], [0, 'unknown'], '65 cases: none evaluated'); assert.deepEqual(e.unknown, ['The claim reads 65 loss cases, more than the 64 one evaluation reads: narrow the scope.']); }
+  pass('S2.17: an any-one zone claim reads 64 loss cases and evaluates each; at 65 it answers unknown with the bound named and evaluates none');
+});
+
+await block('S2.18 a proposed placement is no hosting case', () => {
+  need();
+  const I = F.ids(); let {p, made} = typedTidewater();
+  p = doc(p, 'runtime.zone', {environmentId: I.production, title: 'Bergen zone 3', kind: 'hosting', failureDomain: '', isolation: 'x', owner: 'x'}); const z3 = p.runtime.zones.at(-1).id;
+  p = doc(p, 'technology.domain', {title: 'Bergen availability zone 3', scope: 'zone', cause: 'location', parentId: made.fdRegion}); const fd3 = p.technology.domains.at(-1).id;
+  p = doc(p, 'runtime.locate', {zoneId: z3, domainIds: [fd3]});
+  const q = structuredClone(p); q.runtime.placements.push({id: 'PL-900', revision: 1, planId: I.workerPlan, zoneId: z3, role: 'active', replicas: 1, basis: 'Proposed standby capacity (synthetic).', origin: 'seeded', state: 'proposed'});
+  const r = declare(withFinalReview(q), {title: 'Any one availability zone is lost'}), e = evaluate(r.document, r.selected);
+  // fails on 10b97b7: the zone holding only the proposal gave a case of its own
+  assert.deepEqual(e.cases.map(c => c.lostDomainIds), [[made.fdZone1], [made.fdZone2]], 'a case for each zone a standing placement holds, none for a proposal\'s');
+  pass('S2.18: a hosting zone that holds only a proposed placement of a standing plan gives an any-one claim no loss case of its own (proposals are read as plansOf reads them)');
+});
+
+await block('S2.19 the isolate proposal and backup-domain read the shared-cause groups', () => {
+  need();
+  const I = F.ids(); let {p, made} = typedTidewater();
+  p = doc(p, 'technology.domain', {title: 'One power feed', scope: 'site', cause: 'power'}); const power = p.technology.domains.at(-1).id;
+  p = doc(p, 'technology.domain', {title: 'Bergen availability zone 3', scope: 'zone', cause: 'location', parentId: made.fdRegion}); const fd3 = p.technology.domains.at(-1).id;
+  p = doc(p, 'runtime.zone', {environmentId: I.production, title: 'Bergen zone 3', kind: 'hosting', failureDomain: '', isolation: 'x', owner: 'x'}); const z3 = p.runtime.zones.at(-1).id;
+  p = doc(doc(p, 'runtime.locate', {zoneId: I.zone1, domainIds: [made.fdZone1, power]}), 'runtime.locate', {zoneId: z3, domainIds: [fd3, power]});
+  const old = fnOff => { const was = runtimeModel.TOPOLOGY.zoneKey; runtimeModel.TOPOLOGY.zoneKey = undefined; try { return fnOff(); } finally { runtimeModel.TOPOLOGY.zoneKey = was; } };
+  // the isolate proposal for the API (active in zones 1 and 2): zone 3 shares zone 1's power feed, so it isolates nothing
+  const isolate = q => rt.runtimeProposal(withFinalReview(structuredClone(q)), 'isolate', I.apiPlan)?.record?.zoneId ?? null;
+  assert.equal(isolate(p), null, 'no zone stands apart from the active copies'); assert.equal(old(() => isolate(p)), z3, 'read by the first domain alone (failureDomainKey), zone 3 would be proposed');
+  // backup-domain: the store's backup zone shares the power feed with its active copy
+  const q = doc(p, 'runtime.locate', {zoneId: I.zone2, domainIds: [made.fdZone2, power]}), backup = x => findingOf(x, 'backup-domain:' + I.storePlan)?.level;
+  assert.equal(backup(q), 'warning', 'the backup shares an active failure domain'); assert.equal(old(() => backup(q)), undefined, 'read by the first domain alone, it would not');
+  assert.equal(backup(p), undefined, 'without the shared cause it does not');
+  pass('S2.19: runtimeProposal\'s isolate and the backup-domain check read zones that share a stated cause as one failure domain (zoneKey, ruling L2): no isolating zone is proposed beside a zone that shares the cause, and a backup zone sharing it raises backup-domain; read by the first domain alone, each would answer otherwise');
+});
 
 // ================================================================ Slice 3: location gates and data copies
-// (design section g, Slice 3. Slice 3 adds its cases here, as blocks named 'S3.n …'.)
+// (design section g, Slice 3, its eight cases; ruling L8 carried; the build contract's rules 10 to 12, 14 to 17, 31 and
+// 54. The build notes are audit/rc44/build-notes/wp9a-s2s3.md.)
+//   S3.0  runtime.gate and runtime.copy (fail on the base: "Unknown Deployment / runtime action."): the records, what
+//         they refuse in their own words, a draft's proposal, the bounds;
+//   S3.1  a residency gate permitting NO and the store's backup zone located in SE: error location-gate:LG-001, hard,
+//         naming the copy and the location (on the base no check reads residency in Chapter 10);
+//   S3.2  unknown is never pass: a copy with no stated jurisdiction, a node chain without one, an unresolved proposal,
+//         a location the trail derives that no copy records, a gate that names no data, a permitted list kept open;
+//   S3.3  a residency gate, and a placement gate, take no evidence;
+//   S3.4  through the server, a required-service gate's pass: refused from its author and from an agent account,
+//         recorded from a second person; it lapses when the node changes;
+//   S3.5  through the server, workspace.merge of an alternative that moves a standby into SE is refused, the gate named;
+//   S3.6  through the server, runtime.failure-accept is refused while a gate of that environment fails;
+//   S3.7  runtime.copy-proposals proposes only from trail relations and records them in derivedFrom;
+//   S3.8  overlapping prefixes raise node-address-overlap (parsed parts, L8); a public data-tier subnet raises
+//         node-data-exposure;
+//   S3.9  what every package's suite holds with gates and copies in the document (S0's helpers), and the document at the
+//         new limits (ruling M9 (f)).
+const gateOf = (q, id) => (q.runtime.gates || []).find(x => x.id === id), copyOf = (q, id) => (q.runtime.copies || []).find(x => x.id === id);
+// A residency gate on the booking record in the production environment, permitting Norway, saved by a signed-in person.
+const gate = (q, payload = {}, actor = A, author) => run(q, 'runtime.gate', {kind: 'residency', title: 'Booking records stay in Norway', environmentId: F.ids().production, dataIds: [F.ids().data], permitted: ['NO'], source: 'Tidewater data-handling policy, clause 4 (synthetic)', ...payload}, actor, author);
+const reading = (q, id) => fn(GA, 'gateReading')(q, id);
+// The typed Tidewater project with a production zone in Sweden Central (SE).
+function withStockholm() {
+  const I = F.ids(); let {p, made} = typedTidewater();
+  p = doc(p, 'runtime.zone', {environmentId: I.production, title: 'Stockholm backup zone', kind: 'hosting', failureDomain: '', isolation: 'Another country (synthetic).', owner: 'Reservations team (synthetic)'}); const zoneSE = p.runtime.zones.at(-1).id;
+  p = doc(p, 'runtime.locate', {zoneId: zoneSE, nodeId: made.recoveryRegion, domainIds: [made.fdRecovery]});
+  return {p, made, zoneSE};
+}
+// Every copy the trail derives for the booking record, recorded in Norway: the store's primary in zone 1, its replica and its backup in zone 2.
+function recordedInNorway(q) { const I = F.ids(); for (const [kind, zoneId] of [['primary', I.zone1], ['replica', I.zone2], ['backup', I.zone2]]) q = doc(q, 'runtime.copy', {dataId: I.data, kind, planId: I.storePlan, zoneId, basis: 'Recorded (synthetic).'}); return q; }
+
+await block('S3.0 location gates and data copies', () => {
+  need();
+  const I = F.ids(), {p, made} = typedTidewater();
+  // fails today: no command states a location gate or a data copy (design c.2)
+  const r = gate(p, {owner: 'Data protection officer (synthetic)'}), q = r.document, g = gateOf(q, r.selected);
+  assert.deepEqual([g.id, g.ref, g.revision, g.kind, g.environmentId, g.dataIds, g.classifications, g.personalData, g.permitted, g.actor, g.history], ['lg-001', 'LG-001', 1, 'residency', I.production, [I.data], [], false, ['NO'], A, []]);
+  assert.deepEqual(g.recorded, {at: AT, actor: A, revision: 1});
+  const c = run(q, 'runtime.copy', {dataId: I.data, kind: 'primary', planId: I.storePlan, zoneId: I.zone1, basis: 'Where the store keeps it (synthetic).'}), x = copyOf(c.document, c.selected);
+  assert.deepEqual([x.id, x.ref, x.dataId, x.kind, x.planId, x.zoneId, x.nodeId], ['dcp-001', 'DCP-001', I.data, 'primary', I.storePlan, I.zone1, '']);
+  assert.deepEqual(copyOf(doc(c.document, 'runtime.copy', {id: x.id, nodeId: made.cluster}), x.id).zoneId, '', 'a copy rests in a zone or a node: naming one clears the other');
+  const base = {kind: 'residency', title: 'A gate', environmentId: '', dataIds: [I.data], permitted: ['NO'], source: 'A policy (synthetic)'};
+  for (const [payload, words] of [
+    [{kind: 'weather'}, /^Choose the kind of location gate: residency, placement, required service, quota, key custody or identity\.$/],
+    [{title: ''}, /^Name the location gate\.$/],
+    [{environmentId: 'env-404'}, /^Choose an existing environment for the gate, or leave it for every environment\.$/],
+    [{dataIds: []}, /^A residency or placement gate names what it constrains: data definitions, classifications or personal data\.$/],
+    [{dataIds: ['dat-404']}, /^Choose an existing data definition\.$/],
+    [{classifications: ['Secret']}, /^Choose classifications this project uses/],
+    [{permitted: ['XX']}, /^Give each permitted jurisdiction as an officially assigned ISO 3166-1 alpha-2 code \(NO, SE, GB\)\.$/],
+    [{permitted: []}, /^A residency gate permits one or more jurisdictions, or keeps the list open\.$/],
+    [{kind: 'placement', permitted: [], requires: {tiers: [], exposure: ''}}, /^A placement gate requires a tier or an exposure\.$/],
+    [{kind: 'required-service', dataIds: [], permitted: [], nodeIds: [], requirement: 'A key service.'}, /^Name the deployment nodes where the requirement holds\.$/],
+    [{kind: 'quota', dataIds: [], permitted: [], nodeIds: [made.region], requirement: ''}, /^State what must be available at those nodes\.$/],
+    [{source: ''}, /^State the obligation's source \(a regulation, a contract clause or a policy\), or keep it open\.$/]
+  ]) refuses(p, 'runtime.gate', {...base, ...payload}, words, JSON.stringify(payload));
+  for (const [payload, words] of [
+    [{dataId: 'dat-404'}, /^Choose an existing data definition\.$/],
+    [{kind: 'souvenir'}, /^Choose the kind of copy/],
+    [{zoneId: I.zone1, nodeId: made.cluster}, /^A copy rests in one zone or one node, not both\.$/],
+    [{zoneId: ''}, /^Say where the copy rests: a zone or a deployment node\.$/],
+    [{zoneId: 'zon-404'}, /^Choose an existing zone\.$/],
+    [{planId: 'run-404'}, /^Choose an existing runtime plan\.$/]
+  ]) refuses(p, 'runtime.copy', {dataId: I.data, kind: 'primary', planId: I.storePlan, zoneId: I.zone1, basis: 'x', ...payload}, words, JSON.stringify(payload));
+  refuses(F.tidewater(), 'runtime.gate', base, /^This project's topology is not typed yet/);
+  // a draft by Sol sends a gate and a copy as its proposals and names no permitted jurisdiction
+  { const d = run(p, 'runtime.gate', {...base, permitted: [], open: {permitted: {state: 'open-question', question: 'Which countries?'}}, origin: 'sol-draft'}, A, SOL_DRAFT); assert.equal(gateOf(d.document, d.selected).state, 'proposed');
+    assert.throws(() => run(p, 'runtime.gate', {...base, origin: 'sol-draft'}, A, SOL_DRAFT), /names no permitted jurisdiction/);
+    const e = run(p, 'runtime.copy', {dataId: I.data, kind: 'log', zoneId: I.zone1, basis: 'x', origin: 'sol-draft'}, AGENT, AGENT_ACCOUNT); assert.equal(copyOf(e.document, e.selected).state, 'proposed'); }
+  // the bounds, reached through the commands
+  { let y = p; for (let i = 0; i < GA.GATE_LIMITS.gates; i++) y = doc(y, 'runtime.gate', {...base, title: 'Gate ' + i}); refuses(y, 'runtime.gate', base, /^This workspace keeps up to 24 location gates\.$/); }
+  pass('S3.0: runtime.gate saves a location gate lg-NNN / LG-NNN (residency, placement, required service, quota, key custody, identity) with who wrote it; runtime.copy a data copy dcp-NNN / DCP-NNN in one zone or one node; each refuses its bad values in its own words; a draft sends proposals and names no permitted jurisdiction; 24 gates a workspace');
+});
+
+await block('S3.1 a residency gate and a backup in SE', () => {
+  need();
+  const I = F.ids(); let {p, made, zoneSE} = withStockholm();
+  p = doc(p, 'runtime.plan', {id: I.storePlan, backupZoneId: zoneSE});
+  // fails today: no command states a location gate, and no check of Chapter 10 reads residency
+  let r = gate(p); p = r.document; const lg = r.selected;
+  r = run(p, 'runtime.copy', {dataId: I.data, kind: 'backup', planId: I.storePlan, zoneId: zoneSE, basis: 'The continuous copy (synthetic).'}); p = r.document; const dcp = r.selected;
+  const g = reading(p, lg), row = g.rows.find(x => x.copyId === dcp);
+  assert.equal(g.state, 'fail'); assert.deepEqual([row.state, row.jurisdiction, row.nodeId, row.zoneId], ['fail', 'SE', made.recoveryRegion, zoneSE]);
+  const f = findingOf(p, 'location-gate:' + lg);
+  assert.deepEqual([f?.level, f?.hard, f?.objectId, nonWaivable(f)], ['error', true, lg, true], 'an error in the one non-waivable class (hard)');
+  assert.equal(f.title, 'LG-001 Booking records stay in Norway fails');
+  assert.match(f.detail, /DCP-001, the backup of DAT-001 Passenger booking record, rests in ZON-004 at DN-004 Sweden Central, in SE; LG-001 permits NO\./, f.detail);
+  assert.match(f.detail, /A location gate is not traded off: change where the copy rests\.$/); assert.ok(!/runtime\.|record\./.test(f.title + f.detail), 'it names no command type');
+  assert.deepEqual(treatmentsFor(f), ['Fix before review', 'Carry as action'], 'no waiver is offered');
+  assert.equal(fn(GA, 'locationGateState')(p, I.production), 'fail'); assert.equal(GA.locationGateState(p, I.recovery), 'pass', 'no gate of the recovery environment');
+  // a gate of every environment also reads the recovery environment, where the trail places the store's replica in Sweden Central (SE)
+  { const q = gate(p, {environmentId: '', title: 'Booking records stay in Norway, everywhere'}).document, all = reading(q, 'lg-002');
+    assert.equal(all.state, 'fail'); assert.ok(all.rows.some(r => r.copyId === null && r.zoneId === I.zone3 && r.jurisdiction === 'SE' && r.state === 'fail'), 'the replica the trail places in the recovery zone, in SE, fails it though no copy records it'); assert.equal(GA.locationGateState(q, I.recovery), 'fail'); }
+  // with every derived copy recorded in Norway, it passes
+  { let q = doc(doc(p, 'runtime.plan', {id: I.storePlan, backupZoneId: I.zone2}), 'runtime.copy', {id: dcp, zoneId: I.zone2}); q = recordedInNorway(q);
+    assert.equal(reading(q, lg).state, 'pass'); assert.equal(findingOf(q, 'location-gate:' + lg), undefined); assert.equal(findingOf(q, 'location-unknown:' + lg), undefined); }
+  pass('S3.1: a residency gate permitting NO and the store\'s backup copy in a zone located in Sweden Central (SE): error location-gate:lg-001, hard (no waiver offered), naming DCP-001, ZON-004, DN-004 and SE against the permitted NO; recorded in Norway it passes');
+});
+
+await block('S3.2 unknown is never pass', () => {
+  need();
+  const I = F.ids(); let {p, made} = typedTidewater();
+  let r = gate(p); p = r.document; const lg = r.selected, why = q => reading(q, lg).rows.filter(x => x.state === 'unknown').map(x => x.why).join(' ');
+  // nothing recorded: the locations the trail derives read unknown
+  assert.equal(reading(p, lg).state, 'unknown'); assert.match(why(p), /the trail places it in ZON-001 .* no copy records it/);
+  p = recordedInNorway(p); assert.equal(reading(p, lg).state, 'pass');
+  // a copy whose zone stands in no node with a jurisdiction
+  { let q = doc(p, 'runtime.zone', {environmentId: I.production, title: 'Bergen zone 3', kind: 'hosting', failureDomain: '', isolation: 'x', owner: 'x'}); const z = q.runtime.zones.at(-1).id;
+    q = doc(q, 'technology.domain', {title: 'Bergen availability zone 3', scope: 'zone', cause: 'location', parentId: made.fdRegion}); q = doc(q, 'runtime.locate', {zoneId: z, domainIds: [q.technology.domains.at(-1).id]});
+    q = doc(q, 'runtime.copy', {dataId: I.data, kind: 'log', zoneId: z, basis: 'Audit log (synthetic).'});
+    assert.equal(reading(q, lg).state, 'unknown'); assert.match(why(q), /ZON-004 stands in no deployment node that states a jurisdiction/);
+    const f = findingOf(q, 'location-unknown:' + lg); assert.deepEqual([f?.level, f?.objectId], ['warning', lg]); assert.match(f.detail, /DCP-004/); assert.equal(findingOf(q, 'location-gate:' + lg), undefined); }
+  // a node chain that states no jurisdiction
+  { let q = doc(p, 'runtime.node', {title: 'Edge site', kind: 'site'}); q = doc(q, 'runtime.copy', {dataId: I.data, kind: 'cache', nodeId: q.runtime.nodes.at(-1).id, basis: 'x'});
+    assert.equal(reading(q, lg).state, 'unknown'); assert.match(why(q), /DN-006 Edge site states no jurisdiction, nor does a node it lies in/); }
+  // a node under a region inherits the region's
+  { const q = doc(p, 'runtime.copy', {dataId: I.data, kind: 'cache', nodeId: made.cluster, basis: 'x'}); assert.equal(reading(q, lg).rows.find(x => x.nodeId === made.cluster).jurisdiction, 'NO'); assert.equal(reading(q, lg).state, 'pass'); }
+  // an unresolved proposed copy of gated data
+  { const d = run(p, 'runtime.copy', {dataId: I.data, kind: 'export', zoneId: I.zone1, basis: 'x', origin: 'sol-draft'}, A, SOL_DRAFT).document;
+    assert.equal(reading(d, lg).state, 'unknown'); assert.match(why(d), /DCP-004 is a proposal: a person keeps or dismisses it/); }
+  // a location the trail derives that no copy records: the store placed in a third zone
+  { let q = doc(p, 'runtime.zone', {environmentId: I.production, title: 'Bergen zone 3', kind: 'hosting', failureDomain: 'AZ-3', isolation: 'x', owner: 'x'}); const z = q.runtime.zones.at(-1).id;
+    q = doc(q, 'runtime.locate', {zoneId: z, nodeId: made.region}); q = doc(q, 'runtime.placement', {planId: I.storePlan, zoneId: z, role: 'standby', replicas: 1, basis: 'x'});
+    assert.equal(reading(q, lg).state, 'unknown', 'in Norway, but not recorded'); assert.match(why(q), /the trail places it in ZON-004 .* no copy records it/); }
+  // a gate that names no data this project holds, and a permitted list kept open
+  { const q = gate(p, {dataIds: [], classifications: ['Restricted']}).document; assert.equal(reading(q, 'lg-002').state, 'unknown'); assert.match(reading(q, 'lg-002').why, /names no data definition this project holds/); }
+  { const q = doc(p, 'runtime.gate', {id: lg, permitted: [], open: {permitted: {state: 'open-question', question: 'Which countries?'}}}); assert.equal(reading(q, lg).state, 'unknown'); assert.match(reading(q, lg).why, /permitted jurisdictions are not stated/); }
+  pass('S3.2: unknown is never pass: a copy whose zone stands in no node with a jurisdiction (location-unknown, a warning), a node chain with none, an unresolved proposed copy, a location the trail derives that no copy records, a gate that names no data and a permitted list kept open each read unknown; a node inherits the nearest stated jurisdiction');
+});
+
+await block('S3.3 a residency or placement gate takes no evidence', () => {
+  need();
+  const {p, made} = typedTidewater();
+  for (const payload of [{}, {kind: 'placement', permitted: [], requires: {tiers: ['data'], exposure: 'private'}}]) {
+    const r = gate(p, payload), q = r.document; gateOf(q, r.selected).provenance = {author: {kind: 'person', by: A, at: AT, account: 'person'}};
+    assert.throws(() => run(q, 'runtime.gate-evidence', {id: r.selected, nodeId: made.region, state: 'pass', reference: 'R-1', observations: 'Seen.', stamp: '', reviewed: true}, B), /^Error: LG-001 is read from where its copies rest: a (residency|placement) gate takes no evidence\.$/, (payload.kind || 'residency') + ' takes no evidence');
+  }
+  pass('S3.3: runtime.gate-evidence on a residency or a placement gate is refused: they are read from where the copies rest');
+});
+
+await block('S3.4 a required-service gate\'s evidence, through the server', async () => {
+  need();
+  const h = await F.server(worker), d = () => withFinalReview(h.state.document), ok = (r, why) => assert.equal(r.status, 200, (why || 'accepted') + ': ' + JSON.stringify(r.body).slice(0, 300));
+  try {
+    ok(await h.send('runtime.topology-start', {})); const region = (await h.send('runtime.node', {title: 'Norway East', kind: 'region', jurisdiction: 'NO'})).body.selected;
+    const made = await h.send('runtime.gate', {kind: 'required-service', title: 'A managed key service in Norway East', environmentId: '', nodeIds: [region], requirement: 'A managed key service is available in the region.', source: 'Platform standard PS-7 (synthetic)'}); ok(made); const lg = made.body.selected;
+    assert.equal(reading(d(), lg).state, 'unknown', 'no evidence yet: unknown, never pass');
+    const evidence = (as, extra = {}, state = 'pass') => h.send('runtime.gate-evidence', {id: lg, nodeId: region, state, reference: 'Provider catalogue extract (synthetic)', observations: 'The service is listed for the region.', stamp: fn(GA, 'gateEvidenceStamp')(d(), gateOf(d(), lg), region), reviewed: true}, as, extra);
+    let x = await evidence(A); assert.equal(x.status, 400); assert.match(x.error, /A second signed-in person, who did not write or own the action, verifies it\. architect-a wrote lg-001\./, 'the gate\'s author');
+    x = await evidence(AGENT); assert.equal(x.status, 400); assert.equal(x.body.code, 'authorship', 'an agent account');
+    x = await evidence(A, {authorKind: 'sol-draft', reason: 'Drafted.'}); assert.equal(x.status, 400); assert.equal(x.body.code, 'authorship', 'a draft by Sol');
+    ok(await evidence(B), 'a second person records it');
+    const step = gateOf(d(), lg).review;
+    assert.deepEqual([step.actor, step.account, step.evidence[region].state, step.evidence[region].actor], [B, 'person', 'pass', B]);
+    assert.equal(reading(d(), lg).state, 'pass');
+    // the evidence speaks about the gate and the node as they were: a change of the node lapses it
+    ok(await h.send('runtime.node', {id: region, place: 'Bergen'}));
+    assert.equal(reading(d(), lg).state, 'unknown', 'the node changed: the evidence lapses');
+    ok(await evidence(C, {}, 'fail'), 'a second person records a fail');
+    assert.equal(reading(d(), lg).state, 'fail'); assert.equal(findingOf(d(), 'location-gate:' + lg)?.hard, true);
+  } finally { h.close(); }
+  pass('S3.4: through the server, a required-service gate\'s evidence is a second person\'s step: refused from the gate\'s author, an agent account and a draft by Sol, recorded from a second person under the gate\'s review; a pass passes the gate, a change of the node lapses it, a fail fails it (hard)');
+});
+
+await block('S3.5 a merge that would fail a gate, and an acceptance while one fails, through the server', async () => {
+  need();
+  const I = F.ids(), h = await F.server(worker), d = () => withFinalReview(h.state.document), ok = (r, why) => assert.equal(r.status, 200, (why || 'accepted') + ': ' + JSON.stringify(r.body).slice(0, 300));
+  try {
+    ok(await h.send('runtime.topology-start', {}));
+    const node = async payload => (await h.send('runtime.node', payload)).body.selected, fd = async payload => (await h.send('technology.domain', payload)).body.selected;
+    const region = await node({title: 'Norway East', kind: 'region', jurisdiction: 'NO'}), sweden = await node({title: 'Sweden Central', kind: 'region', jurisdiction: 'SE'});
+    const fdRegion = await fd({title: 'Norway East region', scope: 'region', cause: 'location'}), z1 = await fd({title: 'Bergen availability zone 1', scope: 'zone', cause: 'location', parentId: fdRegion}), z2 = await fd({title: 'Bergen availability zone 2', scope: 'zone', cause: 'location', parentId: fdRegion}), se = await fd({title: 'Sweden Central region', scope: 'region', cause: 'location'});
+    const stockholm = (await h.send('runtime.zone', {environmentId: I.production, title: 'Stockholm zone', kind: 'hosting', failureDomain: '', isolation: 'Another country (synthetic).', owner: 'Reservations team (synthetic)'})).body.selected;
+    for (const [zoneId, nodeId, domainIds] of [[I.zone1, region, [z1]], [I.zone2, region, [z2]], [I.zone3, sweden, [se]], [stockholm, sweden, [se]]]) ok(await h.send('runtime.locate', {zoneId, nodeId, domainIds}));
+    ok(await h.send('runtime.gate', {kind: 'residency', title: 'Booking records stay in Norway', environmentId: I.production, dataIds: [I.data], permitted: ['NO'], source: 'Tidewater data-handling policy, clause 4 (synthetic)'}));
+    for (const [kind, zoneId] of [['primary', I.zone1], ['replica', I.zone2], ['backup', I.zone2]]) ok(await h.send('runtime.copy', {dataId: I.data, kind, planId: I.storePlan, zoneId, basis: 'Recorded (synthetic).'}));
+    assert.equal(GA.locationGateState(d(), I.production), 'pass');
+    // an alternative that moves the store's standby into Stockholm (SE)
+    const standby = d().runtime.placements.find(l => l.planId === I.storePlan && l.role === 'standby'), commands = [{type: 'runtime.placement', payload: {id: standby.id, zoneId: stockholm}}];
+    ok(await h.send('workspace.alternative', {commands, stamp: previewScenarioAlternative(d(), commands, undefined).stamp, title: 'A standby in Stockholm', reason: 'Closer to the recovery region.'}));
+    const alt = d().workbench.alternatives.at(-1);
+    let x = await h.send('workspace.merge', {id: alt.id, stamp: rebaseWorkingAlternative(d(), alt).stamp, reviewed: true, reason: 'Merged to see it.'}, B);
+    assert.equal(x.status, 400, 'the merge is refused: ' + JSON.stringify(x.body).slice(0, 300));
+    assert.match(x.error, /^LG-001 Booking records stay in Norway would fail: the replica of DAT-001 Passenger booking record the trail places in ZON-004 rests at DN-002 Sweden Central, in SE; LG-001 permits NO\. A location gate is not traded off: revise the alternative\.$/, x.error);
+    assert.deepEqual([d().workbench.alternatives.find(a => a.id === alt.id).status, d().runtime.placements.find(l => l.id === standby.id).zoneId], ['draft', I.zone2], 'nothing merged, nothing moved');
+    // an alternative that keeps the gate merges
+    const keep = [{type: 'runtime.placement', payload: {id: standby.id, basis: 'Confirmed in zone 2 (synthetic).'}}];
+    ok(await h.send('workspace.alternative', {commands: keep, stamp: previewScenarioAlternative(d(), keep, undefined).stamp, title: 'A standby in zone 2', reason: 'Stays in Norway.'}));
+    const other = d().workbench.alternatives.at(-1); ok(await h.send('workspace.merge', {id: other.id, stamp: rebaseWorkingAlternative(d(), other).stamp, reviewed: true, reason: 'Merged.'}, B), 'a merge that keeps the gate');
+    // S3.6: a claim is not accepted while a location gate of its environment fails
+    const claim = await h.send('runtime.failure', {environmentId: I.production, title: 'Any one availability zone is lost', scope: 'zone', quantifier: 'any-one', mustSurvive: [I.workerPlan], inScope: true}); ok(claim);
+    const log = await h.send('runtime.copy', {dataId: I.data, kind: 'log', zoneId: stockholm, basis: 'Audit log (synthetic).'}); ok(log);
+    assert.equal(GA.locationGateState(d(), I.production), 'fail');
+    const accept = () => h.send('runtime.failure-accept', {id: claim.body.selected, decision: 'accepted', stamp: FA.failureStamp(d(), declared(d(), claim.body.selected)), reviewer: 'B (synthetic)', reference: 'REV-2', observations: 'Accepted as a design claim; not demonstrated.', reviewed: true}, B);
+    x = await accept(); assert.equal(x.status, 400); assert.match(x.error, /^LG-001 Booking records stay in Norway fails: a claim of ENV-001 is not accepted while a location gate of its environment fails\.$/, x.error);
+    ok(await h.send('runtime.copy', {id: log.body.selected, zoneId: I.zone1}), 'the log moves to Norway');
+    ok(await accept(), 'then a second person accepts the claim');
+  } finally { h.close(); }
+  pass('S3.5 and S3.6: through the server, workspace.merge of an alternative that moves the store\'s standby into Stockholm (SE) is refused naming LG-001, the copy the trail places there and the jurisdictions, and nothing is merged; one that keeps the gate merges; runtime.failure-accept is refused while a gate of its environment fails, and taken once it passes');
+});
+
+await block('S3.7 copy proposals from the trail', () => {
+  need();
+  const I = F.ids(); let {p} = typedTidewater();
+  // a stateful plan the booking record's authority does not reach: the allocation worker, made stateful
+  p = doc(p, 'runtime.plan', {id: I.workerPlan, stateMode: 'Stateful service', fencing: 'One writer.', backupPlan: 'A copy.', backupZoneId: I.zone2});
+  // fails today: no command proposes the copies of a data definition
+  const r = run(p, 'runtime.copy-proposals', {environmentId: I.production}), q = r.document, props = q.runtime.copies.filter(c => c.state === 'proposed');
+  assert.deepEqual(props.map(c => [c.dataId, c.kind, c.planId, c.zoneId, c.origin]), [[I.data, 'primary', I.storePlan, I.zone1, 'seeded'], [I.data, 'replica', I.storePlan, I.zone2, 'seeded'], [I.data, 'backup', I.storePlan, I.zone2, 'seeded']], 'the store\'s copies, from the trail of the booking record\'s authority; no stateless or provider-managed plan, and no plan the trail does not reach');
+  const byId = new Map(recordGraph(q).relationships.map(e => [e.id, e]));
+  for (const c of props) for (const id of c.derivedFrom.via) assert.ok(byId.has(id), c.ref + ' came by ' + id + ', a relation of the record graph');
+  assert.deepEqual(props[0].derivedFrom.via.map(id => byId.get(id).type), ['hasNeed', 'metBy', 'implementedBy', 'operatedAs', 'placedAs', 'locatedIn'], 'the primary: from the Reservation API to the zone');
+  assert.deepEqual(props[2].derivedFrom.via.map(id => byId.get(id).type), ['hasNeed', 'metBy', 'implementedBy', 'operatedAs', 'backsUpTo'], 'the backup: by the plan\'s backup zone, a relation the package states');
+  assert.deepEqual([q.runtime.version, reviewSourceStamp(withFinalReview(q))], [p.runtime.version, reviewSourceStamp(withFinalReview(p))], 'proposals move no version and no design stamp');
+  assert.equal(doc(q, 'runtime.copy-proposals', {environmentId: I.production}).runtime.copies.length, 3, 'asked again it proposes nothing new');
+  { const x = doc(q, 'record.retire', {id: props[0].id, chapter: 10, reason: 'Dismissed: synthetic.'}); assert.ok(!doc(x, 'runtime.copy-proposals', {environmentId: I.production}).runtime.copies.some(c => c.kind === 'primary'), 'a dismissed proposal is not proposed again'); }
+  assert.ok(!recordGraph(F.tidewater()).relationships.some(e => e.type === 'backsUpTo'), 'the relation is stated only in a typed document');
+  refuses(p, 'runtime.copy-proposals', {environmentId: 'env-404'}, /^Choose an existing environment\.$/);
+  pass('S3.7: runtime.copy-proposals proposes, from the trail of each data definition\'s authority, a primary copy per active placement, a replica per standby and a backup per backup zone of each stateful plan it reaches, each recording the relations it came by in derivedFrom (the backup by backsUpTo); no version or stamp moves; nothing is proposed twice, nor a dismissed proposal');
+});
+
+await block('S3.8 addresses that overlap, and a data tier in public', () => {
+  need();
+  const {p, made} = typedTidewater(); let q = p;
+  const node = payload => { q = doc(q, 'runtime.node', payload); return q.runtime.nodes.at(-1).id; }, ref = id => nodeOf(q, id).ref;
+  const netA = node({title: 'Reservation network', kind: 'network', address: '10.20.0.0/16', parentId: made.az1}), netB = node({title: 'Allocation network', kind: 'network', address: '10.20.128.0/17', parentId: made.az2});
+  const sub = node({title: 'Reservation data subnet', kind: 'subnet', address: '10.20.1.0/24', parentId: netA, tier: 'data', exposure: 'private'});
+  const netC = node({title: 'Six network', kind: 'network', address: '2001:db8::/32'}), netD = node({title: 'Six spare', kind: 'network', address: '2001:0DB8:8000::/33'}), netE = node({title: 'Other network', kind: 'network', address: '10.30.0.0/16'});
+  let f = findingOf(q, 'node-address-overlap:' + netA);
+  assert.equal(f?.level, 'warning'); assert.match(f.detail, new RegExp(ref(netA) + ' Reservation network \\(10\\.20\\.0\\.0/16\\) and ' + ref(netB) + ' Allocation network \\(10\\.20\\.128\\.0/17\\) overlap'));
+  assert.ok(!f.detail.includes(ref(sub)), 'a subnet inside its own network is no overlap');
+  assert.match(findingOf(q, 'node-address-overlap:' + netC)?.detail || '', new RegExp(ref(netD) + ' Six spare \\(2001:db8:8000::/33\\)'), 'parsed parts compared, whatever the spelling sent');
+  assert.deepEqual([findingOf(q, 'node-address-overlap:' + netB), findingOf(q, 'node-address-overlap:' + netE), findingOf(q, 'node-data-exposure:' + sub)], [undefined, undefined, undefined], 'each pair once, under the earlier node; a private data tier is no exposure');
+  q = doc(q, 'runtime.node', {id: sub, exposure: 'public'}); f = findingOf(q, 'node-data-exposure:' + sub);
+  assert.deepEqual([f?.level, f?.objectId], ['error', sub]); assert.match(f.detail, new RegExp(ref(sub) + ' Reservation data subnet is a data tier open to the public'));
+  pass('S3.8: two networks whose prefixes overlap (10.20.0.0/16 and 10.20.128.0/17; 2001:db8::/32 and 2001:db8:8000::/33, compared as parsed parts) raise node-address-overlap once, under the earlier node, and a subnet inside its own network does not; a data-tier subnet with exposure public raises node-data-exposure, an error');
+});
+
+await block('S3.9 gates and copies, and what every package\'s suite holds', () => {
+  need();
+  const I = F.ids(); let {p, made} = typedTidewater();
+  p = recordedInNorway(gate(p).document); p = doc(p, 'runtime.gate', {kind: 'key-custody', title: 'Keys held in Norway', environmentId: I.production, nodeIds: [made.region], requirement: 'Keys are held by the customer.', source: 'Key policy (synthetic)'});
+  const stepped = structuredClone(p), kg = gateOf(stepped, 'lg-002'); kg.review = {actor: B, at: AT, account: 'person', evidence: {[made.region]: {state: 'pass', actor: B, at: AT, account: 'person', stamp: '', reference: 'R', observations: 'O'}}};
+  const records = x => [...(x.runtime.gates || []), ...(x.runtime.copies || [])];
+  assert.equal(R.assertStepsMoveNoStamp(p, records), 5, 'a person\'s step moves no design stamp');
+  R.assertTemplateCopyClearsSteps(stepped, records); assert.ok(R.assertRecoveryClearsSteps(stepped, records) >= 1);
+  R.assertFindingIdsUnique(withFinalReview(p)); R.assertBuiltInTrailsUnchanged(F.tidewater(), p); R.assertBuiltInChainsUnchanged(F.tidewater(), p);
+  const G = recordGraph(p), rels = type => G.relationships.filter(e => e.type === type).map(e => [e.from, e.to]);
+  assert.deepEqual([G.objects.get('lg-001')?.type, G.objects.get('dcp-001')?.type], ['gate', 'copy']);
+  assert.deepEqual(rels('restricts'), [['lg-001', I.data]]); assert.deepEqual(rels('copyOf').length, 3); assert.deepEqual(rels('heldBy').length, 3); assert.deepEqual(rels('restsIn'), [['dcp-001', I.zone1], ['dcp-002', I.zone2], ['dcp-003', I.zone2]]);
+  // the document at the package's new limits, through the commands (ruling M9 (f)): 24 declared failures, 24 gates and 200 copies with every field at its limit
+  { const send = (type, payload) => { const r = commandHandler(type)(p, {type, payload}, AT, A, {author: person(A)}); p = r.document; return r.selected; }, x = n => 'x'.repeat(n);
+    for (let i = p.runtime.failures?.length || 0; i < FA.FAILURE_LIMITS.failures; i++) send('runtime.failure', {environmentId: I.production, title: x(160), scope: 'zone', quantifier: 'any-one', mustSurvive: [I.workerPlan], exclusions: x(2400), basis: x(2400), owner: x(180), inScope: false});
+    for (let i = p.runtime.gates.length; i < GA.GATE_LIMITS.gates; i++) send('runtime.gate', {kind: 'residency', title: x(160), environmentId: '', dataIds: [I.data], permitted: [...T.JURISDICTIONS].slice(0, 24), source: x(2400), owner: x(180)});
+    for (let i = p.runtime.copies.length; i < GA.GATE_LIMITS.copies; i++) send('runtime.copy', {dataId: I.data, kind: 'log', zoneId: I.zone1, basis: x(600)});
+    refuses(p, 'runtime.copy', {dataId: I.data, kind: 'log', zoneId: I.zone1, basis: 'x'}, /^This workspace keeps up to 200 data copies\.$/);
+    // the server stamps each record once more (provenance), at most STAMP characters, as slice 1's case S1.18 counts it; slice 1's records at their limits
+    // take about 3,740,000 characters (S1.18); a second person's step and every later save add to a record's history, which is never trimmed
+    const STAMP = JSON.stringify({provenance: {author: {kind: 'person', by: x(128), at: AT, account: 'person'}, reviewed: {by: x(128), at: AT, how: 'confirmed'}}}).length;
+    const records = p.runtime.failures.length + p.runtime.gates.length + p.runtime.copies.length, own = JSON.stringify([p.runtime.failures, p.runtime.gates, p.runtime.copies]).length + records * STAMP, slice1 = 3740000;
+    assert.deepEqual([p.runtime.failures.length, p.runtime.gates.length, p.runtime.copies.length], [24, 24, 200]);
+    assert.ok(own < 500000, 'this build\'s records at their limits take ' + own + ' characters'); assert.ok(own + slice1 < DOCUMENT_BOUND * 0.55, 'with slice 1\'s at their limits the package keeps under 55 % of the document bound: ' + (own + slice1));
+    pass('S3.9: with gates and copies in the document a person\'s step moves no design stamp, a template copy and a recovery import clear the steps, finding ids are unique, the built-in trails and chains are unchanged; the graph states the gate, the copies and restricts, copyOf, heldBy, restsIn; at the new limits (24 claims, 24 gates, 200 copies, every field at its limit, stamped) the records take ' + own + ' characters, the package with slice 1\'s about ' + (own + slice1) + ' of the ' + DOCUMENT_BOUND + '-character bound (ruling M9 (f): the rest of a project holds less than ' + (DOCUMENT_BOUND - own - slice1) + ' before the document bound binds)'); }
+});
+
+// Candidate knowledge is inert (plan ruling 6; contract rule 40): slices 2 and 3 read no knowledge, and an unreleased claim that speaks of the very
+// records moves none of their readings.
+await block('S3.10 candidate knowledge reaches no failure or gate reading', () => {
+  need();
+  const I = F.ids(); let {p, made} = typedTidewater();
+  p = declare(p, {title: 'The primary region is lost', scope: 'region', quantifier: 'named', domainIds: [made.fdRegion]}).document; p = recordedInNorway(gate(p).document);
+  let k = applyKnowledgeCommand(structuredClone(p), {type: 'knowledge.source', payload: {title: 'Synthetic residency note', body: 'Synthetic residency note\nBooking records may rest in Sweden, and the region loss is survived.\n', path: 'synthetic/residency.txt', revision: '1', license: 'Synthetic test material'}}, AT, 'author').document;
+  k = withFinalReview(applyKnowledgeCommand(k, {type: 'knowledge.claim', payload: {sourceId: k.knowledge.sources.at(-1).id, lineStart: 2, lineEnd: 2, subjectId: 'deployment-blueprint:regional-standby', predicate: 'permits a jurisdiction', claimType: 'applicability', polarity: 'neutral', statement: 'Booking records may rest in Sweden.', conditions: ['For this fixture.'], limitations: ['Synthetic.'], tags: ['title:Residency']}}, AT, 'author').document);
+  assert.notEqual(k.knowledge.claims[0].status, 'released', 'the claim is a candidate');
+  const reading = q => JSON.stringify({failure: FA.evaluateFailure(q, 'fs-001'), gate: GA.gateReading(q, 'lg-001'), state: GA.locationGateState(q, I.production), copies: GA.copyInventory(q, I.production), checks10: ch10(q).filter(f => /^(failure|domain|location|node)-/.test(f.code)), standby: FA.standbyElsewhere(q, q.runtime.plans.find(r => r.id === I.storePlan))});
+  assert.equal(reading(k), reading(p), 'no candidate claim reaches a verdict, a gate, the copy inventory or a check');
+  pass('S3.10: an unreleased claim that speaks of the same records moves no verdict, gate reading, copy inventory or Chapter 10 finding of slices 2 and 3');
+});
+
+// ---------------------------------------------------------------- the fix-up (owner decision AA1; the review's must-fix and should-fix items)
+//   S3.11 (must-fix 2) through the server: a draft by Sol and an agent account lift no failing location gate: a gate's or a copy's change and a
+//         node's jurisdiction cleared are refused; a zone located or a placement moved by a draft is read as failing until a person reviews it.
+// The typed Tidewater project on a server, with Norway East (NO) and Sweden Central (SE), a Stockholm zone in SE, a residency gate permitting NO
+// on the booking record, its three copies recorded in Norway and an audit log recorded in Stockholm: the gate fails.
+async function stockholmServer() {
+  const I = F.ids(), h = await F.server(worker), d = () => withFinalReview(h.state.document), ok = (r, why) => assert.equal(r.status, 200, (why || 'accepted') + ': ' + JSON.stringify(r.body).slice(0, 300));
+  ok(await h.send('runtime.topology-start', {}));
+  const node = async payload => (await h.send('runtime.node', payload)).body.selected, fd = async payload => (await h.send('technology.domain', payload)).body.selected;
+  const region = await node({title: 'Norway East', kind: 'region', jurisdiction: 'NO'}), sweden = await node({title: 'Sweden Central', kind: 'region', jurisdiction: 'SE'});
+  const fdRegion = await fd({title: 'Norway East region', scope: 'region', cause: 'location'}), z1 = await fd({title: 'Bergen availability zone 1', scope: 'zone', cause: 'location', parentId: fdRegion}), z2 = await fd({title: 'Bergen availability zone 2', scope: 'zone', cause: 'location', parentId: fdRegion}), se = await fd({title: 'Sweden Central region', scope: 'region', cause: 'location'});
+  const stockholm = (await h.send('runtime.zone', {environmentId: I.production, title: 'Stockholm zone', kind: 'hosting', failureDomain: '', isolation: 'Another country (synthetic).', owner: 'Reservations team (synthetic)'})).body.selected;
+  for (const [zoneId, nodeId, domainIds] of [[I.zone1, region, [z1]], [I.zone2, region, [z2]], [I.zone3, sweden, [se]], [stockholm, sweden, [se]]]) ok(await h.send('runtime.locate', {zoneId, nodeId, domainIds}));
+  const lg = (await h.send('runtime.gate', {kind: 'residency', title: 'Booking records stay in Norway', environmentId: I.production, dataIds: [I.data], permitted: ['NO'], source: 'Tidewater data-handling policy, clause 4 (synthetic)'})).body.selected;
+  for (const [kind, zoneId] of [['primary', I.zone1], ['replica', I.zone2], ['backup', I.zone2]]) ok(await h.send('runtime.copy', {dataId: I.data, kind, planId: I.storePlan, zoneId, basis: 'Recorded (synthetic).'}));
+  const log = (await h.send('runtime.copy', {dataId: I.data, kind: 'log', zoneId: stockholm, basis: 'Audit log (synthetic).'})).body.selected;
+  return {h, d, ok, region, sweden, stockholm, lg, log};
+}
+
+await block('S3.11 a draft lifts no failing location gate, through the server', async () => {
+  need();
+  const I = F.ids(), {h, d, ok, region, sweden, stockholm, lg, log} = await stockholmServer();
+  const hard = () => { const f = findingOf(d(), 'location-gate:' + lg); return [GA.gateReading(d(), lg).state, f?.level, f?.hard]; }, failing = ['fail', 'error', true];
+  try {
+    assert.deepEqual(hard(), failing, 'the log in Stockholm (SE) fails the gate');
+    // fails on 10b97b7: each of these was taken (200) and the hard finding was gone afterwards
+    const gateWords = /^LG-001 is a location gate a person saved: a draft by Sol or an agent account changes no gate that stands\. It sends a gate of its own as a proposal \(origin: sol-draft\), and a person keeps it\.$/;
+    const copyWords = /^DCP-004 is a data copy a person saved: a draft by Sol or an agent account changes no copy that stands\. It sends a copy of its own as a proposal \(origin: sol-draft\), and a person keeps it\.$/;
+    const nodeWords = /^A jurisdiction is stated by a signed-in person: a draft by Sol or an agent account names none, and clears none a person stated\.$/;
+    for (const [account, extra, who] of [[B, SOL_EXTRA, 'a draft by Sol'], [AGENT, {}, 'an agent account']]) for (const [type, payload, words, what] of [
+      ['runtime.gate', {id: lg, permitted: [], open: {permitted: {state: 'open-question', question: 'Which countries?'}}}, gateWords, '(b) keeps the permitted list open'],
+      ['runtime.gate', {id: lg, dataIds: [], classifications: ['Restricted']}, gateWords, '(c) points the gate at no data'],
+      ['runtime.gate', {id: lg, environmentId: I.recovery}, gateWords, '(c2) moves the gate to another environment'],
+      ['runtime.gate', {id: lg, owner: 'Drafted owner.'}, gateWords, 'changes the gate\'s words'],
+      ['runtime.copy', {id: log, zoneId: I.zone1}, copyWords, '(d) moves the person\'s log copy to Norway'],
+      ['runtime.copy', {id: log, nodeId: region}, copyWords, '(d) moves it to the Norway node'],
+      ['runtime.node', {id: sweden, jurisdiction: ''}, nodeWords, '(e) clears Sweden Central\'s jurisdiction'],
+      ['runtime.node', {id: sweden, jurisdiction: null}, nodeWords, '(e) clears it with null']]) {
+      const x = await h.send(type, {...payload, origin: 'sol-draft'}, account, extra);
+      assert.equal(x.status, 400, who + ' ' + what + ': ' + JSON.stringify(x.body).slice(0, 200)); assert.match(x.error, words, who + ' ' + what);
+      assert.deepEqual(hard(), failing, who + ' ' + what + ': the hard finding stands');
+    }
+    // (f) and (f2): a zone a draft locates elsewhere is taken (slice 1, S1.8) and read as failing until a person reviews it
+    for (const [account, extra, who] of [[B, SOL_EXTRA, 'a draft by Sol'], [AGENT, {}, 'an agent account']]) {
+      ok(await h.send('runtime.locate', {zoneId: stockholm, nodeId: region}, account, extra), who + ' locates the Stockholm zone in Norway East');
+      assert.deepEqual(hard(), failing, who + ': the hard finding stands');
+      const row = GA.gateReading(d(), lg).rows.find(r => r.copyId === log);
+      assert.equal(row.state, 'fail'); assert.match(row.why, /^ZON-004 Stockholm zone was last changed by a draft no person has reviewed: DCP-004, the log of DAT-001 Passenger booking record, reads as failing until a person reviews it$/, row.why);
+      assert.match(findingOf(d(), 'location-gate:' + lg).detail, /ZON-004 Stockholm zone was last changed by a draft no person has reviewed/);
+      assert.ok(GA.failingGate(d(), I.production), 'the gate still blocks an acceptance of the environment\'s claims');
+      // a person's own location of it stands: the log rests in Norway
+      ok(await h.send('runtime.locate', {zoneId: stockholm, reason: 'Reviewed: it lies in Norway East (synthetic).'}, C), 'a person locates it');
+      assert.equal(GA.gateReading(d(), lg).state, 'pass', 'a person stands behind where it lies');
+      ok(await h.send('runtime.locate', {zoneId: stockholm, nodeId: sweden, reason: 'Back in Sweden (synthetic).'}, C)); assert.deepEqual(hard(), failing);
+    }
+    // a placement a draft moves (a built-in command) is read the same way: the standby moved into Stockholm by a person fails the gate, moved back by a draft it still fails
+    ok(await h.send('runtime.copy', {id: log, zoneId: I.zone1}, C), 'a person moves the log to Norway'); assert.equal(GA.gateReading(d(), lg).state, 'pass');
+    const standby = d().runtime.placements.find(l => l.planId === I.storePlan && l.role === 'standby');
+    ok(await h.send('runtime.placement', {id: standby.id, zoneId: stockholm}, C), 'a person moves the standby into Stockholm'); assert.deepEqual(hard(), failing, 'the replica the trail places in SE fails it');
+    for (const [account, extra, who] of [[B, SOL_EXTRA, 'a draft by Sol'], [AGENT, {}, 'an agent account']]) {
+      ok(await h.send('runtime.placement', {id: standby.id, zoneId: I.zone2}, account, extra), who + ' moves it back');
+      assert.deepEqual(hard(), failing, who + ': the hard finding stands');
+      assert.ok(GA.gateReading(d(), lg).rows.some(r => r.state === 'fail' && /last changed by a draft no person has reviewed/.test(r.why) && r.why.includes(standby.id)), 'the gate names the placement a draft moved');
+      ok(await h.send('runtime.placement', {id: standby.id, zoneId: stockholm}, C), 'a person moves it into Stockholm again');
+    }
+    ok(await h.send('runtime.placement', {id: standby.id, zoneId: I.zone2}, C), 'a person moves it back'); assert.equal(GA.gateReading(d(), lg).state, 'pass', 'a person\'s move stands');
+  } finally { h.close(); }
+  pass('S3.11: through the server, a draft by Sol and an agent account lift no failing location gate: a change of the gate (its permitted list, its data, its environment, its words) or of a copy, and a node\'s jurisdiction cleared, are refused in words; a zone a draft locates and a placement a draft moves are read as failing, the gate naming them, until a person locates or moves them; the hard finding stands throughout, and a person\'s own change stands');
+});
+
+//   S3.12 (should-fix 2, H11) through the server: a merge that adds a failing row to a gate that fails already is refused; one that adds none merges;
+//   S3.13 (should-fix 3) an acceptance lapses when a gate of its environment starts failing after it;
+//   S3.14 (should-fix 7) the design statement of claims and gates leaves out what a recovery import moved aside.
+await block('S3.12 a merge that adds a failing row to a failing gate, through the server', async () => {
+  need();
+  const I = F.ids(), {h, d, ok, stockholm, lg} = await stockholmServer();
+  try {
+    assert.equal(GA.gateReading(d(), lg).state, 'fail', 'the log in Stockholm fails the gate already');
+    const standby = d().runtime.placements.find(l => l.planId === I.storePlan && l.role === 'standby'), alternative = async (commands, title) => { ok(await h.send('workspace.alternative', {commands, stamp: previewScenarioAlternative(d(), commands, undefined).stamp, title, reason: 'To see it (synthetic).'})); return d().workbench.alternatives.at(-1); };
+    const merge = alt => h.send('workspace.merge', {id: alt.id, stamp: rebaseWorkingAlternative(d(), alt).stamp, reviewed: true, reason: 'Merged to see it.'}, B);
+    // fails on 10b97b7: the gate failed before the merge, so a merge that moves the standby into Stockholm (SE) was taken (200)
+    const into = await alternative([{type: 'runtime.placement', payload: {id: standby.id, zoneId: stockholm}}], 'A standby in Stockholm'), x = await merge(into);
+    assert.equal(x.status, 400, 'refused: ' + JSON.stringify(x.body).slice(0, 300));
+    assert.match(x.error, /^LG-001 Booking records stay in Norway would fail: the replica of DAT-001 Passenger booking record the trail places in ZON-004 rests at DN-002 Sweden Central, in SE; LG-001 permits NO\. A location gate is not traded off: revise the alternative\.$/, x.error);
+    assert.equal(d().runtime.placements.find(l => l.id === standby.id).zoneId, I.zone2, 'nothing moved');
+    // a merge that adds no failing row merges, though the gate still fails
+    ok(await merge(await alternative([{type: 'runtime.placement', payload: {id: standby.id, basis: 'Confirmed in zone 2 (synthetic).'}}], 'The standby stays')), 'a merge that adds no failing row');
+    assert.equal(GA.gateReading(d(), lg).state, 'fail');
+  } finally { h.close(); }
+  pass('S3.12: through the server, a merge that adds a failing row to a location gate that fails already (the standby moved into Stockholm, SE) is refused naming that row, and nothing moves; a merge that adds no failing row merges (H11 compares the failing rows, not the gate\'s state)');
+});
+
+await block('S3.13 an acceptance lapses when a gate of its environment starts failing', () => {
+  need();
+  const I = F.ids(); let {p, zoneSE} = withStockholm();
+  p = recordedInNorway(gate(p).document); const r = declare(p); p = r.document; const fs = r.selected;
+  declared(p, fs).review = {actor: B, at: AT, account: 'person', decision: 'accepted', stamp: FA.failureStamp(p, declared(p, fs)), verdict: 'survives', cases: [], reviewer: 'B (synthetic)', reference: 'REV-6', observations: 'Accepted as a design claim; not demonstrated.'};
+  assert.deepEqual([GA.locationGateState(p, I.production), FA.failureAccepted(p, declared(p, fs))], ['pass', true], 'accepted while the gate passes');
+  // fails on 10b97b7: a log copy moved into Sweden afterwards fails the gate, and the acceptance stood
+  const q = doc(p, 'runtime.copy', {dataId: I.data, kind: 'log', zoneId: zoneSE, basis: 'Audit log (synthetic).'});
+  assert.equal(GA.locationGateState(q, I.production), 'fail');
+  assert.equal(FA.failureAccepted(q, declared(q, fs)), false, 'a claim does not stand accepted while a gate of its environment fails');
+  assert.equal(FA.failureAccepted(doc(q, 'runtime.copy', {id: q.runtime.copies.at(-1).id, zoneId: I.zone1}), declared(q, fs)), true, 'and stands again once the gate passes');
+  pass('S3.13: a second person\'s acceptance of a declared failure stands only while no location gate of its environment fails: a copy moved into Sweden afterwards lapses it, and moved back it stands again');
+});
+
+await block('S3.14 the design statement leaves out what a recovery import moved aside', () => {
+  need();
+  let {p, made} = typedTidewater();
+  p = declare(p).document; p = doc(p, 'runtime.gate', {kind: 'key-custody', title: 'Keys held in Norway', environmentId: '', nodeIds: [made.region], requirement: 'Keys are held by the customer.', source: 'Key policy (synthetic)'});
+  p.runtime.failures[0].review = {actor: B, at: AT, account: 'person', decision: 'accepted', stamp: '', verdict: 'survives', cases: [], reviewer: 'B', reference: 'R', observations: 'O'};
+  p.runtime.gates[0].review = {actor: B, at: AT, account: 'person', evidence: {[made.region]: {state: 'pass', actor: B, at: AT, account: 'person', stamp: '', reference: 'R', observations: 'O'}}};
+  const statement = q => JSON.stringify([mine().design['runtime.failures'](q), mine().design['runtime.gates'](q)]), imported = withFinalReview(neutraliseImportedAuthority(structuredClone(p), AT));
+  assert.ok(imported.runtime.failures[0].importedReview && imported.runtime.gates[0].importedReview, 'the import moved both steps aside');
+  // fails on 10b97b7: the statement read importedReview, so the import moved the design fingerprint by a step's history
+  assert.equal(statement(imported), statement(p), 'a step moved aside says nothing to the design, as the step did not');
+  pass('S3.14: the design statement of declared failures and location gates leaves out importedReview as it leaves out review: a recovery import that moves a step aside moves nothing they say to the design fingerprint');
+});
 
 // ================================================================ Slice 4: blueprint adoption glue, transitional populations
 // (design section g, Slice 4. Slice 4 adds its cases here, as blocks named 'S4.n …'.)
@@ -1380,4 +2336,4 @@ await block('S1.10 the client build', async () => {
 // (design section g, Slice 6. Slice 6 adds its node cases here, as blocks named 'S6.n …'; its browser cases are a suite of their own.)
 
 if (failed.length) { console.log('\nrc44 wp9a deployment: ' + failed.length + ' failed (' + failed.join('; ') + '), ' + checks.length + ' passed'); process.exit(1); }
-console.log('\nrc44 wp9a deployment: ' + checks.length + ' checks passed (slice 1; slices 2 to 6 have no cases yet)');
+console.log('\nrc44 wp9a deployment: ' + checks.length + ' checks passed (slices 1 to 3; slices 4 to 6 have no cases yet)');

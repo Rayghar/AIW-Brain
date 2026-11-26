@@ -27,6 +27,8 @@ import {failureDomainKey,hostingZone,statedField} from './runtime-model.js';
 import {NOT_STATED,SEEDED,PROPOSED,authoredOrigin,authored,patchFields,patchLinks,patchOpen,sameRecord,retiredOf,fitText} from './technology-domain.js';
 import {isProposed} from './record-lifecycle.js';
 import {withChanges} from './changes-domain.js';
+import {judgementOf} from './provenance.js';
+import {remember} from './document-memo.js';
 import {list} from './util.js';
 
 export const DOMAIN_SCOPES=['instance','node','zone','site','region','provider','global'];
@@ -123,6 +125,32 @@ function store(xs,old,next,raw,at,keys,fresh){
  return [old,true];
 }
 
+// (fix-up, the review's must-fix 1 and 2) What a draft by Sol or an agent account may change of a record of slices 2 and 3:
+// its proposals only. A declared failure, a location gate or a data copy that stands is a person's to change, since a
+// reading of Chapter 10 rests on it; a draft sends its own as a proposal. The one rule of both parts' validate.
+export const standingOf=(xs,raw)=>{const old=raw?.id!=null?find(xs,raw.id):null;return old&&!isProposed(old)?old:null;};
+// (ruling L11 (d); the fix-up's must-fix 2 and 3) Whose words a reading of slices 2 and 3 does not stand on: a record that
+// a draft by Sol, an import or an agent account wrote last and no person has reviewed since (kept, confirmed or merged by
+// a person, or judged kept through the review plan). draftedIds answers each such record of what those readings read
+// (zones, placements, plans, environments, nodes, failure domains, data, claims, gates, copies), by id, once a document;
+// a document without one answers an empty map.
+const unreviewed=(p,r)=>{const v=r?.provenance;return !!v?.author&&v.author.kind!=='person'&&!v.reviewed&&judgementOf(p,r)?.outcome!=='kept';};
+const READ_PATHS=[['runtime','zones'],['runtime','placements'],['runtime','plans'],['runtime','environments'],['runtime','nodes'],['technology','domains'],['interfaces','data'],['runtime','failures'],['runtime','gates'],['runtime','copies']];
+export const draftedIds=p=>remember(p,'topology:drafted','all',()=>{const out=new Map();for(const [a,b] of READ_PATHS)for(const r of list(p?.[a]?.[b]))if(r?.id&&!isProposed(r)&&unreviewed(p,r))out.set(r.id,r);return out;});
+// The records of ids a draft changed last, in their order, named; and the sentence that says so ('' for none).
+export const draftedOf=(p,ids)=>{const D=draftedIds(p);return D.size?[...new Set(ids)].filter(id=>D.has(id)).map(id=>D.get(id)):[];};
+export const draftedWords=xs=>xs.length?and(xs.map(r=>[r.ref||r.id,r.title].filter(Boolean).join(' ')))+(xs.length>1?' were':' was')+' last changed by a draft no person has reviewed':'';
+// (slices 2 and 3) The same for a record a second person's step reads (a declared failure, a location gate): who wrote
+// it is kept as its `actor`, and each earlier revision with its writer in `history`, never trimmed (verifierRefusal reads
+// every one: architecture-obligations.js); `recorded` says who saved what it now says, and when.
+export function storeWritten(xs,old,next,raw,at,actor,keys,fresh){
+ if(old&&sameRecord(old,next,keys))return [old,false];
+ const draft=raw.origin===DRAFT,who=actor||null;let r=old;
+ if(!old){r={...fresh(),revision:1,...next,origin:draft?DRAFT:authoredOrigin(null,raw),...(draft?{state:PROPOSED}:{}),history:[]};xs.push(r);}
+ else{const origin=draft?isProposed(old)?DRAFT:old.origin:authoredOrigin(old,raw);old.history=[...list(old.history),{at,revision:old.revision,actor:old.actor??null,title:old.title,...(origin!==old.origin?{origin:old.origin}:{})}];old.revision++;Object.assign(old,next);for(const k of keys)if(!(k in next))delete old[k];if(draft)old.origin=origin;else authored(old,origin);}
+ r.actor=who;r.recorded={at,actor:who,revision:r.revision};
+ return [r,true];
+}
 // ---------------------------------------------------------------- failure domains (Chapter 6)
 const DOMAIN_FIELDS=[['title','t',160,'failure domain name'],['scope','e',[...DOMAIN_SCOPES,NOT_STATED],'scope'],['cause','e',[...DOMAIN_CAUSES,NOT_STATED],'cause'],['basis','t',2400,'basis'],['owner','t',180,'owner'],['recoveryOwner','t',180,'recovery owner'],['treatment','e',[...DOMAIN_TREATMENTS,NOT_STATED],'treatment']];
 const DOMAIN_KEYS=[...DOMAIN_FIELDS.map(([f])=>f),'parentId','open'],DOMAIN_OPEN=['scope','cause','basis','owner','recoveryOwner','treatment'];
@@ -221,19 +249,65 @@ function locate(p,raw){
 // zone names a hosting domain, a cause or a node that is not standing: not there, retired or a proposal
 // ('not-standing'). A record that is there and no proposal stands, whoever changed it last (ruling M1): one a person
 // kept and a draft then changed is the person's to review through the review plan, and one a template copy holds was
-// kept in the template. Answers {comparable, zones, issues: [{kind, zones, ids}]}; an untyped project's zones are
-// compared by name as on rc.10.73.42.
+// kept in the template. Answers {comparable, zones, issues: [{kind, zones, ids}], groups, shared}; an untyped project's
+// zones are compared by name as on rc.10.73.42.
+// (slice 2, ruling L2: the reader extended, over the ancestors) groups: each zone that stands in a standing typed domain,
+// keyed by the first hosting domain of the zones it fails together with: zones in one domain, in domains one inside the
+// other, or that share a stated cause (a cause one names, or one a domain or node it stands in lies in), taken
+// together transitively, so the reading errs towards no independence. The built-in checks, planFacts and the desk read
+// it through zoneKey (runtime-model.js). shared: each stated cause two or more of the zones share, with those zones.
 const standing=(xs,id)=>{const x=find(xs,id);return x&&!isProposed(x)?x:null;};
-export function hostingComparison(p,environmentId){
+// A standing record and every one it lies in, nearest first; the chain ends at one that is not standing (ruling M1).
+const chainOf=(xs,x)=>{const out=[],seen=new Set();for(;x&&!isProposed(x)&&!seen.has(x.id);x=find(xs,x.parentId)){seen.add(x.id);out.push(x);}return out;};
+// What a zone fails with: each standing domain it names and every one those lie in, and the domains the nodes it sits
+// in are (with theirs). A placement adds the nodes from its own up to its zone's.
+export function zoneFails(p,z,from=z?.nodeId,upto=null){
+ const ds=failureDomains(p),ns=deploymentNodes(p),out=new Map(),add=id=>{for(const d of chainOf(ds,find(ds,id)))out.set(d.id,d);};
+ if(!upto)for(const id of list(z?.domainIds))add(id);
+ for(const n of chainOf(ns,find(ns,from))){if(n.id===upto)break;add(n.domainId);}
+ return [...out.values()];
+}
+// (the fix-up's must-fix 6) What each hosting zone that stands fails with (zones: id -> its domains), what each placement
+// with a node of its own fails with from its node up to its zone's (placements: id -> {zoneId, fails}), and the
+// placements of each zone (byZone), once a document or a pass: a loss case reads them in O(zones + placements).
+export const failIndex=p=>remember(p,'topology:fails','all',()=>{
+ const zones=new Map(),placements=new Map(),byZone=new Map(),all=new Map(list(p?.runtime?.zones).filter(z=>z?.id).map(z=>[z.id,z]));
+ for(const z of all.values())if(hostingZone(z)&&!isProposed(z))zones.set(z.id,zoneFails(p,z));
+ for(const l of list(p?.runtime?.placements)){const z=all.get(l?.zoneId);if(!z)continue;let xs=byZone.get(z.id);if(!xs)byZone.set(z.id,xs=[]);xs.push(l);if(l.nodeId)placements.set(l.id,{zoneId:z.id,fails:zoneFails(p,z,l.nodeId,z.nodeId)});}
+ return {zones,placements,byZone};
+});
+export const hostingComparison=(p,environmentId)=>remember(p,'topology:comparison',environmentId,()=>compareHosting(p,environmentId));
+function compareHosting(p,environmentId){
  const zs=list(p?.runtime?.zones).filter(z=>z?.environmentId===environmentId&&hostingZone(z)&&!isProposed(z)),issues=[];
  if(!topologyTyped(p))return {comparable:true,zones:zs.map(z=>z.id),issues};
  const domains=failureDomains(p),nodes=deploymentNodes(p);
  for(const z of zs){const gone=[...list(z.domainIds).filter(id=>!standing(domains,id)),...(z.nodeId&&!standing(nodes,z.nodeId)?[z.nodeId]:[])];if(gone.length)issues.push({kind:'not-standing',zones:[z.id],ids:gone});}
  const typed=zs.filter(z=>list(z.domainIds).length),named=zs.filter(z=>!list(z.domainIds).length&&statedField(z,'failureDomain'));
  if(typed.length&&named.length)issues.push({kind:'mixed',zones:[...typed,...named].map(z=>z.id),ids:[]});
- for(const a of typed)for(const b of typed){const da=standing(domains,a.domainIds[0]),db=standing(domains,b.domainIds[0]);if(a!==b&&da&&db&&da.id!==db.id&&above(domains,db).some(x=>x.id===da.id))issues.push({kind:'nested',zones:[a.id,b.id],ids:[da.id,db.id]});}
- return {comparable:!issues.length,zones:zs.map(z=>z.id),issues};
+ // (the fix-up's must-fix 6: each zone's hosting domain and what that lies in read once, not once a pair)
+ {const host=new Map(typed.map(z=>[z.id,standing(domains,z.domainIds[0])])),up=new Map();for(const d of host.values())if(d&&!up.has(d.id))up.set(d.id,new Set(above(domains,d).map(x=>x.id)));
+  for(const a of typed)for(const b of typed){const da=host.get(a.id),db=host.get(b.id);if(a!==b&&da&&db&&da.id!==db.id&&up.get(db.id).has(da.id))issues.push({kind:'nested',zones:[a.id,b.id],ids:[da.id,db.id]});}}
+ const {groups,causes}=failGroups(p,typed);
+ return {comparable:!issues.length,zones:zs.map(z=>z.id),issues,groups,shared:[...causes].filter(([,xs])=>xs.length>1).map(([causeId,xs])=>({causeId,zones:xs}))};
 }
+// The one grouping of zones that fail together (ruling L2), over any set of zones: those of one environment
+// (hostingComparison) or of an environment and the recovery environments linked to it (zoneGroups, which H5 reads: the
+// fix-up's must-fix 5). Each zone that stands in a standing typed domain, keyed by the smallest first hosting domain of
+// its group; and each stated cause, with the zones that fail with it.
+function failGroups(p,zs){
+ const domains=failureDomains(p),held=zs.filter(z=>list(z.domainIds).length&&standing(domains,z.domainIds[0])),fails=new Map(held.map(z=>[z.id,zoneFails(p,z)])),top=new Map(held.map(z=>[z.id,z.id])),root=id=>{while(top.get(id)!==id)id=top.get(id);return id;},causes=new Map();
+ for(const z of held)for(const d of fails.get(z.id))if(sharedCause(d)){let xs=causes.get(d.id);if(!xs)causes.set(d.id,xs=[]);xs.push(z.id);}
+ const join=(a,b)=>top.set(root(b),root(a)),first=new Map();
+ // (the fix-up's must-fix 6) a zone joins every zone whose first hosting domain it fails with, read through an index of first domains
+ for(const a of held){let xs=first.get(a.domainIds[0]);if(!xs)first.set(a.domainIds[0],xs=[]);xs.push(a.id);}
+ for(const b of held)for(const d of fails.get(b.id))for(const a of first.get(d.id)||[])if(a!==b.id)join(a,b.id);
+ for(const xs of causes.values())for(const id of xs)join(xs[0],id);
+ const keys=new Map();for(const z of held){const k=root(z.id),was=keys.get(k);if(!was||z.domainIds[0]<was)keys.set(k,z.domainIds[0]);}
+ return {groups:Object.fromEntries(held.map(z=>[z.id,keys.get(root(z.id))])),causes};
+}
+export const zoneGroups=(p,envIds)=>remember(p,'topology:groups',envIds.join('+'),()=>failGroups(p,list(p?.runtime?.zones).filter(z=>envIds.includes(z?.environmentId)&&hostingZone(z)&&!isProposed(z))).groups);
+// (slice 2) The hosting key the checks compare (runtime-model.js zoneKey): a zone's group in a typed project, else none.
+export const groupKey=(p,z)=>topologyTyped(p)&&z?.domainIds?.length?hostingComparison(p,z.environmentId).groups?.[z.id]:undefined;
 // Chapter 10's finding for it: one error for each environment whose hosting zones cannot be compared, which no
 // treatment waives (hard). "Cannot be checked" in ruling L2 is the non-waivable class of rc.10.73.42 and nothing
 // stricter (ruling M3): while it stands it blocks the review and the freeze as every built-in non-waivable error does
@@ -271,14 +345,15 @@ export function applyTopologyCommand(p,command,at,actor,options){
   if(!chosenHere(p)){if(!m.topology)touch(m);m.topology={schemaVersion:1,review:{actor,at,account:options?.author?.account??null}};}
   return {document:p,selected:null};
  }
- if(!m.topology)throw Error(UNTYPED);
- if(!chosenHere(p))throw Error(NOT_HERE);
+ requireTyped(p);
  if(type==='technology.domain'){const [r,changed]=saveDomain(p,raw,at);if(changed&&!isProposed(r))touch(t);return {document:p,selected:r.id};}
  if(type==='technology.domain-proposals')return {document:p,selected:proposeDomains(p)};
  if(type==='runtime.node'){const [r,changed]=saveNode(p,raw,at);if(changed&&!isProposed(r))touch(m);return {document:p,selected:r.id};}
  if(type==='runtime.locate'){const {changed,...answer}=locate(p,raw);if(changed)touch(m);return {document:p,...answer};}
  throw Error('Unknown topology action.');
 }
+// Every topology command but the step that types the project asks this first (the parts' too).
+export function requireTyped(p){if(!p?.runtime||!p.technology)throw Error('Open the project before changing its topology.');if(!p.runtime.topology)throw Error(UNTYPED);if(!chosenHere(p))throw Error(NOT_HERE);}
 // What the two record saves refuse by who writes the commit, which a handler is not told inside a reviewed batch: a
 // draft by Sol and an agent account send a record as their proposal and say so (a person keeps it), and name no
 // jurisdiction: where a node lies is stated by a person, never drafted.
@@ -286,7 +361,8 @@ export function refuseDraft(p,command,{author}={}){
  if(!author||author.kind!==DRAFT&&author.account!=='agent')return;
  const raw=command?.payload||{};
  if(raw.origin!==DRAFT)return 'A draft by Sol or an agent account sends a deployment node or a failure domain as its proposal (origin: sol-draft); a person keeps it.';
- if(command.type==='runtime.node'&&raw.jurisdiction!=null&&raw.jurisdiction!=='')return 'A jurisdiction is stated by a signed-in person: a draft by Sol or an agent account names none.';
+ // (the fix-up's must-fix 2) nor clears one a person stated, which a location gate reads
+ if(command.type==='runtime.node'&&raw.jurisdiction!==undefined&&(raw.jurisdiction!=null&&raw.jurisdiction!==''||find(p?.runtime?.nodes,raw.id)?.jurisdiction))return 'A jurisdiction is stated by a signed-in person: a draft by Sol or an agent account names none, and clears none a person stated.';
 }
 
 // ---------------------------------------------------------------- the record graph
@@ -345,10 +421,12 @@ function mend(p,r,path){
  if(JSON.stringify([r.nodeId,r.domainIds])===was)return false;
  r.revision=(r.revision||0)+1;return true;
 }
-const LABELS={title:'Name',kind:'Kind of node',parentId:'Lies in',domainId:'Failure domain it is',jurisdiction:'Jurisdiction',place:'Place',provider:'Provider',tier:'Tier',exposure:'Exposure',address:'Address prefix',reason:'Reason',owner:'Owner',basis:'Basis',boundaryIds:'Trust boundaries',scope:'Scope',cause:'Cause',recoveryOwner:'Recovery owner',treatment:'Treatment',nodeId:'Deployment node',domainIds:'Failure domains'};
+// (slices 2 and 3) The parts add the rows of the records they journal, and their labels: what a change of a built-in
+// record's field (an environment's link) said is journalled the same way, when its revision moved.
+export const LABELS={title:'Name',kind:'Kind of node',parentId:'Lies in',domainId:'Failure domain it is',jurisdiction:'Jurisdiction',place:'Place',provider:'Provider',tier:'Tier',exposure:'Exposure',address:'Address prefix',reason:'Reason',owner:'Owner',basis:'Basis',boundaryIds:'Trust boundaries',scope:'Scope',cause:'Cause',recoveryOwner:'Recovery owner',treatment:'Treatment',nodeId:'Deployment node',domainIds:'Failure domains'};
 const QUIET='A change of the typed topology opens no review of other records: the checks that read it read it as it stands.';
 const said=(r,keys)=>Object.fromEntries(keys.map(k=>[k,structuredClone(r?.[k]??(k.endsWith('Ids')?[]:''))]));
-const TRACKED=[['runtime.nodes',10,'node',NODE_KEYS.filter(k=>k!=='open'),true],['technology.domains',6,'failureDomain',DOMAIN_KEYS.filter(k=>k!=='open'),true],['runtime.zones',10,'zone',['nodeId','domainIds','reason'],false],['runtime.placements',10,'placement',['nodeId'],false]];
+export const TRACKED=[['runtime.nodes',10,'node',NODE_KEYS.filter(k=>k!=='open'),true],['technology.domains',6,'failureDomain',DOMAIN_KEYS.filter(k=>k!=='open'),true],['runtime.zones',10,'zone',['nodeId','domainIds','reason'],false],['runtime.placements',10,'placement',['nodeId'],false]];
 const rows=(p,path)=>{const [a,b]=path.split('.');return list(p?.[a]?.[b]);};
 export function trackTopology(prior,next,command,at){
  const m=next?.runtime;if(!m?.topology)return;
@@ -404,3 +482,5 @@ export const TOPOLOGY_PART={
  design:DESIGN,
  designKeys:['runtime.topology','technology.domains','runtime.nodes']
 };
+// What the parts of the package share with this one (topology-failures.js, topology-gates.js).
+export {DRAFT,pad,fmt,norm,find,refOf,and,sharedCause,standing,chainOf,textOnly,patchBounded,authoredRecord,put,stated as statedRecords,BOOKKEEPING};

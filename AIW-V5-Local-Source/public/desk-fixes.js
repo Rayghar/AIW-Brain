@@ -21,7 +21,7 @@ import {fmtN} from './desk-capacity.js';
 import {fact} from './product-facts.js';
 import {describeChoice} from './product-choice.js';
 import {list, str, num, uniq, jsonClone as json} from './util.js';
-import {failureDomainKey, hostingZone} from './runtime-model.js';
+import {zoneKey, hostingZone} from './runtime-model.js';
 // Round 12 (G, GR-UX-16): the chapters named from the one chapter-name table.
 import {CHAPTER_TITLES} from './chapter-names.js';
 
@@ -38,9 +38,10 @@ const controlRec = (p, id) => list(p?.security?.controls).find(x => x.id === id)
 const threatRec = (p, id) => list(p?.security?.threats).find(x => x.id === id) || null;
 const zonesOf = (p, envId) => list(p?.runtime?.zones).filter(z => z.environmentId === envId);
 const placementsOf = (p, planId) => list(p?.runtime?.placements).filter(l => l.planId === planId);
-// rc.10.73.42 (D8, C10-21): one hosting zone per distinct stated failure domain, those running it first: an access zone
+// rc.10.73.42 (D8, C10-21): one hosting zone per distinct stated failure domain, those running it first (rc44 wp9a slice 2,
+// ruling L2: zones that share a stated cause are one, zoneKey): an access zone
 // hosts nothing, and zones that share a domain (or state none) fail together, so they add no independence.
-const domainZones = (zs, ls) => { const on = z => ls.some(l => l.zoneId === z.id && l.role === 'active'), seen = new Set(); return zs.filter(hostingZone).sort((a, b) => on(b) - on(a)).filter(z => { const k = failureDomainKey(z); return k && !seen.has(k) && seen.add(k); }); };
+const domainZones = (p, zs, ls) => { const on = z => ls.some(l => l.zoneId === z.id && l.role === 'active'), seen = new Set(); return zs.filter(hostingZone).sort((a, b) => on(b) - on(a)).filter(z => { const k = zoneKey(p, z); return k && !seen.has(k) && seen.add(k); }); };
 // Each command carries the whole current record with the changed fields, as the chapter's editor sends it.
 const planCmd = (p, id, changes) => ({type: 'runtime.plan', payload: json({...planRec(p, id), ...changes})});
 const contractCmd = (p, id, changes) => { const c = contractRec(p, id); return {type: 'interfaces.contract', payload: json({...c, ...changes, exchanges: list(c.exchanges).map(x => ({dataId: x.dataId, role: x.role}))})}; };
@@ -83,7 +84,7 @@ function judgement(row, vital, text, fix) { return {judgement: {id: `${vital}:${
 
 const DRAFTERS = {
   availability(D, row, v) {
-    const p = D.p, pl = row.plan, zones = zonesOf(p, pl.environmentId), how = survival(row), n = domainZones(zones, placementsOf(p, pl.id)).length, k = Math.min(n, 3);
+    const p = D.p, pl = row.plan, zones = zonesOf(p, pl.environmentId), how = survival(row), n = domainZones(p, zones, placementsOf(p, pl.id)).length, k = Math.min(n, 3);
     if (!zones.length) return judgement(row, 'availability', `No zone is recorded for ${row.ref}'s environment, so there is nowhere to place it. The desk does not invent sites.`, {chapter: 10, id: pl.id, label: 'Record a zone in Chapter 10'});
     // rc.10.73.42 (D8, C10-21): copies spread over zones that fail together survive no loss of their domain, so with fewer
     // than two hosting failure domains a spread is a decision about sites too.
@@ -102,11 +103,11 @@ const DRAFTERS = {
         const out = [], pl = planRec(p, row.id), zs = zonesOf(p, pl.environmentId), ls = placementsOf(p, pl.id);
         const act = zid => ls.find(l => l.zoneId === zid && l.role === 'active');
         if (how === 'spread') {
-          const n = Math.max(1, Math.round(num(k.perZone) || 1)), use = domainZones(zs, ls).slice(0, 3);
+          const n = Math.max(1, Math.round(num(k.perZone) || 1)), use = domainZones(p, zs, ls).slice(0, 3);
           for (const z of use) { const l = act(z.id); if (!l) out.push(placementCmd({planId: pl.id, zoneId: z.id, role: 'active', replicas: n, basis: `${DRAFTED}: ${n} active in each of ${use.length} failure domains, so losing one leaves the others serving. Confirm they fail independently.`})); else if ((num(l.replicas) || 0) < n) out.push(placementCmd({...l, replicas: n, basis: `${DRAFTED}: ${n} active in each zone.`})); }
           const total = n * use.length; if ((num(pl.maxReplicas) || 0) < total) out.push(planCmd(p, pl.id, {maxReplicas: total}));
         } else if (how === 'quorum') {
-          const n = Math.max(3, Math.round(num(k.nodes) || 3)), use = domainZones(zs, ls).slice(0, n), per = use.map((z, i) => Math.floor(n / use.length) + (i < n % use.length ? 1 : 0));
+          const n = Math.max(3, Math.round(num(k.nodes) || 3)), use = domainZones(p, zs, ls).slice(0, n), per = use.map((z, i) => Math.floor(n / use.length) + (i < n % use.length ? 1 : 0));
           use.forEach((z, i) => { const l = act(z.id); if (!l) out.push(placementCmd({planId: pl.id, zoneId: z.id, role: 'active', replicas: per[i], basis: `${DRAFTED}: ${n} nodes across ${use.length} failure domains (${per.join(' + ')}), so a majority of ${Math.floor(n / 2) + 1} agrees. ${use.length < 3 ? 'Losing the one with the most nodes loses the majority: record a third failure domain.' : 'Losing one keeps the majority.'}`})); else if ((num(l.replicas) || 0) !== per[i]) out.push(placementCmd({...l, replicas: per[i]})); });
           const ch = {}; if ((num(pl.maxReplicas) || 0) < n) ch.maxReplicas = n; if (str(pl.stateMode) === 'Unspecified' || !pl.stateMode) ch.stateMode = 'Stateful service'; if (['Unspecified', ''].includes(str(pl.recoveryStrategy))) ch.recoveryStrategy = 'Failover';
           // rc.10.73.42 (D8): a stateful service's copies hold only with a stated write authority and a leader-election time,
@@ -116,7 +117,7 @@ const DRAFTERS = {
         } else {
           const m = Math.max(1, Math.round(num(k.recoveryMinutes) || minutesFor(row)));
           // A standby, or a copy kept apart, goes to a hosting zone of another stated failure domain when there is one.
-          const hz = zs.filter(hostingZone), primary = ls.find(l => l.role === 'active')?.zoneId || (hz[0] || zs[0]).id, pk = failureDomainKey(zs.find(z => z.id === primary)), other = domainZones(zs, []).find(z => failureDomainKey(z) !== pk) || hz.find(z => z.id !== primary) || null;
+          const hz = zs.filter(hostingZone), primary = ls.find(l => l.role === 'active')?.zoneId || (hz[0] || zs[0]).id, pk = zoneKey(p, zs.find(z => z.id === primary)), other = domainZones(p, zs, []).find(z => zoneKey(p, z) !== pk) || hz.find(z => z.id !== primary) || null;
           if (how === 'pair') {
             if (!ls.some(l => l.role === 'active')) out.push(placementCmd({planId: pl.id, zoneId: primary, role: 'active', replicas: 1, basis: `${DRAFTED}: one primary.`}));
             if (other && !ls.some(l => l.role === 'standby')) out.push(placementCmd({planId: pl.id, zoneId: other.id, role: 'standby', replicas: 1, basis: `${DRAFTED}: a standby in ${other.ref}, promoted when the primary fails. Confirm replication and promotion with a drill.`}));
