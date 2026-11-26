@@ -286,7 +286,7 @@ Must-fix (both confirmed; none disputed):
    `mark: stamps`), and holds that the review checks the server ran on the library read current on the client (red:
    server `true`, client `false`, the client registering no package); new D10.7, each stub's `needs` holds for a
    document holding any one key its package states, p30's other keys beside its marker (ruling L11 a), and no stub
-   asks for anything for the three references (red: the seven p10 keys other than crosswalk and conceptPins). D10.3 and
+   asks for anything for the three references and a blank project (red: the seven p10 keys other than crosswalk and conceptPins). D10.3 and
    the references still load nothing. wp1 S2.10 and S3.17 re-pointed old -> new (below), each red against `629a005`'s
    stub line and green after. The U6 row of S0's contract states the rule (`s0-extensions.md`). The route grows 114 B.
 2. **Done.** wp9a S1.10 read the package's own import and export lists in the Model view's script, which since Y1
@@ -406,3 +406,23 @@ changed.
   `review-domain.js`) does not turn it red; the fix-up's library documents hold there.
 - **D10.4 and D10.5 at the merge.** At the merge commit the client sources are no longer this build's, so the two
   cases hold the evidence and the one size check holds the live route; `AIW_D10_MEASURE=1` would fail there by design.
+
+### Suites at the fix-up head (the machine shared, load 5 to 8)
+
+- `rc44-s0-d10-validate.mjs`: 9 of 9, without the variable and with `AIW_D10_MEASURE=1`.
+- `rc44-s0-extensions-validate.mjs`: 36 of 36. `rc44-wp9a-deployment-validate.mjs`: 25 of 25 (S1.10: the package's
+  share 22,586 B, its own lists 126 B against 633 B of lists without it). `rc44-wp2-adoption-validate.mjs`: 45 blocks,
+  none failed. `rc44-wp1-knowledge-validate.mjs`: 87 passed, 2 pending (S4, S5 not built), none failed.
+- Browser and UI suites on the built client (`node build.mjs` first), each green: rc44-wp9a-deployment-browser (1 of 1),
+  knowledge-repository-browser, stewardship-browser, driver-knowledge-ui, repository-transfer-browser,
+  brain-governance-ui, technology-choice-browser, design-task-ui, model-views-browser, technology-selection-ux-browser.
+  The suites that ask the OS for a port (`listen(0)`) were run with a harness shim kept under `.aiw-local` (not product
+  code, not committed) that gives each such server a free port in 4100-4999, so every server stayed in the runner's
+  range; each was stopped by the suite, and none was left running.
+- `node check-syntax.mjs`: 947 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, new 0.
+- `node build.mjs`: passes at `629a005` (3,228,967 B, 150 script files, 53/51/46) and at the head (3,229,081 B, 150,
+  53/51/46), no violation. The working tree is clean after the suites (no tracked file rewritten).
+- Not run: a clean install (`node_modules` is the main checkout's, linked); the full regression (the lead's); the
+  browser suites not named above (the builder's list at `629a005` is above; the fix-up changes the p10 stub alone).
+- External authorities as before: counsel not engaged, approver not assigned, review not started, acceptance
+  authority not established; the release number is unconfirmed. `productionAccepted` stays false.
