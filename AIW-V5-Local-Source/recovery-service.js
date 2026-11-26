@@ -80,7 +80,9 @@ export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??
  {const t=p?.runtime?.topology;if(t&&typeof t==='object'&&t.review){t.importedReview=t.review;t.review=null;}}
  // rc44 (wp9a slices 2 and 3; contract rule 24): a second person's acceptance of a declared failure and a second person's
  // evidence for a location gate were taken there too. Each is kept as history (importedReview) and is nobody's here.
- for(const path of ['failures','gates'])for(const r of Array.isArray(p?.runtime?.[path])?p.runtime[path]:[])if(r&&typeof r==='object'&&r.review){r.importedReview=r.review;r.review=null;}
+ // (the fix-up's must-fix 4) a retired claim or gate too, so that a restore here brings back no step taken there
+ const retiredHere=path=>(Array.isArray(p?.retired?.records)?p.retired.records:[]).filter(x=>x?.path===path).map(x=>x.record);
+ for(const path of ['failures','gates'])for(const r of [...(Array.isArray(p?.runtime?.[path])?p.runtime[path]:[]),...retiredHere('runtime.'+path)])if(r&&typeof r==='object'&&r.review){r.importedReview=r.review;r.review=null;}
  // rc44 (wp2 S5; the lead's ruling Q6): a component selection's steps (who started it, each judgement, the choice, the
  // second person's confirm, the instantiation) were taken on the workbench the package came from. They are kept as
  // history (decision.selection.imported) and count as nobody's here; the candidates' outcomes go with the choice. A

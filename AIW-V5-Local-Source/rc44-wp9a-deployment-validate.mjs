@@ -1756,6 +1756,28 @@ await block('S2.13 no acceptance on a zone or a placement a draft changed, throu
   pass('S2.13: through the server, after a draft by Sol or an agent account locates zone 2 outside the region, the region claim reads survives and names ZON-002, and the acceptance is refused in those words until a person locates it; a placement an agent account changed is named the same way; a person\'s own change stands and the claim is accepted (ruling L11 (d))');
 });
 
+await block('S2.14 a restore after a recovery import brings back no step', () => {
+  need();
+  const I = F.ids(); let {p, made} = typedTidewater();
+  // the boundary's stamps are the server's: a person's stamp stands in for them, so that a second person's step can be taken through the handlers
+  const stamped = (q, path, id) => { q.runtime[path].find(x => x.id === id).provenance = {author: {kind: 'person', by: A, at: AT, account: 'person'}}; return q; };
+  let r = declare(p); const fs = r.selected; p = stamped(r.document, 'failures', fs);
+  p = doc(p, 'runtime.failure-accept', {id: fs, decision: 'accepted', stamp: FA.failureStamp(p, declared(p, fs)), reviewer: 'B (synthetic)', reference: 'REV-5', observations: 'Accepted as a design claim; not demonstrated.', reviewed: true}, B);
+  r = run(p, 'runtime.gate', {kind: 'key-custody', title: 'Keys held in Norway', environmentId: '', nodeIds: [made.region], requirement: 'Keys are held by the customer.', source: 'Key policy (synthetic)'}); const lg = r.selected; p = stamped(r.document, 'gates', lg);
+  p = doc(p, 'runtime.gate-evidence', {id: lg, nodeId: made.region, state: 'pass', reference: 'R-1', observations: 'Seen (synthetic).', stamp: GA.gateEvidenceStamp(p, p.runtime.gates.find(x => x.id === lg), made.region), reviewed: true}, B);
+  assert.deepEqual([FA.failureAccepted(p, declared(p, fs)), GA.gateReading(p, lg).state], [true, 'pass'], 'the two steps stand here');
+  // retired, carried in a recovery package to another workbench, restored there
+  p = doc(doc(p, 'record.retire', {ids: [fs], chapter: 10, reason: 'Retired (synthetic).'}), 'record.retire', {ids: [lg], chapter: 10, reason: 'Retired (synthetic).'});
+  const imported = withFinalReview(neutraliseImportedAuthority(structuredClone(p), AT)), kept = imported.retired.records.filter(x => [fs, lg].includes(x.id));
+  // fails on 10b97b7: a retired record kept its review, and a restore brought it back word for word
+  assert.deepEqual(kept.map(x => [x.id, x.record.review ?? null, !!x.record.importedReview]), [[fs, null, true], [lg, null, true]], 'a retired record keeps its step as history (importedReview), nobody\'s here');
+  for (const [actor, author, who] of [[A, person(A), 'a person'], [AGENT, AGENT_ACCOUNT, 'an agent account']]) {
+    const q = doc(doc(imported, 'record.restore', {ids: [fs], chapter: 10}, actor, author), 'record.restore', {ids: [lg], chapter: 10}, actor, author);
+    assert.deepEqual([FA.failureAccepted(q, declared(q, fs)), GA.gateReading(q, lg).state, !!declared(q, fs).importedReview], [false, 'unknown', true], 'restored by ' + who + ': the acceptance and the evidence are nobody\'s here');
+  }
+  pass('S2.14: a second person\'s acceptance of a declared failure and a second person\'s evidence for a gate, kept on retired records, are moved aside by a recovery import (importedReview) and a restore by a person or an agent account brings back neither: the claim reads not accepted and the gate unknown');
+});
+
 // ================================================================ Slice 3: location gates and data copies
 // (design section g, Slice 3, its eight cases; ruling L8 carried; the build contract's rules 10 to 12, 14 to 17, 31 and
 // 54. The build notes are audit/rc44/build-notes/wp9a-s2s3.md.)
