@@ -27,15 +27,15 @@
  "itemisedNote": "workbenchDomainH11 is 0 on the client: the merge's branch of applyWorkbenchCommand is not in the client bundle (the server applies a merge); the hook costs the client nothing. The 38 B of lists are the exports the lazy entry now reads from route modules (simulateRuntime, runtimeEnvironmentStamp, verifierRefusal, valueFingerprint, CLASSIFICATIONS, NOT_CLASSIFIED, forwardTrace, traceGraph, retiredOf and the slot TOPOLOGY, zoneKey).",
  "holder": {
   "before": {"bytes": 74475, "modules": 71933, "lists": 2542},
-  "after": {"bytes": 114756, "modules": 112128, "lists": 2628},
+  "after": {"bytes": 114825, "modules": 112197, "lists": 2628},
   "atTheAdoptionRecord": {"bytes": 51789, "modules": 49415, "lists": 2374}
  },
- "packageShare": {"modules": {"public/topology-blueprints.js": 10, "public/topology-domain.js": 22697, "public/topology-failures.js": 19313, "public/topology-fallback.js": 10, "public/topology-gates.js": 19064, "public/topology.js": 1529}, "lists": 254, "total": 62877},
+ "packageShare": {"modules": {"public/topology-blueprints.js": 10, "public/topology-domain.js": 22697, "public/topology-failures.js": 19382, "public/topology-fallback.js": 10, "public/topology-gates.js": 19064, "public/topology.js": 1529}, "lists": 254, "total": 62956},
  "opensWithRecords": {
   "gate": "The chapters-route gate is unchanged and measures opening a document that holds no package records (ruling D10). A document that holds the marker runtime.topology also loads the lazy entry of the Chapter 10 Model view (deploy-view.js) before it is first drawn.",
   "host": "public/deploy-view.js",
   "before": {"route": 3228938, "added": 855804, "total": 4084742, "files": 12},
-  "after": {"route": 3229341, "added": 896085, "total": 4125426, "files": 12},
-  "note": "The package's two filled parts add 40,281 B to what a typed document opens with. Ruling Y1 moves the packages' first-draw readers into one shared lazy entry (the lead's build S0-D10, s0-w3-bundle), which holds such a document to the route plus 160 KB; these parts are first-draw readers (checks, readings) and move with it."
+  "after": {"route": 3229341, "added": 896154, "total": 4125495, "files": 12},
+  "note": "The package's two filled parts add 40,350 B to what a typed document opens with. Ruling Y1 moves the packages' first-draw readers into one shared lazy entry (the lead's build S0-D10, s0-w3-bundle), which holds such a document to the route plus 160 KB; these parts are first-draw readers (checks, readings) and move with it."
  }
 }

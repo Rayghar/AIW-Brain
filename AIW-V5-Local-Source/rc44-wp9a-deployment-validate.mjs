@@ -1267,7 +1267,7 @@ const LAZY_SHARE = {modules: {'public/topology-blueprints.js': 10, 'public/topol
 // reader extended (ruling L2) and the helpers the parts share; lists: the holder's import and export lists (2,628 B at this build) less the adoption
 // record's holder's (2,374 B). LAZY_SHARE stays slice 1's record, which its evidence holds. Measured with bundleClient on this build; the figures are in
 // audit/rc44/evidence/wp9a-s2s3-route.json (BUILD_EVIDENCE), with the route before and after (owner decision AA2).
-const BUILD_SHARE = {modules: {'public/topology-blueprints.js': 10, 'public/topology-domain.js': 22697, 'public/topology-failures.js': 19313, 'public/topology-fallback.js': 10, 'public/topology-gates.js': 19064, 'public/topology.js': 1529}, lists: 254, total: 62877};
+const BUILD_SHARE = {modules: {'public/topology-blueprints.js': 10, 'public/topology-domain.js': 22697, 'public/topology-failures.js': 19382, 'public/topology-fallback.js': 10, 'public/topology-gates.js': 19064, 'public/topology.js': 1529}, lists: 254, total: 62956};
 const BUILD_EVIDENCE = 'audit/rc44/evidence/wp9a-s2s3-route.json';
 await block('S1.10 the client build', async () => {
   need();

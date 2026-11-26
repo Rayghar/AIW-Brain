@@ -200,7 +200,7 @@ Measured with `node build.mjs` in a checkout of each tree (`dist/client-size-rep
 
 | | `4349bb6` | this build |
 |---|---|---|
-| chapters route (`routes.chapters.code`) | 3,228,938 B | see the evidence file (3,229,341 B at the first full measure; re-measured at the final head) |
+| chapters route (`routes.chapters.code`) | 3,228,938 B | 3,229,341 B (+403 B; re-measured at the final head) |
 | projects route | 508,466 B | 508,530 B |
 | script files | 148 | 148 |
 | buckets (under 10 KB / 10-50 KB / over 50 KB) | 52 / 51 / 45 | 52 / 51 / 45 |
@@ -208,7 +208,7 @@ Measured with `node build.mjs` in a checkout of each tree (`dist/client-size-rep
 | violations | none | none |
 
 Cap 3,233,792 B on this base (3,266,560 B once `s0-lead-w3` lands). Opens with records (rule 52): 4,084,742 B at the
-base, 4,125,426 B here: the two parts add about 40 KB to the deploy-view chunk (12 scripts, as before); ruling Y1's
+base, 4,125,495 B here: the two parts add 40,350 B to the deploy-view chunk (12 scripts, as before); ruling Y1's
 shared first-draw entry (S0-D10) takes them with the other first-draw readers.
 
 ## Suites
