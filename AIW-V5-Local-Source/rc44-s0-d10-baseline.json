@@ -1,0 +1,257 @@
+{
+ "schema": "aiw.rc44.s0-d10-baseline.v1",
+ "capturedFrom": "4349bb6",
+ "at": "2026-11-26T09:00:00.000Z",
+ "how": "node rc44-s0-d10-validate.mjs --capture <sha>, in an unchanged checkout of <sha> with this file added",
+ "documents": {
+  "none": "376b1bc657a993b784a63ac02356778c36d19dd6ff445f9a5374c58ddf3044ec",
+  "knowledge": "54db9ddc39f6f66e67e3e95f428042047bd8184d5ab9f6b0bd6b6b7192ef5568",
+  "adoption": "c1abd32e065856df96ad7a36c070dd7714f7e76380e75f67899b8865480b4e3a",
+  "selection": "a6162c66152948f1417edcff2b3c38240bf3cfbf247bb97e85fd6c2e4dce79db",
+  "deployment": "06dd590e0dfc9249706e8ba3bf6484ee3e837aa575ff3520828aa251d2d5b69c"
+ },
+ "readings": {
+  "client": {
+   "none": {
+    "graph": "5c0f2a7bfe514d8b275b071a3a4e48a00b67ace20bf9e7c8b0bd56f7642a6f1e",
+    "model": "a38df459e38651fa26828b512bc9d6ad03fda3ede81ddddd8e457404357a997f",
+    "trails": "82cca41a6c153a3928f54e278c3a97bfd92eda4add61eb1860ca4681e960b608",
+    "findings": "167bbfb6385efd3c455034b0da5e7a3a4f2f1c9dbf26da5b47a0b166c584c212",
+    "stamps": "305b905547112b71fc3b78af8f0e5d3015e029581319000a7ee630b0d198be8c",
+    "readiness": "5b14fbd75bee585aa0d4a22605be81865b5b9dc74f0d5fd1c61f4df7c474318f",
+    "provenance": "4a176e91be36037040d198c25727648574b7561d22f4aafad5c731e3f89ce3d7",
+    "registers": "6ec4085cddb66d5f2a29c85b8da05c3024b63db37f6fb74854591af2218fdde5",
+    "sdd": "7c66a1f9e5462824c92c3977456d2dc37a607b9cb58a645520aa7ccdeb3a6bce",
+    "ars": "6a5683b7f6af0144aca4f049df1863cc0c9f358efd0f900a93305da6023e5514"
+   },
+   "knowledge": {
+    "graph": "05871eca21490abe90397b04b9d0cd4e387516270ce21a9df59f0406b4c68c82",
+    "model": "c8b13191fb1efba2ddaf013cdc32549432b81181009c73a6fb2a3d33b7d027ec",
+    "trails": "82cca41a6c153a3928f54e278c3a97bfd92eda4add61eb1860ca4681e960b608",
+    "findings": "287f7e6ae94680d30159126ba1a82be10699159bf57c7ca36e03fb8e8f3f314c",
+    "stamps": "c7b2decdadf4fa91da50f62bfa8545071b92bea60eca91444071d7f473860b2c",
+    "readiness": "5b14fbd75bee585aa0d4a22605be81865b5b9dc74f0d5fd1c61f4df7c474318f",
+    "provenance": "4a176e91be36037040d198c25727648574b7561d22f4aafad5c731e3f89ce3d7",
+    "registers": "3bdec872416f92c333f09d966c3bf4f106f0de3d50e6656b4f55a92fe1847026",
+    "sdd": "7c66a1f9e5462824c92c3977456d2dc37a607b9cb58a645520aa7ccdeb3a6bce",
+    "ars": "6a5683b7f6af0144aca4f049df1863cc0c9f358efd0f900a93305da6023e5514"
+   },
+   "adoption": {
+    "graph": "c48f8374ec471b4d5206c6f0580f7293f5847cf7f58ffb038fe4aca13e742fda",
+    "model": "5290f3f074b6c54e934d15f2f8fc827f3ba67b946768bd97a6b84639173e2279",
+    "trails": "f70d28964f7ed0409ac64d36ee84d3d2fe0ab691bafde1960a182e3c584b89ce",
+    "findings": "2c56ddf17e65cac64aecdd6ef550f854f13b100ebb5dc904ca329dae7ed27343",
+    "stamps": "8c9b1a37306caf31210e89ee496a5e52e2f81abf3db92cef100d0f3b9b75c414",
+    "readiness": "6f47cc7ec4cd4511b3ee39158bce7c2524273ae7c9d17912ee383bb556b8ee39",
+    "provenance": "fb488859fafefa44ea8517001219141e8b75f3cc056b3892f296d5a00f7372d5",
+    "registers": "c87f7977af887a49cf7819403f4c58088e0ea4677cb40bffa30d30141fd677c1",
+    "sdd": "1dd96ab139e3d70fd48dea3623093414b47bfae0ac7ad849631f1b5af6a429f1",
+    "ars": "aa9e77804d246a22a2194600a87ee7cd54fd2d37b778877c1b56d3aac611181f"
+   },
+   "selection": {
+    "graph": "8284b0755b07c39a5fc0676fd8ab7bef32cefc7d4f93f9d368a9d2d68dad6953",
+    "model": "40ab224dbb1115fac20239d41b140b304e0b285dcec70220e8352b548c9338b1",
+    "trails": "fd443d243b973b5fd6acca6496c42bc63f40b17150061afdfbcdeab290d1a8fc",
+    "findings": "66e28ad88a386964871d2fb1ff54b65147aa0b0fb008e1bb9f4e0aee60da1de5",
+    "stamps": "e262995de8bdc03321541c6257886f5de421616bfb7ce16a04a0cecec725bf7c",
+    "readiness": "f845d28b392687a8fd9581137de13e6a710ead85e8e8415f1e574c6b66540868",
+    "provenance": "9a0e2aba001556d9faa38606d9932a28eeae197ba803c45b5766e6766920b5d8",
+    "registers": "5ca63e2499034e942fdd80032598ebc6032b67a9339d2c2d316bbeefdf9a5c47",
+    "sdd": "9d48583e8b6782430f73286be530a8f41fc49ca464d65c9c0142e604cf42ced7",
+    "ars": "5298df50966c2639bec28c02364da47dc994c2aa36fdbce721b07a01e4fa48b0"
+   },
+   "deployment": {
+    "graph": "db2385e8a7314d40d9c087bc72e1d9a65adc8febb81030d38ab04e19969cea56",
+    "model": "b806d694a32980c3cc145e6742cbba9b67fb59f81bcadd144b1859f38b99dc08",
+    "trails": "eaaf9d554585559e7f44008c5e03102c8c47a02f7cba8aadf727db46d9baf34d",
+    "findings": "8ee5d823d3a3e4103734789fce40b9c2d5ab323ed4e741eda8dfc9d62fb451c8",
+    "stamps": "48ccf9c2f78600ca9c269bf6eeef43451fc615841e1fa69324ab3b49ceff308c",
+    "readiness": "ce7752aa8ebff3bbdd88345a46452cff4f0a584a88fe36b8de3d4ec0203c1e8b",
+    "provenance": "221f1b2f77fb96110be017193cc9187169ee2a901ae78349646278190dd2a6e7",
+    "registers": "05dc422be4cd1d230c349c15c8ec10ac7fda4e76f6f3c5658a109cc762f225ac",
+    "sdd": "847357d7578f8a79ce6acac6559160d938e684989a02dd46f36aabe0c6449f9a",
+    "ars": "1091a26e3f6d1db2360dcbb6f6d2ca6e6a0b017b4f2ce8ed60630403b48e193f"
+   }
+  },
+  "server": {
+   "none": {
+    "graph": "5c0f2a7bfe514d8b275b071a3a4e48a00b67ace20bf9e7c8b0bd56f7642a6f1e",
+    "model": "a38df459e38651fa26828b512bc9d6ad03fda3ede81ddddd8e457404357a997f",
+    "trails": "82cca41a6c153a3928f54e278c3a97bfd92eda4add61eb1860ca4681e960b608",
+    "findings": "167bbfb6385efd3c455034b0da5e7a3a4f2f1c9dbf26da5b47a0b166c584c212",
+    "stamps": "305b905547112b71fc3b78af8f0e5d3015e029581319000a7ee630b0d198be8c",
+    "readiness": "5b14fbd75bee585aa0d4a22605be81865b5b9dc74f0d5fd1c61f4df7c474318f",
+    "provenance": "4a176e91be36037040d198c25727648574b7561d22f4aafad5c731e3f89ce3d7",
+    "registers": "6ec4085cddb66d5f2a29c85b8da05c3024b63db37f6fb74854591af2218fdde5",
+    "sdd": "7c66a1f9e5462824c92c3977456d2dc37a607b9cb58a645520aa7ccdeb3a6bce",
+    "ars": "6a5683b7f6af0144aca4f049df1863cc0c9f358efd0f900a93305da6023e5514"
+   },
+   "knowledge": {
+    "graph": "05871eca21490abe90397b04b9d0cd4e387516270ce21a9df59f0406b4c68c82",
+    "model": "c8b13191fb1efba2ddaf013cdc32549432b81181009c73a6fb2a3d33b7d027ec",
+    "trails": "82cca41a6c153a3928f54e278c3a97bfd92eda4add61eb1860ca4681e960b608",
+    "findings": "287f7e6ae94680d30159126ba1a82be10699159bf57c7ca36e03fb8e8f3f314c",
+    "stamps": "c7b2decdadf4fa91da50f62bfa8545071b92bea60eca91444071d7f473860b2c",
+    "readiness": "5b14fbd75bee585aa0d4a22605be81865b5b9dc74f0d5fd1c61f4df7c474318f",
+    "provenance": "4a176e91be36037040d198c25727648574b7561d22f4aafad5c731e3f89ce3d7",
+    "registers": "3bdec872416f92c333f09d966c3bf4f106f0de3d50e6656b4f55a92fe1847026",
+    "sdd": "9067b9ee64e9270b2d48c179751fb8c2797744e9fd6cca808e6eac916f4ca299",
+    "ars": "6a5683b7f6af0144aca4f049df1863cc0c9f358efd0f900a93305da6023e5514"
+   },
+   "adoption": {
+    "graph": "c48f8374ec471b4d5206c6f0580f7293f5847cf7f58ffb038fe4aca13e742fda",
+    "model": "5290f3f074b6c54e934d15f2f8fc827f3ba67b946768bd97a6b84639173e2279",
+    "trails": "f70d28964f7ed0409ac64d36ee84d3d2fe0ab691bafde1960a182e3c584b89ce",
+    "findings": "2c56ddf17e65cac64aecdd6ef550f854f13b100ebb5dc904ca329dae7ed27343",
+    "stamps": "8c9b1a37306caf31210e89ee496a5e52e2f81abf3db92cef100d0f3b9b75c414",
+    "readiness": "6f47cc7ec4cd4511b3ee39158bce7c2524273ae7c9d17912ee383bb556b8ee39",
+    "provenance": "fb488859fafefa44ea8517001219141e8b75f3cc056b3892f296d5a00f7372d5",
+    "registers": "c87f7977af887a49cf7819403f4c58088e0ea4677cb40bffa30d30141fd677c1",
+    "sdd": "1dd96ab139e3d70fd48dea3623093414b47bfae0ac7ad849631f1b5af6a429f1",
+    "ars": "aa9e77804d246a22a2194600a87ee7cd54fd2d37b778877c1b56d3aac611181f"
+   },
+   "selection": {
+    "graph": "8284b0755b07c39a5fc0676fd8ab7bef32cefc7d4f93f9d368a9d2d68dad6953",
+    "model": "40ab224dbb1115fac20239d41b140b304e0b285dcec70220e8352b548c9338b1",
+    "trails": "fd443d243b973b5fd6acca6496c42bc63f40b17150061afdfbcdeab290d1a8fc",
+    "findings": "66e28ad88a386964871d2fb1ff54b65147aa0b0fb008e1bb9f4e0aee60da1de5",
+    "stamps": "e262995de8bdc03321541c6257886f5de421616bfb7ce16a04a0cecec725bf7c",
+    "readiness": "f845d28b392687a8fd9581137de13e6a710ead85e8e8415f1e574c6b66540868",
+    "provenance": "9a0e2aba001556d9faa38606d9932a28eeae197ba803c45b5766e6766920b5d8",
+    "registers": "5ca63e2499034e942fdd80032598ebc6032b67a9339d2c2d316bbeefdf9a5c47",
+    "sdd": "ff15aed41e3daf51d88116ebe94b42c165347eb7231b0fe2d408a961e4e135de",
+    "ars": "5298df50966c2639bec28c02364da47dc994c2aa36fdbce721b07a01e4fa48b0"
+   },
+   "deployment": {
+    "graph": "db2385e8a7314d40d9c087bc72e1d9a65adc8febb81030d38ab04e19969cea56",
+    "model": "b806d694a32980c3cc145e6742cbba9b67fb59f81bcadd144b1859f38b99dc08",
+    "trails": "eaaf9d554585559e7f44008c5e03102c8c47a02f7cba8aadf727db46d9baf34d",
+    "findings": "8ee5d823d3a3e4103734789fce40b9c2d5ab323ed4e741eda8dfc9d62fb451c8",
+    "stamps": "48ccf9c2f78600ca9c269bf6eeef43451fc615841e1fa69324ab3b49ceff308c",
+    "readiness": "ce7752aa8ebff3bbdd88345a46452cff4f0a584a88fe36b8de3d4ec0203c1e8b",
+    "provenance": "221f1b2f77fb96110be017193cc9187169ee2a901ae78349646278190dd2a6e7",
+    "registers": "05dc422be4cd1d230c349c15c8ec10ac7fda4e76f6f3c5658a109cc762f225ac",
+    "sdd": "847357d7578f8a79ce6acac6559160d938e684989a02dd46f36aabe0c6449f9a",
+    "ars": "1091a26e3f6d1db2360dcbb6f6d2ca6e6a0b017b4f2ce8ed60630403b48e193f"
+   }
+  }
+ },
+ "registered": {
+  "client": {
+   "none": [],
+   "knowledge": [
+    "p10-knowledge"
+   ],
+   "adoption": [
+    "p40-adoption"
+   ],
+   "selection": [],
+   "deployment": [
+    "p30-deployment"
+   ]
+  },
+  "server": {
+   "none": [
+    "p10-knowledge",
+    "p30-deployment",
+    "p40-adoption"
+   ],
+   "knowledge": [
+    "p10-knowledge",
+    "p30-deployment",
+    "p40-adoption"
+   ],
+   "adoption": [
+    "p10-knowledge",
+    "p30-deployment",
+    "p40-adoption"
+   ],
+   "selection": [
+    "p10-knowledge",
+    "p30-deployment",
+    "p40-adoption"
+   ],
+   "deployment": [
+    "p10-knowledge",
+    "p30-deployment",
+    "p40-adoption"
+   ]
+  }
+ },
+ "build": {
+  "chapters": 3228938,
+  "projects": 508466,
+  "scripts": 148,
+  "under10k": 52,
+  "from10to50k": 51,
+  "over50k": 45,
+  "css": 901873
+ },
+ "gates": {
+  "entry": 8192,
+  "chunk": 377856,
+  "css": 902144,
+  "routes": {
+   "projects": 1242112,
+   "chapters": 3233792
+  },
+  "data": {
+   "brain-catalogue": 1576960,
+   "review-font": 1089536,
+   "vendor-docx": 430080,
+   "brain-playbook": 122880,
+   "brain-tradeoffs": 44032
+  },
+  "scripts": 148,
+  "tiny": 61
+ },
+ "opens": {
+  "none": {
+   "entries": [],
+   "each": {}
+  },
+  "knowledge": {
+   "entries": [
+    "public/knowledge-workspace-ui.js"
+   ],
+   "each": {
+    "public/knowledge-workspace-ui.js": {
+     "route": 3228938,
+     "added": 147315,
+     "total": 3376253,
+     "files": 2
+    }
+   }
+  },
+  "adoption": {
+   "entries": [
+    "public/architecture-task-ui.js"
+   ],
+   "each": {
+    "public/architecture-task-ui.js": {
+     "route": 3228938,
+     "added": 133719,
+     "total": 3362657,
+     "files": 2
+    }
+   }
+  },
+  "selection": {
+   "entries": [],
+   "each": {}
+  },
+  "deployment": {
+   "entries": [
+    "public/deploy-view.js"
+   ],
+   "each": {
+    "public/deploy-view.js": {
+     "route": 3228938,
+     "added": 855804,
+     "total": 4084742,
+     "files": 12
+    }
+   }
+  }
+ }
+}
