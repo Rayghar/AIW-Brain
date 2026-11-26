@@ -1,0 +1,159 @@
+{
+ "schema": "aiw.rc44.build-size.v1",
+ "name": "build s0-w3-bundle (the lead's S0 work of wave 3): the owner's decision AA2 (the cap +32 KB, booking retired for one size check) and rulings D10 and Y1 (one shared lazy entry of the packages' first-draw readers), with U6",
+ "productionAccepted": false,
+ "measuredWith": "node build.mjs in each tree (dist/client-size-report.json: routes.chapters.code, routes.projects.code, scripts, buckets, css; dist/client-metafile.json read with rc44-s0-readings.mjs opensWithRecords(metafile, entry, Object.keys(BUDGET.data)))",
+ "commands": {
+  "base": "git archive 4349bb6 AIW-V5-Local-Source | tar -x -C <dir>; ln -s <node_modules> <dir>/AIW-V5-Local-Source/node_modules; cd <dir>/AIW-V5-Local-Source; env -u ANTHROPIC_BASE_URL -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN -u OPENAI_API_KEY node build.mjs",
+  "head": "env -u ANTHROPIC_BASE_URL -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN -u OPENAI_API_KEY node build.mjs (on rc44/s0-w3-bundle)",
+  "opensWithRecords": "node -e \"import('./rc44-s0-readings.mjs').then(async R => { const {BUDGET} = await import('./client-bundle.mjs'), m = JSON.parse(require('fs').readFileSync('dist/client-metafile.json', 'utf8')); console.log(R.opensWithRecords(m, 'public/design-package-readers.js', Object.keys(BUDGET.data))); })\" (on the base, with the entry each stub loaded: public/knowledge-workspace-ui.js, public/architecture-task-ui.js, public/deploy-view.js)",
+  "suite": "node rc44-s0-d10-validate.mjs (D10.2 to D10.5 and AA2 hold these figures on every build)"
+ },
+ "before": {
+  "commit": "4349bb6",
+  "chapters": 3228938,
+  "chapterFiles": 72,
+  "projects": 508466,
+  "scripts": 148,
+  "buckets": {
+   "under10k": 52,
+   "from10to50k": 51,
+   "over50k": 45
+  },
+  "css": 901873,
+  "violations": [],
+  "gates": {
+   "chapters": 3233792,
+   "projects": 1242112,
+   "scripts": 148,
+   "under10k": 61,
+   "css": 902144
+  }
+ },
+ "after": {
+  "commit": "rc44/s0-w3-bundle",
+  "note": "no client module changed after the commit that built the shared entry; the later commits change suites and notes only",
+  "chapters": 3228967,
+  "chapterFiles": 72,
+  "projects": 508526,
+  "scripts": 150,
+  "buckets": {
+   "under10k": 53,
+   "from10to50k": 51,
+   "over50k": 46
+  },
+  "css": 901873,
+  "violations": [],
+  "gates": {
+   "chapters": 3266560,
+   "projects": 1242112,
+   "scripts": 150,
+   "under10k": 61,
+   "css": 902144
+  }
+ },
+ "opens with records": {
+  "what": "The route plus the static closure of the lazy entry a route stub loads before a document with a package's records is first drawn, each script counted once (rulings D10, Y1; contract rule 52).",
+  "before": {
+   "p10-knowledge (public/knowledge-workspace-ui.js)": {
+    "route": 3228938,
+    "added": 147315,
+    "total": 3376253,
+    "files": 2
+   },
+   "p40-adoption (public/architecture-task-ui.js)": {
+    "route": 3228938,
+    "added": 133719,
+    "total": 3362657,
+    "files": 2
+   },
+   "p30-deployment (public/deploy-view.js)": {
+    "route": 3228938,
+    "added": 855804,
+    "total": 4084742,
+    "files": 12
+   },
+   "a selection and no adoption": {
+    "route": 3228938,
+    "added": 0,
+    "total": 3228938,
+    "files": 0,
+    "note": "the p40 stub asked for adoptions only, so the browser loaded nothing and drew the decision without the selection's findings (U6; case D10.6)"
+   }
+  },
+  "after": {
+   "any package's records, or all three (public/design-package-readers.js)": {
+    "route": 3228967,
+    "added": 69723,
+    "total": 3298690,
+    "files": 2
+   },
+   "no package records": {
+    "route": 3228967,
+    "added": 0,
+    "total": 3228967,
+    "files": 0
+   },
+   "bound": "160 KB (163,840 B) beside the route (ruling Y1), held by rc44-s0-d10-validate.mjs D10.2"
+  },
+  "surfaceEntries": {
+   "what": "What opening each surface's host entry loads beside the route, before and after: each host imports the shared entry, so opening a surface now loads every package's readers (the price of keeping them in one script).",
+   "before": {
+    "public/knowledge-workspace-ui.js": {
+     "route": 3228938,
+     "added": 147315,
+     "total": 3376253,
+     "files": 2
+    },
+    "public/architecture-task-ui.js": {
+     "route": 3228938,
+     "added": 133719,
+     "total": 3362657,
+     "files": 2
+    },
+    "public/deploy-view.js": {
+     "route": 3228938,
+     "added": 855804,
+     "total": 4084742,
+     "files": 12
+    }
+   },
+   "after": {
+    "public/knowledge-workspace-ui.js": {
+     "route": 3228967,
+     "added": 214170,
+     "total": 3443137,
+     "files": 3
+    },
+    "public/architecture-task-ui.js": {
+     "route": 3228967,
+     "added": 158991,
+     "total": 3387958,
+     "files": 3
+    },
+    "public/deploy-view.js": {
+     "route": 3228967,
+     "added": 902275,
+     "total": 4131242,
+     "files": 13
+    }
+   }
+  }
+ },
+ "deltas": {
+  "chapters": 29,
+  "projects": 60,
+  "scripts": 2,
+  "under10k": 1,
+  "css": 0
+ },
+ "whatMoved": {
+  "added": [
+   "chunks/design-package-readers-*.js: the shared entry's facade (under 1 KB, in the files-under-10-KB bucket)",
+   "chunks/chunk-*.js: the readers of the three packages (knowledge-package, knowledge-crosswalk, knowledge-pins; topology and its parts; adoption-package, adoption-domain, adoption-selection), about 69 KB, reached by the shared entry and the three host entries"
+  ],
+  "route": "the stubs' loads name one entry (design-package-routes.js) and the route chunks' import lists: +29 B; without the shared entry's import of review-domain.js the route split model-alternatives-state.js into a script of its own (+470 B, 151 script files), measured and recorded in public/design-package-readers.js",
+  "gates": "the chapters route cap 3158 KB -> 3190 KB (the owner's decision AA2); the script gate 148 -> 150 (ruling Y1, the measured count); every other gate unchanged"
+ },
+ "bookings": "none: per-slice booking was retired by the owner's decision AA2 at this build (lead-bookings-size.json records it); this file books nothing and states the one size check's figures"
+}
