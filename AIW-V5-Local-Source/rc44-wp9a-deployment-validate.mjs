@@ -1638,6 +1638,40 @@ await block('S2.9 the declared failures and what every package\'s suite holds', 
   pass('S2.9: with declared failures in the document a person\'s step moves no design stamp, a template copy and a recovery import clear the steps, finding ids are unique, the built-in trails and chains are unchanged; the graph states the claim, covers, assumesLossOf and recovers; survivalScope answers the widest in-scope zone claim');
 });
 
+// (ruling L11 (d), carried to slice 2) No calculated verdict reads as confirmed an ancestor chain that an unreviewed draft changed: the reading names
+// the records a draft by Sol, an import or an agent account changed last and no person reviewed since, and the acceptance waits for a person.
+await block('S2.10 no verdict confirms a chain a draft changed, through the server', async () => {
+  need();
+  const I = F.ids(), h = await F.server(worker), d = () => withFinalReview(h.state.document), ok = (r, why) => assert.equal(r.status, 200, (why || 'accepted') + ': ' + JSON.stringify(r.body).slice(0, 300));
+  try {
+    ok(await h.send('runtime.topology-start', {}));
+    const fd = async payload => (await h.send('technology.domain', payload)).body.selected;
+    const region = await fd({title: 'Norway East region', scope: 'region', cause: 'location'}), z1 = await fd({title: 'Bergen availability zone 1', scope: 'zone', cause: 'location', parentId: region}), z2 = await fd({title: 'Bergen availability zone 2', scope: 'zone', cause: 'location', parentId: region});
+    ok(await h.send('runtime.locate', {zoneId: I.zone1, domainIds: [z1]})); ok(await h.send('runtime.locate', {zoneId: I.zone2, domainIds: [z2]}));
+    const claim = (await h.send('runtime.failure', {environmentId: I.production, title: 'Any one availability zone is lost', scope: 'zone', quantifier: 'any-one', mustSurvive: [I.workerPlan], inScope: true})).body.selected;
+    const accept = () => h.send('runtime.failure-accept', {id: claim, decision: 'accepted', stamp: FA.failureStamp(d(), declared(d(), claim)), reviewer: 'B (synthetic)', reference: 'REV-3', observations: 'Accepted as a design claim; not demonstrated.', reviewed: true}, B);
+    assert.deepEqual(evaluate(d(), claim).drafted, [], 'a chain persons wrote');
+    // a draft by Sol changes the region both zone domains lie in
+    ok(await h.send('technology.domain', {id: region, basis: 'Drafted: one provider region.', origin: 'sol-draft'}, A, {authorKind: 'sol-draft', reason: 'Drafted.'}), 'a draft changes the region');
+    const e = evaluate(d(), claim); assert.deepEqual([e.verdict, e.drafted], ['survives', [region]], 'the reading stands and names the record a draft changed');
+    const x = await accept(); assert.equal(x.status, 400); assert.match(x.error, /^FD-001 was last changed by a draft no person has reviewed: a person reviews it before the claim is accepted\.$/, x.error);
+    // a person saves it: the chain is a person's again, and the claim is accepted
+    ok(await h.send('technology.domain', {id: region, basis: 'One provider region (reviewed).'}, C), 'a person saves the region');
+    assert.deepEqual(evaluate(d(), claim).drafted, []); ok(await accept(), 'then a second person accepts');
+  } finally { h.close(); }
+  pass('S2.10: through the server, after a draft by Sol changes the region both zone domains lie in, the verdict still reads but names FD-001 as changed by a draft no person reviewed, and the acceptance is refused in those words until a person saves the region (ruling L11 (d))');
+});
+
+await block('S2.11 the tracker stays in its paths with the records of slices 2 and 3', () => {
+  need();
+  const I = F.ids(), {p} = typedTidewater(), kase = (q, type, payload) => ({prior: q, next: run(q, type, payload).document, command: {type, payload}, at: AT});
+  const cases = [kase(p, 'runtime.failure', {environmentId: I.production, title: 'Any one zone', scope: 'zone', quantifier: 'any-one', mustSurvive: [I.workerPlan]}), kase(p, 'runtime.environment-link', {id: I.recovery, recoversIds: [I.production]}),
+    kase(p, 'runtime.gate', {kind: 'residency', title: 'Stay in Norway', environmentId: '', dataIds: [I.data], permitted: ['NO'], source: 'A policy (synthetic)'}), kase(p, 'runtime.copy', {dataId: I.data, kind: 'primary', planId: I.storePlan, zoneId: I.zone1, basis: 'x'}), kase(p, 'runtime.copy-proposals', {environmentId: I.production})];
+  const read = R.assertTrackerStaysInPaths(mine(), cases);
+  assert.deepEqual(read, {cases: 5, changed: {'runtime.zones': 0, 'runtime.placements': 0}, journalled: 4}, 'one change journalled for each claim, link, gate and copy a person saved, none for AIW\'s proposals, and nothing mended: ' + JSON.stringify(read));
+  pass('S2.11: the tracker journals a declared failure, a recovery link, a gate and a copy as one change each, journals AIW\'s copy proposals not at all, and stays in its paths (assertTrackerStaysInPaths)');
+});
+
 // ================================================================ Slice 3: location gates and data copies
 // (design section g, Slice 3, its eight cases; ruling L8 carried; the build contract's rules 10 to 12, 14 to 17, 31 and
 // 54. The build notes are audit/rc44/build-notes/wp9a-s2s3.md.)
@@ -1903,6 +1937,20 @@ await block('S3.9 gates and copies, and what every package\'s suite holds', () =
     assert.deepEqual([p.runtime.failures.length, p.runtime.gates.length, p.runtime.copies.length], [24, 24, 200]);
     assert.ok(own < 500000, 'this build\'s records at their limits take ' + own + ' characters'); assert.ok(own + slice1 < DOCUMENT_BOUND * 0.55, 'with slice 1\'s at their limits the package keeps under 55 % of the document bound: ' + (own + slice1));
     pass('S3.9: with gates and copies in the document a person\'s step moves no design stamp, a template copy and a recovery import clear the steps, finding ids are unique, the built-in trails and chains are unchanged; the graph states the gate, the copies and restricts, copyOf, heldBy, restsIn; at the new limits (24 claims, 24 gates, 200 copies, every field at its limit, stamped) the records take ' + own + ' characters, the package with slice 1\'s about ' + (own + slice1) + ' of the ' + DOCUMENT_BOUND + '-character bound (ruling M9 (f): the rest of a project holds less than ' + (DOCUMENT_BOUND - own - slice1) + ' before the document bound binds)'); }
+});
+
+// Candidate knowledge is inert (plan ruling 6; contract rule 40): slices 2 and 3 read no knowledge, and an unreleased claim that speaks of the very
+// records moves none of their readings.
+await block('S3.10 candidate knowledge reaches no failure or gate reading', () => {
+  need();
+  const I = F.ids(); let {p, made} = typedTidewater();
+  p = declare(p, {title: 'The primary region is lost', scope: 'region', quantifier: 'named', domainIds: [made.fdRegion]}).document; p = recordedInNorway(gate(p).document);
+  let k = applyKnowledgeCommand(structuredClone(p), {type: 'knowledge.source', payload: {title: 'Synthetic residency note', body: 'Synthetic residency note\nBooking records may rest in Sweden, and the region loss is survived.\n', path: 'synthetic/residency.txt', revision: '1', license: 'Synthetic test material'}}, AT, 'author').document;
+  k = withFinalReview(applyKnowledgeCommand(k, {type: 'knowledge.claim', payload: {sourceId: k.knowledge.sources.at(-1).id, lineStart: 2, lineEnd: 2, subjectId: 'deployment-blueprint:regional-standby', predicate: 'permits a jurisdiction', claimType: 'applicability', polarity: 'neutral', statement: 'Booking records may rest in Sweden.', conditions: ['For this fixture.'], limitations: ['Synthetic.'], tags: ['title:Residency']}}, AT, 'author').document);
+  assert.notEqual(k.knowledge.claims[0].status, 'released', 'the claim is a candidate');
+  const reading = q => JSON.stringify({failure: FA.evaluateFailure(q, 'fs-001'), gate: GA.gateReading(q, 'lg-001'), state: GA.locationGateState(q, I.production), copies: GA.copyInventory(q, I.production), checks10: ch10(q).filter(f => /^(failure|domain|location|node)-/.test(f.code)), standby: FA.standbyElsewhere(q, q.runtime.plans.find(r => r.id === I.storePlan))});
+  assert.equal(reading(k), reading(p), 'no candidate claim reaches a verdict, a gate, the copy inventory or a check');
+  pass('S3.10: an unreleased claim that speaks of the same records moves no verdict, gate reading, copy inventory or Chapter 10 finding of slices 2 and 3');
 });
 
 // ================================================================ Slice 4: blueprint adoption glue, transitional populations
