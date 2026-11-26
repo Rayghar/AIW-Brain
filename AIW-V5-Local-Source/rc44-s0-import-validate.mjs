@@ -130,8 +130,11 @@ async function origin(h) {
   // the narrative, confirmed by A
   const n = o.d().finalReview.narrative; await o.ok('review.narrative', {title: n.title || 'Synthetic SDD', owner: 'Synthetic owner', audience: 'Synthetic audience', summary: 'A synthetic summary.', scope: 'A synthetic scope.', approach: 'A synthetic approach.', confirmed: true}, A);
   assert.equal(o.d().finalReview.narrative.provenance?.reviewed?.by, A, 'the narrative is confirmed by A');
+  // a built-in record: a requirement A edits and B confirms (its stamps are kept with the requirements' own storage)
+  { const req = o.d().artefacts.find(a => a.type === 'requirement'); await o.ok('artefact', {...req, title: req.title + ' (edited by A)'}, A); await o.ok('artefact', {...o.d().artefacts.find(a => a.id === req.id), confirmed: true}, B); }
   await o.read(A);
   const pack = clone(o.d()), r = id => rows(pack).find(x => x.id === id);
+  { const req = pack.artefacts.find(a => a.provenance?.reviewed?.by === B); assert.ok(req, 'the origin stamps the requirement'); req.provenance.author.at = FUTURE; req.provenance.reviewed.at = FUTURE; }
   r(after).provenance.author.at = FUTURE; r(before).provenance.author.at = PAST; delete r(undated).provenance.author.at;
   for (const id of [confirmed, sol]) { r(id).provenance.author.at = FUTURE; r(id).provenance.reviewed.at = FUTURE; }
   r(merged).provenance.author.at = FUTURE; r(merged).provenance.reviewed.at = FUTURE; pack.finalReview.narrative.provenance.reviewed.at = FUTURE;
@@ -161,6 +164,9 @@ add('I1 (ruling Z8): through /api/recovery, every stamp a record carries is move
       assert.deepEqual(names(PV.recordLabel(r.d(), rec(id), 3)), [], name + ': its label names nobody: ' + PV.recordLabel(r.d(), rec(id), 3));
     }
     assert.equal(PV.authorOf(rec(ids.sol)), 'sol-draft', 'a draft by Sol stays disclosed as Sol\'s'); assert.equal(PV.authorOf(rec(ids.after)), 'person', 'a person\'s words stay a person\'s, by nobody here');
+    { const was = pack.artefacts.find(a => a.provenance?.reviewed?.by === B), now = r.d().artefacts.find(a => a.id === was.id);
+      assert.deepEqual([now.provenance?.author, now.provenance?.reviewed, now.provenance?.imported], [undefined, undefined, {author: was.provenance.author, reviewed: was.provenance.reviewed}], 'a built-in record\'s stamps are kept aside through its own storage');
+      assert.equal(PV.reviewOf(r.d(), now, 1), null); assert.deepEqual(names(PV.recordLabel(r.d(), now, 1)), [], PV.recordLabel(r.d(), now, 1)); }
     { const n = r.d().finalReview.narrative; assert.deepEqual([n.provenance?.reviewed, n.provenance?.imported?.reviewed?.by], [undefined, A]); assert.equal(PV.reviewOf(r.d(), n, 11), null); assert.equal(rv.narrativeCurrent(rv.withFinalReview(clone(r.d()))), false, 'the narrative is not confirmed here'); }
     { const s = PV.provenanceSummary(rv.withFinalReview(clone(r.d()))); assert.deepEqual([names(s.writers), names(s.reviewers)], [[], []], 'the SDD\'s people name nobody from elsewhere'); }
     // a second person's step: nobody stands behind any of them, whatever its date
