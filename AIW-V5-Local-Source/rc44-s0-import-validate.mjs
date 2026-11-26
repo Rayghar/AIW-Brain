@@ -17,7 +17,6 @@
 // Run: npm run test:rc44-s0-import
 import assert from 'node:assert/strict';
 import {readFileSync, existsSync} from 'node:fs';
-import {createHash} from 'node:crypto';
 import * as R from './rc44-s0-readings.mjs';
 import worker from './worker.js';
 import {localDatabase} from './local-db.js';
@@ -32,7 +31,7 @@ import {previewScenarioAlternative, rebaseWorkingAlternative} from './public/wor
 
 const AT = R.AT, IMPORT_AT = '2026-10-02T09:00:00.000Z', FUTURE = '2099-01-01T00:00:00.000Z', PAST = '2000-01-01T00:00:00.000Z', BASELINE = 'rc44-s0-import-baseline.json';
 const A = 'architect-a', B = 'architect-b', C = 'architect-c', D = 'architect-d', AGENT = 'agent-sol';
-const clone = v => structuredClone(v), sha = t => createHash('sha256').update(t).digest('hex'), list = v => (Array.isArray(v) ? v : []);
+const clone = v => structuredClone(v), list = v => (Array.isArray(v) ? v : []);
 
 // ------------------------------------------------------------------------------------------------ a package of the suite's own
 // Registered through S0 as any package is: its records (stampsyn.records, Chapter 3) are read by the provenance reader
