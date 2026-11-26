@@ -6,6 +6,10 @@ import {isOpenText} from './open-fields.js';
 // rc44 (wp9a): a zone that stands in a typed failure domain (domainIds, written by runtime.locate: topology-domain.js)
 // reads as that domain, whatever name it also states; a zone that names none reads by its name, as before.
 export const failureDomainKey=z=>z?.domainIds?.[0]||(statedField(z,'failureDomain')?String(z.failureDomain).trim().toLowerCase():'');
+// rc44 (wp9a slices 2 and 3; design hooks H1, H4, H5, H11): the slot the typed topology fills when its lazy module loads
+// (topology-failures.js, topology-gates.js); empty for a document without it. zoneKey: the hosting failure domain as the
+// checks compare it, where zones that share a stated cause or lie in one another's domain fail together (ruling L2).
+export const TOPOLOGY={},zoneKey=(p,z)=>TOPOLOGY.zoneKey?.(p,z)||failureDomainKey(z);
 // A field states something: no open state is kept for it, and its words are no placeholder (open-fields.js).
 export const statedField=(r,f)=>!r?.open?.[f]&&!isOpenText(r?.[f]);
 export const hostingZone=z=>!!z&&z.kind!=='access';
