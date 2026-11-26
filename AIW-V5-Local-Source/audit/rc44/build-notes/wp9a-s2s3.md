@@ -16,8 +16,9 @@ a gate's evidence are steps of signed-in persons of a project, which this build 
   `public/topology-gates.js`); the hooks H4, H5, H11 and the slot; ruling L2's retirement of the shared-cause reading
   (S1.13's marked case flipped); recovery import; slice 1's placeholder assertions replaced (old -> new below); the size
   evidence; the suites (below).
-- **Next:** the adversarial review and its fix-up (AA1); the lead's merge with `s0-w3-bundle` (which retires S0's block
-  "O1 the bookings add up", red here as AA2 expects, see "Suites").
+- **Next:** the adversarial review and its fix-up (AA1); the lead's merge with `s0-w3-bundle`, which retires the
+  booking cases that fail here as AA2 expects (S0's "O1", wp1's S2.12 and S3.10, wp2's "size" and "S5 size": see
+  "Suites").
 
 ## What was built
 
@@ -213,17 +214,38 @@ shared first-draw entry (S0-D10) takes them with the other first-draw readers.
 
 ## Suites
 
-See the final commit and the hand-back for the figures. Run on the final head: `rc44-wp9a-deployment-validate.mjs`,
-`rc44-wp9a-deployment-browser-validate.mjs` (built client, its own port and database), `action-undo-validate.mjs`
-(unchanged, green), S0's `rc44-s0-extensions-validate.mjs`, and every non-browser suite that imports a changed file
-and is not red on this runner at the base (`.aiw-local/wp9a-s2s3/run-suites.mjs`, summaries under
-`.aiw-local/wp9a-s2s3/suites-*`).
+On the final product code (logs under `.aiw-local/wp9a-s2s3/`, git-ignored; servers on their own port from 4100 and
+their own database under `.aiw-local`, stopped; no tracked file left rewritten):
+- `rc44-wp9a-deployment-validate.mjs`: 47 of 47 (slice 1's 25, S2.0 to S2.11, S3.0 to S3.10), `final-wp9a.log`.
+- `rc44-wp9a-deployment-browser-validate.mjs` (`node build.mjs` first, `AIW_BROWSER_EXECUTABLE` set): 1 of 1.
+- `action-undo-validate.mjs` unchanged: green. Also green on the final head: `runtime`, `rc42-g5-runtime`, `deploy`,
+  `desk`, `desk-fixes`, `workspace`, `provenance`, `recovery-authority`, `rc42-g4-trace-kernel`, `technology`
+  (`suites-final/`).
+- Every non-browser suite that imports a changed file and is not red on this runner at the base: 86 run
+  (`suites-broad/summary.json`); 83 exit 0. The other three: S0's suite and wp9a's own (below; wp9a's S1.10 then failed
+  only because its pins were re-measured after that run started, green on the final head), and `scale-validate.mjs`,
+  which is red at the base (`test:scale`, 1,169 s there) and was stopped by the runner's 600 s bound with every block it
+  reached passing (the runner did not match its script, which runs with `--expose-gc`).
+- The nine suites red at the base that import a changed file (`architecture-ui`, `brain-reasoning`,
+  `chapter-reasoning`, `command-equivalence`, `composition-ui`, `knowledge`, `round27-model`, `sol-checks`,
+  `sol-disclosure`): each run in an archive of `4349bb6` and here; each fails the same way in both (exit code and the
+  lines that name the failure; `command-equivalence` differs only by the time in its message), `red/summary.json`.
+- `node check-syntax.mjs`: 946 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, 0 new.
+- `node build.mjs`: chapters route 3,229,341 B (cap 3,233,792 B), 148 script files, buckets 52/51/45, stylesheet
+  901,873 B, no violation.
+- Not run: the full regression (the lead's), the browser suites other than wp9a's (the browser run that closes the wave).
 
-**S0's suite, one failing assertion, for the lead (contract rule 55):** `rc44-s0-extensions-validate.mjs`, block "O1 the
-bookings add up", `assertBookingsAddUp`: "The bookings do not add up: the chapters route grew -499 B against 9673661
-(3229341 - 3229840), and the size files book -902 B …". This build grows the route by 403 B and books nothing, as AA2
-and the task say; AA2 retires this block (the contract, step 7), and the lead's build `s0-w3-bundle` removes it. Every
-other block of S0's suite is green.
+**Failing assertions of other slices' suites, for the lead (contract rule 55; none edited here).** Each is a size case
+written for the per-slice bookings, which AA2 retires; each fails by exactly this build's 403 B, which it books nowhere
+as the task says ("Book nothing per slice"); each suite is green at `4349bb6` (S0 28 of 28; wp1 87 cases, 2 pending;
+wp2 45 checks, run in the archive of `4349bb6`):
+- `rc44-s0-extensions-validate.mjs`, block "O1 the bookings add up" (`assertBookingsAddUp`): "The bookings do not add
+  up: the chapters route grew -499 B against 9673661 (3229341 - 3229840), and the size files book -902 B …". AA2
+  names this block as retired; the lead's `s0-w3-bundle` removes it. Every other block of S0's suite is green.
+- `rc44-wp1-knowledge-validate.mjs`, "S2.12 (size, ruling A4 and M4)": "this build: S2 is 521 B of its 250 B" (118 B
+  booked + 403 B), and "S3.10 (size, rulings A4, M4, O1)", the same arithmetic.
+- `rc44-wp2-adoption-validate.mjs`, block "size" (`rc44-wp2-adoption-cases/record.mjs:891`): "what this build leaves for
+  S1 is exactly what S1's evidence books: 728 B" (728 !== 325), and block "S5 size" (`selection.mjs:1096`): 1592 !== 1189.
 
 ## Open questions (for the lead)
 
