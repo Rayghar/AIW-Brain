@@ -207,7 +207,9 @@ try {
   // The review restores with its imported authority neutralised (recovery-service.js), and nothing else changed.
   const expected = neutraliseImportedAuthority({finalReview: structuredClone(original.finalReview)}, restored.finalReview.imported.at).finalReview;
   expected.imported.stamps = keptStamps;
-  { const read = d => withFinalReview(d, {upgrade: false}), before = read(structuredClone(original)), after = read({...structuredClone(original), ...Object.fromEntries(Object.keys(kept).filter(MOVED).map(k => [k, kept[k]]))});
+  // (The restore gives the project its new id and name and names its template 'imported' before the import's steps, as
+  // on the start commit, and the design source reads them: the stamps are taken of the original as the restore holds it.)
+  { const held = {...structuredClone(original), id: restored.id, name: restored.name, workspace: {...original.workspace, template: restored.workspace.template}}, read = d => withFinalReview(d, {upgrade: false}), before = read(structuredClone(held)), after = read({...structuredClone(held), ...Object.fromEntries(Object.keys(kept).filter(MOVED).map(k => [k, kept[k]]))});
     const was = designFingerprint(before), now = designFingerprint(after), version = original.finalReview.version, chaptersBefore = computeChapterStamps(before), chaptersAfter = computeChapterStamps(after);
     const translated = JSON.parse(JSON.stringify(expected, (k, v) => (k === 'baselines' ? v : v === was ? now : v === was + ':' + version ? now + ':' + version : v)));
     translated.baselines = expected.baselines;
@@ -219,7 +221,7 @@ try {
     const {readingsUpgrade, ...review} = restored.finalReview, [x, y] = [JSON.stringify(review), JSON.stringify(translated)];
     let at = -1; if (x !== y) { at = 0; while (at < x.length && x[at] === y[at]) at++; } const near = at < 0 ? '' : ' (from character ' + at + ': ' + x.slice(Math.max(0, at - 60), at + 140) + ' | expected ' + y.slice(Math.max(0, at - 60), at + 140) + ')';
     assert.equal(x, y, 'the review, its baseline whole, with imported authority neutralised and the stamps of the whole design carried over the move' + near + (near ? ' [the design stamp before the move ' + was + ', after it ' + now + ']' : ''));
-    assert.equal(JSON.stringify(readingsUpgrade), JSON.stringify(table), 'the alias table answers for the frozen baseline in exactly the chapters the move changed'); }
+    assert.equal(JSON.stringify(readingsUpgrade), JSON.stringify(table), 'the alias table answers for the frozen baseline in exactly the chapters the move changed: ' + JSON.stringify(readingsUpgrade) + ' | expected ' + JSON.stringify(table)); }
   assert.equal(JSON.stringify(without(restored.knowledge, ['pins', 'history', 'repositorySync', 'claims', 'releases'])), JSON.stringify(without(original.knowledge, ['pins', 'history', 'repositorySync', 'claims', 'releases'])));
   assert.equal(JSON.stringify(without(restored.workbench, ['catalogue', 'views'])), JSON.stringify(without(original.workbench, ['catalogue', 'views'])));
   assert.equal(restored.workspace.recovery.originProjectId, id); assert.equal(restored.workspace.recovery.packageHash, m.checksum);
